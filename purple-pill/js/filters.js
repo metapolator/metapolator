@@ -247,13 +247,13 @@ app.filter('specimenFilter', function() {
             if (specimenPanel == 1) {
                 angular.forEach(sequences, function(sequence) {
                     angular.forEach(sequence.masters, function(master) {
-                        if (master.display || master.edit) {
+                        if (master.display || master.edit[0]) {
                             nrOfFonts++;
                             masterArray.push({
                                 sequenceId : sequence.id,
                                 masterId : master.id,
                                 name : master.name,
-                                edit : master.edit
+                                edit : master.edit[0]
                             });
                         }
                     });
@@ -320,16 +320,18 @@ app.filter('specimenFilter', function() {
                     }
                 }
                 // paragraph break after each loop
-                filtered.push({
-                    master : {
-                        sequenceId : master.sequenceId,
-                        masterId : master.masterId,
-                        name : master.name,
-                        edit : master.edit
-                    },
-                    glyphName : "*p",
-                    glyphId : master.name + "_*p_" + glyphId
-                });
+                if (q < masterArray.length - 1) {
+                    filtered.push({
+                        master : {
+                            sequenceId : master.sequenceId,
+                            masterId : master.masterId,
+                            name : master.name,
+                            edit : master.edit
+                        },
+                        glyphName : "*p",
+                        glyphId : master.name + "_*p_" + glyphId
+                    });
+                }
             }
         }
         return filtered;

@@ -116,7 +116,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (level == "master") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
-                    if (master.edit) {
+                    if (master.edit[0]) {
                         var thisElement = {
                             element: master,
                             master: master
@@ -128,7 +128,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         } else if (level == "glyph") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
-                    if (master.edit) {
+                    if (master.edit[0]) {
                         angular.forEach(master.glyphs, function(glyph) {
                             if (glyph.edit) {
                                 // changeParameter needs to know the master when editing on glyph level
@@ -323,7 +323,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.data.getParameter = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach($scope.parameters, function(parameter, index) {
                         angular.forEach($scope.operators, function(operator) {
                             var key = parameter + operator.affix;
@@ -363,7 +363,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.addParameterToElements = function(parameter, operator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     if ($scope.parameterLevel == "master") {
                         $scope.pushParameterToModel(master, parameter, operator);
                     } else if ($scope.parameterLevel == "glyph") {
@@ -435,12 +435,12 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.optimizeOperators = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     if (master.parameters.length > 0) {
                         $scope.optimize(master.parameters);
                     }
                     angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.edit && glyph.parameters.length > 0) {
+                        if (glyph.edit[0] && glyph.parameters.length > 0) {
                             $scope.optimize(glyph.parameters);
                         }
                     });
@@ -489,7 +489,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.editParameter = function(editParameter, editOperator) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             angular.forEach(glyph.parameters, function(parameter) {
@@ -529,7 +529,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var inheritance = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             inheritance = true;
@@ -547,7 +547,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var glyphFixed = null;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.parameters, function(parameter) {
                         if (parameter.name == theParameter.name) {
                             angular.forEach(parameter.operations, function(operation) {
@@ -606,7 +606,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var selected = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.edit) {
                             selected = true;
@@ -622,7 +622,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var selected = false;
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     selected = true;
                 }
             });

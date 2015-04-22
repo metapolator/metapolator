@@ -36,7 +36,7 @@ app.controller('engine', function($scope, sharedScope) {
                     cpsFile : cpsFile,
                     ruleIndex : 3,
                     display : false,
-                    edit : true,
+                    edit : [true, false],
                     ag : "Ag",
                     glyphs : glyphs,
                     elementType : "master",
@@ -128,16 +128,12 @@ app.controller('engine', function($scope, sharedScope) {
         glyphs[3].parameters.push(newParam);
 
         for (var i = 0; i < masters.length; i++) {
-            var myEdit = false;
-            if (i == 0) {
-                myEdit = true;
-            }
             $scope.data.sequences[0].masters.push({
                 id : i,
                 name : masters[i][0],
                 displayName : masters[i][1],
-                display : myEdit,
-                edit : myEdit,
+                display : false,
+                edit : [true, false],
                 ruleIndex : 3,
                 ag : "ag",
                 glyphs : glyphs,

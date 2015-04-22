@@ -41,16 +41,16 @@ app.directive('glyph', function($compile) {
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername;
             var glyphName = attrs.glyph;
-           
+
             element.bind('$destroy', function(event) {
                 if (scope.data.pill == "red") {
                     scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);
                 }
             });
-            
+
             if (glyphName == "space") {
                 element.parent().addClass("space-character");
-            } 
+            }
             if (glyphName == "*n") {
                 element.parent().addClass("line-break");
             } else if (glyphName == "*p") {
@@ -200,7 +200,6 @@ app.directive('valuefield', function() {
     };
 });
 
-
 // deselecting local menus
 app.directive('body', function() {
     return {
@@ -245,22 +244,55 @@ app.directive('listViewCol', function() {
         restrict : 'C',
         link : function(scope, element, attrs, ctrl) {
             element.bind('mousedown', function(event) {
-                if (scope.data.view.viewState == 0 || attrs.type == "instance") {
-                    scope.data.eventHandlers.mousedown = true;
-                    $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
-                    $(element).parent().addClass('start-view-selection');
-                    scope.data.eventHandlers.initialDisplay = $(element).parent().attr("display");
-                }
+                scope.data.eventHandlers.mousedown = true;
+                $(element).parent().parent().parent().parent().find('.start-view-selection').removeClass('start-view-selection');
+                $(element).parent().addClass('start-view-selection');
+                scope.data.eventHandlers.initialDisplay = $(element).parent().attr("display");
             });
             element.bind('mouseup', function(event) {
-                if (scope.data.view.viewState == 0 || attrs.type == "instance") {
-                    scope.data.eventHandlers.mousedown = false;
+                scope.data.eventHandlers.mousedown = false;
+                $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
+                $(element).parent().addClass('end-view-selection');
+                var selected = [];
+                var phase = 0;
+                var display;
+                var falseMouseMove = false;
+                $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                    // handle a mousemove within same master as a normal click, so prevent triggering to apply set
+                    if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
+                        falseMouseMove = true;
+                    }
+                    var thisHit = false;
+                    if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
+                        phase++;
+                        thisHit = true;
+                    }
+                    if (phase == 1 || (phase == 2 && thisHit)) {
+                        var sequence = $(this).attr("sequence");
+                        var master = $(this).attr("master");
+                        selected.push({
+                            parentObject : sequence,
+                            childObject : master
+                        });
+                    }
+                });
+                if (!falseMouseMove) {
+                    scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
+                    scope.$apply();
+                }
+                $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
+                $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
+            });
+            element.bind('mousemove', function(event) {
+                if (scope.data.eventHandlers.mousedown) {
                     $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
                     $(element).parent().addClass('end-view-selection');
                     var selected = [];
                     var phase = 0;
                     var display;
                     var falseMouseMove = false;
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
+                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
                     $(element).parent().parent().parent().parent().find('.list-li').each(function() {
                         // handle a mousemove within same master as a normal click, so prevent triggering to apply set
                         if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
@@ -271,54 +303,14 @@ app.directive('listViewCol', function() {
                             phase++;
                             thisHit = true;
                         }
-                        if (phase == 1 || (phase == 2 && thisHit)) {
-                            var sequence = $(this).attr("sequence");
-                            var master = $(this).attr("master");
-                            selected.push({
-                                parentObject : sequence,
-                                childObject : master
-                            });
+                        if ((phase == 1 || (phase == 2 && thisHit)) && !falseMouseMove) {
+                            if (scope.data.eventHandlers.initialDisplay == "true") {
+                                $(this).find('.list-view-col').addClass('temp-view-selection-false');
+                            } else {
+                                $(this).find('.list-view-col').addClass('temp-view-selection-true');
+                            }
                         }
                     });
-                    if (!falseMouseMove) {
-                        scope.toggleViewSet(selected, scope.data.eventHandlers.initialDisplay);
-                        scope.$apply();
-                    }
-                    $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
-                    $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
-
-                }
-            });
-            element.bind('mousemove', function(event) {
-                if (scope.data.view.viewState == 0 || attrs.type == "instance") {
-                    if (scope.data.eventHandlers.mousedown) {
-                        $(element).parent().parent().parent().parent().find('.end-view-selection').removeClass('end-view-selection');
-                        $(element).parent().addClass('end-view-selection');
-                        var selected = [];
-                        var phase = 0;
-                        var display;
-                        var falseMouseMove = false;
-                        $(element).parent().parent().parent().parent().find('.temp-view-selection-false').removeClass('temp-view-selection-false');
-                        $(element).parent().parent().parent().parent().find('.temp-view-selection-true').removeClass('temp-view-selection-true');
-                        $(element).parent().parent().parent().parent().find('.list-li').each(function() {
-                            // handle a mousemove within same master as a normal click, so prevent triggering to apply set
-                            if ($(this).hasClass('start-view-selection') && $(this).hasClass('end-view-selection')) {
-                                falseMouseMove = true;
-                            }
-                            var thisHit = false;
-                            if ($(this).hasClass('start-view-selection') || $(this).hasClass('end-view-selection')) {
-                                phase++;
-                                thisHit = true;
-                            }
-                            if ((phase == 1 || (phase == 2 && thisHit)) && !falseMouseMove) {
-                                if (scope.data.eventHandlers.initialDisplay == "true") {
-                                    $(this).find('.list-view-col').addClass('temp-view-selection-false');
-                                } else {
-                                    $(this).find('.list-view-col').addClass('temp-view-selection-true');
-                                }
-                            }
-                        });
-                    }
                 }
             });
         }
@@ -331,51 +323,49 @@ app.directive('listEditCol', function() {
         link : function(scope, element, attrs, ctrl) {
             var type = $(element).parents(".list").attr("type");
             element.bind('click', function(event) {
-                if (scope.data.view.viewState == 0) {
-                    var selected = [];
-                    // manage key selections
-                    if (event.shiftKey && type == "master") {
-                        $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
-                        $(element).parent().addClass('end-edit-selection');
-                        var phase = 0;
-                        $(element).parent().parent().parent().parent().find('.list-li').each(function() {
-                            var thisHit = false;
-                            if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
-                                phase++;
-                                thisHit = true;
-                            }
-                            if (phase == 1 || (phase == 2 && thisHit)) {
-                                var sequence = $(this).attr("sequence");
-                                var master = $(this).attr("master");
-                                selected.push({
-                                    parentObject : sequence,
-                                    childObject : master
-                                });
-                            }
-                        });
-                        scope.selectEdit(selected);
-                        scope.$apply();
-                    } else if ((event.ctrlKey || event.metaKey) && type == "master") {
-                        var sequence = $(element).parent().attr("sequence");
-                        var master = $(element).parent().attr("master");
-                        var thisListItem = {
-                            parentObject : sequence,
-                            childObject : master
-                        };
-                        scope.toggleEdit(thisListItem);
-                        scope.$apply();
-                    } else {
-                        $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
-                        $(element).parent().addClass('start-edit-selection');
-                        var sequence = $(element).parent().attr("sequence");
-                        var master = $(element).parent().attr("master");
-                        selected.push({
-                            parentObject : sequence,
-                            childObject : master
-                        });
-                        scope.selectEdit(selected);
-                        scope.$apply();
-                    }
+                var selected = [];
+                // manage key selections
+                if (event.shiftKey && type == "master") {
+                    $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
+                    $(element).parent().addClass('end-edit-selection');
+                    var phase = 0;
+                    $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                        var thisHit = false;
+                        if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
+                            phase++;
+                            thisHit = true;
+                        }
+                        if (phase == 1 || (phase == 2 && thisHit)) {
+                            var sequence = $(this).attr("sequence");
+                            var master = $(this).attr("master");
+                            selected.push({
+                                parentObject : sequence,
+                                childObject : master
+                            });
+                        }
+                    });
+                    scope.selectEdit(selected);
+                    scope.$apply();
+                } else if ((event.ctrlKey || event.metaKey) && type == "master") {
+                    var sequence = $(element).parent().attr("sequence");
+                    var master = $(element).parent().attr("master");
+                    var thisListItem = {
+                        parentObject : sequence,
+                        childObject : master
+                    };
+                    scope.toggleEdit(thisListItem);
+                    scope.$apply();
+                } else {
+                    $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
+                    $(element).parent().addClass('start-edit-selection');
+                    var sequence = $(element).parent().attr("sequence");
+                    var master = $(element).parent().attr("master");
+                    selected.push({
+                        parentObject : sequence,
+                        childObject : master
+                    });
+                    scope.selectEdit(selected);
+                    scope.$apply();
                 }
             });
         }

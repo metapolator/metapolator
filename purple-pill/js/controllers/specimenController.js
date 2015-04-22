@@ -13,7 +13,7 @@ function($scope, $sce, sharedScope) {
     /*****************filter parameters *****************/
 
     // specimenPanel tells the filter to use masters or instances
-    $scope.specimenPanel
+    $scope.specimenPanel;
 
     $scope.specimen = [{
         name : "Metapolator",
@@ -59,7 +59,7 @@ function($scope, $sce, sharedScope) {
             manageSpaces();
         }, 500);
     }, true);
-    
+
     $scope.changedSize = 0;
 
     $scope.$watch("fontSize", function(newVal) {
@@ -119,7 +119,7 @@ function($scope, $sce, sharedScope) {
     $scope.selectGlyph = function(sequenceId, masterId, glyphName) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = true;
@@ -136,7 +136,7 @@ function($scope, $sce, sharedScope) {
     $scope.toggleGlyph = function(sequenceId, masterId, glyphName) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = !glyph.edit;
@@ -151,7 +151,7 @@ function($scope, $sce, sharedScope) {
     $scope.selectSet = function(set) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
@@ -175,7 +175,7 @@ function($scope, $sce, sharedScope) {
     $scope.toggleSet = function(set) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[0]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
@@ -197,7 +197,7 @@ function($scope, $sce, sharedScope) {
     $scope.deselectAll = function() {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
-                if (master.edit) {
+                if (master.edit[$scope.data.view.viewState]) {
                     angular.forEach(master.glyphs, function(glyph) {
                         glyph.edit = false;
                     });
@@ -213,7 +213,7 @@ function($scope, $sce, sharedScope) {
         angular.forEach($scope.data.sequences, function(sequence) {
             if (sequence.id == sequenceId) {
                 angular.forEach(sequence.masters, function(master) {
-                    if (master.id == masterId && master.edit) {
+                    if (master.id == masterId && master.edit[0]) {
                         angular.forEach(master.glyphs, function(glyph) {
                             if (glyph.name == glyphName) {
                                 if (glyph.edit) {
