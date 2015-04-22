@@ -3,12 +3,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     $scope.data.colorCoding = ["#F01616", "#D75699", "#A258F5", "#4C51ED", "#3490FF", "#8FE7FD", "#73C4A5", "#A5CF1B", "#FADD04", "#DE7B25"];
 
-    $scope.addColor = function (id) {
+    $scope.addColor = function(id) {
         if (id > ($scope.data.colorCoding.length - 1)) {
             $scope.addNewColor();
         }
     };
-    
+
     $scope.addNewColor = function() {
         var a = $scope.data.colorCoding.length % 3;
         var b = ($scope.data.colorCoding.length + 1) % 3;
@@ -67,7 +67,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.designspace != designspaceId) {
                     notDeleted.push(instance);
-                } 
+                }
             });
             family.instances = notDeleted;
         });
@@ -409,18 +409,34 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
 
     /***** cps *****/
 
-
     $scope.createMultiMasterCPS = function(axesSet) {
         var n = axesSet.length;
-        var cpsString = $scope.data.stateless.cpsGenerators.metapolation(n);
-
+        $scope.createCommonCPSfile(n); 
+        // import the common file
+        var cpsString = '@import "metapolation-' + n + '.cps";';
         // add the metapolation values as last item
-        cpsString += "* { ";
+        cpsString += '* { ';
         for (var i = 0; i < n; i++) {
             cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i].masterName + '";';
-            cpsString += "proportion" + i + ": " + axesSet[i].metapValue + ";";
+            cpsString += 'proportion' + i + ': ' + axesSet[i].metapValue + ';';
         }
-        cpsString += "}";
+        cpsString += '}';
         return cpsString;
+    };
+    
+    $scope.createCommonCPSfile = function(n) {
+        var commonCPSfile = 'metapolation-' + n + '.cps';
+        var commonCPSString;
+        try {
+            $scope.data.stateful.project.ruleController.getRule(false, commonCPSfile);
+        } catch(error) {
+            if (error.name !== 'IONoEntry') {
+                throw error; 
+            } else {
+                console.log("doenst exist yet");
+                commonCPSString = $scope.data.stateless.cpsGenerators.metapolation(n);
+                $scope.data.stateful.project.ruleController.write(false, commonCPSfile, commonCPSString);
+            }
+        }
     };
 });
