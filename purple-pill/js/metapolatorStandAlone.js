@@ -39831,6 +39831,7 @@ require([
   , 'metapolator/project/cps-generators/interpolation'
   , 'metapolator/project/cps-generators/metapolation'
   , 'filesaver'
+  , 'jszip'
 ],
 function (
     document
@@ -39849,6 +39850,7 @@ function (
   , cpsGenInterpolation
   , cpsGenMetapolation
   , saveAs
+  , JSZip
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -39997,6 +39999,8 @@ function (
     };
 
     exports.saveAs = saveAs;
+
+    exports.JSZip = JSZip;
 });
 
 define("metapolatorStandAlone", function(){});
