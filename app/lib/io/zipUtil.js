@@ -27,10 +27,9 @@ define([
             ;
         for (i=0; i<files.length; i++){
             var file = files[i],
-                relative_path = file.split(sourcePath)[1],
                 data = io.readFile(false, file)
                 ;
-            zip.file(relative_path, data, {binary:true});
+            zip.file(file, data, {binary:true});
         }
 
         return zip.generate({type:dataType});
