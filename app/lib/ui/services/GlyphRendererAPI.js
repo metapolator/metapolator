@@ -107,7 +107,7 @@ define([
     _p._renderGlyph = function(data) {
         /*global clearTimeout*/
         var path = this._doc.createElementNS(svgns, 'path')
-          , svgPen = new SVGPen(path, {})
+          , svgPen = new EnhancedSVGPen(data, this, path, {})
           , pen = new PointToSegmentPen(svgPen)
           , oldComponents = data.components
           , matrix
@@ -217,10 +217,11 @@ define([
           , height = data.MOM.master.fontinfo.unitsPerEm || 1000
           , viewBox
           , i,l
+          , calculatedWidth
           ;
 
         try {
-            width = styledict.get('advanceWidth')
+            width = styledict.get('advanceWidth');
         }
         catch(e){
             if(!(e instanceof KeyError))
@@ -229,26 +230,18 @@ define([
             width = height;
         }
 
-        viewBox = [0, 0, width, height].join(' ')
+        viewBox = [0, 0, width, height].join(' ');
 
         for(i=0,l=svgs.length;i<l;i++) {
-            if(svgs[i].parentElement);
-            svgs[i].setAttribute('viewBox', viewBox);
-            // FIXME: file a bug for chromiuim:
-            // For some silly reason this is not always enough for chrome
-            // to resize the svg element :-/ especially when the viewbox
-            // is getting smaller than some magic amount, chrome sometimes
-            // just stops synchronizing the real svg width.
-            // This triggers the width update, however, it takes away the
-            // possibility to change "display" via CSS
-            // svgs[i].setAttribute('width', 0);
-            // NOTE: this is also not needed with firefox
-            // Filed a bug:
-            // https://code.google.com/p/chromium/issues/detail?id=462107
-            svgs[i].style.display = svgs[i].style.display === 'inline-block'
-                   ? 'inline'
-                   : 'inline-block'
-                   ;
+            if(svgs[i].parentElement) {
+                svgs[i].setAttribute('viewBox', viewBox);
+                // Set the newly calculated width to parentElement
+                // This should be done automatically by the browser, but
+                // the viewBox change is ignored by Firefox and Chromium
+                // and not propagated to the parent elements.
+                calculatedWidth = svgs[i].getBoundingClientRect().width + 'px';
+                svgs[i].parentElement.style.width = calculatedWidth;
+            }
         }
     };
 
@@ -270,6 +263,13 @@ define([
         // choice that really makes sense, we may be happy for ever when
         // setting it here
         svg.setAttribute('overflow', 'visible');
+
+        // Using inline-block fails for Chromium. Filed a bug:
+        // https://code.google.com/p/chromium/issues/detail?id=462107
+        // thus, these svgs should be packed inside a container that is
+        // display: inline-block
+        svg.style.display = 'block';
+
         this._setSVGViewBox(data, svg);
         data.svgInstances.push(svg);
         svg.appendChild(use);
