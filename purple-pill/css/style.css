@@ -864,10 +864,6 @@
                         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
                     }
                 
-                    .ui-sortable-helper .list-sequence-col .diamond-fix {
-                        background-image: url('../img/diamonds/diamond.png')!important;
-                    }
-                
         .list-view-col {
             float: left;
             text-align: center;
@@ -1584,6 +1580,18 @@
     @keyframes animatedBackground {
     from { background-position: 0 0; }
     to { background-position: 100% 0; }
-}
+    }
+    
+    #cursor-helper {
+        font-size: 17px;
+        padding-top: 1px;
+        color: #fff;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        position: fixed;
+        border-radius: 10px;
+        z-index: 1000;
+    }
     
 
