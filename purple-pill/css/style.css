@@ -6,6 +6,13 @@
     }
     
     @font-face {
+        font-family: 'icons';
+        src: url('../fonts/mp_icons.otf');
+        font-weight: normal;
+        font-style: normal;
+    }
+    
+    @font-face {
         font-family: 'seanSansNarrow';
         src: url('../fonts/SeanSans-NarrowBold.otf');
         font-weight: 700;
@@ -1278,13 +1285,15 @@
         }
         
         .instance-checkmark {
+            font-family: 'icons';
             height: 100%;
             width: calc(100% - 10px);
             border-bottom: 2px solid #eee;
             border-left: 2px solid #eee;
             cursor: default;
             text-align: center;
-            font-size: 24px;
+            font-size: 32px;
+            padding-top: 12px;
             line-height: 20px;
             display: inline-block;
             float: left;
