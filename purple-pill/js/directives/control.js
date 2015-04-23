@@ -66,10 +66,12 @@ app.directive('control', function($document) {
                             }
                             var y = j * axisDistance + paddingTop - 28;
                             return "translate(" + x + "," + y + ")";
-                        }).append('polygon').attr('points', diamondShape).attr('class', 'blue-diamond').attr('stroke', function() {
+                        }).append('polygon')
+                          .attr('points', diamondShape)
+                          .attr('class', 'blue-diamond instance' + inactiveInstances[i].id)
+                          .attr('stroke', function() {
                             return scope.data.colorCoding[inactiveInstances[i].id];
                         }).attr('fill', 'none').attr('stroke-width', 2);
-                        //}
                     }
                 }
                 var diamondcolor = scope.data.colorCoding[thisInstance.id];
@@ -137,7 +139,11 @@ app.directive('control', function($document) {
                     } else {
                         return "translate(" + (d.value * (axisWidth / 100) + indentLeft - diamondsize) + ", -28)";
                     }
-                }).append('polygon').attr('points', diamondShape).attr('fill', diamondcolor).attr('stroke', diamondcolor).attr('stroke-width', 2);
+                }).append('polygon')
+                  .attr('points', diamondShape)
+                  .attr('fill', diamondcolor)
+                  .attr('stroke', diamondcolor)
+                  .attr('stroke-width', 2);
 
                 // labels and remove buttons
                 var label = axes.append('g').attr('transform', function(d, i) {
