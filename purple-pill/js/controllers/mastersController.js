@@ -304,7 +304,7 @@ app.controller("mastersController", function($scope, sharedScope) {
         var isInDesignspace = false;
         for (var i = 0; i < $scope.data.currentDesignspace.axes.length; i++) {
             if ($scope.data.currentDesignspace.axes[i].masterName == masterName) {
-                isInDesignspace = isInDesignspace;
+                isInDesignspace = true;
                 break;
             }
         }
