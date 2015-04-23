@@ -22,22 +22,30 @@
                             <polygon points="10,2 4,2 2,6 7,15 12,6" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
                         </svg> 
                     </span>
-                    <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}"></span>
+                    <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}">
+                        <ul>
+                            <li ng-repeat="x in instance.ag"><!--
+                            --><glyph mastername="{{instance.name}}" glyph="{{x}}"></glyph><!--
+                            --></li>
+                        </ul>
+                    </span>
                     <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
                     <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
                         <div class="instance-spacer">&nbsp;</div>
                         <div class="instance-checkmark">
-                            <div ng-if="instance.exportFont">✓</div>
+                            <div ng-if="instance.exportFont">H</div>
                         </div>
                     </div>
                 </li>
             </ul>  
+            <!--
             <div style="padding: 20px;">
                 <div ng-repeat="instance in data.families[0].instances track by instance.id">
                     <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
                     <div>masters: <span ng-repeat="axis in instance.axes">[{{axis.masterdisplayName}}]: {{axis.metapValue | number:3}} | </span></div><br>
                 </div>
             </div>
+            -->
         </div> 
         
         <div id="instance-tools-container">

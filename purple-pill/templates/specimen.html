@@ -4,7 +4,6 @@
         <div id="standard-view-tools" >
             <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
             <size-rope></size-rope>
-            <input type="text" id="lineheigt-nr" ng-model="lineHeight" size="1" class="specimen-tool">
             <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
             <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
             <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
@@ -18,9 +17,9 @@
         <!-- standard view -->
         <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
             <ul>
-                <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}">
-                    <glyph id="glyph-spec1-{{$index}}" mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph>
-                </li>
+                <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}"><!--
+                    --><glyph id="glyph-spec1-{{$index}}" mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph><!--
+                --></li>
             </ul>
         </div>
 

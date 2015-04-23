@@ -4,6 +4,27 @@
         font-weight: normal;
         font-style: normal;
     }
+    
+    @font-face {
+        font-family: 'icons';
+        src: url('../fonts/mp_icons.otf');
+        font-weight: normal;
+        font-style: normal;
+    }
+    
+    @font-face {
+        font-family: 'seanSansNarrow';
+        src: url('../fonts/SeanSans-NarrowBold.otf');
+        font-weight: 700;
+        font-style: normal;
+    }
+    
+    @font-face {
+        font-family: 'seanSansNarrow';
+        src: url('../fonts/SeanSans-NarrowThin.otf');
+        font-weight: 100;
+        font-style: normal;
+    }
 
 	html {
 		height: 100%;
@@ -15,7 +36,8 @@
 		margin: 0;
 		height: 100%;
 		width: 100%;
-		font-family: "Roboto";
+		font-family: "seanSansNarrow";
+		font-weight: 700;
 		font-size: 12px;
 		background: #fff;
 		color: #515151;
@@ -135,7 +157,7 @@
 		
 			 #view-buttons .menu-item {
 				float: left;
-				padding: 6px;
+				padding: 8px;
 				background: #fff;
 				margin-right: 0px;
 				border: 2px solid #eee;
@@ -173,7 +195,7 @@
 		width: 100%;
 		height: calc(100% - 55px);
 		position: relative;
-		overflow-x: hidden;
+		overflow: hidden;
 	}
 	
 		#landscape {
@@ -237,7 +259,7 @@
                     color: #515151;
                 }
             
-            specimen, specimen2, masters, designspace, instances, parameters, fontexport {
+            specimen, specimen2, masters, designspace, instances, parameters, fontexport, menubar {
                 display: block;
                 position: relative;
             }
@@ -383,6 +405,7 @@
             
             glyph {
                 display: block;
+                box-sizing: content-box;
             }
             
             .list-view-col glyph {
@@ -465,7 +488,7 @@
 
     #design-space-tabs li {
         float: left;
-        padding: 6px 10px;
+        padding: 9px 10px;
         margin-right: 4px;
         cursor: pointer;
         background: #eee;
@@ -805,7 +828,6 @@
             border-bottom: 2px solid #eee;
             background: #fff;
             position: relative;
-            transition: background 0.5s;
         }
         
         #instances-list .list-li {
@@ -847,10 +869,6 @@
                     /* while dragging */
                     .ui-sortable-helper {
                         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
-                    }
-                
-                    .ui-sortable-helper .list-sequence-col .diamond-fix {
-                        background-image: url('../img/diamonds/diamond.png')!important;
                     }
                 
         .list-view-col {
@@ -910,7 +928,7 @@
             float: left;
             width: calc(100% - 64px);
             height: 100%;
-            padding: 6px;
+            padding: 10px;
             cursor: default;
             white-space: nowrap;
             overflow: hidden;
@@ -970,14 +988,14 @@
             height: 24px;
             display: inline-block;
             border-right: 2px solid #eee;
-            padding: 3px 6px;
+            padding: 6px 0 0 6px;
         }
         
         .parameters-add {
             width: 24px;
             height: 24px;
             display: inline-block;
-            padding: 3px;
+            padding-top: 6px;
             text-align: center;
             cursor: default;
         }
@@ -1075,7 +1093,6 @@
         width: 200px;
         background: #eee;
         padding: 8px;
-        border: 1px solid rgba(0,0,0,0.1);
         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
     } 
     
@@ -1086,7 +1103,7 @@
         }       
         
             .control-panel-parameter{
-                width: calc(100% - 4px);
+                width: calc(100% - 2px);
             }
 
         #control-panel-operators {
@@ -1103,8 +1120,8 @@
             .control-panel-button {
                 background: #515151;
                 color: #eee;
-                padding: 4px;
-                margin-bottom: 4px; 
+                padding: 8px 8px 5px 8px;
+                margin-bottom: 2px; 
                 cursor: default;
             }
             
@@ -1268,13 +1285,15 @@
         }
         
         .instance-checkmark {
+            font-family: 'icons';
             height: 100%;
             width: calc(100% - 10px);
             border-bottom: 2px solid #eee;
             border-left: 2px solid #eee;
             cursor: default;
             text-align: center;
-            font-size: 24px;
+            font-size: 32px;
+            padding-top: 12px;
             line-height: 20px;
             display: inline-block;
             float: left;
@@ -1299,7 +1318,7 @@
     
     .lm-head {
         cursor: default;
-        padding: 6px 8px;
+        padding: 8px;
     }
     
         .localmenu-inside .lm-head {
@@ -1352,7 +1371,7 @@
                 }
     
         .lm-button {
-            padding: 4px 10px;
+            padding: 6px 10px 4px 10px;
             color: #000;
             display: block;
             width: 100%;
@@ -1443,18 +1462,7 @@
         background: rgba(0,0,0,0.7);
     }
 
-    .compatibility-info {
-        position: fixed;
-        border-radius: 4px;
-        z-index: 1001;
-        left: calc(50% - 300px);
-        top: 18px;
-        width: 600px;
-        background: #fff;
-        padding: 40px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.8);
-    }
-    
+
     
     
     
@@ -1503,4 +1511,117 @@
         width: 100%;
         background: transparent;
     }
+    
+    
+    
+    
+/**************** splash screen ************************/
+
+
+     splashscreen {
+        display: block;
+        position: fixed;
+        border-radius: 6px;
+        z-index: 1001;
+        left: calc(50% - 400px);
+        top: 50px;
+        width: 800px;
+        background: #fff;
+        box-shadow: 0 0 8px rgba(0,0,0,0.8);
+        font-size: 14px;
+        padding: 40px 40px 100px 40px;
+    }
+
+        #splash-left {
+            
+            width: 30%;
+            float: left;
+        }
+        
+            #splash-logo {
+                width: 130px;
+                display: block;
+                height: auto;
+            }
+            
+        #splash-right {
+            width: 70%;
+            float: left;
+        }
+        
+        #splash-right h1 {
+            font-size: 32px;
+            margin-bottom: 0px;
+        }
+        
+        #splash-right h2 {
+            font-weight: 100;
+            font-size: 22px;
+            margin-top: 0px;
+        }
+        
+            #splash-loading {
+                font-size: 20px;
+                width: 100%;
+                padding: 20px
+                text-align: center;
+            }
+            
+            #splash-loading img {
+                width: 16px;
+                height: auto;
+            }
+
+
+    #splash-loading-bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        padding: 20px;
+        text-align: center;
+        background-image: url('../img/tile-full.png');
+        background-repeat: repeat;
+        animation: animatedBackground 7s linear infinite;
+    }
+    
+    @keyframes animatedBackground {
+    from { background-position: 0 0; }
+    to { background-position: 100% 0; }
+    }
+    
+    #cursor-helper {
+        font-size: 17px;
+        padding-top: 1px;
+        color: #fff;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        position: fixed;
+        border-radius: 10px;
+        z-index: 1000;
+    }
+    
+    
+    
+    
+@media (max-width: 1100px) {
+    #filter {
+        width: 130px;
+    }
+}
+
+@media (max-width: 1000px) {
+    #filter {
+        width: 100px;
+    }
+}
+
+@media (max-width: 960px) {
+    #filter {
+        width: 60px;
+    }
+}
+    
 

@@ -36961,7 +36961,11 @@ define('metapolator/project/MetapolatorProject',[
           , formatVersion: new IntObject(2)
         }
       , // fontforge requires a fontinfo.plist that defines unitsPerEm
-        minimalFontinfo = {unitsPerEm: new IntObject(1000)}
+        minimalFontinfo = {
+            unitsPerEm: new IntObject(1000)
+          , ascender: new IntObject(800)
+          , descender: new IntObject(-200)
+        }
       , ProjectError = errors.Project
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
@@ -38347,15 +38351,15 @@ define('metapolator/ui/services/GlyphRendererAPI',[
 
         this._compareAndRevoke(oldComponents, data.components);
 
-        // FIXME: * One day we have to subscribe to unitsPerEM AND
+        // FIXME: * One day we have to subscribe to unitsPerEm AND
         //          descender for this!
         //        * I guess this is only valid for horizontal writing systems.
         //        * Maybe moveUp is rather === ascender?
         fontinfo = data.MOM.master.fontinfo;
-        // ascender can be < fontinfo.unitsPerEM - fontinfo.descender, then
+        // ascender can be < fontinfo.unitsPerEm - fontinfo.descender, then
         // this solution is better. It seems OK to give the font enough
         // room down and maximal room upwards.
-        moveUp = (fontinfo.unitsPerEM || 1000) + (fontinfo.descender || 0);
+        moveUp = (fontinfo.unitsPerEm || 1000) + (fontinfo.descender || 0);
         matrix = [1, 0, 0, -1, 0, moveUp];
         data.svg.setAttribute('transform', 'matrix(' + matrix.join(',') +')');
         data.svg.appendChild(path);
@@ -38440,11 +38444,11 @@ define('metapolator/ui/services/GlyphRendererAPI',[
             width = height;
         }
 
-        return [0, 0, width, height].join(' ');
+        return [0, 0, width, height];
     };
 
     _p._applySVGViewBox = function(svg, viewBox) {
-        svg.setAttribute('viewBox', viewBox);
+        svg.setAttribute('viewBox', viewBox.join(' '));
         if(!svg.parentElement)
             return;
         // Set the newly calculated width to parentElement
@@ -38459,8 +38463,13 @@ define('metapolator/ui/services/GlyphRendererAPI',[
         // The width should automatically adapt when svg.parentElement
         // changes it's height, but it does not when width is set via css
         // of course.
-        var calculatedWidth = svg.getBoundingClientRect().width + 'px';
-        svg.parentElement.style.width = calculatedWidth;
+
+        // Used to be: svg.getBoundingClientRect().width + 'px' but it seems
+        // that calculating this by hand is more reliable, Firefox
+        // had problems to return reliably an updated width for changes of
+        // the 'space' characters (i.e. without any contour content)
+        var calculatedWidth = viewBox[2]/viewBox[3] * svg.parentElement.clientHeight;
+        svg.parentElement.style.width = calculatedWidth + 'px';
     };
 
     _p._updateSVGViewBoxes = function (data) {
@@ -39857,6 +39866,7 @@ require([
   , 'metapolator/project/cps-generators/interpolation'
   , 'metapolator/project/cps-generators/metapolation'
   , 'filesaver'
+  , 'jszip'
 ],
 function (
     document
@@ -39875,6 +39885,7 @@ function (
   , cpsGenInterpolation
   , cpsGenMetapolation
   , saveAs
+  , JSZip
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -40023,6 +40034,8 @@ function (
     };
 
     exports.saveAs = saveAs;
+
+    exports.JSZip = JSZip;
 });
 
 define("metapolatorStandAlone", function(){});
