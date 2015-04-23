@@ -72,54 +72,7 @@
     </HEAD>
 
     <BODY ng-app="Metapolator" ng-controller="engine" ng-init="fakeEngine()">
-        <div id="menu" class="unselectable" ng-controller="menuController">
-            <div id="project">
-                <localmenu class="localmenu" class="left">
-                    <div class="lm-head" ng-mousedown="data.selectMenu('project')">
-                        <b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>
-                    </div>
-                    <div class="lm-body" ng-if="data.localmenu.project">
-                        <div class="lm-button" ng-mouseup="newDocument()">New</div>
-                        <div class="lm-divider"></div>
-                        <div class="lm-button" ng-mouseup="closeDocument()">Close</div>
-                        <div class="lm-divider"></div>
-                        <div class="lm-button" ng-mouseup="renameProject()">Rename project</div>
-                    </div>
-                </localmenu>
-            </div>
-            <!-- end of project -->
-            
-            <div id="engine-mode">
-                <a href="index.html" target="_self">Real SVG's</a>
-            </div>
-
-            <div id="view-buttons">
-                <div ng-repeat="menuItem in data.view.menuItems" ng-click="data.view.viewState = $index" class="menu-item" ng-class="{'menu-item-current': $index == data.view.viewState }">
-                    {{menuItem}}
-                </div>
-            </div>
-            <!-- end of view buttons -->
-            
-            <div id="help" class="unselectable">
-                <localmenu class="localmenu right">
-                    <div class="lm-head" ng-mousedown="data.selectMenu('help')">
-                        <b>Help</b>
-                    </div>
-                    <div class="lm-body" ng-if="data.localmenu.help">
-                        <div class="lm-button"><a href="https://github.com/metapolator/metapolator" target="_blank">Github Project</a></div>
-                        <div class="lm-button"><a title="Browse existing feature requests and bug reports on our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">Github Issues</a></div>
-                        <div class="lm-button"><a title="To report a bug or request a feature, create a new issue in our Github issue tracker" href="https://github.com/metapolator/metapolator/issues/new" target="_blank">New Issue</a></div>
-                        <div class="lm-divider"></div>
-                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://metapolator.com" target="_blank">metapolator.com</a></div>
-                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://twitter.com/metapolator" target="_blank">@metapolator</a></div>
-                        <div class="lm-button"><a title="To ask questions about usage or anything in general, post on our G+ Community page" href="https://plus.google.com/communities/110027004108709154749" target="_blank">+metapolator</a></b></div>
-                        <div class="lm-divider"></div>
-                        <div class="lm-button"><a title="To look behind the curtain and see the true underlying reality, take the red pill" href="http://metapolator.com/red-pill-demo/" target="_blank">Open Tech View in new Tab</a></b></div>
-                        </div>
-                    </div>
-                </localmenu>
-            </div>
-        </div>
+        <menubar id="menu" class="unselectable" ng-controller="menuController"></menubar>
         <!-- end of menu -->
 
         <div id="pagewrap" class="unselectable">
@@ -191,28 +144,5 @@
             </div>
         </div>
         
-        <div class="compatibility-info">
-            If this message does not disappear after a short moment: <h2>Your Browser may be incompatible</h2><p>You can either use a current version of FireFox or Chromium/Google Chrome.</p><p>In order to run Metapolator in <strong>Chrome</strong> or <strong>Chromium</strong>
-            <ol>
-                <li>
-                    Make sure that <a href="chrome://flags/#enable-javascript-harmony">chrome://flags/#enable-javascript-harmony</a> is <strong>disabled</strong> (it is by default).
-                </li>
-                <li>
-                    Close all running instances of Chromium/Chrome.
-                </li>
-                <li>
-                    Then start it from the command-line like so:</p>
-<pre># if the command for your chrome-browser is "chrome"
-$ chrome --js-flags="--harmony --harmony_proxies"
-
-# in a current *ubuntu linux that might be for chromium:
-$ chromium-browser --js-flags="--harmony --harmony_proxies"
-
-# and for chrome
-$ google-chrome-stable --js-flags="--harmony --harmony_proxies"
-                    </pre>
-                </li>
-            </ol>
-        </div>
     </BODY>
 </html>

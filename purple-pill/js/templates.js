@@ -1,4 +1,11 @@
-app.directive('menu', function() {
+app.directive('splashscreen', function() {
+    return {
+        restrict : 'E',
+        templateUrl : 'templates/splashscreen.html'
+    };
+});
+
+app.directive('menubar', function() {
     return {
         restrict : 'E',
         templateUrl : 'templates/menu.html'

@@ -11,6 +11,13 @@
         font-weight: 700;
         font-style: normal;
     }
+    
+    @font-face {
+        font-family: 'seanSansNarrow';
+        src: url('../fonts/SeanSans-NarrowThin.otf');
+        font-weight: 100;
+        font-style: normal;
+    }
 
 	html {
 		height: 100%;
@@ -181,7 +188,7 @@
 		width: 100%;
 		height: calc(100% - 55px);
 		position: relative;
-		overflow-x: hidden;
+		overflow: hidden;
 	}
 	
 		#landscape {
@@ -245,7 +252,7 @@
                     color: #515151;
                 }
             
-            specimen, specimen2, masters, designspace, instances, parameters, fontexport {
+            specimen, specimen2, masters, designspace, instances, parameters, fontexport, menubar {
                 display: block;
                 position: relative;
             }
@@ -1359,7 +1366,7 @@
                 }
     
         .lm-button {
-            padding: 4px 10px;
+            padding: 6px 10px 4px 10px;
             color: #000;
             display: block;
             width: 100%;
@@ -1450,18 +1457,7 @@
         background: rgba(0,0,0,0.7);
     }
 
-    .compatibility-info {
-        position: fixed;
-        border-radius: 4px;
-        z-index: 1001;
-        left: calc(50% - 300px);
-        top: 18px;
-        width: 600px;
-        background: #fff;
-        padding: 40px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.8);
-    }
-    
+
     
     
     
@@ -1510,4 +1506,84 @@
         width: 100%;
         background: transparent;
     }
+    
+    
+    
+    
+/**************** splash screen ************************/
+
+
+     splashscreen {
+        display: block;
+        position: fixed;
+        border-radius: 6px;
+        z-index: 1001;
+        left: calc(50% - 400px);
+        top: 50px;
+        width: 800px;
+        background: #fff;
+        box-shadow: 0 0 8px rgba(0,0,0,0.8);
+        font-size: 14px;
+        padding: 40px 40px 100px 40px;
+    }
+
+        #splash-left {
+            
+            width: 30%;
+            float: left;
+        }
+        
+            #splash-logo {
+                width: 130px;
+                display: block;
+                height: auto;
+            }
+            
+        #splash-right {
+            width: 70%;
+            float: left;
+        }
+        
+        #splash-right h1 {
+            font-size: 32px;
+            margin-bottom: 0px;
+        }
+        
+        #splash-right h2 {
+            font-weight: 100;
+            font-size: 22px;
+            margin-top: 0px;
+        }
+        
+            #splash-loading {
+                font-size: 20px;
+                width: 100%;
+                padding: 20px
+                text-align: center;
+            }
+            
+            #splash-loading img {
+                width: 16px;
+                height: auto;
+            }
+
+
+    #splash-loading-bar {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        padding: 20px;
+        text-align: center;
+        background-image: url('../img/tile-full.png');
+        background-repeat: repeat;
+        animation: animatedBackground 7s linear infinite;
+    }
+    
+    @keyframes animatedBackground {
+    from { background-position: 0 0; }
+    to { background-position: 100% 0; }
+}
+    
 

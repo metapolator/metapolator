@@ -82,7 +82,7 @@ app.controller('engine', function($scope, sharedScope) {
         $scope.data.pill = "red";
         $scope.$apply();
         $("#layover").hide();
-        $(".compatibility-info").hide();
+        $("splashscreen").hide();
     }
 
     function onMetapolatorReady(stateless) {
@@ -169,7 +169,6 @@ app.controller('engine', function($scope, sharedScope) {
 
         $scope.data.pill = "blue";
         $("#layover").hide();
-        $(".compatibility-info").hide();
     };
 
 });
