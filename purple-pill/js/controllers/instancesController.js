@@ -115,8 +115,18 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     };
 
     /***** hover instances *****/
-
     $scope.mouseoverInstance = function(instance) {
+        // Dim slider diamonds.
+        if (instance == $scope.data.currentInstance) {
+            $(".blue-diamond").css({opacity: 0.1})
+        } else {
+            $("[id^='diamond']").css({ opacity: 0.1 });
+            var current = $(".instance" + instance.id);
+            $(".blue-diamond").not(current).each(function() {
+                $(this).css({ opacity: 0.1 });
+            });
+        }
+        // Dim specimen text.
         if (instance.display || instance == $scope.data.currentInstance) {
             var id = instance.id;
             $("specimen2 #specimen-content ul li").each(function() {
@@ -128,14 +138,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         }
     };
 
-    $scope.mouseleaveInstance = function(instance) {
-        var id = instance.id;
-        $("specimen2 #specimen-content ul li").each(function() {
-            var thisId = $(this).find("glyph").attr("master");
-            if (thisId != id) {
-                $(this).removeClass("dimmed");
-            }
-        });
+    $scope.mouseleaveInstance = function() {
+        // Restore slider diamonds.
+        $("[id^='diamond']").css("opacity", "");
+        $(".blue-diamond").css("opacity", "");
+        // Restore specimen tect.
+        $("specimen2 #specimen-content ul li").removeClass("dimmed");
     };
 
     /***** controlling instances *****/
