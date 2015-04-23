@@ -5,7 +5,7 @@ It also runs in Google Chrome and Chromium if you start it from a Terminal with 
 
 ## Using Chrome/Chromium
 
-1. Visit chrome://flags/#enable-javascript-harmony and check that it is disabled (it is by default.)
+1. Visit `chrome://flags/#enable-javascript-harmony` and check that it is disabled (it is by default.)
 2. Quit the browser
 3. Open a Terminal and run:
 
