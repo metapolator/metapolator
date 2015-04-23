@@ -57,7 +57,11 @@ define([
           , formatVersion: new IntObject(2)
         }
       , // fontforge requires a fontinfo.plist that defines unitsPerEm
-        minimalFontinfo = {unitsPerEm: new IntObject(1000)}
+        minimalFontinfo = {
+            unitsPerEm: new IntObject(1000)
+          , ascender: new IntObject(800)
+          , descender: new IntObject(-200)
+        }
       , ProjectError = errors.Project
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
