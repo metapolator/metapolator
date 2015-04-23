@@ -331,9 +331,6 @@ app.controller("mastersController", function($scope, sharedScope) {
         } else {
             $scope.data.addAxisToInstance(master, thisValue);
         }
-        if (designspace.axes.length > 1) {
-            $scope.data.metapolate();
-        }
         $scope.data.checkIfIsLargest();
     };
 

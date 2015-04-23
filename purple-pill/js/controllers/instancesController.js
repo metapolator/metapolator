@@ -196,7 +196,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
             $scope.data.stateful.project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
             $scope.data.stateful.project.open(instance.name);
-            $scope.data.metapolate();
         }
         $scope.data.localmenu.instances = false;
         $scope.uniqueInstanceId++;
@@ -345,12 +344,12 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                         masterdisplayName : master.displayName,
                         value : value
                     });
+                    $scope.data.getMetapolationRatios(instance);
                     // empty current cps file and rewrite it with new masters
                     if ($scope.data.pill != "blue") {
                         var cpsString = $scope.createMultiMasterCPS(instance.axes);
                         $scope.data.stateful.project.ruleController.write(false, instance.cpsFile, cpsString);
                     }
-                    $scope.data.getMetapolationRatios(instance);
                 }
             });
         });
@@ -433,7 +432,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             if (error.name !== 'IONoEntry') {
                 throw error; 
             } else {
-                console.log("doenst exist yet");
                 commonCPSString = $scope.data.stateless.cpsGenerators.metapolation(n);
                 $scope.data.stateful.project.ruleController.write(false, commonCPSfile, commonCPSString);
             }
