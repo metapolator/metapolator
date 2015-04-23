@@ -38347,21 +38347,21 @@ define('metapolator/ui/services/GlyphRendererAPI',[
 
         this._compareAndRevoke(oldComponents, data.components);
 
-        // FIXME: * One day we have to subscribe to unitsPerEM AND
+        // FIXME: * One day we have to subscribe to unitsPerEm AND
         //          descender for this!
         //        * I guess this is only valid for horizontal writing systems.
         //        * Maybe moveUp is rather === ascender?
         fontinfo = data.MOM.master.fontinfo;
-        // ascender can be < fontinfo.unitsPerEM - fontinfo.descender, then
+        // ascender can be < fontinfo.unitsPerEm - fontinfo.descender, then
         // this solution is better. It seems OK to give the font enough
         // room down and maximal room upwards.
-        moveUp = (fontinfo.unitsPerEM || 1000) + (fontinfo.descender || 0);
+        moveUp = (fontinfo.unitsPerEm || 1000) + (fontinfo.descender || 0);
         matrix = [1, 0, 0, -1, 0, moveUp];
         data.svg.setAttribute('transform', 'matrix(' + matrix.join(',') +')');
         data.svg.appendChild(path);
 
         // update all viewboxes
-        this._setSVGViewBox(data);
+        this._updateSVGViewBoxes(data);
     };
 
     _p._scheduleRender = function(data) {
@@ -38423,14 +38423,11 @@ define('metapolator/ui/services/GlyphRendererAPI',[
      *      width is advanceWidth
      *      height is should the font height (fontinfo.unitsPerEm)
      */
-    _p._setSVGViewBox = function(data, svg) {
-        var svgs = svg ? [svg] : data.svgInstances
-          , styledict = data.MOM.getComputedStyle()
+    _p._getViewBox = function(data) {
+        var styledict = data.MOM.getComputedStyle()
           , width
           , height = data.MOM.master.fontinfo.unitsPerEm || 1000
           , viewBox
-          , i,l
-          , calculatedWidth
           ;
 
         try {
@@ -38443,19 +38440,49 @@ define('metapolator/ui/services/GlyphRendererAPI',[
             width = height;
         }
 
-        viewBox = [0, 0, width, height].join(' ');
+        return [0, 0, width, height];
+    };
 
+    _p._applySVGViewBox = function(svg, viewBox) {
+        svg.setAttribute('viewBox', viewBox.join(' '));
+        if(!svg.parentElement)
+            return;
+        // Set the newly calculated width to parentElement
+        // This should be done automatically by the browser, but
+        // the viewBox change is ignored by Firefox and Chromium
+        // and not propagated to the parent elements.
+        // FIXME: This is a pesky workaround. In fact anything that triggers
+        // svg.parentElement recalculating its width would work here, setting
+        // a explicit height is a bit too much; see also An issue raised by
+        // this behavior:
+        // https://github.com/metapolator/metapolator/issues/416#issuecomment-95145551
+        // The width should automatically adapt when svg.parentElement
+        // changes it's height, but it does not when width is set via css
+        // of course.
+
+        // Used to be: svg.getBoundingClientRect().width + 'px' but it seems
+        // that calculating this by hand is more reliable, Firefox
+        // had problems to return reliably an updated width for changes of
+        // the 'space' characters (i.e. without any contour content)
+        var calculatedWidth = viewBox[2]/viewBox[3] * svg.parentElement.clientHeight;
+        svg.parentElement.style.width = calculatedWidth + 'px';
+    };
+
+    _p._updateSVGViewBoxes = function (data) {
+        var viewBox = this._getViewBox(data)
+          , svgs = data.svgInstances
+          , i,l
+          ;
         for(i=0,l=svgs.length;i<l;i++) {
-            if(svgs[i].parentElement) {
-                svgs[i].setAttribute('viewBox', viewBox);
-                // Set the newly calculated width to parentElement
-                // This should be done automatically by the browser, but
-                // the viewBox change is ignored by Firefox and Chromium
-                // and not propagated to the parent elements.
-                calculatedWidth = svgs[i].getBoundingClientRect().width + 'px';
-                svgs[i].parentElement.style.width = calculatedWidth;
-            }
+            if(!svgs[i].parentElement)
+                continue;
+            this._applySVGViewBox(svgs[i], viewBox);
         }
+    };
+
+    _p._setSVGViewBox = function(data, svg) {
+        var viewBox = this._getViewBox(data);
+        this._applySVGViewBox(svg, viewBox);
     };
 
     _p._createDisplayElement = function(data, type) {
@@ -39835,6 +39862,7 @@ require([
   , 'metapolator/project/cps-generators/interpolation'
   , 'metapolator/project/cps-generators/metapolation'
   , 'filesaver'
+  , 'jszip'
 ],
 function (
     document
@@ -39853,6 +39881,7 @@ function (
   , cpsGenInterpolation
   , cpsGenMetapolation
   , saveAs
+  , JSZip
 ) {
     "use strict";
     /*global setTimeout window*/
@@ -40001,6 +40030,8 @@ function (
     };
 
     exports.saveAs = saveAs;
+
+    exports.JSZip = JSZip;
 });
 
 define("metapolatorStandAlone", function(){});

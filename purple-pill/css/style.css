@@ -383,6 +383,7 @@
             
             glyph {
                 display: block;
+                box-sizing: content-box;
             }
             
             .list-view-col glyph {
