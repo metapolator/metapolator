@@ -4,6 +4,13 @@
         font-weight: normal;
         font-style: normal;
     }
+    
+    @font-face {
+        font-family: 'seanSansNarrow';
+        src: url('../fonts/SeanSans-NarrowBold.otf');
+        font-weight: 700;
+        font-style: normal;
+    }
 
 	html {
 		height: 100%;
@@ -15,7 +22,8 @@
 		margin: 0;
 		height: 100%;
 		width: 100%;
-		font-family: "Roboto";
+		font-family: "seanSansNarrow";
+		font-weight: 700;
 		font-size: 12px;
 		background: #fff;
 		color: #515151;
@@ -135,7 +143,7 @@
 		
 			 #view-buttons .menu-item {
 				float: left;
-				padding: 6px;
+				padding: 8px;
 				background: #fff;
 				margin-right: 0px;
 				border: 2px solid #eee;
@@ -466,7 +474,7 @@
 
     #design-space-tabs li {
         float: left;
-        padding: 6px 10px;
+        padding: 9px 10px;
         margin-right: 4px;
         cursor: pointer;
         background: #eee;
@@ -910,7 +918,7 @@
             float: left;
             width: calc(100% - 64px);
             height: 100%;
-            padding: 6px;
+            padding: 10px;
             cursor: default;
             white-space: nowrap;
             overflow: hidden;
@@ -970,7 +978,7 @@
             height: 24px;
             display: inline-block;
             border-right: 2px solid #eee;
-            padding: 3px 6px;
+            padding: 6px 0 0 6px;
         }
         
         .parameters-add {
@@ -1103,7 +1111,7 @@
             .control-panel-button {
                 background: #515151;
                 color: #eee;
-                padding: 4px;
+                padding: 8px 8px 5px 8px;
                 margin-bottom: 4px; 
                 cursor: default;
             }
@@ -1299,7 +1307,7 @@
     
     .lm-head {
         cursor: default;
-        padding: 6px 8px;
+        padding: 8px;
     }
     
         .localmenu-inside .lm-head {
