@@ -985,7 +985,7 @@
             width: 24px;
             height: 24px;
             display: inline-block;
-            padding: 3px;
+            padding-top: 6px;
             text-align: center;
             cursor: default;
         }
@@ -1083,7 +1083,6 @@
         width: 200px;
         background: #eee;
         padding: 8px;
-        border: 1px solid rgba(0,0,0,0.1);
         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
     } 
     
@@ -1094,7 +1093,7 @@
         }       
         
             .control-panel-parameter{
-                width: calc(100% - 4px);
+                width: calc(100% - 2px);
             }
 
         #control-panel-operators {
@@ -1112,7 +1111,7 @@
                 background: #515151;
                 color: #eee;
                 padding: 8px 8px 5px 8px;
-                margin-bottom: 4px; 
+                margin-bottom: 2px; 
                 cursor: default;
             }
             
