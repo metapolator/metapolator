@@ -1594,4 +1594,25 @@
         z-index: 1000;
     }
     
+    
+    
+    
+@media (max-width: 1100px) {
+    #filter {
+        width: 130px;
+    }
+}
+
+@media (max-width: 1000px) {
+    #filter {
+        width: 100px;
+    }
+}
+
+@media (max-width: 960px) {
+    #filter {
+        width: 60px;
+    }
+}
+    
 
