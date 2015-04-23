@@ -63,9 +63,9 @@ function($scope, $sce, sharedScope) {
     $scope.changedSize = 0;
 
     $scope.$watch("fontSize", function(newVal) {
-        // make with auto after initial glyph drawing and resizing
+        // make with auto for each resizing after initial glyph drawing and resizing
         $scope.changedSize++;
-        if ($scope.changedSize == 2) {
+        if ($scope.changedSize >= 2) {
             $("glyph").each(function() {
                 $(this).css("width", "auto");
             });
