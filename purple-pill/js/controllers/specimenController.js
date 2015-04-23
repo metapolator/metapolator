@@ -54,19 +54,20 @@ function($scope, $sce, sharedScope) {
     };
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
+        $scope.haveViewBox = true;
         $scope.filteredGlyphs = newVal;
         setTimeout(function() {
             manageSpaces();
         }, 500);
     }, true);
 
-    $scope.changedSize = 0;
+    $scope.haveViewBox = true;
 
     $scope.$watch("fontSize", function(newVal) {
         $scope.updateLineHeight();
         // make with auto for each resizing after initial glyph drawing and resizing
-        $scope.changedSize++;
-        if ($scope.changedSize >= 2) {
+        if ($scope.haveViewBox) {
+            $scope.haveViewBox = false;
             $("glyph").each(function() {
                 $(this).css("width", "auto");
             });
@@ -77,7 +78,7 @@ function($scope, $sce, sharedScope) {
     }, true);
 
     var startPosition = parseInt($("#specimen-content").css("padding-left"));
-
+    
     function manageSpaces() {
         var spaces = $(".space-character");
         var x = 0;
