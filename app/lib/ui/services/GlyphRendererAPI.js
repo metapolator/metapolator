@@ -134,15 +134,15 @@ define([
 
         this._compareAndRevoke(oldComponents, data.components);
 
-        // FIXME: * One day we have to subscribe to unitsPerEM AND
+        // FIXME: * One day we have to subscribe to unitsPerEm AND
         //          descender for this!
         //        * I guess this is only valid for horizontal writing systems.
         //        * Maybe moveUp is rather === ascender?
         fontinfo = data.MOM.master.fontinfo;
-        // ascender can be < fontinfo.unitsPerEM - fontinfo.descender, then
+        // ascender can be < fontinfo.unitsPerEm - fontinfo.descender, then
         // this solution is better. It seems OK to give the font enough
         // room down and maximal room upwards.
-        moveUp = (fontinfo.unitsPerEM || 1000) + (fontinfo.descender || 0);
+        moveUp = (fontinfo.unitsPerEm || 1000) + (fontinfo.descender || 0);
         matrix = [1, 0, 0, -1, 0, moveUp];
         data.svg.setAttribute('transform', 'matrix(' + matrix.join(',') +')');
         data.svg.appendChild(path);
