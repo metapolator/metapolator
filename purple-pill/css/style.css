@@ -806,7 +806,6 @@
             border-bottom: 2px solid #eee;
             background: #fff;
             position: relative;
-            transition: background 0.5s;
         }
         
         #instances-list .list-li {

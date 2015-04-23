@@ -17,9 +17,11 @@ app.controller("mastersController", function($scope, sharedScope) {
                     nMasters++;
                     angular.forEach($scope.data.designspaces, function(designspace) {
                         angular.forEach(designspace.axes, function(axis) {
-                            console.log(axis);
                             if(axis.masterName == master.name) {
-                                nDesignspaces.push(designspace.name);
+                                // prevent double pushing (other master on same DS)
+                                if (nDesignspaces.indexOf(designspace.name) == -1) {
+                                    nDesignspaces.push(designspace.name);
+                                }
                             }
                         });
                     });
@@ -38,13 +40,13 @@ app.controller("mastersController", function($scope, sharedScope) {
                 if (nDesignspaces.length == 1) {
                     var message = "Delete master? It is in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
                 } else {
-                    var message = "Delete master? It is in use on " + nDesignspaces.length + " design spaces and will no longer be part of its instances after deleting.";
+                    var message = "Delete master? It is in use on " + nDesignspaces.length + " design spaces and will no longer be part of their instances after deleting.";
                 }
             } else {
                 if (nDesignspaces.length == 1) {
                     var message = "Delete " + nMasters + "  masters? They are in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
                 } else {
-                    var message = "Delete " + nMasters + "  masters? They are in use on " + nDesignspaces.length + " design spaces and will no longer be part of its instances after deleting.";
+                    var message = "Delete " + nMasters + "  masters? They are in use on " + nDesignspaces.length + " design spaces and will no longer be part of their instances after deleting.";
                 }
             }
         }
