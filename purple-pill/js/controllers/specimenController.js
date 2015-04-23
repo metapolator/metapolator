@@ -64,6 +64,7 @@ function($scope, $sce, sharedScope) {
 
     $scope.$watch("fontSize", function(newVal) {
         // make with auto after initial glyph drawing and resizing
+        $scope.updateLineHeight();
         $scope.changedSize++;
         if ($scope.changedSize == 2) {
             $("glyph").each(function() {
@@ -113,6 +114,10 @@ function($scope, $sce, sharedScope) {
             }
         });
     }
+    
+    $scope.updateLineHeight = function () {
+        $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+    };
 
     /***************** setting the edit mode of glyphs *****************/
 
