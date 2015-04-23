@@ -1,18 +1,24 @@
-Getting Started with Metapolator Demo
-==============================
-[Metapolator Demo](http://metapolator.com/purple-pill) runs in a current version of FireFox. It also runs in Chromium/Google Chrome if you start Chromium/Chrome from command-line.
+# Getting Started with Metapolator Demo
 
-In order to run Metapolator in Chromium/Chrome
------------------------------------------------------------------
-- Make sure that chrome://flags/#enable-javascript-harmony is disabled (it is by default).
-- Close all running instances of Chromium/Chrome.
-- Then start Chromium/Chrome from the command-line with --js-flags="--harmony --harmony_proxies"
+[Metapolator Demo](http://metapolator.com/purple-pill) runs in a current version of FireFox. 
+It also runs in Google Chrome and Chromium if you start it from a Terminal with some options.
 
-Current *ubuntu linux that might be for Chromium:
-$ chromium-browser --js-flags="--harmony --harmony_proxies"
+## Using Chrome/Chromium
 
-Current *ubuntu linux that might be for Google Chrome:
+1. Visit chrome://flags/#enable-javascript-harmony and check that it is disabled (it is by default.)
+2. Quit the browser
+3. Open a Terminal and run:
+
+GNU+Linux users
+```sh
+chromium-browser --js-flags="--harmony --harmony_proxies"
+```
+or
+```sh
 $ google-chrome-stable --js-flags="--harmony --harmony_proxies"
+```
 
-On OSX that might be for Google Chrome:
-$ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --js-flags="--harmony --harmony_proxies"
+Mac OS X users
+```sh
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --js-flags="--harmony --harmony_proxies"
+```
