@@ -29,12 +29,12 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
             var year, month, day, hours, minutes, seconds
               , date = new Date()
               ;
-            year = zero_padding(date.getUTCFullYear());
-            month = zero_padding(date.getUTCMonth());
-            day = zero_padding(date.getUTCDate());
-            hours = zero_padding(date.getUTCHours());
-            minutes = zero_padding(date.getUTCMinutes());
-            seconds = zero_padding(date.getUTCSeconds());
+            year = zero_padding(date.getFullYear());
+            month = zero_padding(date.getMonth());
+            day = zero_padding(date.getDate());
+            hours = zero_padding(date.getHours());
+            minutes = zero_padding(date.getMinutes());
+            seconds = zero_padding(date.getSeconds());
 
             return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
         }
