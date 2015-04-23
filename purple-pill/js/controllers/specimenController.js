@@ -52,11 +52,14 @@ function($scope, $sce, sharedScope) {
         strict : 1,
         selectedFontby : $scope.fontbys[2]
     };
+    
+    var manageSpacesTimer;
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
         $scope.haveViewBox = true;
         $scope.filteredGlyphs = newVal;
-        setTimeout(function() {
+        clearTimeout(manageSpacesTimer);
+        manageSpacesTimer = setTimeout(function() {
             manageSpaces();
         }, 500);
     }, true);
@@ -72,7 +75,8 @@ function($scope, $sce, sharedScope) {
                 $(this).css("width", "auto");
             });
         }
-        setTimeout(function() {
+        clearTimeout(manageSpacesTimer);
+        manageSpacesTimer = setTimeout(function() {
             manageSpaces();
         }, 500);
     }, true);
