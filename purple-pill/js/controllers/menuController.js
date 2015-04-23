@@ -79,5 +79,24 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         var x = "calc(" + (parts / -16) + " * 100%)";
         return x;
     };
+    
+    $scope.data.fontExportWidth;
+    
+    $scope.setFontExportPanel = function() {
+        // this measurement sets the font export panel to a fixed with of 80px. It balances the font family panels with the difference
+        var windowWidth = $(window).outerWidth();
+        var exportWidth = windowWidth / 16;
+        var difference = 80 - exportWidth;
+        var newShare = ((windowWidth * 12 / 16) - difference) / windowWidth * 16;
+        var newShare2 = ((windowWidth / 16) + difference) / windowWidth * 16;
+        $scope.data.view.panels[5] = newShare2;
+        $scope.data.view.panels[6] = newShare;
+        console.log(newShare);
+        console.log(newShare2);
+        exportWidth = 80;
+        $scope.data.fontExportWidth = exportWidth;
+    };
+    
+    $scope.setFontExportPanel();
 
 });

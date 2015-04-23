@@ -211,10 +211,16 @@
 		}
 		
 			.panel {
-				float: left;
                 height: 100%;
                 position: relative;
+                display: inline-block;
+                vertical-align: top;
+                float: left;
 			}
+			
+			 #panel-6.panel {
+			     float: right;
+			 }
 			
 			.sub-panel {
 			    overflow-y: auto;
@@ -1196,7 +1202,6 @@
         }
             
         #instances-tools {
-            width: calc(100% - 102px);
             height: 100%;
             display: inline-block;
             float: left;
@@ -1218,13 +1223,13 @@
             }
             
         #export-button {
-            float: right;
-            display: inline-block;
-            width: 94px;
+            position: absolute;
+            right: 0;
+            bottom: 0px;
             height: 100%;
             text-align: center;
             background: #ddd;
-            padding: 8px;
+            padding: 12px;
             cursor: default;
         }
          
@@ -1238,7 +1243,6 @@
         position: absolute;
         right: 0;
         top: 0;
-        width: 94px;
         border: 2px solid #eee;
         height: 100%;
     }
@@ -1247,7 +1251,6 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: calc(100% - 102px);
         border: 2px solid #eee;
         height: 100%;
     }
@@ -1271,13 +1274,12 @@
         }
        
     .export-col {
-        width: 100px;
         float: left;
         height: 100%;
     }
     
         .instance-spacer {
-            width: 8px;
+            width: 10px;
             height: 100%;
             display: inline-block;
             float: left;
