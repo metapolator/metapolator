@@ -227,11 +227,11 @@ define([
             width = height;
         }
 
-        return [0, 0, width, height].join(' ');
+        return [0, 0, width, height];
     };
 
     _p._applySVGViewBox = function(svg, viewBox) {
-        svg.setAttribute('viewBox', viewBox);
+        svg.setAttribute('viewBox', viewBox.join(' '));
         if(!svg.parentElement)
             return;
         // Set the newly calculated width to parentElement
@@ -246,8 +246,13 @@ define([
         // The width should automatically adapt when svg.parentElement
         // changes it's height, but it does not when width is set via css
         // of course.
-        var calculatedWidth = svg.getBoundingClientRect().width + 'px';
-        svg.parentElement.style.width = calculatedWidth;
+
+        // Used to be: svg.getBoundingClientRect().width + 'px' but it seems
+        // that calculating this by hand is more reliable, Firefox
+        // had problems to return reliably an updated width for changes of
+        // the 'space' characters (i.e. without any contour content)
+        var calculatedWidth = viewBox[2]/viewBox[3] * svg.parentElement.clientHeight;
+        svg.parentElement.style.width = calculatedWidth + 'px';
     };
 
     _p._updateSVGViewBoxes = function (data) {
