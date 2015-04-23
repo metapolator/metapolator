@@ -24,9 +24,9 @@
                         </span>
                         <span class="list-view-col" type="master" mastername="{{master.name}}" masterag="{{master.ag}}" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}">
                             <ul>
-                                <li ng-repeat="x in master.ag">
-                                    <glyph mastername="{{master.name}}" glyph="{{x}}"></glyph>
-                                </li>
+                                <li ng-repeat="x in master.ag"><!--
+                                --><glyph mastername="{{master.name}}" glyph="{{x}}"></glyph><!--
+                                --></li>
                             </ul>
                         </span>
                         <span class="list-edit-col rename" ng-model="master.displayName"></span>

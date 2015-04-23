@@ -157,7 +157,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var thisInstance = {
                 id : $scope.uniqueInstanceId,
                 display : false,
-                ag : "ag",
+                ag : "Ag",
                 name : instanceName,
                 displayName : instanceName,
                 designspace : designspace.id,

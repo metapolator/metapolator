@@ -22,7 +22,13 @@
                             <polygon points="10,2 4,2 2,6 7,15 12,6" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
                         </svg> 
                     </span>
-                    <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}"></span>
+                    <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}">
+                        <ul>
+                            <li ng-repeat="x in instance.ag"><!--
+                            --><glyph mastername="{{instance.name}}" glyph="{{x}}"></glyph><!--
+                            --></li>
+                        </ul>
+                    </span>
                     <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}"></span>
                     <div class="export-col" ng-click="instance.exportFont = !instance.exportFont">
                         <div class="instance-spacer">&nbsp;</div>
