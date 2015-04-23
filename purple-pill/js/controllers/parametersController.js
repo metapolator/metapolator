@@ -31,9 +31,6 @@ app.controller("parametersController", function($scope, sharedScope) {
     }, {
         name : "-",
         standardValue : 0,
-    }, {
-        name : "=",
-        standardValue : null,
     }];
 
     $scope.selectionParametersMasters = [];
@@ -153,6 +150,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (parameterName == "spacing") {
                 var key = parameterName + "S";
             }
+
             var elements = $scope.findElements(elementType);
             angular.forEach(elements, function(element) {
                 if (element.element.ruleIndex) {
@@ -163,7 +161,15 @@ app.controller("parametersController", function($scope, sharedScope) {
                 if (range) {
                     var value = $scope.validateValue($scope.getRangeValue(element.element, parameterName, operator, elementType));
                 } else {
-                    var value = $scope.validateValue(operator.low);
+                    // temp hack untill the initial value issue is implemented. Then all the operators together produce a calculated value.
+                    // That value is passed to the setParameter(parameterDict, key, value)
+                    if (operator.name == "÷") {
+                        var value = $scope.validateValue(1 / operator.low);
+                    } else if (operator.name == "-") {
+                        var value = $scope.validateValue(- operator.low);
+                    } else {
+                        var value = $scope.validateValue(operator.low);
+                    }
                 }
                 $scope.setParameterModel(element.master, element.element, parameterName, operatorName, value);
                 $scope.setParameterAPI(element.master, ruleIndex, key, value);
