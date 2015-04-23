@@ -1,5 +1,3 @@
-# Getting Started with Metapolator Demo
-
 [Metapolator Demo](http://metapolator.com/purple-pill) runs in a current version of FireFox. 
 It also runs in Google Chrome and Chromium if you start it from a Terminal with some options.
 
