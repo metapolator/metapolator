@@ -84,7 +84,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.importUfo = function() {
-        $scope.data.alert("Loading. Your UFO is coming soon.", true);
+        $scope.data.alert("Loading UFOs is coming soon.", true);
         $scope.data.localmenu.masters = false;
     };
 
