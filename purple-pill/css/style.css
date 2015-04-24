@@ -890,7 +890,8 @@
         
             .list-view-col ul {
                 margin: 0;
-                padding: 0;    
+                padding: 0;  
+                width: 150px;  
             }
             
                 .list-view-col ul li {
