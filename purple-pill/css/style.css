@@ -797,7 +797,6 @@
                 cursor: pointer;
                 text-align: center;
                 border-right: 2px solid #eee;
-                background: #fff;
             }
 
 
@@ -934,13 +933,30 @@
             
         .list-edit-col {
             float: left;
-            width: calc(100% - 64px);
+            width: calc(100% - 56px);
             height: 100%;
-            padding: 10px;
-            cursor: default;
-            white-space: nowrap;
-            overflow: hidden;
+
         }
+        
+            .list-edit-col .rename {
+                display: inline-block;
+                width: calc(100% - 20px);
+                float: left;
+                height: 100%;
+                padding: 10px;
+                cursor: default;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            
+            .list-edit-col .list-grip {
+                display: inline-block;
+                width: 20px;
+                float: left;
+                height: 100%;
+                background-image: url('../img/grip.png');
+                background-repeat: no-repeat;
+            }
         
                 #instances-list .list-edit-col {
                     border-bottom: 2px solid #eee;
