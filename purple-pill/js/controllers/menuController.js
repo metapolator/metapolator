@@ -90,8 +90,6 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         var newShare2 = ((windowWidth / 16) + difference) / windowWidth * 16;
         $scope.data.view.panels[5] = newShare2;
         $scope.data.view.panels[6] = newShare;
-        console.log(newShare);
-        console.log(newShare2);
         exportWidth = 80;
         $scope.data.fontExportWidth = exportWidth;
     };

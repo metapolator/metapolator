@@ -53,35 +53,32 @@ function($scope, $sce, sharedScope) {
     };
 
     var manageSpacesTimer;
+    var sizeCounter = 0;
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
-        $scope.data.haveViewBox = true;
         $scope.filteredGlyphs = newVal;
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
             manageSpaces();
-        }, 500);
+        }, 100);
     }, true);
 
-    $scope.data.haveViewBox = true;
-
-    $scope.$watch("data.sequences", function(newVal) {
-        $scope.data.haveViewBox = true;
-    }, true);
 
     $scope.$watch("fontSize", function(newVal) {
+        sizeCounter++;
         $scope.updateLineHeight();
-        // make with auto for each resizing after initial glyph drawing and resizing
-        if ($scope.data.haveViewBox) {
-            $scope.data.haveViewBox = false;
-            $("glyph").each(function() {
-                $(this).css("width", "auto");
-            });
+        // make with auto for each resizing 
+        if (sizeCounter > 2) {
+            var ul = document.getElementById("specimen-ul-" + $scope.data.view.viewState);
+            var children = ul.children;
+            for (var i = 0, l = children.length; i < l; i++) {
+                children[i].firstElementChild.style.width = "auto";
+            }
         }
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
             manageSpaces();
-        }, 500);
+        }, 100);
     }, true);
 
     var startPosition = parseInt($("#specimen-content").css("padding-left"));

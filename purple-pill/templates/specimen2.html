@@ -16,7 +16,7 @@
     <div id="specimen-content" viewport-watcher>
         <!-- standard view -->
         <div id="non-glyph-range">
-            <ul>
+            <ul id="specimen-ul-1">
                 <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}"><!--
                     --><glyph mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box unselectable"></glyph><!--
                 --></li>
