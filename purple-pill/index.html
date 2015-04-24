@@ -133,12 +133,13 @@
         
         <div id="layover"></div>
         
-        <div id="confirm">
-            <div id="confirm-loading"><img src="img/loading.gif"></div>
-            <div id="confirm-content"></div>
-            <div id="confirm-buttons">
-                <button id="confirm-button">OK</button>
-                <button id="cancel-button">CANCEL</button>
+        <div id="dialog">
+            <div id="dialog-close" ng-click="data.closeDialog()">×</div>
+            <div id="dialog-loading"><img src="img/loading.gif"></div>
+            <div id="dialog-content"></div>
+            <div id="dialog-buttons">
+                <button id="dialog-button">OK</button>
+                <button id="dialog-button">CANCEL</button>
             </div>
         </div>
         

@@ -1399,38 +1399,64 @@
         
 /**************** alert ************************/
 
-    #confirm {
+    #dialog {
         display: none;
         position: fixed;
         z-index: 10001;
         top: 60px;
         padding: 40px;
         background: #fff;
-        border-radius: 8px;
         box-shadow: 0 0 20px rgba(0,0,0,0.6);
         width: 400px;
         min-height: 100px;
         left: calc(50% - 200px);
     }
     
-        #confirm-loading {
+        #dialog-close {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 20px;
+            height: 20px;
+            font-size: 20px;
+            color: #515151;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+            #dialog-close:hover {
+                color: #000;
+            }
+    
+        #dialog-loading {
             text-align: center;
             display: none;
             padding-bottom: 40px;
         }
         
-        #confirm-content {
-            text-align: center;
-            font-size: 16px;
+        #dialog-content {
+            font-size: 14px;
+            line-height: 18px;
         }
         
-        #confirm-buttons {
+            #dialog-content a {
+                color: #F01616;
+                text-decoration: none;
+            }
+            
+                #dialog-content a:hover {
+                    color: #F01616;
+                    text-decoration: underline;
+                }
+
+        
+        #dialog-buttons {
             margin-top: 30px;
             text-align: center;
             display: none;
         }
         
-        #confirm-buttons button {
+        #dialog-buttons button {
             font-size: 12px;
             padding: 10px;
         }

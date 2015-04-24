@@ -13,7 +13,7 @@ function($scope, $sce, sharedScope) {
     /*****************filter parameters *****************/
 
     // specimenPanel tells the filter to use masters or instances
-    $scope.specimenPanel;
+    $scope.specimenPanel
 
     $scope.specimen = [{
         name : "Metapolator",
@@ -51,11 +51,11 @@ function($scope, $sce, sharedScope) {
         strict : 1,
         selectedFontby : $scope.fontbys[2]
     };
-    
+
     var manageSpacesTimer;
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
-        $scope.haveViewBox = true;
+        $scope.data.haveViewBox = true;
         $scope.filteredGlyphs = newVal;
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
@@ -63,13 +63,17 @@ function($scope, $sce, sharedScope) {
         }, 500);
     }, true);
 
-    $scope.haveViewBox = true;
+    $scope.data.haveViewBox = true;
+
+    $scope.$watch("data.sequences", function(newVal) {
+        $scope.data.haveViewBox = true;
+    }, true);
 
     $scope.$watch("fontSize", function(newVal) {
         $scope.updateLineHeight();
         // make with auto for each resizing after initial glyph drawing and resizing
-        if ($scope.haveViewBox) {
-            $scope.haveViewBox = false;
+        if ($scope.data.haveViewBox) {
+            $scope.data.haveViewBox = false;
             $("glyph").each(function() {
                 $(this).css("width", "auto");
             });
@@ -81,7 +85,7 @@ function($scope, $sce, sharedScope) {
     }, true);
 
     var startPosition = parseInt($("#specimen-content").css("padding-left"));
-    
+
     function manageSpaces() {
         var spaces = $(".space-character");
         var x = 0;
@@ -118,8 +122,9 @@ function($scope, $sce, sharedScope) {
             }
         });
     }
-    
-    $scope.updateLineHeight = function () {
+
+
+    $scope.updateLineHeight = function() {
         $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
     };
 

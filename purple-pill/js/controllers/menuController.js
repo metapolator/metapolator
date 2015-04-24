@@ -48,24 +48,23 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         }
     };
 
-    /***** confirm *****/
+    /***** dialog *****/
 
-    $scope.data.confirm = function(message, callback) {
-        var confirmButton, cancelButton;
-        $("#layover").show();
-        $("#confirm").show();
-        $("#confirm #confirm-content").html(message);
-
-        $("#confirm-button").click(function() {
-            $("#layover").hide();
-            $("#confirm").hide();
-            callback(true);
-        });
-        $("#cancel-button").click(function() {
-            $("#layover").hide();
-            $("#confirm").hide();
-            callback(false);
-        });
+    $scope.data.dialog = function(message, loading, buttons) {
+        $("#layover").fadeIn(100);
+        $("#dialog").fadeIn(300);
+        $("#dialog #dialog-content").html(message);
+        if (loading) {
+            $("#dialog-loading").show();
+        }
+        if (buttons == "close") {
+            $("#dialog-close").show();
+        }
+    };
+    
+    $scope.data.closeDialog = function () {
+        $("#layover").fadeOut(300);
+        $("#dialog").fadeOut(100);
     };
 
     /***** dividers *****/

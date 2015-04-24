@@ -84,7 +84,8 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.importUfo = function() {
-        $scope.data.alert("Loading. Your UFO is coming soon.", true);
+        var message = "Loading UFOs is coming soon. Click to <a href='' target='_blank'>support the Metapolator project</a>."
+        $scope.data.dialog(message, false, "close");
         $scope.data.localmenu.masters = false;
     };
 
