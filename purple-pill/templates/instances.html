@@ -29,10 +29,7 @@
                             --></li>
                         </ul>
                     </span>
-                    <span class="list-edit-col" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}" ng-style="{'width': 'calc(100% - ' + (data.fontExportWidth + 54) + 'px'}">
-                        <span class="rename" ng-model="instance.displayName"></span>
-                        <span class="list-grip"></span>
-                    </span>
+                    <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}" ng-style="{'width': 'calc(100% - ' + (data.fontExportWidth + 54) + 'px'}"></span>
                     <div class="export-col" ng-click="instance.exportFont = !instance.exportFont" ng-style="{'width': (data.fontExportWidth - 4) + 'px'}">
                         <div class="instance-spacer">&nbsp;</div>
                         <div class="instance-checkmark">
