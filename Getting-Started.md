@@ -19,3 +19,7 @@ or
 ```sh
 $ google-chrome-stable --js-flags="--harmony --harmony_proxies"
 ```
+
+# Support the Project
+
+If you want to see Metapolator continue to improve, please order a fine logo T shirt for US$20 from <http://tspr.ng/F96Vjtsc> today
