@@ -118,7 +118,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
     $scope.mouseoverInstance = function(instance) {
         // Dim slider diamonds.
         if (instance == $scope.data.currentInstance) {
-            $(".blue-diamond").css({opacity: 0.1})
+            $(".blue-diamond").css({opacity: 0.1});
         } else {
             $("[id^='diamond']").css({ opacity: 0.1 });
             var current = $(".instance" + instance.id);
