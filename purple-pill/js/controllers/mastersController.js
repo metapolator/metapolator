@@ -281,7 +281,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 if (isInDesignspace(master.name)) {
                     setColorCursorHelper("red", "×") ;
                 } else {
-                    setColorCursorHelper("#5CE302", "+");
+                    setColorCursorHelper("#4FC400", "+");
                     $(".drop-area").addClass("drag-over");
                 }
             } else {

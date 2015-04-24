@@ -50,13 +50,13 @@
         
         <div id="instance-tools-container">
             <div id="instances-tools" ng-style="{'width': 'calc(100% - ' + data.fontExportWidth + 'px)'}">
-                <div id="add-instance" ng-click="data.addInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
+                <div title="add instance" id="add-instance" ng-click="data.addInstance();" class="list-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
                     <img src="img/addInstance.png">
                 </div>
-                <div id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+                <div title="duplicate instance" id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="list-tool push-button" ng-class="{'inactive': !data.currentInstance}">
                     <img src="img/duplicateInstance.png">
                 </div>
-                <div id="delete-instance" ng-click="deleteInstance();" class="instance-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+                <div title="delete" id="delete-instance" ng-click="deleteInstance();" class="list-tool push-button" ng-class="{'inactive': !data.currentInstance}">
                     <img src="img/deleteInstance.png">
                 </div>
             </div>
