@@ -2,22 +2,18 @@ Today [Metapolator](http://metapolator.com/purple-pill) only runs _out of the bo
 
 Chrome can run Metapolator, and a little faster too, after restarting it from Terminal with some options.
 
-1. If you have enabled `chrome://flags/#enable-javascript-harmony` then disable it.
-2. Quit the browser
-3. Open a Terminal and run:
-
-Mac OS X users
+* Quit the browser
+* Mac OS X users, open a Terminal and run:
 ```sh
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --js-flags="--harmony --harmony_proxies";
 ```
-GNU+Linux users
+
+* GNU+Linux users, open a shell and run:
 ```sh
-chromium-browser --js-flags="--harmony --harmony_proxies";
+chromium-browser --js-flags="--harmony --harmony_proxies"; google-chrome-stable --js-flags="--harmony --harmony_proxies";
 ```
-or
-```sh
-$ google-chrome-stable --js-flags="--harmony --harmony_proxies";
-```
+
+If you have enabled `chrome://flags/#enable-javascript-harmony`, then disable it.
 
 # Support the Project
 
