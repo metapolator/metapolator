@@ -1,4 +1,4 @@
-app.controller('fontexportController', function($scope, $http, sharedScope) {
+app.controller('fontexportController', function($scope, $http, sharedScope, ngProgress) {
     $scope.data = sharedScope.data;
 
     $scope.checkAll = function() {
@@ -47,6 +47,8 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
           ;
         $scope.data.alert(message, true);
 
+        ngProgress.start();
+
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont) {
@@ -64,6 +66,8 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
 
         var bundle_data = bundle.generate({type:"blob"});
         $scope.data.stateless.saveAs(bundle_data, bundle_filename);
+
+        ngProgress.complete();
     };
 
     $scope.data.instancesForExport = function() {
