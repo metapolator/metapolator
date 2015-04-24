@@ -1,6 +1,6 @@
 Today [Metapolator](http://metapolator.com/purple-pill) only runs _out of the box_ with the latest version of Firefox, because the Firefox team shipped new features that Metapolator depends on.
 
-Chrome can run Metapolator, and a little faster too, but you must restart it from Terminal with some options.
+Chrome can run Metapolator, and a little faster too, after restarting it from Terminal with some options.
 
 1. If you have enabled `chrome://flags/#enable-javascript-harmony` then disable it.
 2. Quit the browser
