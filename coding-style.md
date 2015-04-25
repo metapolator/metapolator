@@ -1,3 +1,5 @@
+# Coding Style and Substance
+
 ## Code formatting
 
 * 4 spaces for indenting
