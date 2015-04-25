@@ -1,3 +1,5 @@
+by @rrthomas
+
 # Background
 
 Tom Lord's (@dasht) excellent [Metapolator architectural proposal](https://github.com/metapolator/metapolator/wiki/architecture-proposal-by-dasht) and the ensuing video discussion it links to covered three main subjects, which I list in what I consider order of diminishing importance:
