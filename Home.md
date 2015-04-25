@@ -19,8 +19,9 @@ Misc
 * [Terminology](https://github.com/metapolator/metapolator/wiki/Terminology)
 * [Version 0.0.1](https://github.com/metapolator/metapolator/wiki/v1)
   * [Step by Step Guide](https://docs.google.com/document/d/1fiYpDxoBaiymMjzxptRZr6HkDaF3QqdEZuq_Vdz2JjU/edit)
+* [Related Projects](https://github.com/metapolator/metapolator/wiki/related-projects)
 
-Conferences
+Conferences presenting Metapolator
 * [Libre Graphics Meeting, Liepzig, Germany](http://libregraphicsmeeting.org/2014) Simon Egli and Nicolas Pauly
 * [Automatic Type Design, ANRT, Nancy, France](http://automatic-type-design.anrt-nancy.fr/index_en.php) Simon Egli and Nicolas Pauly
 * [Tag Der Schrift, Zurich, Switzerland](http://www.tagderschrift.org/) - [photos](https://plus.google.com/100858309774292261525/posts/aj477TvM2kr) Simon Egli
@@ -30,5 +31,3 @@ Conferences
 Meta
 
 * [Global Wiki History](https://github.com/metapolator/metapolator/wiki/_history)
-
-[Related Projects](https://github.com/metapolator/metapolator/wiki/related-projects)
