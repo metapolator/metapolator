@@ -1,36 +1,30 @@
-".mp" Metapolator Project and Meta Master (.ufo with some spice) File Format
-============================================================================
+# ".mp" Metapolator Project and Meta Master (.ufo with some spice) File Format
 
-Metapolator Neue, is a parametric font tool that helps with the creation
-of font-super-families. Despite having a format to store a complete
-Family/Project it also has a format to store one Meta-Master (in some cases
-a font in this format is called "instance"). The ".mp" format is like a
-super-family container for Meta Master UFOv3 files.
+This is the documentation of the `.mp` Metapolator Project file format.
 
-This file is a work in progress. It will become the documentation of the
-".mp" Metapolator Project file format.
+_This document is a work in progress._
 
-Metapolator builds on UFO, and defines the Metapolator Project
-as a similar 'file format' that is actually a directory structure.
+With Metapolator you can create super-families, and this requires a file format for complete family projects and additionally a format to store the individual CPS based fonts that we call Meta-Masters.
+The `.mp` format is a container for font families based on the UFOv3 format that is documented at <http://unifiedfontobject.org/versions/ufo3>. 
 
-This is a 'single UFOv3 with layers' approach. This is nice because it is normalised, with no redundant UFO stuff, but that may prove restrictive in practice as information that could belong in `fontinfo.plist` has to be stored in a `lib.plist` or `data/com.metapolator.yaml` file
+Like any UFO, it is a 'file format' that is actually a directory structure, and it is a valid single UFOv3 with layers for each Meta-Master.
+This is nice because no UFO data is duplicated (but this may prove restrictive in practice as information that could belong in various `fontinfo.plist` files has to be stored in a `lib.plist` or `data/com.metapolator.yaml` file.)
+
+The following directory diagram shows the additions to UFOv3 that are specific to Metapolator:
 
 ```
-my-first-master.ufo          UFOv3 directory. This format is documented at
-│                            http://unifiedfontobject.org/versions/ufo3/
-│                            And the following describes the additions
-│                            specific to metapolator.
+my-first-master.ufo          UFOv3 directory
 ├── data
-|   ├── com.metapolator.globals.cps      Cascading Parameters Sheet file, 
+|   ├── com.metapolator.globals.cps      Cascading Properties Sheet file, 
 |   |                                    with data global to all layers
 |   |
-|   ├── com.metapolator.skeleton001.cps  Cascading Parameters Sheet file, 
+|   ├── com.metapolator.skeleton001.cps  Cascading Properties Sheet file, 
 |   |                                    with data local to the layer.
 |   |
-|   ├── com.metapolator.skeleton002.cps  Cascading Parameters Sheet file, 
+|   ├── com.metapolator.skeleton002.cps  Cascading Properties Sheet file, 
 |   |                                    with data local to the layer.
 |   |
-│   └── com.metapolator.skeleton003.cps  Cascading Parameters Sheet file, 
+│   └── com.metapolator.skeleton003.cps  Cascading Properties Sheet file, 
 │                                        with data local to the layer.
 │
 ├── glyphs                   UFOv3 layer directory, where we store
