@@ -1,4 +1,4 @@
-**Interpolation** is typically understood to mean calculating a single intermediate font instance from just 2 masters.
+**In•ter•po•la•tion** is typically understood to mean calculating a single intermediate font instance from just 2 masters.
 
 **Me•ta•po•la•tion** is inserting an intermediate font instance into a series by calculating it from surrounding known masters.
 
