@@ -14,7 +14,7 @@ Our paymasters/robot overlords/visionary leaders are interested in _product_, no
 
 # Interpolation
 
-Lasse's [[Editing CPS interpolation alternative]] presents a definition of interpolation which involves simplifying the data representation (while sticking with CPS/MOM). Assuming the plan, or something similar, is approved, I suggest we use it to drive incremental architectural improvements:
+Lasse's [[cps interpolation alternative]] presents a definition of interpolation which involves simplifying the data representation (while sticking with CPS/MOM). Assuming the plan, or something similar, is approved, I suggest we use it to drive incremental architectural improvements:
 
 * Separation of concerns can be improved in the following ways:
   * Keep registration of CPS and MOM node types (i.e. the semantics) separate from the parsing (syntax).
