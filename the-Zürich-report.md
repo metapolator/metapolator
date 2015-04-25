@@ -1,16 +1,18 @@
 ![](http://metapolator.com/images/wiki/allwall.jpg)
 <br/>_nicolas pauly (r) and peter sikking working on the wall-of-concept._
 
-This is a visual report, with notes, of the 2-day Metapolator product workshop that took place on 9+10 July, 2014 at the Type Designers Studio, Zürich, Switzerland. Involved where Simon Egli and peter sikking, with contributions by nicolas pauly, Wei Huang (remote) and Eben Sorkin (via [this](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)).
+This is a visual report, with notes, of the 2-day Metapolator product workshop that took place on 9+10 July, 2014 at the Type Designers Studio, Zürich, Switzerland. Involved were Simon Egli and peter sikking, with contributions by nicolas pauly, Wei Huang (remote) and Eben Sorkin (via [this hangout](https://plus.google.com/106288796449831139244/posts/W874iEgTcxM)).
 
-Now where to start, there is so much we covered in these two days…
+Now, where to start, there is so much we covered in these two days…
 
 ## of master sequences and sausages
+
 First thing we worked on was that masters in a design space are more often than not related to each other. They can form sequences (think thin–medium–bold, but also a thin-italic-narrow-sans to heavy-wide-slab sequence).
 
 ![](http://metapolator.com/images/wiki/sequences2.jpg)
 
-Out of 3-or-more masters a sequence can be auto-detected (all significant changes of parameters line up for them) and any 2-or-more can be made a sequence by users. Master sequences are shown as lines in design space.
+Out of 3-or-more masters a sequence can be auto-detected (all significant changes of parameters line up for them) and any 2-or-more can be made a sequence by users. 
+Master sequences are shown as lines in design space.
 
 **notes** (see numbers in image above):
 
@@ -25,11 +27,12 @@ Out of 3-or-more masters a sequence can be auto-detected (all significant change
 In a way, too many master sequences can be automatically detected in a 9-master setup like this. 
 
 ## overrides and adjustments
-Next, we discussed ways of fine-tuning in Metapolator, Simon explained a system of overrides to manipulate parameters of a master on a more detailed level (glyph, sub-glyph). We fleshed out the operators to something simple but powerful:
+Next, we discussed ways of fine-tuning in Metapolator, Simon explained a system of overrides to manipulate parameters of a master on a more detailed level (glyph, sub-glyph). 
+We fleshed out the operators to something simple but powerful:
 
 * scale, multiply the original value with factors greater or smaller than 1;
 * offset, add or subtract a value;
-* fixed, set it hard to a noter value;
+* fixed, set it hard to another value;
 * limit, set an upper or lower limit to the original value.
 
 Overrides can be combined (say a scale and a limit).
@@ -41,7 +44,8 @@ Overrides can be combined (say a scale and a limit).
 1. some of the operators;
 2. the original mail by Vernon Adams with an idea based on drum sequencers, to apply something to part of a sequence.
 
-So we went to work with Vernon’s idea. This part of a sequence can be (only) in the design space (here two master sequences cross):
+So we went to work with Vernon’s idea. 
+This part of a sequence can be (only) in the design space (here two master sequences cross):
 
 ![](http://metapolator.com/images/wiki/adjustment.jpg)
 
@@ -52,10 +56,10 @@ So we went to work with Vernon’s idea. This part of a sequence can be (only) i
 
 Now we can return to the **first image** for some examples (see letters):
 
-a. change of parameter by the force field of an adjustment master;<br/>
-b. applying an offset to a parameter with an adjustment sequence;<br/>
-c. this can be done with two adjustment masters (one offset, one scaling) on an adjustment sequence;<br/>
-d. bit of a different view, here the parameter rises over a master sequences, and then is clamped to a maximum limit for a certain adjustment range.
+1. change of parameter by the force field of an adjustment master;<br/>
+2. applying an offset to a parameter with an adjustment sequence;<br/>
+3. this can be done with two adjustment masters (one offset, one scaling) on an adjustment sequence;<br/>
+4. bit of a different view, here the parameter rises over a master sequences, and then is clamped to a maximum limit for a certain adjustment range.
 
 We have seen now how discontinuities can be built into metapolation.
 
@@ -75,11 +79,12 @@ Vector shapes can be seen as ornaments, glued to the main skeletons-and-paramete
 
 **postscript**: on the way to the airport Simon and I discussed that it must be possible to get rid of vector shapes altogether; if it can be enclosed by a bezier, why could it not have been drawn by a ‘special, thick, felt-tip pen’?
 
-I personally say: let’s get it over with with the ellipses: allow for a point skeleton that then can be stroked 360° (with aspect ratio, which can be rotated).
+I personally say: let’s get it over with, with the ellipses: allow for a point skeleton that then can be stroked 360° (with aspect ratio, which can be rotated).
 
 For any arbitrary shape I say: concentrate on starving it, shrinking it down to a hairline version. That is what the skeleton should look like. Take it from there.
 
 ## hierarchy, hierarchy, hierarchy
+
 Over these two days we spent quite some time putting it all together.
 
 ![](http://metapolator.com/images/wiki/hierarchy.jpg)
@@ -95,7 +100,9 @@ There are two hierarchies in Metapolator. The first one is **the hierarchy of ma
 
 i.e. “a project consists of masters, which contain glyphs, made out of skeletons—drawn with lines between points—and vector shapes.”
 
-**Making changes means setting parameters.<br/>The natural way to make changes is at _master_ level**.<br/>This is where the speed increase that Metapolator promises is created.
+**Making changes means setting parameters.<br/>
+The natural way to make changes is at _master_ level**.<br/>
+This is where the speed increase that Metapolator promises is created.
 
 To make even more sweeping changes parameters can be applied at project level. Setting parameters at sub-master level is applying overrides, i.e. corrections to get the details _just right_.
 
@@ -150,7 +157,7 @@ Here are the results, organised:
 
 * height _(scales all vertical metrics)_
 * width
-* weight _(fka px)_
+* weight _(formerly known as px)_
 * space _(from x=0 to start of glyph)_
 * slant
 * x-height
@@ -164,7 +171,7 @@ Here are the results, organised:
   * descender
 * serif
   * jut _(overall horizontal size)_
-  * inner/outer _(ratio of hor. sizes)_
+  * inner/outer _(ratio of horizontal sizes)_
   * slab _(height of rectangular part)_
   * angle _(of the slab)_
   * bracket _(size of curved part)_
@@ -195,7 +202,7 @@ The latter is a list of point pairs, point-x pairs and point-y pairs that stay a
   * direction out
   * tension in
   * tension out
-  * restart curve _(completely decouple incoming and outgoing curves; the & in metafont)_
+  * restart curve _(completely decouple incoming and outgoing curves; the \& in metafont)_
 * pen
   * angle
   * width
@@ -205,13 +212,18 @@ The latter is a list of point pairs, point-x pairs and point-y pairs that stay a
 * type: straight, straight & smooth, or curved _(metafont line types)_
 
 ### discussion
-We see that these parameters live at the bottom of the hierarchy of masters, whereas the aim is to work as much as possible at the top of the hierarchy. For all the glyphs, lines and points of one master these parameters will have very different values, but still need to be steered all at once, in a relative matter. **Else users are again working glyph-by-glyph**, a no-no in Metapolator. This should also sort out that above glyph width turns up both in a relative and an absolute way.
+
+We see that these parameters live at the bottom of the hierarchy of masters, whereas the aim is to work as much as possible at the top of the hierarchy. 
+For all the glyphs, lines and points of one master these parameters will have very different values, but still need to be steered all at once, in a relative matter. 
+**Else users are again working glyph-by-glyph**, a no-no in Metapolator. 
+This should also sort out that above glyph width turns up both in a relative and an absolute way.
 
 ![](http://metapolator.com/images/wiki/contrast.jpg)
 
 At the end we spent some time on investigating contrast, aiming to offer it through two parameters, e.g. ratio and angle.
 
 ## raw images of the wall-of-concept
+
 ![](http://metapolator.com/images/wiki/photo01.jpg)
 ![](http://metapolator.com/images/wiki/photo02.jpg)
 ![](http://metapolator.com/images/wiki/photo03.jpg)
