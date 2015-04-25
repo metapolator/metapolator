@@ -84,7 +84,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.importUfo = function() {
-        var message = "Want to load your own UFO?<br><br><a href='http://tspr.ng/F96Vjtsc' target='_blank'>Buy a Metapolator T shirt today!</a>.";
+        var message = "Want to load your own UFO?<br><br><a href='http://tspr.ng/F96Vjtsc' target='_blank'>Buy a Metapolator T shirt today!</a>";
         $scope.data.dialog(message, false, "close");
         $scope.data.localmenu.masters = false;
     };
