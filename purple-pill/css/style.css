@@ -1581,6 +1581,12 @@
             margin-top: 0px;
         }
         
+        #splash-right p {
+            margin-top: 50px;
+        }        
+        #splash-right p + p {
+            margin-top: 10px;
+        } 
     
     #cursor-helper {
         font-size: 17px;
