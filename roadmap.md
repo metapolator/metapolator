@@ -12,4 +12,4 @@ https://github.com/metapolator/metapolator/wiki/Roadmap-For-0.3.0
 
 # Previous Milestones
 
-[2014 Milestones](2014-milestones)
+[Roadmap of 2014](roadmap-2014)
