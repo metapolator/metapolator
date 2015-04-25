@@ -1,6 +1,6 @@
-**Me•ta•po•la•tion**: insert an intermediate font instance into a series by calculating it from surrounding known masters.
+**Interpolation** is typically understood to mean calculating a single intermediate font instance from just 2 masters.
 
-*RT: Should we just call this "interpolation", which is what it is, and which we're already calling it elsewhere?*
+**Me•ta•po•la•tion** is inserting an intermediate font instance into a series by calculating it from surrounding known masters.
 
 This page contains the interaction design research into metapolation and design explorations for handling it. For the concrete implementation, see [[CPS interpolation]].
 
