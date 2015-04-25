@@ -1,6 +1,10 @@
-User scenarios show essential use, in logical, worthwhile and valuable steps from users’ point of view. There is no need for completeness, just a compact set of scenarios that lead through most of the ‘field’ of use. Some of these scenarios have been tuned the ‘Metapolator’ way. Certain steps that are needed today—because font tools are broken—have been omitted (fix the tools, not users’ activity).
+User scenarios show essential use, in logical, worthwhile and valuable steps from users’ point of view.
+There is no need for completeness, just a compact set of scenarios that lead through most of the ‘field’ of use. 
+Some of these scenarios have been tuned the ‘Metapolator’ way. 
+Certain steps that are needed today — because font tools are broken — have been omitted, because we fix the tools, not users’ activity.
 
 ## scenario 1
+
 _Easy beginnings: make subtle changes to an existing font to adapt it to domain of use._
 
 1. Open the font that needs adapting
@@ -17,6 +21,7 @@ _Easy beginnings: make subtle changes to an existing font to adapt it to domain 
 * finally: hinting (when needed).
 
 ### scenario 1b
+
 _Typographer applies radical graphical treatments to an existing font for a design._
 
 Same as scenario 1, but with the following differences:
@@ -25,6 +30,7 @@ Same as scenario 1, but with the following differences:
 * the intention is still to make adjustments for the ‘whole’ font in one go, not on a glyph-by-glyph basis.
 
 ## scenario 2
+
 _Font designer creates a new font through exploration of two compatible masters (i.e. in script, glyph shapes—on a typographical, non-tech level)._
 
 1. Open font for master 1
@@ -54,6 +60,7 @@ _Font designer creates a new font through exploration of two compatible masters 
 * months or years later: repeat this scenario (starting from any point in the workflow) to create an updated version of this font.
 
 ## scenario 3
+
 _Create a font from sketch (a scan, or graphics made outside of font tools)._
 
 1. Import the image of a number of characters
@@ -73,6 +80,7 @@ _Create a font from sketch (a scan, or graphics made outside of font tools)._
 * continue with scenario 1, 2, or even 1b to finish the font.
 
 ## scenario 4
+
 _The grind: flesh out 3+ masters to a family/multiverse._
 
 1. Load 3+ masters or prepare them (see scenarios 1, 1b, 2 and 3 for various ways of doing this)
@@ -108,6 +116,7 @@ _The grind: flesh out 3+ masters to a family/multiverse._
 * months or years later: repeat this scenario (starting from any point in the workflow) to create an updated version of this collection.
 
 ## scenario 5
+
 _Extend: add script (i.e. a writing system) support._
 * Packing list for developers:
  * metafont algorithm containing typographic knowledge of this script; implicit definition of typographical parameters
@@ -118,6 +127,7 @@ _Extend: add script (i.e. a writing system) support._
  * side bearings defaults for these glyphs (only where this is required to make the script ‘work’ for its readers).
 
 ### scenario 5b
+
 _Extend: add a custom algorithm._
 
-You read all the way to the end, so you might like this [G+ post on how this was made](https://plus.google.com/101901813675356116026/posts/AHqYfD65hWo)
+You have read all the way to here at the end, so you might like this [G+ post on how this was made](https://plus.google.com/101901813675356116026/posts/AHqYfD65hWo)
