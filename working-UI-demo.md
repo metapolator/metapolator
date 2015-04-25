@@ -391,7 +391,7 @@ The Filter mechanism has evolved a bit. Instead of filtering glyphs out of a spe
     * make a **counter** that start at 0.5 and goes up by 1 _(0.5, 1.5, 2.5, 3.5, etc.)_;
     * take counter × interval, and round down; this is the **position to insert** a mixer box glyph (simply rotate through them, starting a the front); note that we use the (C) convention the first char of the specimen string is at position zero;
     * run the counter until the end of the specimen (**note:** it gets a bit longer in the process).<br/>_example: specimen text is “The quick brown fox jumps over the lazy dog”; mixer input is “abcd”; interval is then sqrt(2 * 43 / 4) = 4.637; insertions at 0.5–1.5–2.5–etc. × 4.637, i.e. at 2, 6, 11, 16, 20, 25, 30, 34, 39, 44, 48 and 53; result: “Thae qubick cbrodwn afox bjumpcs odver athe blazcy dodg”_
-  * when the Pure slider is in the middle, **every second** specimen glyph gets replaced by a mixer box glyph (simply rotate through them, starting a the front); specimen whitespace, linefeeds and returns are skipped in this process; take the glyphs in the mixer box as-is (no duplicates-removal);
+  * when the Pure slider is in the middle, **every second** specimen glyph gets replaced by a mixer box glyph (simply rotate through them, starting a the front); specimen whitespace, linefeeds and returns are skipped in this process; take the glyphs in the mixer box as-is (no duplicates-removal);<br/>_example: specimen text is “The quick brown fox jumps over the lazy dog”; mixer input is “abcd”; result: “Tae buccd baobn cod jambs cvdr ahb lcxd dag”_
   * when the setting is ‘purest’ (slider to the right), the specimen is ignored and the mixer box glyphs **generate sentence-like content**, in this way:
     * clean up the mixer box glyphs, remove duplicates;
     * if there is (effectively) only one glyph in mixer box, put it on the screen (done), else—
@@ -400,9 +400,7 @@ The Filter mechanism has evolved a bit. Instead of filtering glyphs out of a spe
         * if i == j, append “\<space\>glyph<sub>i</sub>glyph<sub>i</sub>” to the output string, **unless** i == j == 0, then start the string with “glyph<sub>i</sub>glyph<sub>i</sub>”; else—
         * if j-i is **odd**, append “glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
         * if j-i is **even**, append “\<space\>glyph<sub>i</sub>glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
-    * done.
-
-_example: input string “abcde” generates the text output “aaba acada aea bbcb bdbeb ccdc cec dded ee”﻿_
+    * done.<br/>_example: input string “abcde” generates the text output “aaba acada aea bbcb bdbeb ccdc cec dded ee”﻿_
 
 **local menu**: none
 
