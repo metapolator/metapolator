@@ -92,8 +92,7 @@ These curves can be calculated from cubic curves and even more important,
 we can convert them back to cubics. Hobby splines don't use the two control points
 of cubics to define the curve; instead, they use two angles and two "tension" parameters, which
 allows us to define curves in a more semantic way. An even more striking
-point is that via the tension parameter a "most pleasing curve" can be defined, which gives us a very smooth transition between points.
-(is this correct)?
+point is that via the tension parameter a "most pleasing curve" can be defined, which makes it easy to draw smooth transitions between points, such as in the many turns in an 's' shape. [Raph Levien's PhD thesis](http://raph.levien.com/thesis/) offers a thorough explanation of this topic.
 
 What we want to extract from our UFOs is the data of a "stroke", defined 
 by Hobby splines.
@@ -129,5 +128,4 @@ And to be useful for us, we need some more, not mandatory, properties:
   point at floor(count(outline-points)/2) will be the last-right point
   and the point at ceil(count(outline-points)/2) will be the last-left
   point.
-
 
