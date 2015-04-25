@@ -8,7 +8,7 @@ Interaction Design
 Software Development
 * [Installation for developers](https://github.com/metapolator/metapolator/wiki/installation)
 * [Concepts](https://github.com/metapolator/metapolator/wiki/concepts)
-  * [Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format)
+  * [Project File Format](https://github.com/metapolator/metapolator/wiki/file-format)
   * [CPS](https://github.com/metapolator/metapolator/wiki/cascading-parameter-sheets)
   * [API](https://github.com/metapolator/metapolator/issues/332)
 * [Architecture](https://github.com/metapolator/metapolator/wiki/architecture)

@@ -44,7 +44,7 @@ _This page archives the Roadmap was it was at the end of 2014_
 
 * **Sample project:** *(95% complete, upload CPS project as repo)* To show how data is organized in 
   Metapolator, and is fully functional (but small) so we can open and close
-  projects. Initially described in [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/metapolator-project-file-format) and a [MF sample file](https://github.com/metapolator/sample_metafont_file) is uploaded as a repository.
+  projects. Initially described in [Metapolator Project File Format](https://github.com/metapolator/metapolator/wiki/file-format) and a [MF sample file](https://github.com/metapolator/sample_metafont_file) is uploaded as a repository.
 
 * **Fundamental GUI concepts:** Details: [interaction design](https://github.com/metapolator/metapolator/wiki/interaction-design)
 
