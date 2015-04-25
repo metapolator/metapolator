@@ -1,4 +1,4 @@
-For explanations of the datatypes, see [[cascading properties sheets]].
+For explanations of the datatypes, see [[cascading properties sheets]]
 
 # Principles
 
