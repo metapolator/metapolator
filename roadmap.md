@@ -8,7 +8,7 @@ https://github.com/metapolator/metapolator/wiki/Roadmap-For-0.3.0
 
 # Future Ideas
 
-[Metapolator Milestone 3: Initial UI](https://docs.google.com/document/d/1VJb19SPiW9N_hrC_xzNe9rGzRSJ2lwNgrG2U7BnuBgw/edit)
+[Metapolator Milestone 3: Initial UI](https://docs.google.com/document/d/1VJb19SPiW9N_hrC_xzNe9rGzRSJ2lwNgrG2U7BnuBgw/edit) (Google Doc)
 
 # Previous Milestones
 
