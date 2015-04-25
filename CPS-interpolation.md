@@ -1,4 +1,4 @@
-For explanations of the datatypes, see [[cascading parameter sheets]].
+For explanations of the datatypes, see [[cascading properties sheets]].
 
 # Principles
 
@@ -13,7 +13,7 @@ The core implementation, as far as possible, doesn't care about the meaning of w
 
 An interpolator is a list of rules (supplied as CPS) and a list of _N_ masters.
 
-From the masters' `Parameter` `Registry`s, a new combined `Registry` is inferred, where each interpolable type is replaced by a list of reals. This new `Registry` is used to parse the CPS into a list of `Rule`s.
+From the masters' `Properties` `Registry`s, a new combined `Registry` is inferred, where each interpolable type is replaced by a list of reals. This new `Registry` is used to parse the CPS into a list of `Rule`s.
 
 Each interpolable type has an interpolation operator defined on it (e.g., reals, complex numbers, formulae).
 
@@ -23,4 +23,4 @@ The interpolator interpolates as follows:
 
 0. The skeletons are checked for compatibility. In future, it may be possible to interpolate them.
 1. The `Rule`s are used to query each master, resulting in a `Node` list.
-2. The interpolating `Parameter`s are used to interpolate the relevant values of each master. If only some masters contain a particular `Node`, only those are interpolated, using an interpolation vector with just the elements corresponding to the participating masters, with the interpolation coefficients rescaled, so the vector has the same length as the original. In particular, in the typical case of two masters and a vector whose length is 1, this means that the `Node` is simply copied from the master that possesses it.
+2. The interpolating `Property`s are used to interpolate the relevant values of each master. If only some masters contain a particular `Node`, only those are interpolated, using an interpolation vector with just the elements corresponding to the participating masters, with the interpolation coefficients rescaled, so the vector has the same length as the original. In particular, in the typical case of two masters and a vector whose length is 1, this means that the `Node` is simply copied from the master that possesses it.
