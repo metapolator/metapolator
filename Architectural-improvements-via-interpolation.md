@@ -1,6 +1,6 @@
 # Background
 
-Tom Lord's (@dasht) excellent [[Metapolator architectural proposal]] and the ensuing video discussion it links to covered three main subjects, which I list in what I consider order of diminishing importance:
+Tom Lord's (@dasht) excellent [Metapolator architectural proposal](https://github.com/metapolator/metapolator/wiki/architecture-proposal-by-dasht) and the ensuing video discussion it links to covered three main subjects, which I list in what I consider order of diminishing importance:
 
 1. *Better separation of concerns.* Tom rightly emphasised the importance of hackability. Metapolator's UI, being in a relatively little-known space (parametric font design), should be open to experimentation and forking. However, if one is writing font editor UIs, it seems reasonable that the model should include font abstractions, unlike the table editor. Tom also makes a good point about privilege, when he talks about "interfaces to storage", or what I'd more abstractly call "history management": recording a risky transformation in the undo history is just as important as overwriting a file on disk.
 
