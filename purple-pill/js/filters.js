@@ -150,6 +150,14 @@ var substitutes = [{
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
         if (specimen.name != "glyph range") {
+            function isSpaceGlyph(glyph) {
+                if (glyph == "space" || glyph == "*n" || glyph == "*p") {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
             function substitute(glyph) {
                 var pos = -1;
                 for ( i = 0; i < substitutes.length; i++) {
@@ -204,40 +212,75 @@ app.filter('specimenFilter', function() {
                 return glyphs;
             }
 
-            var string = specimen.text;
-            var filter = stringToGlyphs(options.filter, true);
-            var newText = "";
-            var newGlyphText = "";
 
-            // setting the numer of characters needed to match the search box
-            var strict = options.strict;
-            var required = strict;
-            if (strict == 2 && filter.length == 1) {
-                required = 1;
-            }
+            console.clear();
 
-            // if nothing in filter, then we use the string 1:1
-            if (filter.length == 0) {
-                newText = string;
+            var specimenText = stringToGlyphs(specimen.text, false);
+            if (options.filter.length == 0) {
+                newText = specimenText;
             } else {
-                if (strict == 3) {
-                    // if strict is 3, we use the filter 1:1
-                    newGlyphText = filter;
-                } else {
-                    var text = string.split(" ");
-                    text.forEach(function(word) {
-                        var wordInGlyps = stringToGlyphs(word);
-                        var hits = 0;
-                        for (var i = 0; i < wordInGlyps.length; i++) {
-                            if (filter.indexOf(wordInGlyps[i]) > -1) {
-                                hits++;
+                var newText = [];
+                var pushedFilterGlyph = 0;
+
+                if (options.strict == 1) {
+                    var filterText = stringToGlyphs(options.filter, false);
+                    var insertionInterval = Math.sqrt(2 * specimenText.length / filterText.length);
+                    var insertionCounter = 0.5;
+                    for ( i = 0; i < specimenText.length; i++) {
+                        newText.push(specimenText[i]);
+                        var thisPosition = Math.floor(insertionCounter * insertionInterval);
+                        if (thisPosition == i) {
+                            newText.push(filterText[pushedFilterGlyph]);
+                            pushedFilterGlyph++;
+                            if (pushedFilterGlyph == filterText.length) {
+                                pushedFilterGlyph = 0;
                             }
-                            if (hits >= required) {
-                                newText += word + " ";
-                                break;
+                            insertionCounter++;
+                        }
+                    }
+                } else if (options.strict == 2) {
+                    var filterText = stringToGlyphs(options.filter, false);
+                    var withoutSpaces_i = 0;
+                    var insertionCounter = 1;
+                    for ( i = 0; i < specimenText.length; i++) {
+                        if (!isSpaceGlyph(specimenText[i])) {
+                            if (withoutSpaces_i == insertionCounter) {
+                                newText.push(filterText[pushedFilterGlyph]);
+                                insertionCounter += 2;
+                                pushedFilterGlyph++;
+                                if (pushedFilterGlyph == filterText.length) {
+                                    pushedFilterGlyph = 0;
+                                }
+                            } else {
+                                newText.push(specimenText[i]);
+                            }
+                            withoutSpaces_i++;
+                        } else {
+                            newText.push(specimenText[i]);
+                        }
+                    }
+                } else if (options.strict == 3) {
+                    var filterText = stringToGlyphs(options.filter, true);
+                    if (filterText.length == 1) {
+                        newText.push(filterText[0]);
+                    } else {
+                        for ( i = 0; i < filterText.length; i++) {
+                            for ( j = i; j < filterText.length; j++) {
+                                if (i == j) {
+                                    if (i != 0) {
+                                        newText.push("space", filterText[i], filterText[i]);
+                                    } else {
+                                        newText.push(filterText[i], filterText[i]);
+                                    }
+                                } else if ((j - i) % 2 == 0) {
+                                    newText.push("space", filterText[i], filterText[j], filterText[i]);
+                                } else {
+                                    newText.push(filterText[j], filterText[i]);
+                                }
                             }
                         }
-                    });
+                    }
+
                 }
             }
 
@@ -273,23 +316,6 @@ app.filter('specimenFilter', function() {
                 });
             }
 
-            if (newGlyphText == "") {
-                // if strict 3, then newflyphtext is already build
-                newGlyphText = stringToGlyphs(newText);
-            }
-
-            /***** building the matrix when strict == 3 *****/
-            if (strict == 3 && filter.length > 1) {
-                var matrix = [];
-                for (var i = 0; i < newGlyphText.length; i++) {
-                    for (var j = 0; j < newGlyphText.length; j++) {
-                        matrix.push(newGlyphText[i], newGlyphText[j], "space");
-                    }
-                    matrix.push("*n");
-                }
-                newGlyphText = matrix;
-            }
-
             /***** building the filterd string, add a glyphid for the track by at the ng-repeat *****/
             var filtered = [];
             var glyphId = 0;
@@ -297,8 +323,8 @@ app.filter('specimenFilter', function() {
             for (var q = 0; q < masterArray.length; q++) {
                 // repeating for the number of master with display true. every glyph of this loop starts with a new master (masterId)
                 var masterId = q;
-                for (var i = 0; i < newGlyphText.length; i++) {
-                    var glyph = newGlyphText[i];
+                for (var i = 0; i < newText.length; i++) {
+                    var glyph = newText[i];
                     var master = masterArray[masterId];
                     filtered.push({
                         master : {
