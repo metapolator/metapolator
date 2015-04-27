@@ -147,7 +147,7 @@
 	}
 	
 		#project {
-		    padding: 0;
+		    padding: 8px;
 			float: left;
 		}
 	
@@ -1327,7 +1327,7 @@
             font-size: 10px;
             margin-left: 2px;
         }
-        
+
         .lm-head:hover {
             background: #eee;
         }
