@@ -2,7 +2,7 @@
     <div id="specimen-toolbar">
         <localmenu class="localmenu lm-specimen" class="left">
             <div class="lm-head" ng-mousedown="data.selectMenu('specimen1')">
-                <input ng-model="selectedSpecimen.text" placeholder="Type text here...">
+                <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-blur="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
             </div>
             <div class="lm-body" ng-if="data.localmenu.specimen1">
                 <div class="lm-button" ng-repeat="specim in specimen" ng-if="specim != selectedSpecimen" ng-mouseup="selectSpecimen(specim)">{{specim.name}}</div>
