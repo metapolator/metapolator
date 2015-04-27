@@ -393,11 +393,11 @@ The Filter mechanism has evolved a bit. Instead of filtering glyphs out of a spe
     * run the counter until the end of the specimen (**note:** it gets a bit longer in the process).<br/>_example: specimen text is “The quick brown fox jumps over the lazy dog”; mixer input is “abcd”; interval is then sqrt(2 * 43 / 4) = 4.637; insertions at 0.5–1.5–2.5–etc. × 4.637, i.e. at 2, 6, 11, 16, 20, 25, 30, 34, 39, 44, 48 and 53; result: “Thae qubick cbrodwn afox bjumpcs odver athe blazcy dodg”_
   * when the Strict slider is in the middle, **every second** specimen glyph gets replaced by a mixer box glyph (simply rotate through them, starting a the front); specimen whitespace, linefeeds and returns are skipped in this process; take the glyphs in the mixer box as-is (no duplicates-removal);<br/>_example: specimen text is “The quick brown fox jumps over the lazy dog”; mixer input is “abcd”; result: “Tae buccd baobn cod jambs cvdr ahb lcxd dag”_
   * when the setting is ‘strictest’ (slider to the right), the specimen is ignored and the mixer box glyphs **generate sentence-like content**, in this way:
-    * clean up the mixer box glyphs, remove duplicates;
+    * clean up the mixer box glyphs, remove duplicates and strip whitespace;
     * if there is (effectively) only one glyph in mixer box, put it on the screen (done), else—
     * for i = 0; i < mixer-box-length
       * for j = i; j < mixer-box-length _(we cover only half the matrix, from the diagonal to the right)_
-        * if i == j, append “\<space\>glyph<sub>i</sub>glyph<sub>i</sub>” to the output string, **unless** i == j == 0, then start the string with “glyph<sub>i</sub>glyph<sub>i</sub>”; **or** when i == j == (mixer-box-length - 1), then end the string with “glyph<sub>i</sub>glyph<sub>i</sub>”; else—
+        * if i == j, append “\<space\>glyph<sub>i</sub>glyph<sub>i</sub>” to the output string, **unless** i == j == 0, then start the string with “glyph<sub>i</sub>glyph<sub>i</sub>”; **or** when i == j == (mixer-box-length - 1), then end the string by appending “glyph<sub>i</sub>glyph<sub>i</sub>”; else—
         * if j-i is **odd**, append “glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
         * if j-i is **even**, append “\<space\>glyph<sub>i</sub>glyph<sub>j</sub>glyph<sub>i</sub>” to the output string;
     * done.<br/>_example: input string “abcde” generates the text output “aaba acada aea bbcb bdbeb ccdc cec ddedee”﻿_
