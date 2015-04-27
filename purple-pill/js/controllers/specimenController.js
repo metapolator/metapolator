@@ -105,6 +105,7 @@ function($scope, $sce, sharedScope) {
         var brokenEnd = false;
         $("#non-glyph-range li").each(function() {
             if ($(this).position().left == startPosition) {
+                // prevent space at line start
                 if ($(this).hasClass("space-character")) {
                     $(this).css({
                         "width" : "0",

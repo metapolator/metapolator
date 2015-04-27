@@ -263,10 +263,12 @@ app.filter('specimenFilter', function() {
                         for ( i = 0; i < filterText.length; i++) {
                             for ( j = i; j < filterText.length; j++) {
                                 if (i == j) {
-                                    if (i != 0) {
-                                        newText.push("space", filterText[i], filterText[i]);
-                                    } else {
+                                    if (i == 0) {
                                         newText.push(filterText[i], filterText[i]);
+                                     } else if (i = (filterText.length - 1)) {
+                                        newText.push(filterText[i], filterText[i]);
+                                     } else {
+                                        newText.push("space", filterText[i], filterText[i]);
                                     }
                                 } else if ((j - i) % 2 == 0) {
                                     newText.push("space", filterText[i], filterText[j], filterText[i]);
