@@ -13,12 +13,15 @@ function($scope, $sce, sharedScope) {
     /*****************filter parameters *****************/
 
     // specimenPanel tells the filter to use masters or instances
-    $scope.specimenPanel
+    $scope.specimenPanel;
 
     $scope.specimen = [{
         name : "Metapolator",
         text : "Metapolator"
     }, {
+        name : "BYO Specimen",
+        text : ""
+    },{
         name : "Pangram 1",
         text : "The quick brown fox jumps over the lazy dog."
     }, {
@@ -123,6 +126,18 @@ function($scope, $sce, sharedScope) {
 
     $scope.updateLineHeight = function() {
         $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+    };
+    
+    $scope.selectSpecimen = function(specimen) {
+        $scope.selectedSpecimen = specimen;
+        $scope.data.localmenu.specimen1 = false;
+        $scope.data.localmenu.specimen2 = false;
+    };
+    
+    $scope.selectFontby = function(fontby) {
+        $scope.filterOptions.selectedFontby = fontby;
+        $scope.data.localmenu.fontby1 = false;
+        $scope.data.localmenu.fontby2 = false;
     };
 
     /***************** setting the edit mode of glyphs *****************/

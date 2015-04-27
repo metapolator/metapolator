@@ -87,7 +87,6 @@ app.filter('glyphsInEditFilter', function() {
 
 app.filter('rangeFilter', function() {
     return function(specimen, filter) {
-        console.clear();
         var filtered = [];
         for (var i = 0; i < specimen.length; i++) {
             var thisGlyph = specimen[i];
@@ -211,9 +210,6 @@ app.filter('specimenFilter', function() {
                 }
                 return glyphs;
             }
-
-
-            console.clear();
 
             var specimenText = stringToGlyphs(specimen.text, false);
             if (options.filter.length == 0) {

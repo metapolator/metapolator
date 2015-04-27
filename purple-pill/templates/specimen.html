@@ -1,16 +1,29 @@
 <div class="panel-border panel-border-without-menu">
     <div id="specimen-toolbar">
-        <select ng-model="selectedSpecimen" ng-options="specim.name for specim in specimen" class="specimen-tool"></select>
-        <div id="standard-view-tools" >
-            <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
-            <size-rope></size-rope>
-            <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
-            <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
-            <div id="font-by" ng-if="selectedSpecimen.name != 'glyph range'">
-                font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
+        <localmenu class="localmenu lm-specimen" class="left">
+            <div class="lm-head" ng-mousedown="data.selectMenu('specimen1')">
+                <input ng-model="selectedSpecimen.text" placeholder="Type text here...">
             </div>
+            <div class="lm-body" ng-if="data.localmenu.specimen1">
+                <div class="lm-button" ng-repeat="specim in specimen" ng-if="specim != selectedSpecimen" ng-mouseup="selectSpecimen(specim)">{{specim.name}}</div>
+            </div>
+        </localmenu>
+        
+        <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
+        <size-rope></size-rope>
+        <input placeholder="filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
+        <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
+        <div class="fontby-container">
+            <span class="toolbar-label">Font by: </span>
+            <localmenu class="localmenu lm-fontby right" ng-if="selectedSpecimen.name != 'glyph range'">
+                <div class="lm-head" ng-mousedown="data.selectMenu('fontby1')">
+                    {{filterOptions.selectedFontby}}
+                </div>
+                <div class="lm-body" ng-if="data.localmenu.fontby1">
+                    <div class="lm-button" ng-repeat="fontby in fontbys" ng-if="fontby != filterOptions.selectedFontby" ng-mouseup="selectFontby(fontby)">{{fontby}}</div>
+                </div>
+            </localmenu>
         </div>
-
     </div>
 
     <div id="specimen-content" rubberband viewport-watcher>
