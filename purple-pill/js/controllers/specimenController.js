@@ -38,7 +38,7 @@ function($scope, $sce, sharedScope) {
     // only for the masters specimen panel
     $scope.addGlyphRange = function() {
         $scope.specimen.push({
-            name : "glyph range"
+            name : "Glyph Range"
         });
     };
 

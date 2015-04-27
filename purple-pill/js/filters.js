@@ -149,7 +149,7 @@ var substitutes = [{
 
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
-        if (specimen.name != "glyph range") {
+        if (specimen.name != "Glyph Range") {
             function isSpaceGlyph(glyph) {
                 if (glyph == "space" || glyph == "*n" || glyph == "*p") {
                     return true;
