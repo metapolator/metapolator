@@ -363,7 +363,11 @@
                float: left;
                margin-right: 8px;
            }
-           
+
+           .custom-widget-wrapper {
+               float:left;
+           }
+
            #size-nr {
                font-size: 12px;
                font-family: "Lato";

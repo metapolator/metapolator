@@ -10,9 +10,13 @@
         </localmenu>
 
         <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
-        <size-rope></size-rope>
+        <div title="Drag to Change Font Size" class="custom-widget-wrapper">
+            <size-rope></size-rope>
+        </div>
         <input placeholder="Mixer" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
-        <strict ng-if="selectedSpecimen.name != 'glyph range'"></strict>
+        <div title="Sprinkled | 50–50 | Exclusive Mixing" class="custom-widget-wrapper">
+           <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
+        </div>
         <div class="fontby-container">
             <span class="toolbar-label">Font by: </span>
             <localmenu class="localmenu lm-fontby right" ng-if="selectedSpecimen.name != 'glyph range'">
