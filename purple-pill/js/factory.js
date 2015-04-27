@@ -33,7 +33,11 @@ app.factory("sharedScope", function($rootScope) {
             masters : false,
             instances : false,
             designspace : false,
-            fonts : false
+            fonts : false,
+            specimen1: false,
+            specimen2: false,
+            fontby1: false,
+            fontby2: false,
         },
         view : {
             menuItems : ["Parameters", "Design Spaces", "Fonts"],

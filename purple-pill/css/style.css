@@ -55,6 +55,7 @@
 	input {
 	    font-size: 12px;
 	    font-family: "seanSansNarrow";
+	    font-weight: 700;
 	}
 	
 	.standard-padding {
@@ -319,11 +320,28 @@
     }
     
         #specimen-toolbar {
-            overflow: auto;
+            overflow: visible;
             height: 38px;
             padding: 4px;
             z-index: 1000;
         }
+        
+        localmenu.lm-specimen {
+            width: 150px;
+            float: left;
+        }
+        
+            .lm-specimen input {
+                width: 130px;    
+            }
+            
+                .lm-specimen .lm-head {
+                    padding: 0;
+                }
+                
+                    .lm-specimen .lm-head:hover, .lm-fontby .lm-head:hover {
+                        background: transparent;
+                    }
         
             #specimen-toolbar input {
                 color: #515151;
@@ -363,6 +381,8 @@
                background: #eee;
                border: 0;
                width: 180px;
+               margin-right: 2px;
+               margin-left: 6px;
            }
         
             size-rope {
@@ -373,13 +393,32 @@
                 height: 16px;
             }
          
-   #font-by {
-    float: right;
-   }
+    .fontby-container {
+        width: 160px;
+        float: right;
+    }
+    
+        .toolbar-label {
+            display: inline-block;
+            padding-top: 8px;
+        }
+   
+        localmenu.lm-fontby {
+            width: 100px;
+            display: inline-block;
+            float: right;
+        }
+        
+        
+            localmenu.lm-fontby .lm-body {
+                width: 100px;
+            }
+    
+
    
    .chunk {
-    display: inline-block;
-    float: left;
+        display: inline-block;
+        float: left;
    }
               
     #non-glyph-range {
@@ -1308,7 +1347,7 @@
         display: block;
         min-height: 30px;
     }
-    
+
         .localmenu-inside {
             min-height: 0;
         }

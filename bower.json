@@ -21,6 +21,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.2.13"
+    "angular": "~1.2.13",
+    "ngprogress": "~1.0.7"
   }
 }

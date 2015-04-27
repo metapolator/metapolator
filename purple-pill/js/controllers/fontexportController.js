@@ -1,4 +1,5 @@
-app.controller('fontexportController', function($scope, $http, sharedScope) {
+app.controller('fontexportController', ['$scope', '$http', 'sharedScope', 'ngProgress', '$timeout',
+function($scope, $http, sharedScope, ngProgress, $timeout) {
     $scope.data = sharedScope.data;
 
     $scope.checkAll = function() {
@@ -47,23 +48,31 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
           ;
         $scope.data.alert(message, true);
 
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (instance.exportFont) {
-                    var targetDirName = instance.displayName + ".ufo"
-                      , filename = targetDirName + ".zip"
-                      ;
-                    var precision = -1 //no rounding
-                      , zipped_data = $scope.data.stateful.project.getZippedInstance(
-                                       instance.name, targetDirName, precision, "uint8array")
-                      ;
-                    bundleFolder.file(filename, zipped_data, {binary:true});
-                }
-            });
-        });
+        ngProgress.height("20px");
+        ngProgress.color("green");
+        ngProgress.start();
 
-        var bundle_data = bundle.generate({type:"blob"});
-        $scope.data.stateless.saveAs(bundle_data, bundle_filename);
+        $timeout(function(){
+            angular.forEach($scope.data.families, function(family) {
+                angular.forEach(family.instances, function(instance) {
+                    if (instance.exportFont) {
+                        var targetDirName = instance.displayName + ".ufo"
+                          , filename = targetDirName + ".zip"
+                          ;
+                        var precision = -1 //no rounding
+                          , zipped_data = $scope.data.stateful.project.getZippedInstance(
+                                           instance.name, targetDirName, precision, "uint8array")
+                          ;
+                        bundleFolder.file(filename, zipped_data, {binary:true});
+                    }
+                });
+            });
+        }, 1000).then(function(){
+            var bundle_data = bundle.generate({type:"blob"});
+            $scope.data.stateless.saveAs(bundle_data, bundle_filename);
+
+            ngProgress.complete();
+        });
     };
 
     $scope.data.instancesForExport = function() {
@@ -78,4 +87,4 @@ app.controller('fontexportController', function($scope, $http, sharedScope) {
         return instancesForExport;
     };
 
-});
+}]);

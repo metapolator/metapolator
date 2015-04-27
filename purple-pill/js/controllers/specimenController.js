@@ -13,12 +13,15 @@ function($scope, $sce, sharedScope) {
     /*****************filter parameters *****************/
 
     // specimenPanel tells the filter to use masters or instances
-    $scope.specimenPanel
+    $scope.specimenPanel;
 
     $scope.specimen = [{
         name : "Metapolator",
         text : "Metapolator"
     }, {
+        name : "[Enter your own text]",
+        text : ""
+    },{
         name : "Pangram 1",
         text : "The quick brown fox jumps over the lazy dog."
     }, {
@@ -30,6 +33,12 @@ function($scope, $sce, sharedScope) {
     }, {
         name : "Something With Breaks",
         text : "Hey you,*nthe rock*nsteady crew."
+    }, {
+        name : "AaBbCcDdEe...",
+        text : "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789"
+    }, {
+        name : "Numbers",
+        text : "0123456789"
     }, {
         name : "Paragraph 1",
         text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armourlike back and if he lifted his head a little, he could see his brown belly slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
@@ -45,7 +54,7 @@ function($scope, $sce, sharedScope) {
     $scope.selectedSpecimen = $scope.specimen[0];
     $scope.fontSize = 144;
     $scope.lineHeight = 0;
-    $scope.fontbys = ["Glyph", "Word", "Paragraph"];
+    $scope.fontbys = ["Glyph", "Word", "Specimen"];
     $scope.filterOptions = {
         filter : "",
         strict : 1,
@@ -96,6 +105,7 @@ function($scope, $sce, sharedScope) {
         var brokenEnd = false;
         $("#non-glyph-range li").each(function() {
             if ($(this).position().left == startPosition) {
+                // prevent space at line start
                 if ($(this).hasClass("space-character")) {
                     $(this).css({
                         "width" : "0",
@@ -123,6 +133,18 @@ function($scope, $sce, sharedScope) {
 
     $scope.updateLineHeight = function() {
         $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+    };
+    
+    $scope.selectSpecimen = function(specimen) {
+        $scope.selectedSpecimen = specimen;
+        $scope.data.localmenu.specimen1 = false;
+        $scope.data.localmenu.specimen2 = false;
+    };
+    
+    $scope.selectFontby = function(fontby) {
+        $scope.filterOptions.selectedFontby = fontby;
+        $scope.data.localmenu.fontby1 = false;
+        $scope.data.localmenu.fontby2 = false;
     };
 
     /***************** setting the edit mode of glyphs *****************/
