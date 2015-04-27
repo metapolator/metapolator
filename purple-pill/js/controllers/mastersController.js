@@ -96,7 +96,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     // deselect this one
                     master.edit[$scope.data.view.viewState] = false;
                     $scope.uniqueMasterId++;
-                    var masterName = "Master_" + $scope.uniqueMasterId;
+                    var masterName = "master" + $scope.uniqueMasterId;
                     var cpsFile = masterName + ".cps";
                     // duplicate cps file
                     var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
@@ -108,7 +108,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     $scope.data.sequences[0].masters.push({
                         id : $scope.uniqueMasterId,
                         name : masterName,
-                        displayName : masterName,
+                        displayName : "Master " + $scope.uniqueMasterId,
                         cpsFile : cpsFile,
                         ruleIndex : angular.copy(master.ruleIndex),
                         display : false,
