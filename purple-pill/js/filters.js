@@ -334,7 +334,7 @@ app.filter('specimenFilter', function() {
                     });
 
                     glyphId++;
-                    if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == "space") || (options.selectedFontby == "paragraph" && glyph == "*p")) {
+                    if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == "space") || (options.selectedFontby == "specimen" && i == (newText.length - 1))) {
                         masterId++;
                     }
                     if (masterId == nrOfFonts) {
