@@ -261,7 +261,6 @@ app.filter('specimenFilter', function() {
                     }
                 } else if (options.strict == 3) {
                     var filterText = stringToGlyphs(options.filter, true, false);
-                    console.log(filterText);
                     if (filterText.length == 1) {
                         newText.push(filterText[0]);
                     } else {
@@ -286,7 +285,6 @@ app.filter('specimenFilter', function() {
 
                 }
             }
-            console.log(newText);
 
             /***** create a masterarray with masters display true *****/
             var masterArray = [];
