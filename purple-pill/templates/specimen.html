@@ -7,7 +7,7 @@
             <input placeholder="Filter" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
             <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
             <div id="font-by" ng-if="selectedSpecimen.name != 'Glyph Range'">
-                font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
+                Font by <select ng-model="filterOptions.selectedFontby" ng-options="fontby for fontby in fontbys"></select>
             </div>
         </div>
 
