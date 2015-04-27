@@ -168,7 +168,7 @@ app.filter('specimenFilter', function() {
                 return pos;
             }
 
-            function stringToGlyphs(string, unique) {
+            function stringToGlyphs(string, unique, includeSpaces) {
                 var glyphs = [];
                 for (var i = 0; i < string.length; i++) {
                     var glyph = string[i];
@@ -202,16 +202,20 @@ app.filter('specimenFilter', function() {
                     if (unique) {
                         // unique is set for the filter
                         if (glyphs.indexOf(glyph) < 0 || glyph == "*n" || glyph == "*p") {
-                            glyphs.push(glyph);
+                            if(glyph != "space" || includeSpaces) {
+                                glyphs.push(glyph);
+                            }
                         }
                     } else {
-                        glyphs.push(glyph);
+                        if(glyph != "space" || includeSpaces) {
+                            glyphs.push(glyph);
+                        }
                     }
                 }
                 return glyphs;
             }
 
-            var specimenText = stringToGlyphs(specimen.text, false);
+            var specimenText = stringToGlyphs(specimen.text, false, true);
             if (options.filter.length == 0) {
                 newText = specimenText;
             } else {
@@ -219,7 +223,7 @@ app.filter('specimenFilter', function() {
                 var pushedFilterGlyph = 0;
 
                 if (options.strict == 1) {
-                    var filterText = stringToGlyphs(options.filter, false);
+                    var filterText = stringToGlyphs(options.filter, false, true);
                     var insertionInterval = Math.sqrt(2 * specimenText.length / filterText.length);
                     var insertionCounter = 0.5;
                     for ( i = 0; i < specimenText.length; i++) {
@@ -235,7 +239,7 @@ app.filter('specimenFilter', function() {
                         }
                     }
                 } else if (options.strict == 2) {
-                    var filterText = stringToGlyphs(options.filter, false);
+                    var filterText = stringToGlyphs(options.filter, false, true);
                     var withoutSpaces_i = 0;
                     var insertionCounter = 1;
                     for ( i = 0; i < specimenText.length; i++) {
@@ -256,7 +260,8 @@ app.filter('specimenFilter', function() {
                         }
                     }
                 } else if (options.strict == 3) {
-                    var filterText = stringToGlyphs(options.filter, true);
+                    var filterText = stringToGlyphs(options.filter, true, false);
+                    console.log(filterText);
                     if (filterText.length == 1) {
                         newText.push(filterText[0]);
                     } else {
@@ -281,6 +286,7 @@ app.filter('specimenFilter', function() {
 
                 }
             }
+            console.log(newText);
 
             /***** create a masterarray with masters display true *****/
             var masterArray = [];
