@@ -46,7 +46,7 @@ function($scope, $sce, sharedScope) {
     $scope.selectedSpecimen = $scope.specimen[0];
     $scope.fontSize = 144;
     $scope.lineHeight = 0;
-    $scope.fontbys = ["glyph", "word", "paragraph"];
+    $scope.fontbys = ["Glyph", "Word", "Paragraph"];
     $scope.filterOptions = {
         filter : "",
         strict : 1,
