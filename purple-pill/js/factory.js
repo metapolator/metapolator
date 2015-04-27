@@ -1,7 +1,7 @@
 app.factory("sharedScope", function($rootScope) {
     var scope = $rootScope.$new(true);
     scope.data = {
-        projectName : "Sean",
+        projectName : "Canola",
         sequences : [{
             id : 0,
             name : "Sequence 1",
