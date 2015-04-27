@@ -381,6 +381,8 @@
                background: #eee;
                border: 0;
                width: 180px;
+               margin-right: 2px;
+               margin-left: 6px;
            }
         
             size-rope {
