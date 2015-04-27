@@ -28,7 +28,7 @@ function($scope, $sce, sharedScope) {
         name : "Pangram 3",
         text : "Quick wafting zephyrs vex bold Jim."
     }, {
-        name : "Something with breaks",
+        name : "Something With Breaks",
         text : "Hey you,*nthe rock*nsteady crew."
     }, {
         name : "Paragraph 1",
