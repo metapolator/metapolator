@@ -160,7 +160,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 axis.value = 50;
                 axis.metapValue = newMetapValue;
             });
-            var instanceName = "instance" + $scope.uniqueInstanceId;
+            var instanceName = "Instance " + $scope.uniqueInstanceId;
             var cpsFile = instanceName + ".cps";
             var thisInstance = {
                 id : $scope.uniqueInstanceId,
