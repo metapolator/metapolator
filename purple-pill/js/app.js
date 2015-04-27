@@ -1,1 +1,1 @@
-var app = angular.module('Metapolator', ['ui.sortable']);
+var app = angular.module('Metapolator', ['ui.sortable', 'ngProgress']);
