@@ -13,6 +13,14 @@ app.controller('menuController', function($scope, $http, sharedScope) {
             $("#confirm").hide();
         }, 2000);
     };
+    
+    $scope.renameProject = function () {
+        $scope.data.localmenu.project = false;
+        $("#project-name").attr("contenteditable", "true");
+        $("#project-name").addClass("renaming");
+        $("#project-name").focus();
+        $scope.data.selectAllText(document.getElementById("project-name"));
+    };
 
     $scope.newDocument = function() {
         alert("New Document");
