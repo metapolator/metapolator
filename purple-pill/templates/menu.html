@@ -1,21 +1,18 @@
-<div id="project" class="left">
-    <b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>
+<div id="project">
+    <localmenu class="localmenu" class="left">
+        <div class="lm-head" ng-mousedown="data.selectMenu('project')">
+            <b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>
+        </div>
+        <div class="lm-body" ng-if="data.localmenu.project">
+            <div class="lm-button" ng-mouseup="newDocument()">New</div>
+            <div class="lm-divider"></div>
+            <div class="lm-button" ng-mouseup="closeDocument()">Close</div>
+            <div class="lm-divider"></div>
+            <div class="lm-button" ng-mouseup="renameProject()">Rename Project</div>
+        </div>
+    </localmenu>
 </div>
-<!--<div id="project">-->
-    <!--<localmenu class="localmenu" class="left">-->
-        <!--<div class="lm-head" ng-mousedown="data.selectMenu('project')">-->
-            <!--<b>Project</b> <span id="project-name" ng-model="data.projectName" class="project-rename"></span>-->
-        <!--</div>-->
-        <!--<div class="lm-body" ng-if="data.localmenu.project">-->
-            <!--<div class="lm-button" ng-mouseup="newDocument()">New</div>-->
-            <!--<div class="lm-divider"></div>-->
-            <!--<div class="lm-button" ng-mouseup="closeDocument()">Close</div>-->
-            <!--<div class="lm-divider"></div>-->
-            <!--<div class="lm-button" ng-mouseup="renameProject()">Rename Project</div>-->
-        <!--</div>-->
-    <!--</localmenu>-->
-<!--</div>-->
-<!--end of project-->
+<!-- end of project -->
 
 <div id="view-buttons">
     <div ng-repeat="menuItem in data.view.menuItems" ng-click="data.view.viewState = $index" class="menu-item" ng-class="{'menu-item-current': $index == data.view.viewState }">
