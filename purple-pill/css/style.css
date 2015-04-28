@@ -1075,13 +1075,11 @@
                 clear: both;
                 width: 100%;
                 cursor: default;
-                font-family: "Roboto Condensed";
             }
             
                 .parameter-row input {
                     background: transparent;
                     padding: 0 4px;
-                    font-family: "Roboto Condensed";
                 }
                 
                     #parameters-of-master .parameter-row input {
