@@ -108,7 +108,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     $scope.data.sequences[0].masters.push({
                         id : $scope.uniqueMasterId,
                         name : masterName,
-                        displayName : masterName,
+                        displayName : "Master " + $scope.uniqueMasterId,
                         cpsFile : cpsFile,
                         ruleIndex : angular.copy(master.ruleIndex),
                         display : false,

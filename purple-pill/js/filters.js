@@ -148,7 +148,7 @@ var substitutes = [{
 
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
-        if (specimen.name != "glyph range") {
+        if (specimen.name != "Glyph Range") {
             function isSpaceGlyph(glyph) {
                 if (glyph == "space" || glyph == "*n" || glyph == "*p") {
                     return true;
@@ -340,7 +340,7 @@ app.filter('specimenFilter', function() {
                     });
 
                     glyphId++;
-                    if ((options.selectedFontby == "glyph") || (options.selectedFontby == "word" && glyph == "space") || (options.selectedFontby == "specimen" && i == (newText.length - 1))) {
+                    if ((options.selectedFontby == "Glyph") || (options.selectedFontby == "Word" && glyph == "space") || (options.selectedFontby == "Specimen" && i == (newText.length - 1))) {
                         masterId++;
                     }
                     if (masterId == nrOfFonts) {

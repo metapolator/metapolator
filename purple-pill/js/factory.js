@@ -1,7 +1,7 @@
 app.factory("sharedScope", function($rootScope) {
     var scope = $rootScope.$new(true);
     scope.data = {
-        projectName : "SEAN",
+        projectName : "Canola",
         sequences : [{
             id : 0,
             name : "Sequence 1",
@@ -40,7 +40,7 @@ app.factory("sharedScope", function($rootScope) {
             fontby2: false,
         },
         view : {
-            menuItems : ["Parameters", "Design spaces", "Fonts"],
+            menuItems : ["Parameters", "Design Spaces", "Fonts"],
             viewState : 0,
             panels : [3, 10, 3, 10, 3, 1, 12],
             totalPanelParts : 42,

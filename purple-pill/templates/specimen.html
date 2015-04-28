@@ -28,7 +28,7 @@
 
     <div id="specimen-content" rubberband viewport-watcher>
         <!-- standard view -->
-        <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'glyph range'">
+        <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'Glyph Range'">
             <ul id="specimen-ul-0">
                 <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}"><!--
                     --><glyph id="glyph-spec1-{{$index}}" mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph><!--
@@ -36,8 +36,8 @@
             </ul>
         </div>
 
-        <!-- glyph range -->
-        <div id="glyph-range" ng-if="selectedSpecimen.name == 'glyph range'">
+        <!-- Glyph Range -->
+        <div id="glyph-range" ng-if="selectedSpecimen.name == 'Glyph Range'">
             <div ng-repeat="sequence in data.sequences">
                 <ul id="specimen-ul-0" class="glyph-range-master glyph-range" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display || master.edit[0]">
                     <li ng-style="{'height': (fontSize * lineHeight) + 'px', 'margin': (fontSize / 5) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range"><!--

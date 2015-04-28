@@ -167,7 +167,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 display : false,
                 ag : "Ag",
                 name : instanceName,
-                displayName : instanceName,
+                displayName : "Instance " + $scope.uniqueInstanceId,
                 designspace : designspace.id,
                 fontFamily : "Roboto",
                 fontWeight : 700,

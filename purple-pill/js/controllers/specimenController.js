@@ -31,7 +31,7 @@ function($scope, $sce, sharedScope) {
         name : "Pangram 3",
         text : "Quick wafting zephyrs vex bold Jim."
     }, {
-        name : "Something with breaks",
+        name : "Something With Breaks",
         text : "Hey you,*nthe rock*nsteady crew."
     }, {
         name : "AaBbCcDdEe...",
@@ -47,14 +47,14 @@ function($scope, $sce, sharedScope) {
     // only for the masters specimen panel
     $scope.addGlyphRange = function() {
         $scope.specimen.push({
-            name : "glyph range"
+            name : "Glyph Range"
         });
     };
 
     $scope.selectedSpecimen = $scope.specimen[0];
     $scope.fontSize = 144;
     $scope.lineHeight = 0;
-    $scope.fontbys = ["glyph", "word", "specimen"];
+    $scope.fontbys = ["Glyph", "Word", "Specimen"];
     $scope.filterOptions = {
         filter : "",
         strict : 1,
