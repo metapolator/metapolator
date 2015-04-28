@@ -33,13 +33,19 @@ app.directive('specimen2', function() {
     };
 }); 
 
+app.directive('specimentoolbar', function() {
+    return {
+        restrict : 'E',
+        templateUrl : 'templates/specimen-toolbar.html'
+    };
+});
+
 app.directive('masters', function() {
     return {
         restrict : 'E',
         templateUrl : 'templates/masters.html'
     };
 }); 
-
 
 app.directive('designspace', function() {
     return {

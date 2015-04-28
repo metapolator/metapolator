@@ -319,7 +319,8 @@
         height: 100%;
     }
     
-        #specimen-toolbar {
+        specimentoolbar {
+            display: block;
             overflow: visible;
             height: 38px;
             padding: 4px;
@@ -343,12 +344,12 @@
                         background: transparent;
                     }
         
-            #specimen-toolbar input {
+            specimentoolbar input {
                 color: #515151;
                 padding: 4px;
             }
             
-            #specimen-toolbar select {
+            specimentoolbar select {
                 margin-top: 2px;
             }
         
@@ -397,13 +398,16 @@
             }
          
     .fontby-container {
-        width: 160px;
         float: right;
     }
     
         .toolbar-label {
             display: inline-block;
             padding-top: 8px;
+        }
+        
+        .fontby-label {
+            float: right;
         }
    
         localmenu.lm-fontby {
