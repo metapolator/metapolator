@@ -565,13 +565,17 @@
         padding: 9px 10px;
         margin-right: 4px;
         cursor: pointer;
-        background: #eee;
+        background: #fff;
+        color: #515151;
+        border-top: 2px solid #eee;
+        border-left: 2px solid #eee;
+        border-right: 2px solid #eee;
         height: 30px;
     }
 
     #design-space-tabs li.selected {
-        background: #515151;
-        color: #eee;
+        background: #eee;
+        color: #515151;
     }
     
     #design-space-tabs li.add-designspace {
