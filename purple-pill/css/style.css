@@ -184,6 +184,10 @@
             float: right;
         }
         
+        #help a {
+          cursor: alias;
+        }
+
         #engine-mode {
             position: fixed;
             z-index: 1000;
