@@ -366,13 +366,14 @@
 
            .custom-widget-wrapper {
                float:left;
+               padding-top: 4px;
            }
 
            #size-nr {
                font-size: 12px;
-               font-family: "Lato";
                width: 38px;
                margin-right: 3px;
+               margin-top: 2px;
                text-align: right;
                border: 0;
            }
@@ -382,8 +383,7 @@
            }
            
            #filter {
-               background: #eee;
-               border: 0;
+               text-align: right;
                width: 180px;
                margin-right: 2px;
                margin-left: 6px;
