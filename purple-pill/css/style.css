@@ -188,7 +188,7 @@
           cursor: help;
         }
         
-        #help a {
+        #help a, a.newtab {
           cursor: alias;
         }
 
