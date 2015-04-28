@@ -304,14 +304,14 @@
         display: block;
         overflow: visible;
         height: 38px;
-        padding: 4px;
+        padding: 0;
         z-index: 1000;
     }
 
     .toolbar-set {
         float: left;
         background: #eee;
-        padding: 2px;
+        padding: 0 2px 2px 2px;
         margin-right: 8px;
         height: 30px;
     }
@@ -320,7 +320,7 @@
             color: #515151;
             border: 0;
             padding: 4px 4px 0px 4px;
-            height: 26px;
+            height: 28px;
         }
         
            .specimen-tool {
@@ -335,7 +335,7 @@
             
                 .toolbar-set.lm-specimen .lm-head {
                     background: #eee;
-                    padding: 2px;
+                    padding: 0 2px 2px 0;
                 }
             
                 .lm-specimen input {

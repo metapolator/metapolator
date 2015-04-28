@@ -432,7 +432,7 @@ app.directive('strict', function() {
                 svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 14).text(function(){
                     return strictLabels[(strict - 1)];
                 }).style('fill', '#515151');
-                var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#515151').style('fill', 'transparent').style('stroke-width', '1').call(drag);
+                var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#515151').style('fill', 'white').style('stroke-width', '1').call(drag);
                 var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#515151').style('stroke-width', '1');
                 // append hidden buttons
                 var str = [0, 1, 2, 3];
