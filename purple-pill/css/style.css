@@ -184,6 +184,14 @@
             float: right;
         }
         
+        #help .lm-head {
+          cursor: help;
+        }
+        
+        #help a, a.newtab {
+          cursor: alias;
+        }
+
         #engine-mode {
             position: fixed;
             z-index: 1000;
@@ -303,12 +311,12 @@
             font-size: 9px;
             text-transform: uppercase;
             text-align: center;
-            background: #ddd;
+            background: #eee;
         }
 
     .specimen {
         padding: 20px 0 40px 0;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #eee;
     }
 
 
@@ -319,7 +327,8 @@
         height: 100%;
     }
     
-        #specimen-toolbar {
+        specimentoolbar {
+            display: block;
             overflow: visible;
             height: 38px;
             padding: 4px;
@@ -343,12 +352,13 @@
                         background: transparent;
                     }
         
-            #specimen-toolbar input {
+            specimentoolbar input {
                 color: #515151;
-                padding: 4px;
+                height: 21px;
+                padding: 4px 4px 0px 4px;
             }
             
-            #specimen-toolbar select {
+            specimentoolbar select {
                 margin-top: 2px;
             }
         
@@ -365,15 +375,13 @@
            }
 
            .custom-widget-wrapper {
-               float:left;
-               padding-top: 4px;
+               float: left;
            }
 
            #size-nr {
                font-size: 12px;
                width: 38px;
                margin-right: 3px;
-               margin-top: 2px;
                text-align: right;
                border: 0;
            }
@@ -382,13 +390,6 @@
                border: 0;
            }
            
-           #filter {
-               text-align: right;
-               width: 180px;
-               margin-right: 2px;
-               margin-left: 6px;
-           }
-        
             size-rope {
                 float: left;
                 margin-right: 12px;
@@ -396,15 +397,35 @@
                 width: 16px;
                 height: 16px;
             }
+           
+           .gearbox {
+               float: left;
+               margin-left: 4px;
+               background: #515151;
+               padding: 2px;
+               height: 23px;
+           }
+           
+               #filter {
+                   width: 180px;
+                   height: 19px;
+                   border: 0;
+                   background: #eee;
+               }
+        
+
          
     .fontby-container {
-        width: 160px;
         float: right;
     }
     
         .toolbar-label {
             display: inline-block;
             padding-top: 8px;
+        }
+        
+        .fontby-label {
+            float: right;
         }
    
         localmenu.lm-fontby {
@@ -434,11 +455,7 @@
         margin: 0;
         overflow: visible;
     }
-    
-    #specimen-content ul.glyph-range-master {
-        margin-bottom: 40px;
-    }
-    
+       
         #specimen-content ul li, .list-view-col ul li {
             list-style: none;
             display: inline-block;
@@ -481,6 +498,11 @@
                 }
                 
                 #specimen-content li.paragraph-break {
+                    clear: both;
+                    width: 100%;
+                }
+                
+                #specimen-content li.specimen-break {
                     clear: both;
                     width: 100%;
                 }
@@ -574,14 +596,14 @@
     }
 
     .unconfigured {
-        background: #ddd;
+        background: #eee;
     }
     
     .design-space-container {
         width: 100%;
         height: 100%;
         padding: 40px;
-        color: #ddd;
+        color: #eee;
         font-style: italic;
     }
 
@@ -687,7 +709,7 @@
                 z-index: 10;
                 left: 24px;
                 top: 0px;
-                background: #ddd;
+                background: #eee;
                 color: #333;
                 padding: 4px 8px;
                 font-size: 12px;
@@ -855,12 +877,12 @@
         margin-left: 24px;
         padding: 4px 10px;
         width: 50%;
-        color: #ddd;
+        color: #eee;
         cursor: pointer;
         background: #fff;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
-        border: 1px solid #ddd;
+        border: 1px solid #eee;
         border-bottom: 0px;
     }
         
@@ -1200,7 +1222,7 @@
         font-size: 20px;
         font-family: "Lato";
         border: 0px;
-        background: #ddd;
+        background: #eee;
         color: #f85c37;
     }
     
@@ -1264,7 +1286,7 @@
             bottom: 0px;
             height: 100%;
             text-align: center;
-            background: #ddd;
+            background: #eee;
             padding: 12px;
             cursor: default;
         }
@@ -1355,7 +1377,7 @@
         }
     
     .lm-head {
-        cursor: default;
+        cursor: context-menu;
         padding: 8px;
     }
     
@@ -1369,7 +1391,7 @@
             margin-left: 2px;
         }
         
-        .lm-head:hover {
+        .lm-head:hover, .lm-body:hover .lm-head {
             background: #eee;
         }
         
@@ -1424,17 +1446,17 @@
         }
         
             .lm-button:hover, .lm-button.lm-selected {
-                background: #ddd;
+                background: #eee;
             }
             
-            .lm-button.lm-button-hover {
-                background: #ddd;
+            .lm-button-hover {
+                background: #eee;
             }
             
        .lm-divider {
            width: 100%;
            margin: 4px 0;
-           background: #ddd;
+           background: #eee;
            height: 1px;
         }
         

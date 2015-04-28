@@ -55,6 +55,8 @@ app.directive('glyph', function($compile) {
                 element.parent().addClass("line-break");
             } else if (glyphName == "*p") {
                 element.parent().addClass("paragraph-break");
+            } else if (glyphName == "*specimenbreak") {
+                element.parent().addClass("specimen-break");
             } else {
                 if (scope.data.pill == "red") {
                     var svg = scope.data.renderGlyphs(masterName, glyphName);
@@ -376,7 +378,7 @@ app.directive('strict', function() {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
-            var svg = d3.select(element[0]).append('svg').attr('width', '90px').attr('height', '20px');
+            var svg = d3.select(element[0]).append('svg').attr('width', '120px').attr('height', '20px');
             var x;
 
             //drag behaviour
@@ -419,15 +421,19 @@ app.directive('strict', function() {
                     "strict" : strict
                 };
             }
+            
+            var strictLabels = ["Sprinkled", "50–50", "Exclusive"];
 
             // create line and slider
             // centers at 7, 26 and 42
             function redraw() {
                 svg.selectAll('*').remove();
                 var strict = scope.filterOptions.strict;
-                svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 15).text('Strict');
-                var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#515151').style('fill', 'white').style('stroke-width', '1').call(drag);
-                var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#000').style('stroke-width', '1');
+                svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 14).text(function(){
+                    return strictLabels[(strict - 1)];
+                }).style('fill', '#eee');
+                var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#eee').style('fill', 'transparent').style('stroke-width', '1').call(drag);
+                var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#eee').style('stroke-width', '1');
                 // append hidden buttons
                 var str = [0, 1, 2, 3];
                 svg.selectAll('rect').data(str).enter().append('rect').attr('width', 16).attr('height', 10).attr('x', function(d, i) {

@@ -1,13 +1,13 @@
 <localmenu class="localmenu" class="left">
-    <div class="lm-head" ng-mousedown="data.selectMenu('masters')">
+    <div class="lm-head" ng-mousedown="data.selectMenu('masters')" ng-class="{'lm-button-hover':data.localmenu.masters}">
         <b>Masters</b>
     </div>
     <div class="lm-body" ng-if="data.localmenu.masters">
         <div class="lm-button" ng-mouseup="importUfo()">Import ufo…</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="duplicateMasters()">Duplicate</div>
+        <div class="lm-button" ng-mouseup="duplicateMasters()" ng-class="{'inactive': !areMastersSelected()}">Duplicate</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="deleteMasters()">Delete…</div>
+        <div class="lm-button" ng-mouseup="deleteMasters()" ng-class="{'inactive': !areMastersSelected()}">Delete…</div>
     </div>
 </localmenu>
 
@@ -40,7 +40,7 @@
         <div title="Import UFO" id="import-ufo" ng-click="importUfo();" class="list-tool push-button">
             <img src="img/importUfo.png">
         </div>
-        <div title="Duplicate Master(s)" id="duplicate-master" ng-click="duplicateMasters();" class="list-tool push-button">
+        <div title="Duplicate Master(s)" id="duplicate-master" ng-click="duplicateMasters();" class="list-tool push-button" ng-class="{'inactive': !areMastersSelected()}">
             <img src="img/duplicateMaster.png">
         </div>
     </div>
