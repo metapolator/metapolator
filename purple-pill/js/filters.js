@@ -346,7 +346,7 @@ app.filter('specimenFilter', function() {
                         masterId = 0;
                     }
                 }
-                // paragraph break after each loop
+                // specimen break after each loop
                 if (q < masterArray.length - 1) {
                     filtered.push({
                         master : {
@@ -355,8 +355,8 @@ app.filter('specimenFilter', function() {
                             name : master.name,
                             edit : master.edit
                         },
-                        glyphName : "*p",
-                        glyphId : master.name + "_*p_" + glyphId
+                        glyphName : "*specimenbreak",
+                        glyphId : master.name + "_*specimenbreak_" + glyphId
                     });
                 }
             }

@@ -184,6 +184,14 @@
             float: right;
         }
         
+        #help .lm-head {
+          cursor: help;
+        }
+        
+        #help a, a.newtab {
+          cursor: alias;
+        }
+
         #engine-mode {
             position: fixed;
             z-index: 1000;
@@ -346,7 +354,8 @@
         
             specimentoolbar input {
                 color: #515151;
-                padding: 4px;
+                height: 21px;
+                padding: 4px 4px 0px 4px;
             }
             
             specimentoolbar select {
@@ -366,15 +375,13 @@
            }
 
            .custom-widget-wrapper {
-               float:left;
-               padding-top: 4px;
+               float: left;
            }
 
            #size-nr {
                font-size: 12px;
                width: 38px;
                margin-right: 3px;
-               margin-top: 4px;
                text-align: right;
                border: 0;
            }
@@ -383,12 +390,6 @@
                border: 0;
            }
            
-           #filter {
-               width: 180px;
-               margin-right: 2px;
-               margin-left: 6px;
-           }
-        
             size-rope {
                 float: left;
                 margin-right: 12px;
@@ -396,6 +397,23 @@
                 width: 16px;
                 height: 16px;
             }
+           
+           .gearbox {
+               float: left;
+               margin-left: 4px;
+               background: #515151;
+               padding: 2px;
+               height: 23px;
+           }
+           
+               #filter {
+                   width: 180px;
+                   height: 19px;
+                   border: 0;
+                   background: #eee;
+               }
+        
+
          
     .fontby-container {
         float: right;
@@ -437,11 +455,7 @@
         margin: 0;
         overflow: visible;
     }
-    
-    #specimen-content ul.glyph-range-master {
-        margin-bottom: 40px;
-    }
-    
+       
         #specimen-content ul li, .list-view-col ul li {
             list-style: none;
             display: inline-block;
@@ -484,6 +498,11 @@
                 }
                 
                 #specimen-content li.paragraph-break {
+                    clear: both;
+                    width: 100%;
+                }
+                
+                #specimen-content li.specimen-break {
                     clear: both;
                     width: 100%;
                 }
@@ -1358,7 +1377,7 @@
         }
     
     .lm-head {
-        cursor: default;
+        cursor: context-menu;
         padding: 8px;
     }
     
