@@ -17,7 +17,7 @@ google-chrome-stable --js-flags="--harmony --harmony_proxies";
 
 If you have enabled `chrome://flags/#enable-javascript-harmony`, then disable it.
 
-# Learn more
+### Learn more
 
 Our [FAQ](https://github.com/metapolator/metapolator/wiki/faq) answers some common questions about the project.
 
