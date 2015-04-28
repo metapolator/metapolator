@@ -18,11 +18,14 @@
     <size-rope></size-rope>
 </div>
 
-<input placeholder="Mix glyphs…" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
-
-<div title="Set how glyphs are mixed with the specimen" class="custom-widget-wrapper">
-    <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
+<div class="gearbox">
+    <input placeholder="Mix glyphs…" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
+    
+    <div title="Set how glyphs are mixed with the specimen" class="custom-widget-wrapper">
+        <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
+    </div>   
 </div>
+
 
 <div class="fontby-container">
     <localmenu class="localmenu lm-fontby right" ng-if="selectedSpecimen.name != 'glyph range'">
