@@ -1,6 +1,6 @@
 <localmenu class="localmenu lm-specimen" class="left">
     <div class="lm-head" ng-mousedown="data.selectMenu('specimen1')">
-        <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-trim="false" ng-blur="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
+        <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-trim="false" ng-keyup="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
     </div>
     <div class="lm-body" ng-if="data.localmenu.specimen1">
         <div ng-repeat-start="specimenCat in specimen">
