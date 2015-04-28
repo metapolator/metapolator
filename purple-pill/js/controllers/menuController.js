@@ -28,7 +28,9 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.closeDocument = function() {
-        alert("Close Document");
+        if (confirm("Close this window?\n\nWARNING: This is a demo,\neverything will be lost")) {
+          window.close();
+        }
         $scope.data.localmenu.project = false;
     };
 
