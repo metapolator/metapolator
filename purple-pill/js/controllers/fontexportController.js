@@ -49,17 +49,19 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           , bundleFolderName = "metapolator-export-" + get_timestamp()
           , bundle_filename = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
-          , message = "Exporting Zipped UFO fonts: " + bundle_filename
+          , message = "<h2>Exporting Zipped UFO fonts</h2>" + bundle_filename + "<br/><br/>"
           ;
 
         $scope.data.alert(message, true);
 
-        ngProgress.setParent(document.getElementById("export-progressbar"));
+        var progressbar_element = document.getElementById("export-progressbar")
+          , label_element = document.getElementById("export-progress-label");
+        ngProgress.setParent(progressbar_element);
         var container = ngProgress.getDomElement()[0];
         container.style.position = "absolute";
         container.style.top = "auto";
         container.style.bottom = "0px";
-        ngProgress.height("20px");
+        ngProgress.height("16px");
         ngProgress.color("green");
         ngProgress.start();
 
@@ -132,8 +134,12 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                   ;
                 model.getComputedStyle(glyph);
                 ngProgress.set(CPS_phase_percentage * current_glyph / total_glyphs);
+
+                label_element.style.display = "block";
+                label_element.innerHTML = message + "Calculating glyph " + String(current_glyph+1) + " (of " + String(total_glyphs) + ")...";
                 $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
             } else {
+                label_element.innerHTML = message + "Packing UFO ZIP instances...<br/><em>(this may take a while)</em>";
                 ngProgress.set(CPS_phase_percentage);
                 $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             }
@@ -152,11 +158,15 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                 bundleFolder.file(filename, zipped_data, {binary:true});
 
                 ngProgress.set(CPS_phase_percentage + (100 - CPS_phase_percentage) * current_instance / total_instances);
+
+                if (current_instance == total_instances)
+                    label_element.innerHTML = message + "Packing the final ZIP container.";
                 $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             } else {
                 var bundle_data = bundle.generate({type:"blob"});
                 $scope.data.stateless.saveAs(bundle_data, bundle_filename);
 
+                label_element.style.display = "none";
                 ngProgress.complete();
             }
         }
