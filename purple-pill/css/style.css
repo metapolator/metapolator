@@ -233,6 +233,20 @@
 			 #panel-6.panel {
 			     float: right;
 			 }
+
+             #export-progress-label {
+                display: none;
+                border-radius: 6px;
+                position: fixed;
+                z-index: 10001;
+                top: calc(50% - 50px);
+                padding: 40px;
+                background: #fff;
+                box-shadow: 0 0 20px rgba(0,0,0,0.6);
+                width: 320px;
+                min-height: 100px;
+                left: calc(50% - 160px);
+             }
 			
 			.sub-panel {
 			    overflow-y: auto;
