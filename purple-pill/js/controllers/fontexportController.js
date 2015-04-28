@@ -49,17 +49,19 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           , bundleFolderName = "metapolator-export-" + get_timestamp()
           , bundle_filename = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
-          , message = "Exporting Zipped UFO fonts: " + bundle_filename
+          , message = "<h2>Exporting Zipped UFO fonts</h2>" + bundle_filename + "<br/><br/>"
           ;
 
         $scope.data.alert(message, true);
 
-        ngProgress.setParent(document.getElementById("export-progressbar"));
+        var progressbar_element = document.getElementById("export-progressbar")
+          , label_element = document.getElementById("export-progress-label");
+        ngProgress.setParent(progressbar_element);
         var container = ngProgress.getDomElement()[0];
         container.style.position = "absolute";
         container.style.top = "auto";
         container.style.bottom = "0px";
-        ngProgress.height("20px");
+        ngProgress.height("16px");
         ngProgress.color("green");
         ngProgress.start();
 
@@ -98,10 +100,13 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         }
 */
 
-        var glyphs_for_cache = Array();
+        var glyphs_for_cache = Array()
+          , instances_for_export = Array()
+          ;
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont){
+                    instances_for_export.push(instance);
                     var model = $scope.data.stateful.project.open(instance.name)
                       , glyphs = model.query('master#' + instance.name).children
                       , i, j
@@ -115,40 +120,58 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
 
         var current_glyph = 0
           , total_glyphs = glyphs_for_cache.length
+          , current_instance = 0
+          , total_instances = instances_for_export.length
+          , UI_UPDATE_TIMESLICE = 100 //msecs
+          , CPS_phase_percentage = 80 //The other 20% of the time is estimated to be spent packing
+                                      //the instances and the final zip file.
           ;
         function exportFont_compute_CPS_chunk(){
             if (current_glyph < total_glyphs){
-                ngProgress.set(100.0 * current_glyph / total_glyphs);
                 var value = glyphs_for_cache[current_glyph++]
                   , model = value[0]
                   , glyph = value[1]
                   ;
                 model.getComputedStyle(glyph);
-                $timeout(exportFont_compute_CPS_chunk, 100);
+                ngProgress.set(CPS_phase_percentage * current_glyph / total_glyphs);
+
+                label_element.style.display = "block";
+                label_element.innerHTML = message + "Calculating glyph " + String(current_glyph+1) + " (of " + String(total_glyphs) + ")...";
+                $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
             } else {
-                angular.forEach($scope.data.families, function(family) {
-                    angular.forEach(family.instances, function(instance) {
-                        if (instance.exportFont) {
-                            var targetDirName = instance.displayName + ".ufo"
-                              , filename = targetDirName + ".zip"
-                              ;
-                            var precision = -1 //no rounding
-                              , zipped_data = $scope.data.stateful.project.getZippedInstance(
-                                               instance.name, targetDirName, precision, "uint8array")
-                              ;
-                            bundleFolder.file(filename, zipped_data, {binary:true});
-                        }
-                    });
-                });
-
-                var bundle_data = bundle.generate({type:"blob"});
-                $scope.data.stateless.saveAs(bundle_data, bundle_filename);
-
-                ngProgress.complete();
+                label_element.innerHTML = message + "Packing UFO ZIP instances...<br/><em>(this may take a while)</em>";
+                ngProgress.set(CPS_phase_percentage);
+                $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             }
         }
         
-        $timeout(exportFont_compute_CPS_chunk, 100);
+        function exportFont_pack_instance_chunk(){
+            if (current_instance < total_instances){
+                var instance = instances_for_export[current_instance++]
+                  , targetDirName = instance.displayName + ".ufo"
+                  , filename = targetDirName + ".zip"
+                  ;
+                var precision = -1 //no rounding
+                  , zipped_data = $scope.data.stateful.project.getZippedInstance(
+                                   instance.name, targetDirName, precision, "uint8array")
+                  ;
+                bundleFolder.file(filename, zipped_data, {binary:true});
+
+                ngProgress.set(CPS_phase_percentage + (100 - CPS_phase_percentage) * current_instance / total_instances);
+
+                if (current_instance == total_instances)
+                    label_element.innerHTML = message + "Packing the final ZIP container.";
+                $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
+            } else {
+                var bundle_data = bundle.generate({type:"blob"});
+                $scope.data.stateless.saveAs(bundle_data, bundle_filename);
+
+                label_element.style.display = "none";
+                ngProgress.complete();
+            }
+        }
+
+        $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
     };
 
     $scope.data.instancesForExport = function() {
