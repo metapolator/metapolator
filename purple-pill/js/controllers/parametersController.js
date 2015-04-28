@@ -155,7 +155,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             var operatorName = operator.name;
 
             operator.low = operator.low.replace(',', '.');
-            if (isNaN(operator.low)) {
+            if (isNaN(operator.low) || operator.low === "") {
               // Not a number! Use previous value.
               operator.low = operator.prev;
             } else {
