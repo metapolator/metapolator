@@ -377,7 +377,6 @@ app.directive('strict', function() {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
             var svg = d3.select(element[0]).append('svg').attr('width', '90px').attr('height', '20px');
-            var strict = scope.filterOptions.strict;
             var x;
 
             //drag behaviour
@@ -391,6 +390,7 @@ app.directive('strict', function() {
                 d3.select(this).attr('x', positionX(x).x);
                 scope.filterOptions.strict = positionX(x).strict;
                 scope.$apply();
+                redraw();
             });
 
             function limitX(x) {
@@ -422,9 +422,31 @@ app.directive('strict', function() {
 
             // create line and slider
             // centers at 7, 26 and 42
-            svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 15).text('Strict');
-            var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#515151').style('fill', 'white').style('stroke-width', '1').call(drag);
-            var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#000').style('stroke-width', '1');
+            function redraw() {
+                svg.selectAll('*').remove();
+                var strict = scope.filterOptions.strict;
+                svg.append('text').attr('class', 'slider-label').attr('x', 54).attr('y', 15).text('Strict');
+                var slider = svg.append('rect').attr('width', 10).attr('height', 10).attr('x', ((strict - 1) * 16 + 2)).attr('y', 5).style('stroke', '#515151').style('fill', 'white').style('stroke-width', '1').call(drag);
+                var line = svg.append('line').attr('x1', 7).attr('y1', 10).attr('x2', 42).attr('y2', 10).style('stroke', '#000').style('stroke-width', '1');
+                // append hidden buttons
+                var str = [0, 1, 2, 3];
+                svg.selectAll('rect').data(str).enter().append('rect').attr('width', 16).attr('height', 10).attr('x', function(d, i) {
+                    return (d - 1) * 16 - 1;
+                }).style('display', function(d,i) {
+                    if (d == strict) {
+                        return 'none';
+                    } else {
+                        return 'block';
+                    }
+                }).attr('y', 5).style('fill', 'transparent').on("click", function(d, i) {
+                    scope.filterOptions.strict = d;
+                    scope.$apply();
+                    redraw();
+                });
+            }
+
+            redraw();
+
         }
     };
 });
