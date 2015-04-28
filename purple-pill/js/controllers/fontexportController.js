@@ -49,7 +49,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           , bundleFolderName = "metapolator-export-" + get_timestamp()
           , bundle_filename = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
-          , message = "Exporting Zipped UFO fonts: " + bundle_filename
+          , message = "<h2>Exporting Zipped UFO fonts</h2>" + bundle_filename + "<br/><br/>"
           ;
 
         $scope.data.alert(message, true);
