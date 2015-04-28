@@ -15,6 +15,8 @@ function($scope, $sce, sharedScope) {
     // specimenPanel tells the filter to use masters or instances
     $scope.specimenPanel
 
+    // Preset Specimen Texts
+    // NOTE: This is an array of arrays, to create the specimen dropdown picker's separators
     $scope.specimen = [[{
         name : "[Enter your own text]",
         text : "Metapolator"
