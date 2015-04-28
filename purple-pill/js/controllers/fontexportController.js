@@ -22,6 +22,11 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
 
     $scope.data.exportFonts = function() {
 
+        //Do not trigger the export routine if no instance is selected for export,
+        //otherwise it would result in an empty ZIP file.
+        if (!$scope.data.instancesForExport())
+            return;
+
         function zero_padding(value){
             return value < 10 ? "0" + String(value) : String(value);
         }
