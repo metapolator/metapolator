@@ -16,11 +16,8 @@ function($scope, $sce, sharedScope) {
     $scope.specimenPanel
 
     $scope.specimen = [[{
-        name : "Metapolator",
-        text : "Metapolator"
-    }], [{
         name : "[Enter your own text]",
-        text : ""
+        text : "Metapolator"
     }], [{
         name : "Pangram 1",
         text : "The quick brown fox jumps over the lazy dog."
