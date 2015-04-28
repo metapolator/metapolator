@@ -54,6 +54,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
 
         $scope.data.alert(message, true);
 
+        /*
         ngProgress.setParent(document.getElementById("export-progressbar"));
         var container = ngProgress.getDomElement()[0];
         container.style.position = "absolute";
@@ -62,6 +63,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         ngProgress.height("20px");
         ngProgress.color("green");
         ngProgress.start();
+        */
 
 /*
 //Implementation using generators:
@@ -116,16 +118,29 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         var current_glyph = 0
           , total_glyphs = glyphs_for_cache.length
           ;
+          
+        function setProgress(width, text) {
+            $("#progressbar").css("opacity", 1);
+            $("#progressbar").css("width", width + "%");
+            $("#progresslabel").html(text);
+        }
+        
+        function completeProgress() {
+            $("#progressbar").css("opacity", 0);
+        }
+          
         function exportFont_compute_CPS_chunk(){
             if (current_glyph < total_glyphs){
-                ngProgress.set(100.0 * current_glyph / total_glyphs);
                 var value = glyphs_for_cache[current_glyph++]
                   , model = value[0]
                   , glyph = value[1]
                   ;
                 model.getComputedStyle(glyph);
+                var text = "Computing: " + current_glyph + "th glyph of " + total_glyphs + " glyphs...";
+                setProgress((80 * current_glyph / total_glyphs), text);
                 $timeout(exportFont_compute_CPS_chunk, 100);
             } else {
+                setProgress(80, "Zipping your Instances");
                 angular.forEach($scope.data.families, function(family) {
                     angular.forEach(family.instances, function(instance) {
                         if (instance.exportFont) {
@@ -143,8 +158,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
 
                 var bundle_data = bundle.generate({type:"blob"});
                 $scope.data.stateless.saveAs(bundle_data, bundle_filename);
-
-                ngProgress.complete();
+                completeProgress();
             }
         }
         

@@ -1313,8 +1313,39 @@
         }
         
 
+           
             
-            
+/**************** progress bar************************/
+
+
+    #fontfamily-panel {
+        height: calc(100% - 44px);
+    }
+    
+    #progressbar-container {
+        margin-top: 10px;
+        height: 34px;
+        width: 100%;
+        background: #eee;
+        position: relative;
+    }
+    
+        #progressbar {
+            background: #f01616;
+            height: 100%;
+            width: 0;
+            transition: all 0.5s;
+        }
+        
+        #progresslabel {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            color: #515151;
+        }
+
+
+
             
 /**************** local menu ************************/
 
