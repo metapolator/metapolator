@@ -1,6 +1,6 @@
 @import 'lib/flexmaster.cps';
 
-glyph, point > center, contour > p  {
+glyph, point > center, contour > p, component  {
     sidebearingLeftSummand: 0.5 * master:spacingS + 0.5 * glyph:spacingS;
     sidebearingRightSummand: 0.5 * master:spacingS + 0.5 * glyph:spacingS;
     widthFactor: master:widthF * glyph:widthF;

@@ -22,7 +22,7 @@ point > *{
     penstroke: parent:parent;
 }
 
-penstroke{
+penstroke, component{
     glyph: parent;
 }
 

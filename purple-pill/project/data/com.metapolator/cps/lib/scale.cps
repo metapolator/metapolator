@@ -1,5 +1,5 @@
 /* scale the skeleton */
-point>center, contour > p{
+point>center, contour > p, component{
     /* this way we can override "scale" and still have access to it's
      * original value
      */
@@ -27,9 +27,12 @@ contour > p {
     on: transform * skeleton:on;
 }
 
+component {
+    transformation: translate * originalTransformation;
+}
 
 /* define default higher level properties, override in your master */
-glyph, point > center, contour > p {
+glyph, point > center, contour > p, component {
     overallWidth: 1;
     xTranslate: 0;
     yTranslate: 0;
