@@ -6,7 +6,8 @@ First, quit the browser.
 
 Then, if you use a Mac, open Terminal and run:
 ```sh
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --js-flags="--harmony --harmony_proxies";
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\
+\ Chrome --js-flags="--harmony --harmony_proxies";
 ```
 
 If you use GNU+Linux, open a shell and run:
