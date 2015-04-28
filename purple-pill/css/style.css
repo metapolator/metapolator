@@ -1363,7 +1363,7 @@
         }
     
     .lm-head {
-        cursor: default;
+        cursor: context-menu;
         padding: 8px;
     }
     
