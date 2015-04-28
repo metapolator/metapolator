@@ -67,7 +67,7 @@ function($scope, $sce, sharedScope) {
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
             manageSpaces();
-        }, 100);
+        }, 10);
     }, true);
 
     $scope.$watch("fontSize", function(newVal) {
@@ -84,7 +84,7 @@ function($scope, $sce, sharedScope) {
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
             manageSpaces();
-        }, 100);
+        }, 10);
     }, true);
 
     var startPosition = parseInt($("#specimen-content").css("padding-left"));
@@ -109,7 +109,7 @@ function($scope, $sce, sharedScope) {
                         "clear" : "both"
                     });
                 }
-                if (brokenEnd && !$(this).hasClass("space-character") && !$(this).hasClass("line-break") && !$(this).hasClass("paragraph-break")) {
+                if (brokenEnd && !$(this).hasClass("space-character") && !$(this).hasClass("line-break") && !$(this).hasClass("paragraph-break") && !$(this).hasClass("specimen-break")) {
                     $(prev_space).css({
                         "width" : "0",
                         "clear" : "both"
@@ -119,7 +119,7 @@ function($scope, $sce, sharedScope) {
             if ($(this).hasClass("space-character")) {
                 prev_space = this;
                 brokenEnd = false;
-            } else if ($(this).hasClass("line-break") || $(this).hasClass("paragraph-break")) {
+            } else if ($(this).hasClass("line-break") || $(this).hasClass("paragraph-break") || $(this).hasClass("specimen-break")) {
                 brokenEnd = false;
             } else {
                 brokenEnd = true;
@@ -130,6 +130,14 @@ function($scope, $sce, sharedScope) {
 
     $scope.updateLineHeight = function() {
         $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+    };
+    
+    $scope.getLineHeight = function (glyphName) {
+        var lineHeight = $scope.lineHeight * $scope.fontSize;
+        if (glyphName == "*specimenbreak") {
+            lineHeight /= 2; 
+        }
+        return lineHeight;
     };
 
     $scope.selectSpecimen = function(specimen) {

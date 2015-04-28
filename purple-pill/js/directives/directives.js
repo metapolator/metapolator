@@ -55,6 +55,8 @@ app.directive('glyph', function($compile) {
                 element.parent().addClass("line-break");
             } else if (glyphName == "*p") {
                 element.parent().addClass("paragraph-break");
+            } else if (glyphName == "*specimenbreak") {
+                element.parent().addClass("specimen-break");
             } else {
                 if (scope.data.pill == "red") {
                     var svg = scope.data.renderGlyphs(masterName, glyphName);

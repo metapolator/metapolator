@@ -437,11 +437,7 @@
         margin: 0;
         overflow: visible;
     }
-    
-    #specimen-content ul.glyph-range-master {
-        margin-bottom: 40px;
-    }
-    
+       
         #specimen-content ul li, .list-view-col ul li {
             list-style: none;
             display: inline-block;
@@ -484,6 +480,11 @@
                 }
                 
                 #specimen-content li.paragraph-break {
+                    clear: both;
+                    width: 100%;
+                }
+                
+                #specimen-content li.specimen-break {
                     clear: both;
                     width: 100%;
                 }
