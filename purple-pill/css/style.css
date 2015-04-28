@@ -354,7 +354,7 @@
         
             specimentoolbar input {
                 color: #515151;
-                height: 19px;
+                height: 21px;
                 padding: 4px 4px 0px 4px;
             }
             
@@ -408,6 +408,7 @@
            
                #filter {
                    width: 180px;
+                   height: 19px;
                    border: 0;
                    background: #eee;
                }
