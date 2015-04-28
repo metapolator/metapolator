@@ -154,6 +154,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13) {
             var operatorName = operator.name;
 
+            operator.low = operator.low.replace(',', '.');
             if (isNaN(operator.low)) {
               // Not a number! Use previous value.
               operator.low = operator.prev;
