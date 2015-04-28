@@ -2,7 +2,7 @@
     <div id="specimen-toolbar">
         <localmenu class="localmenu lm-specimen" class="left">
             <div class="lm-head" ng-mousedown="data.selectMenu('specimen1')">
-                <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-blur="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
+                <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-trim="false" ng-blur="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
             </div>
             <div class="lm-body" ng-if="data.localmenu.specimen1">
                 <div ng-repeat-start="specimenCat in specimen">
@@ -16,7 +16,7 @@
         <div title="Drag to Change Font Size" class="custom-widget-wrapper">
             <size-rope></size-rope>
         </div>
-        <input placeholder="Mixer" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
+        <input placeholder="Mixer" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
         <div title="Sprinkled | 50–50 | Exclusive Mixing" class="custom-widget-wrapper">
            <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
         </div>
