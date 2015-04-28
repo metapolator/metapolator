@@ -1640,3 +1640,7 @@
 }
     
 
+/* hack to make the facebook widget sit up 5px to align with twitter and pinterest */ 
+.fb_iframe_widget span {
+  height: 25px !important;
+}
