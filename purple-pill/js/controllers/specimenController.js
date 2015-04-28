@@ -13,15 +13,15 @@ function($scope, $sce, sharedScope) {
     /*****************filter parameters *****************/
 
     // specimenPanel tells the filter to use masters or instances
-    $scope.specimenPanel;
+    $scope.specimenPanel
 
-    $scope.specimen = [{
+    $scope.specimen = [[{
         name : "Metapolator",
         text : "Metapolator"
-    }, {
+    }], [{
         name : "[Enter your own text]",
         text : ""
-    },{
+    }], [{
         name : "Pangram 1",
         text : "The quick brown fox jumps over the lazy dog."
     }, {
@@ -30,7 +30,7 @@ function($scope, $sce, sharedScope) {
     }, {
         name : "Pangram 3",
         text : "Quick wafting zephyrs vex bold Jim."
-    }, {
+    }], [{
         name : "Something With Breaks",
         text : "Hey you,*nthe rock*nsteady crew."
     }, {
@@ -39,19 +39,19 @@ function($scope, $sce, sharedScope) {
     }, {
         name : "Numbers",
         text : "0123456789"
-    }, {
+    }], [{
         name : "Paragraph 1",
         text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armourlike back and if he lifted his head a little, he could see his brown belly slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
-    }];
+    }], []];
 
     // only for the masters specimen panel
     $scope.addGlyphRange = function() {
-        $scope.specimen.push({
+        $scope.specimen[$scope.specimen.length - 1].push({
             name : "Glyph Range"
         });
     };
 
-    $scope.selectedSpecimen = $scope.specimen[0];
+    $scope.selectedSpecimen = $scope.specimen[0][0];
     $scope.fontSize = 144;
     $scope.lineHeight = 0;
     $scope.fontbys = ["Glyph", "Word", "Specimen"];
@@ -72,11 +72,10 @@ function($scope, $sce, sharedScope) {
         }, 100);
     }, true);
 
-
     $scope.$watch("fontSize", function(newVal) {
         sizeCounter++;
         $scope.updateLineHeight();
-        // make with auto for each resizing 
+        // make with auto for each resizing
         if (sizeCounter > 2) {
             var ul = document.getElementById("specimen-ul-" + $scope.data.view.viewState);
             var children = ul.children;
@@ -134,13 +133,13 @@ function($scope, $sce, sharedScope) {
     $scope.updateLineHeight = function() {
         $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
     };
-    
+
     $scope.selectSpecimen = function(specimen) {
         $scope.selectedSpecimen = specimen;
         $scope.data.localmenu.specimen1 = false;
         $scope.data.localmenu.specimen2 = false;
     };
-    
+
     $scope.selectFontby = function(fontby) {
         $scope.filterOptions.selectedFontby = fontby;
         $scope.data.localmenu.fontby1 = false;

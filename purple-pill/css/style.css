@@ -1425,7 +1425,7 @@
             text-decoration: none;
         }
         
-            .lm-button:hover {
+            .lm-button:hover, .lm-button.lm-selected {
                 background: #ddd;
             }
             

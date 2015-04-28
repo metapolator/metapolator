@@ -5,7 +5,10 @@
                 <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-blur="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
             </div>
             <div class="lm-body" ng-if="data.localmenu.specimen1">
-                <div class="lm-button" ng-repeat="specim in specimen" ng-if="specim != selectedSpecimen" ng-mouseup="selectSpecimen(specim)">{{specim.name}}</div>
+                <div ng-repeat-start="specimenCat in specimen">
+                    <div class="lm-button" ng-repeat="specim in specimenCat" ng-class="{'lm-selected': specim == selectedSpecimen}" ng-mouseup="selectSpecimen(specim)">{{specim.name}}</div>
+                </div>
+                <div ng-repeat-end class="lm-divider"></div>
             </div>
         </localmenu>
         
@@ -24,7 +27,7 @@
                     {{filterOptions.selectedFontby}}
                 </div>
                 <div class="lm-body" ng-if="data.localmenu.fontby1">
-                    <div class="lm-button" ng-repeat="fontby in fontbys" ng-if="fontby != filterOptions.selectedFontby" ng-mouseup="selectFontby(fontby)">{{fontby}}</div>
+                    <div class="lm-button" ng-repeat="fontby in fontbys" ng-class="{'lm-selected': fontby == filterOptions.selectedFontby}" ng-mouseup="selectFontby(fontby)">{{fontby}}</div>
                 </div>
             </localmenu>
         </div>
