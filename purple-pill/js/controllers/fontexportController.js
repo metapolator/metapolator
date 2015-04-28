@@ -48,6 +48,11 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           ;
         $scope.data.alert(message, true);
 
+        ngProgress.setParent(document.getElementById("export-progressbar"));
+        var container = ngProgress.getDomElement()[0];
+        container.style.position = "absolute";
+        container.style.top = "auto";
+        container.style.bottom = "0px";
         ngProgress.height("20px");
         ngProgress.color("green");
         ngProgress.start();
