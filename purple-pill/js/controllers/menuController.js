@@ -23,7 +23,7 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.newDocument = function() {
-        alert("New Document");
+        myRef = window.open(''+self.location,'New Metapolator window');
         $scope.data.localmenu.project = false;
     };
 
