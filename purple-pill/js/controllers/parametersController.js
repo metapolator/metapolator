@@ -52,6 +52,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var nrOfHasOperator = 0;
                 var lowest = null;
                 var highest = null;
+                var prev = null;
                 // get all the elements - depending on the level we are in - with edit == true
                 var elements = $scope.findElements(level);
                 angular.forEach(elements, function(element) {
@@ -88,12 +89,18 @@ app.controller("parametersController", function($scope, sharedScope) {
                 if (lowest == highest) {
                     range = false;
                 }
+
+                if (!prev) {
+                  prev = lowest;
+                }
+
                 if (hasThisOperator) {
                     theOperators.push({
                         name : theOperator.name,
                         range : range,
                         low : lowest,
-                        high : highest
+                        high : highest,
+                        prev: prev
                     });
                 }
             });
@@ -146,6 +153,14 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.changeParameter = function(parameterName, operator, elementType, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13) {
             var operatorName = operator.name;
+
+            if (isNaN(operator.low)) {
+              // Not a number! Use previous value.
+              operator.low = operator.prev;
+            } else {
+              operator.prev = operator.low;
+            }
+
             var key = parameterName + "F";
             if (parameterName == "spacing") {
                 var key = parameterName + "S";
