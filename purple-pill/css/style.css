@@ -184,6 +184,14 @@
             float: right;
         }
         
+        #help .lm-head {
+          cursor: help;
+        }
+        
+        #help a {
+          cursor: alias;
+        }
+
         #engine-mode {
             position: fixed;
             z-index: 1000;
@@ -1368,7 +1376,7 @@
         }
     
     .lm-head {
-        cursor: default;
+        cursor: context-menu;
         padding: 8px;
     }
     
