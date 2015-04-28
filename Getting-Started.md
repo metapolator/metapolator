@@ -21,4 +21,4 @@ If you have enabled `chrome://flags/#enable-javascript-harmony`, then disable it
 
 Our [FAQ](https://github.com/metapolator/metapolator/wiki/faq) answers some common questions about the project.
 
-If you want to see Metapolator continue to improve, please order a fine logo T-shirt for US$20 (+ shipping) from <https://teespring.com/metapolator-beta-0-3-0> or donate via PayPal to lasse@graphicore.de
+If you want to see Metapolator continue to improve, please order a fine logo T-shirt for US$20 (+ shipping) from [teespring.com/metapolator-beta-0-3-0](https://teespring.com/metapolator-beta-0-3-0) or donate via PayPal to lasse@graphicore.de
