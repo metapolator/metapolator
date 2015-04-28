@@ -23,12 +23,14 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.newDocument = function() {
-        alert("New Document");
+        myRef = window.open(''+self.location,'New Metapolator window');
         $scope.data.localmenu.project = false;
     };
 
     $scope.closeDocument = function() {
-        alert("Close Document");
+        if (confirm("Close this window?\n\nWARNING: This is a demo,\neverything will be lost")) {
+          window.close();
+        }
         $scope.data.localmenu.project = false;
     };
 
