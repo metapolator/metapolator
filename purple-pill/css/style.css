@@ -401,7 +401,7 @@
            .gearbox {
                float: left;
                margin-left: 4px;
-               background: #515151;
+               background: #eee;
                padding: 2px;
                height: 23px;
            }
@@ -410,11 +410,9 @@
                    width: 180px;
                    height: 19px;
                    border: 0;
-                   background: #eee;
+                   background: #fff;
                }
-        
-
-         
+                 
     .fontby-container {
         float: right;
     }
