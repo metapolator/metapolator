@@ -21,7 +21,13 @@ We'll post a screencast that demonstrates how to use the tool soon.
 
 #### How can I contribute to the project?﻿
 
-Introduce yourself in the [Metapolator G+ Community](https://plus.google.com/communities/110027004108709154749) and let us know how you'd like to contribute. You can also support the project by [buying a T shirt](http://teespring.com/metapolator-beta-0-3-0), or with a donation.
+We'd love to hear from you about what you do and don't like about the project.
+Introduce yourself in the [Metapolator G+ Community](https://plus.google.com/communities/110027004108709154749) and let us know how you'd like to contribute.
+You can also support the project financially by [buying a T shirt](http://teespring.com/metapolator-beta-0-3-0) or sending a donation.
+
+If you'd like to get more involved in our development discussions, you can set Github to email you and you can reply via email too. At [github.com/metapolator/metapolator](http://github.com/metapolator/metapolator) simply set the `Watch` status on:
+
+![Watch Metapolator on Github](http://metapolator.com/images/wiki/watch-us.png) 
 
 #### How do I donate money to the project?
 
