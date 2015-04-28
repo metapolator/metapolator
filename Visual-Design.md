@@ -1,6 +1,6 @@
 # Design Concept
 
-![screenshot](![concept](https://cloud.githubusercontent.com/assets/261579/7368180/9f111d54-ed73-11e4-9751-18efa9e426a8.png)
+![screenshot](https://cloud.githubusercontent.com/assets/261579/7368180/9f111d54-ed73-11e4-9751-18efa9e426a8.png)
 
 The UI visual design follows the characteristics and the architecture of Metapolator: Beeing an alien in the world of font production and stand out as an revolutionary tool. At the same time we want to hide the UI framework as much as possible to give the user clear view to the fonts he is working on without loosing interaction and intuitive workflow.
 
