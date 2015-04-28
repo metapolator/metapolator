@@ -1331,7 +1331,7 @@
     }
     
         #progressbar {
-            background: #515151;
+            background: #c9eac8;
             height: 100%;
             width: 0;
             transition: all 0.5s;
@@ -1341,7 +1341,7 @@
             position: absolute;
             top: 12px;
             left: 12px;
-            color: #515151;
+            color: #000;
         }
 
 
