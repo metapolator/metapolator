@@ -502,6 +502,7 @@ app.directive('sizeRope', function($document) {
 
             //drag behaviour
             var drag = d3.behavior.drag().on('dragstart', function() {
+                diamondfill.style('stroke', 'transparent').style('fill', 'transparent');
                 fontsize = parseInt(scope.fontSize);
                 pixelOffset = getpixelOffset(fontsize);
                 startsize = fontsize;
@@ -511,12 +512,11 @@ app.directive('sizeRope', function($document) {
                 $(document.body).append(templayer);
                 svgT = d3.select("#templayer").append('svg').attr('width', '100%').attr('height', '100%');
                 screenX = $(element[0]).offset().left;
-                screenY = $(element[0]).offset().top;
+                screenY = $(element[0]).offset().top - 9;
                 gT = svgT.append('g');
                 diamondT = svgT.append('g').attr('transform', 'translate(' + screenX + ',' + screenY + ')').append('polygon').attr('fill', '#515151').attr('points', '8,0 16,8 8,16 0,8').style('stroke', '#515151').style('stroke-width', 1).style('fill', 'white');
 
             }).on('drag', function() {
-                diamondfill.style('stroke', '#fff');
                 var x = d3.event.x - diamondSize;
                 var y = d3.event.y - diamondSize;
                 var originX = screenX + diamondSize;
@@ -535,7 +535,7 @@ app.directive('sizeRope', function($document) {
                 scope.$apply();
                 lastLength = thisLength;
             }).on('dragend', function() {
-                diamondfill.style('stroke', 'black');
+                diamondfill.style('stroke', '#515151').style('fill', 'white');
                 $("#templayer").remove();
             });
 

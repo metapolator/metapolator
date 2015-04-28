@@ -1,4 +1,4 @@
-<localmenu class="localmenu lm-specimen" class="left">
+<localmenu class="localmenu lm-specimen toolbar-set" class="left">
     <div class="lm-head" ng-mousedown="data.selectMenu('specimen1')">
         <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-trim="false" ng-keyup="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
     </div>
@@ -12,22 +12,22 @@
     </div>
 </localmenu>
 
-<input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
-
-<div title="Drag to Change Font Size" class="custom-widget-wrapper">
-    <size-rope></size-rope>
+<div class="toolbar-set">
+    <input type="text" ng-model="fontSize" size="3" class="specimen-tool size-nr">
+    <div title="Drag to Change Font Size" class="specimen-tool size-rope">
+        <size-rope></size-rope>
+    </div>
 </div>
 
-<div class="gearbox">
+<div class="toolbar-set">
     <input placeholder="Mix glyphs…" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
-    
-    <div title="Set how glyphs are mixed with the specimen" class="custom-widget-wrapper">
+    <div title="Set how glyphs are mixed with the specimen" class="specimen-tool strict-box">
         <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
     </div>   
 </div>
 
 
-<div class="fontby-container">
+<div class="toolbar-set fontby-container">
     <localmenu class="localmenu lm-fontby right" ng-if="selectedSpecimen.name != 'glyph range'">
         <div class="lm-head" ng-mousedown="data.selectMenu('fontby1')">
             {{filterOptions.selectedFontby}}
@@ -38,5 +38,5 @@
             </div>
         </div>
     </localmenu>
-    <span class="toolbar-label fontby-label">Font by: </span>
+    <div class="toolbar-label fontby-label">Font by: </div>
 </div>

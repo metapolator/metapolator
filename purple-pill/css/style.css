@@ -300,149 +300,100 @@
 /******************* specimen ********************/
 
     
-    .specimen-info-holder {
-        text-align: center;
+    specimentoolbar {
+        display: block;
+        overflow: visible;
+        height: 38px;
+        padding: 4px;
+        z-index: 1000;
     }
 
-        .specimen-info {
-            text-align: left;
-            display: inline-block;
-            padding: 8px;
-            font-size: 9px;
-            text-transform: uppercase;
-            text-align: center;
-            background: #eee;
-        }
-
-    .specimen {
-        padding: 20px 0 40px 0;
-        border-bottom: 1px solid #eee;
-    }
-
-
-    #specimen {
-        background: #fff;
-        width: 800px;
-        margin: 0 auto;
-        height: 100%;
+    .toolbar-set {
+        float: left;
+        background: #eee;
+        padding: 2px;
+        margin-right: 8px;
+        height: 30px;
     }
     
-        specimentoolbar {
-            display: block;
-            overflow: visible;
-            height: 38px;
-            padding: 4px;
-            z-index: 1000;
-        }
-        
-        localmenu.lm-specimen {
-            width: 150px;
-            float: left;
-        }
-        
-            .lm-specimen input {
-                width: 130px;    
-            }
-            
-                .lm-specimen .lm-head {
-                    padding: 0;
-                }
-                
-                    .lm-specimen .lm-head:hover, .lm-fontby .lm-head:hover {
-                        background: transparent;
-                    }
-        
-            specimentoolbar input {
-                color: #515151;
-                height: 21px;
-                padding: 4px 4px 0px 4px;
-            }
-            
-            specimentoolbar select {
-                margin-top: 2px;
-            }
-        
-        #specimen-content {
-            height: calc(100% - 38px);
-            overflow-y: auto;
-            padding: 36px 40px;
-            position: relative;
+        .toolbar-set input {
+            color: #515151;
+            border: 0;
+            padding: 4px 4px 0px 4px;
+            height: 26px;
         }
         
            .specimen-tool {
                float: left;
-               margin-right: 8px;
+               margin-right: 4px;
            }
+           
+            .toolbar-set.lm-specimen {
+                width: 154px;
+                padding: 0;
+            }
+            
+                .toolbar-set.lm-specimen .lm-head {
+                    background: #eee;
+                    padding: 2px;
+                }
+            
+                .lm-specimen input {
+                    width: 130px;    
+                }
 
-           .custom-widget-wrapper {
-               float: left;
-           }
-
-           #size-nr {
-               font-size: 12px;
+           .size-nr {
                width: 38px;
-               margin-right: 3px;
                text-align: right;
-               border: 0;
            }
            
-           #lineheigt-nr {
-               border: 0;
-           }
-           
-            size-rope {
-                float: left;
-                margin-right: 12px;
-                margin-top: 2px;
+            .size-rope {
+                padding-top: 4px;
                 width: 16px;
                 height: 16px;
             }
-           
-           .gearbox {
-               float: left;
-               margin-left: 4px;
-               background: #eee;
-               padding: 2px;
-               height: 23px;
+            
+            .strict-box {
+                padding-top: 3px;
+            }
+                      
+           #filter {
+               width: 180px;
            }
-           
-               #filter {
-                   width: 180px;
-                   height: 19px;
-                   border: 0;
-                   background: #fff;
-               }
                  
     .fontby-container {
         float: right;
+        margin: 0;
+        padding: 0;
     }
-    
-        .toolbar-label {
-            display: inline-block;
-            padding-top: 8px;
-        }
         
         .fontby-label {
             float: right;
+            padding: 8px 0 0 8px;
         }
    
         localmenu.lm-fontby {
-            width: 100px;
+            width: 90px;
             display: inline-block;
             float: right;
         }
         
+            localmenu.lm-fontby .lm-head {
+                background: transparent;
+            }
         
             localmenu.lm-fontby .lm-body {
-                width: 100px;
+                width: 90px;
             }
     
 
    
-   .chunk {
-        display: inline-block;
-        float: left;
-   }
+    #specimen-content {
+        height: calc(100% - 38px);
+        overflow-y: auto;
+        padding: 36px 40px;
+        position: relative;
+    }
               
     #non-glyph-range {
         
