@@ -1,6 +1,6 @@
 Today [Metapolator](http://metapolator.com/purple-pill) only runs _out of the box_ with the latest version of Firefox, because the Firefox team shipped new features that Metapolator depends on.
 
-Chrome can run Metapolator, and a little faster too, after restarting it from Terminal with some options.
+Chrome, Chromium and Opera can run Metapolator too, and a little faster even, after restarting from Terminal with some options.
 
 First, quit the browser. 
 
@@ -15,6 +15,8 @@ If you use GNU+Linux, open a shell and run:
 chromium-browser --js-flags="--harmony --harmony_proxies"; 
 google-chrome-stable --js-flags="--harmony --harmony_proxies";
 ```
+
+If you use Opera, the same options work in the same way.
 
 If you have enabled `chrome://flags/#enable-javascript-harmony`, then disable it.
 
