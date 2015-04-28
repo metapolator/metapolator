@@ -7,121 +7,124 @@ app.controller("mastersController", function($scope, sharedScope) {
     $scope.uniqueMasterId = 0;
 
     $scope.deleteMasters = function() {
-        var thisIndex;
-        // check nr of masters and nr of desing spaces they use
-        var nMasters = 0;
-        var nDesignspaces = [];
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[$scope.data.view.viewState]) {
-                    nMasters++;
-                    angular.forEach($scope.data.designspaces, function(designspace) {
-                        angular.forEach(designspace.axes, function(axis) {
-                            if (axis.masterName == master.name) {
-                                // prevent double pushing (other master on same DS)
-                                if (nDesignspaces.indexOf(designspace.name) == -1) {
-                                    nDesignspaces.push(designspace.name);
-                                }
-                            }
-                        });
-                    });
-                }
-            });
-        });
-
-        if (nDesignspaces.length == 0) {
-            if (nMasters == 1) {
-                var message = "Delete master?";
-            } else {
-                var message = "Delete " + nMasters + " masters?";
-            }
-        } else {
-            if (nMasters == 1) {
-                if (nDesignspaces.length == 1) {
-                    var message = "Delete master? It is in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
-                } else {
-                    var message = "Delete master? It is in use on " + nDesignspaces.length + " design spaces and will no longer be part of their instances after deleting.";
-                }
-            } else {
-                if (nDesignspaces.length == 1) {
-                    var message = "Delete " + nMasters + "  masters? They are in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
-                } else {
-                    var message = "Delete " + nMasters + "  masters? They are in use on " + nDesignspaces.length + " design spaces and will no longer be part of their instances after deleting.";
-                }
-            }
-        }
-        // close menu
-        $scope.data.localmenu.masters = false;
-        if (confirm(message)) {
+        if ($scope.areMastersSelected()) {
+            var thisIndex;
+            // check nr of masters and nr of desing spaces they use
+            var nMasters = 0;
+            var nDesignspaces = [];
             angular.forEach($scope.data.sequences, function(sequence) {
-                var notDeleted = [];
-                angular.forEach(sequence.masters, function(master, index) {
-                    if (!master.edit[$scope.data.view.viewState]) {
-                        notDeleted.push(master);
-                    } else {
-                        thisIndex = index;
-                        if (nDesignspaces.length > 0) {
-                            $scope.data.removeMasterFromEachDesignspaces(master.name);
-                        }
-                        if ($scope.data.pill != "blue") {
-                            $scope.data.stateful.project.deleteMaster(master.name);
-                            // empty cps file to prevent caching issues
-                            $scope.data.stateful.project.ruleController.write(false, master.cpsFile, "");
-                        }
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[$scope.data.view.viewState]) {
+                        nMasters++;
+                        angular.forEach($scope.data.designspaces, function(designspace) {
+                            angular.forEach(designspace.axes, function(axis) {
+                                if (axis.masterName == master.name) {
+                                    // prevent double pushing (other master on same DS)
+                                    if (nDesignspaces.indexOf(designspace.name) == -1) {
+                                        nDesignspaces.push(designspace.name);
+                                    }
+                                }
+                            });
+                        });
                     }
                 });
-                sequence.masters = notDeleted;
             });
+    
+            if (nDesignspaces.length == 0) {
+                if (nMasters == 1) {
+                    var message = "Delete master?";
+                } else {
+                    var message = "Delete " + nMasters + " masters?";
+                }
+            } else {
+                if (nMasters == 1) {
+                    if (nDesignspaces.length == 1) {
+                        var message = "Delete master? It is in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
+                    } else {
+                        var message = "Delete master? It is in use on " + nDesignspaces.length + " design spaces and will no longer be part of their instances after deleting.";
+                    }
+                } else {
+                    if (nDesignspaces.length == 1) {
+                        var message = "Delete " + nMasters + "  masters? They are in use on design space '" + nDesignspaces[0] + "' and will no longer be part of its instances after deleting.";
+                    } else {
+                        var message = "Delete " + nMasters + "  masters? They are in use on " + nDesignspaces.length + " design spaces and will no longer be part of their instances after deleting.";
+                    }
+                }
+            }
+            // close menu
+            $scope.data.localmenu.masters = false;
+            if (confirm(message)) {
+                angular.forEach($scope.data.sequences, function(sequence) {
+                    var notDeleted = [];
+                    angular.forEach(sequence.masters, function(master, index) {
+                        if (!master.edit[$scope.data.view.viewState]) {
+                            notDeleted.push(master);
+                        } else {
+                            thisIndex = index;
+                            if (nDesignspaces.length > 0) {
+                                $scope.data.removeMasterFromEachDesignspaces(master.name);
+                            }
+                            if ($scope.data.pill != "blue") {
+                                $scope.data.stateful.project.deleteMaster(master.name);
+                                // empty cps file to prevent caching issues
+                                $scope.data.stateful.project.ruleController.write(false, master.cpsFile, "");
+                            }
+                        }
+                    });
+                    sequence.masters = notDeleted;
+                });
+            }
+            // after deleting all selected masters, select a new master
+            var n = $scope.data.sequences[0].masters.length;
+            if (n <= thisIndex) {
+                $scope.data.sequences[0].masters[n - 1].edit[$scope.data.view.viewState] = true;
+            } else {
+                $scope.data.sequences[0].masters[thisIndex].edit[$scope.data.view.viewState] = true;
+            }
         }
-        // after deleting all selected masters, select a new master
-        var n = $scope.data.sequences[0].masters.length;
-        if (n <= thisIndex) {
-            $scope.data.sequences[0].masters[n - 1].edit[$scope.data.view.viewState] = true;
-        } else {
-            $scope.data.sequences[0].masters[thisIndex].edit[$scope.data.view.viewState] = true;
-        }
-
     };
 
     $scope.importUfo = function() {
-        var message = "Want to load your own UFO?<br><br><a href='http://tspr.ng/F96Vjtsc' target='_blank'>Buy a Metapolator T shirt today!</a>";
+        var message = "Want to load your own UFO?<br><br><a href='http://tspr.ng/F96Vjtsc' target='_blank' class='newtab'>Buy a Metapolator T shirt today!</a>";
         $scope.data.dialog(message, false, "close");
         $scope.data.localmenu.masters = false;
     };
 
     $scope.duplicateMasters = function() {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[$scope.data.view.viewState]) {
-                    // deselect this one
-                    master.edit[$scope.data.view.viewState] = false;
-                    $scope.uniqueMasterId++;
-                    var masterName = "master" + $scope.uniqueMasterId;
-                    var cpsFile = masterName + ".cps";
-                    // duplicate cps file
-                    var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
-                    var cpsString = "" + sourceCollection;
-                    // create new cps file and new master
-                    $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
-                    $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
-                    $scope.data.stateful.project.open(masterName);
-                    $scope.data.sequences[0].masters.push({
-                        id : $scope.uniqueMasterId,
-                        name : masterName,
-                        displayName : "Master " + $scope.uniqueMasterId,
-                        cpsFile : cpsFile,
-                        ruleIndex : angular.copy(master.ruleIndex),
-                        display : false,
-                        edit : [true, true],
-                        ag : angular.copy(master.ag),
-                        glyphs : angular.copy(master.glyphs),
-                        parameters : angular.copy(master.parameters)
-                    });
-                }
+        if ($scope.areMastersSelected()) {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[$scope.data.view.viewState]) {
+                        // deselect this one
+                        master.edit[$scope.data.view.viewState] = false;
+                        $scope.uniqueMasterId++;
+                        var masterName = "master" + $scope.uniqueMasterId;
+                        var cpsFile = masterName + ".cps";
+                        // duplicate cps file
+                        var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
+                        var cpsString = "" + sourceCollection;
+                        // create new cps file and new master
+                        $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
+                        $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
+                        $scope.data.stateful.project.open(masterName);
+                        $scope.data.sequences[0].masters.push({
+                            id : $scope.uniqueMasterId,
+                            name : masterName,
+                            displayName : "Master " + $scope.uniqueMasterId,
+                            cpsFile : cpsFile,
+                            ruleIndex : angular.copy(master.ruleIndex),
+                            display : false,
+                            edit : [true, true],
+                            ag : angular.copy(master.ag),
+                            glyphs : angular.copy(master.glyphs),
+                            parameters : angular.copy(master.parameters)
+                        });
+                    }
+                });
             });
-        });
-        // close menu
-        $scope.data.localmenu.masters = false;
+            // close menu
+            $scope.data.localmenu.masters = false;
+        }
     };
 
     /***** hover instances *****/
@@ -229,6 +232,18 @@ app.controller("mastersController", function($scope, sharedScope) {
         angular.forEach(master.glyphs, function(glyph) {
             glyph.edit = false;
         });
+    };
+    
+    $scope.areMastersSelected = function () {
+        var selected = false;
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                if (master.edit[$scope.data.view.viewState]) {
+                    selected = true;
+                }
+            });
+        });
+        return selected;
     };
 
     /***** Dropping to design space *****/

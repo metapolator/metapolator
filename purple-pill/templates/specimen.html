@@ -1,43 +1,11 @@
 <div class="panel-border panel-border-without-menu">
-    <div id="specimen-toolbar">
-        <localmenu class="localmenu lm-specimen" class="left">
-            <div class="lm-head" ng-mousedown="data.selectMenu('specimen1')">
-                <input ng-model="selectedSpecimen.text" placeholder="Type text here..." ng-blur="data.localmenu.specimen1 = false; data.localmenu.specimen2 = false;">
-            </div>
-            <div class="lm-body" ng-if="data.localmenu.specimen1">
-                <div ng-repeat-start="specimenCat in specimen">
-                    <div class="lm-button" ng-repeat="specim in specimenCat" ng-class="{'lm-selected': specim == selectedSpecimen}" ng-mouseup="selectSpecimen(specim)">{{specim.name}}</div>
-                </div>
-                <div ng-repeat-end class="lm-divider"></div>
-            </div>
-        </localmenu>
-        
-        <input type="text" id="size-nr" ng-model="fontSize" size="3" class="specimen-tool">
-        <div title="Drag to Change Font Size" class="custom-widget-wrapper">
-            <size-rope></size-rope>
-        </div>
-        <input placeholder="Mixer" type="text" id="filter" ng-model="filterOptions.filter" size="7" class="specimen-tool">
-        <div title="Sprinkled | 50–50 | Exclusive Mixing" class="custom-widget-wrapper">
-            <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
-        </div>
-        <div class="fontby-container">
-            <span class="toolbar-label">Font by: </span>
-            <localmenu class="localmenu lm-fontby right" ng-if="selectedSpecimen.name != 'glyph range'">
-                <div class="lm-head" ng-mousedown="data.selectMenu('fontby1')">
-                    {{filterOptions.selectedFontby}}
-                </div>
-                <div class="lm-body" ng-if="data.localmenu.fontby1">
-                    <div class="lm-button" ng-repeat="fontby in fontbys" ng-class="{'lm-selected': fontby == filterOptions.selectedFontby}" ng-mouseup="selectFontby(fontby)">{{fontby}}</div>
-                </div>
-            </localmenu>
-        </div>
-    </div>
+    <specimentoolbar></specimentoolbar>
 
     <div id="specimen-content" rubberband viewport-watcher>
         <!-- standard view -->
         <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'Glyph Range'">
             <ul id="specimen-ul-0">
-                <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': (fontSize * lineHeight) + 'px'}"><!--
+                <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': getLineHeight(glyph.glyphName) + 'px'}"><!--
                     --><glyph id="glyph-spec1-{{$index}}" mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph><!--
                 --></li>
             </ul>
@@ -46,7 +14,7 @@
         <!-- Glyph Range -->
         <div id="glyph-range" ng-if="selectedSpecimen.name == 'Glyph Range'">
             <div ng-repeat="sequence in data.sequences">
-                <ul id="specimen-ul-0" class="glyph-range-master glyph-range" ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display || master.edit[0]">
+                <ul id="specimen-ul-0" class="glyph-range-master glyph-range" ng-style="{'margin-bottom': (fontSize * lineHeight / 2) + 'px'}"  ng-model="master.glyphs" ng-repeat="master in sequence.masters" ng-if="master.display || master.edit[0]">
                     <li ng-style="{'height': (fontSize * lineHeight) + 'px', 'margin': (fontSize / 5) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.glyphs | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range"><!--
                         --><glyph id="glyph-spec1-{{$index}}" mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{glyph.id}}" glyph="{{glyph.name}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'master-edit': master.edit[0],'selected-glyph':(glyph.edit && master.edit[0])}"></glyph><!--
                     --></li>

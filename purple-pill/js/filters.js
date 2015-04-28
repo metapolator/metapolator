@@ -102,6 +102,7 @@ app.filter('rangeFilter', function() {
     };
 });
 
+// mapping from glyphs form input to a glyph name
 var substitutes = [{
     before : " ",
     after : "space"
@@ -207,7 +208,7 @@ app.filter('specimenFilter', function() {
                             }
                         }
                     } else {
-                        if(glyph != "space" || includeSpaces) {
+                        if (glyph != "space" || includeSpaces) {
                             glyphs.push(glyph);
                         }
                     }
@@ -267,9 +268,7 @@ app.filter('specimenFilter', function() {
                         for ( i = 0; i < filterText.length; i++) {
                             for ( j = i; j < filterText.length; j++) {
                                 if (i == j) {
-                                    if (i == 0) {
-                                        newText.push(filterText[i], filterText[i]);
-                                     } else if (i = (filterText.length - 1)) {
+                                    if (i == 0 || i == (filterText.length - 1)) {
                                         newText.push(filterText[i], filterText[i]);
                                      } else {
                                         newText.push("space", filterText[i], filterText[i]);
@@ -347,7 +346,7 @@ app.filter('specimenFilter', function() {
                         masterId = 0;
                     }
                 }
-                // paragraph break after each loop
+                // specimen break after each loop
                 if (q < masterArray.length - 1) {
                     filtered.push({
                         master : {
@@ -356,8 +355,8 @@ app.filter('specimenFilter', function() {
                             name : master.name,
                             edit : master.edit
                         },
-                        glyphName : "*p",
-                        glyphId : master.name + "_*p_" + glyphId
+                        glyphName : "*specimenbreak",
+                        glyphId : master.name + "_*specimenbreak_" + glyphId
                     });
                 }
             }

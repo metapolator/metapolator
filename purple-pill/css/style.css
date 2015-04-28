@@ -184,6 +184,14 @@
             float: right;
         }
         
+        #help .lm-head {
+          cursor: help;
+        }
+        
+        #help a, a.newtab {
+          cursor: alias;
+        }
+
         #engine-mode {
             position: fixed;
             z-index: 1000;
@@ -292,138 +300,100 @@
 /******************* specimen ********************/
 
     
-    .specimen-info-holder {
-        text-align: center;
+    specimentoolbar {
+        display: block;
+        overflow: visible;
+        height: 38px;
+        padding: 4px;
+        z-index: 1000;
     }
 
-        .specimen-info {
-            text-align: left;
-            display: inline-block;
-            padding: 8px;
-            font-size: 9px;
-            text-transform: uppercase;
-            text-align: center;
-            background: #ddd;
-        }
-
-    .specimen {
-        padding: 20px 0 40px 0;
-        border-bottom: 1px solid #ddd;
-    }
-
-
-    #specimen {
-        background: #fff;
-        width: 800px;
-        margin: 0 auto;
-        height: 100%;
+    .toolbar-set {
+        float: left;
+        background: #eee;
+        padding: 2px;
+        margin-right: 8px;
+        height: 30px;
     }
     
-        #specimen-toolbar {
-            overflow: visible;
-            height: 38px;
-            padding: 4px;
-            z-index: 1000;
-        }
-        
-        localmenu.lm-specimen {
-            width: 150px;
-            float: left;
-        }
-        
-            .lm-specimen input {
-                width: 130px;    
-            }
-            
-                .lm-specimen .lm-head {
-                    padding: 0;
-                }
-                
-                    .lm-specimen .lm-head:hover, .lm-fontby .lm-head:hover {
-                        background: transparent;
-                    }
-        
-            #specimen-toolbar input {
-                color: #515151;
-                padding: 4px;
-            }
-            
-            #specimen-toolbar select {
-                margin-top: 2px;
-            }
-        
-        #specimen-content {
-            height: calc(100% - 38px);
-            overflow-y: auto;
-            padding: 36px 40px;
-            position: relative;
+        .toolbar-set input {
+            color: #515151;
+            border: 0;
+            padding: 4px 4px 0px 4px;
+            height: 26px;
         }
         
            .specimen-tool {
                float: left;
-               margin-right: 8px;
+               margin-right: 4px;
            }
+           
+            .toolbar-set.lm-specimen {
+                width: 154px;
+                padding: 0;
+            }
+            
+                .toolbar-set.lm-specimen .lm-head {
+                    background: #eee;
+                    padding: 2px;
+                }
+            
+                .lm-specimen input {
+                    width: 130px;    
+                }
 
-           .custom-widget-wrapper {
-               float:left;
-               padding-top: 4px;
-           }
-
-           #size-nr {
-               font-size: 12px;
+           .size-nr {
                width: 38px;
-               margin-right: 3px;
-               margin-top: 2px;
                text-align: right;
-               border: 0;
            }
            
-           #lineheigt-nr {
-               border: 0;
-           }
-           
-           #filter {
-               text-align: right;
-               width: 180px;
-               margin-right: 2px;
-               margin-left: 6px;
-           }
-        
-            size-rope {
-                float: left;
-                margin-right: 12px;
-                margin-top: 2px;
+            .size-rope {
+                padding-top: 4px;
                 width: 16px;
                 height: 16px;
             }
-         
+            
+            .strict-box {
+                padding-top: 3px;
+            }
+                      
+           #filter {
+               width: 180px;
+           }
+                 
     .fontby-container {
-        width: 160px;
         float: right;
+        margin: 0;
+        padding: 0;
     }
-    
-        .toolbar-label {
-            display: inline-block;
-            padding-top: 8px;
+        
+        .fontby-label {
+            float: right;
+            padding: 8px 0 0 8px;
         }
    
         localmenu.lm-fontby {
-            width: 100px;
+            width: 90px;
             display: inline-block;
             float: right;
         }
         
+            localmenu.lm-fontby .lm-head {
+                background: transparent;
+            }
         
             localmenu.lm-fontby .lm-body {
-                width: 100px;
+                width: 90px;
             }
     
 
    
-   .chunk {
-        display: inline-block;
-        float: left;
-   }
+    #specimen-content {
+        height: calc(100% - 38px);
+        overflow-y: auto;
+        padding: 36px 40px;
+        position: relative;
+    }
               
     #non-glyph-range {
         
@@ -434,11 +404,7 @@
         margin: 0;
         overflow: visible;
     }
-    
-    #specimen-content ul.glyph-range-master {
-        margin-bottom: 40px;
-    }
-    
+       
         #specimen-content ul li, .list-view-col ul li {
             list-style: none;
             display: inline-block;
@@ -481,6 +447,11 @@
                 }
                 
                 #specimen-content li.paragraph-break {
+                    clear: both;
+                    width: 100%;
+                }
+                
+                #specimen-content li.specimen-break {
                     clear: both;
                     width: 100%;
                 }
@@ -543,13 +514,17 @@
         padding: 9px 10px;
         margin-right: 4px;
         cursor: pointer;
-        background: #eee;
+        background: #fff;
+        color: #515151;
+        border-top: 2px solid #eee;
+        border-left: 2px solid #eee;
+        border-right: 2px solid #eee;
         height: 30px;
     }
 
     #design-space-tabs li.selected {
-        background: #515151;
-        color: #eee;
+        background: #eee;
+        color: #515151;
     }
     
     #design-space-tabs li.add-designspace {
@@ -574,14 +549,14 @@
     }
 
     .unconfigured {
-        background: #ddd;
+        background: #eee;
     }
     
     .design-space-container {
         width: 100%;
         height: 100%;
         padding: 40px;
-        color: #ddd;
+        color: #eee;
         font-style: italic;
     }
 
@@ -687,7 +662,7 @@
                 z-index: 10;
                 left: 24px;
                 top: 0px;
-                background: #ddd;
+                background: #eee;
                 color: #333;
                 padding: 4px 8px;
                 font-size: 12px;
@@ -855,12 +830,12 @@
         margin-left: 24px;
         padding: 4px 10px;
         width: 50%;
-        color: #ddd;
+        color: #eee;
         cursor: pointer;
         background: #fff;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
-        border: 1px solid #ddd;
+        border: 1px solid #eee;
         border-bottom: 0px;
     }
         
@@ -1200,7 +1175,7 @@
         font-size: 20px;
         font-family: "Lato";
         border: 0px;
-        background: #ddd;
+        background: #eee;
         color: #f85c37;
     }
     
@@ -1264,7 +1239,7 @@
             bottom: 0px;
             height: 100%;
             text-align: center;
-            background: #ddd;
+            background: #eee;
             padding: 12px;
             cursor: default;
         }
@@ -1355,7 +1330,7 @@
         }
     
     .lm-head {
-        cursor: default;
+        cursor: context-menu;
         padding: 8px;
     }
     
@@ -1369,7 +1344,7 @@
             margin-left: 2px;
         }
         
-        .lm-head:hover {
+        .lm-head:hover, .lm-body:hover .lm-head {
             background: #eee;
         }
         
@@ -1424,17 +1399,17 @@
         }
         
             .lm-button:hover, .lm-button.lm-selected {
-                background: #ddd;
+                background: #eee;
             }
             
-            .lm-button.lm-button-hover {
-                background: #ddd;
+            .lm-button-hover {
+                background: #eee;
             }
             
        .lm-divider {
            width: 100%;
            margin: 4px 0;
-           background: #ddd;
+           background: #eee;
            height: 1px;
         }
         
@@ -1665,3 +1640,7 @@
 }
     
 
+/* hack to make the facebook widget sit up 5px to align with twitter and pinterest */ 
+.fb_iframe_widget span {
+  height: 25px !important;
+}

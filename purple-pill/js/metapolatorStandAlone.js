@@ -38250,11 +38250,11 @@ define('metapolator/ui/services/GlyphRendererAPI',[
 
     _pp.addComponent = function(glyphName, transformation, kwargs /*optional, object*/) {
         var data = this._data
-          , masterName = data.MOM.master.name
+          , masterName = data.MOM.master.id
           , use = this._glyphRendererAPI.get(masterName, glyphName, 'use')
           , key = this._glyphRendererAPI.getKey(masterName, glyphName)
           ;
-        use.setAttribute('transform', 'matrix(' +  transformation.join(',') + ')');
+        use.setAttribute('transform', 'matrix(' +  Array.prototype.join.call(transformation, ',') + ')');
         data.components.push(key);
         data.svg.appendChild(use);
     };
@@ -38361,7 +38361,8 @@ define('metapolator/ui/services/GlyphRendererAPI',[
         // room down and maximal room upwards.
         moveUp = (fontinfo.unitsPerEm || 1000) + (fontinfo.descender || 0);
         matrix = [1, 0, 0, -1, 0, moveUp];
-        data.svg.setAttribute('transform', 'matrix(' + matrix.join(',') +')');
+        data.transformation = matrix.join(',');
+
         data.svg.appendChild(path);
 
         // update all viewboxes
@@ -38401,6 +38402,7 @@ define('metapolator/ui/services/GlyphRendererAPI',[
            , timeoutId: null
            , components: [] // keys of component glyphs, used with revoke
            , svgInstances: []
+           , transformation: '1,0,0,1,0,0'
         };
         data.href = '#' + data.id;
         data.svg.setAttribute('id', data.id);
@@ -38480,9 +38482,14 @@ define('metapolator/ui/services/GlyphRendererAPI',[
         for(i=0,l=svgs.length;i<l;i++) {
             if(!svgs[i].parentElement)
                 continue;
+            this._setSVGTransformation(svgs[i].firstElementChild, data.transformation);
             this._applySVGViewBox(svgs[i], viewBox);
         }
     };
+
+    _p._setSVGTransformation = function(use, transformation) {
+        use.setAttribute('transform', 'matrix(' +  transformation + ')');
+    }
 
     _p._setSVGViewBox = function(data, svg) {
         var viewBox = this._getViewBox(data);
@@ -38497,6 +38504,7 @@ define('metapolator/ui/services/GlyphRendererAPI',[
           , unitsPerEm
           ;
         use.setAttributeNS(xlinkns, 'href', data.href);
+        this._setSVGTransformation(use, data.transformation);
 
         if(type === 'use')
             return use;
