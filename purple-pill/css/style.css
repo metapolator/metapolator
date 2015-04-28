@@ -233,6 +233,20 @@
 			 #panel-6.panel {
 			     float: right;
 			 }
+
+             #export-progress-label {
+                display: none;
+                border-radius: 6px;
+                position: fixed;
+                z-index: 10001;
+                top: calc(50% - 50px);
+                padding: 40px;
+                background: #fff;
+                box-shadow: 0 0 20px rgba(0,0,0,0.6);
+                width: 320px;
+                min-height: 100px;
+                left: calc(50% - 160px);
+             }
 			
 			.sub-panel {
 			    overflow-y: auto;
@@ -1313,8 +1327,39 @@
         }
         
 
+           
             
-            
+/**************** progress bar************************/
+
+
+    #fontfamily-panel {
+        height: calc(100% - 44px);
+    }
+    
+    #progressbar-container {
+        margin-top: 10px;
+        height: 34px;
+        width: 100%;
+        background: #eee;
+        position: relative;
+    }
+    
+        #progressbar {
+            background: #c9eac8;
+            height: 100%;
+            width: 0;
+            transition: all 0.5s;
+        }
+        
+        #progresslabel {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            color: #000;
+        }
+
+
+
             
 /**************** local menu ************************/
 
