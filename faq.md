@@ -2,22 +2,53 @@
 
 _To ask new questions, please post a [new Github issue](https://github.com/metapolator/metapolator/issues) or in the [Metapolator G+ Community](https://plus.google.com/communities/110027004108709154749)_
 
-## About The Project 
-
 #### What is Metapolator?
 
 Metapolator is an open web tool for designing fonts and font families quickly.
+
+## Usage
+
+#### How do I get started?
+
+Check out the app demo at [metapolator.com/purple-pill](http://metapolator.com/purple-pill/) where you can play with a pre-loaded typeface and export UFO fonts at the end to load into your favorite traditional font editor.
+We'll post a screencast that demonstrates how to use the demo soon.
+
+#### The user interface says more features are ‘coming soon.’ When is that?
+
+Throughout 2015 and beyond. 
+As of April 2015 the project has no major financial support, so the implementation of new features is unpredictable.
+But we'll continue to add the features we think are most important, and the demo will slowly become a [minimum viable product](http://en.wikipedia.org/wiki/Minimum_viable_product).
+
+#### When I enter my own specimen text, how do I add linebreaks or paragraph breaks?
+
+Use the special codes `*n` for new lines and `*p` for new paragraphs.
+
+## Technology
+
+Please see the [wiki home](https://github.com/metapolator/metapolator/wiki) for more technology explanations.
+
+#### How can I play with technology shown in the demo?
+
+You can play with CPS technology at [metapolator.com/red-pill-demo](http://metapolator.com/red-pill-demo/). 
+The _red pill_ shows CPS files and renders them with a center line.
+
+Metapolator technology can also be used via Terminal, and these two screencasts show some possible workflows:
+
+<a href="https://plus.google.com/100858309774292261525/posts/CTx8bUqo6ES"><img src="http://metapolator.com/home/img/simon-workflow.gif" width="400px"></a>
+
+<a href="https://plus.google.com/+DaveCrossland/posts/dpMQUJtQ9Tf">2015-01-27 (30 mins) Video introduction to Simon's workflow, using RoboFont</a>
+
+<a href="https://plus.google.com/+DaveCrossland/posts/dahVFykbWSM" ><img src="http://metapolator.com/home/img/red-pill.png" width="400px"></a>
+
+<a href="https://plus.google.com/+DaveCrossland/posts/dahVFykbWSM">2015-01-28 (2 hours) Video introduction to Lasse's workflow, using FontForge</a>
+
+## About The Project 
 
 #### What makes Metapolator different than any other font editor?
 
 Most font editors are not parametric, and those that are require designers to be good with programming to create new parameters.
 The biggest difference is that Metapolator enables designers to create parametric type systems entirely visually, with zero coding. 
 Yet under the hood, the Metapolator CPS technology offers an elegant new way to code such systems for those who wish to.
-
-#### How do I get started?
-
-Check out the demo at [metapolator.com/purple-pill](http://metapolator.com/purple-pill/) where you can play with a pre-loaded typeface and export UFO fonts at the end to load into your favorite traditional font editor.
-We'll post a screencast that demonstrates how to use the tool soon.
 
 #### How can I contribute to the project?﻿
 
@@ -82,15 +113,6 @@ If you have opinions about this, please post your thoughts on this topic in the 
 
 ## Support
 
-#### When I enter my own specimen text, how do I add linebreaks or paragraph breaks?
-
-Use the special codes `*n` for new lines and `*p` for new paragraphs.
-
-#### The user interface says ‘coming soon.’ When is that?
-
-Throughout 2015 and beyond. 
-As of April 2015 the project has no major financial support, so the implementation of new features is unpredictable.
-
 #### I need a feature. What should I do?
 
 Post a [new Github issue](https://github.com/metapolator/metapolator/issues) describing what you want.
@@ -102,6 +124,8 @@ A narrated screencast video showing the current interface and telling us what yo
 Post a [new Github issue](https://github.com/metapolator/metapolator/issues) with a narrated screencast video showing what is wrong, and describing what you expect. 
 
 ## Concepts
+
+Please see the [wiki home](https://github.com/metapolator/metapolator/wiki) for more concept explanations
 
 #### What is interpolation?
 
