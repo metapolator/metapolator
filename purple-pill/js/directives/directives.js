@@ -327,47 +327,49 @@ app.directive('listEditCol', function() {
             element.bind('click', function(event) {
                 var selected = [];
                 // manage key selections
-                if (event.shiftKey && type == "master") {
-                    $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
-                    $(element).parent().addClass('end-edit-selection');
-                    var phase = 0;
-                    $(element).parent().parent().parent().parent().find('.list-li').each(function() {
-                        var thisHit = false;
-                        if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
-                            phase++;
-                            thisHit = true;
-                        }
-                        if (phase == 1 || (phase == 2 && thisHit)) {
-                            var sequence = $(this).attr("sequence");
-                            var master = $(this).attr("master");
-                            selected.push({
-                                parentObject : sequence,
-                                childObject : master
-                            });
-                        }
-                    });
-                    scope.selectEdit(selected);
-                    scope.$apply();
-                } else if ((event.ctrlKey || event.metaKey) && type == "master") {
-                    var sequence = $(element).parent().attr("sequence");
-                    var master = $(element).parent().attr("master");
-                    var thisListItem = {
-                        parentObject : sequence,
-                        childObject : master
-                    };
-                    scope.toggleEdit(thisListItem);
-                    scope.$apply();
-                } else {
-                    $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
-                    $(element).parent().addClass('start-edit-selection');
-                    var sequence = $(element).parent().attr("sequence");
-                    var master = $(element).parent().attr("master");
-                    selected.push({
-                        parentObject : sequence,
-                        childObject : master
-                    });
-                    scope.selectEdit(selected);
-                    scope.$apply();
+                if (type == "master") {
+                    if (event.shiftKey) {
+                        $(element).parent().parent().parent().parent().find('.end-edit-selection').removeClass('end-edit-selection');
+                        $(element).parent().addClass('end-edit-selection');
+                        var phase = 0;
+                        $(element).parent().parent().parent().parent().find('.list-li').each(function() {
+                            var thisHit = false;
+                            if ($(this).hasClass('start-edit-selection') || $(this).hasClass('end-edit-selection')) {
+                                phase++;
+                                thisHit = true;
+                            }
+                            if (phase == 1 || (phase == 2 && thisHit)) {
+                                var sequence = $(this).attr("sequence");
+                                var master = $(this).attr("master");
+                                selected.push({
+                                    parentObject : sequence,
+                                    childObject : master
+                                });
+                            }
+                        });
+                        scope.selectEdit(selected);
+                        scope.$apply();
+                    } else if (event.ctrlKey || event.metaKey) {
+                        var sequence = $(element).parent().attr("sequence");
+                        var master = $(element).parent().attr("master");
+                        var thisListItem = {
+                            parentObject : sequence,
+                            childObject : master
+                        };
+                        scope.toggleEdit(thisListItem);
+                        scope.$apply();
+                    } else {
+                        $(element).parent().parent().parent().parent().find('.start-edit-selection').removeClass('start-edit-selection');
+                        $(element).parent().addClass('start-edit-selection');
+                        var sequence = $(element).parent().attr("sequence");
+                        var master = $(element).parent().attr("master");
+                        selected.push({
+                            parentObject : sequence,
+                            childObject : master
+                        });
+                        scope.selectEdit(selected);
+                        scope.$apply();
+                    }
                 }
             });
         }

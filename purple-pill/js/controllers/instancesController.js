@@ -44,7 +44,7 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
             for (var i = 0; i < instance.axes.length; i++) {
                 setParameter(parameterDict, "proportion" + i, instance.axes[i].metapValue);
-                console.log(instance.axes[i].masterdisplayName + ": " + instance.axes[i].metapValue);
+                //console.log(instance.axes[i].masterdisplayName + ": " + instance.axes[i].metapValue);
             }
         }
     };
@@ -169,8 +169,6 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
                 name : instanceName,
                 displayName : "Instance " + $scope.uniqueInstanceId,
                 designspace : designspace.id,
-                fontFamily : "Roboto",
-                fontWeight : 700,
                 axes : axesSet,
                 cpsFile : cpsFile,
                 exportFont : true,
@@ -184,13 +182,16 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
         if (instance) {
             var duplicate = jQuery.extend(true, {}, instance);
             var newName = $scope.duplicateName(duplicate.name);
+            var cpsFile = newName + ".cps";
             duplicate.name = newName;
             duplicate.displayName = newName;
             duplicate.id = $scope.uniqueInstanceId;
+            duplicate.cpsFile = cpsFile;
             if (space) {
                 // duplicate via duplicate design space
                 duplicate.designspace = space;
             }
+            console.log(duplicate);
             $scope.data.registerInstance(duplicate);
         }
     };
