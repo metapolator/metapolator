@@ -151,15 +151,29 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.changeParameter = function(parameterName, operator, elementType, range, keyEvent) {
-        if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+        if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
 
-            operator.low = operator.low.replace(',', '.');
+
+            if (typeof(operator.low) == "string") {
+              operator.low = operator.low.replace(',', '.');
+            }
             if (isNaN(operator.low) || operator.low === "") {
               // Not a number! Use previous value.
               operator.low = operator.prev;
             } else {
               operator.prev = operator.low;
+            }
+
+            var increment = 0.1;
+            if (keyEvent.shiftKey) {
+                increment = 1;
+            }
+            if (keyEvent.keyCode == 38) {
+                operator.low = parseFloat(operator.low) + increment;
+            }
+            if (keyEvent.keyCode == 40) {
+                operator.low = parseFloat(operator.low) - increment;
             }
 
             var key = parameterName + "F";
