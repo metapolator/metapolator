@@ -20,7 +20,8 @@
 </div>
 
 <div class="toolbar-set">
-    <input placeholder="Mix glyphs…" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
+    <input ng-if="selectedSpecimen.name != 'Glyph Range'" placeholder="Mix glyphs…" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
+    <input ng-if="selectedSpecimen.name == 'Glyph Range'" placeholder="Filter" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
     <div title="Set how glyphs are mixed with the specimen" class="specimen-tool strict-box">
         <strict ng-if="selectedSpecimen.name != 'Glyph Range'"></strict>
     </div>   

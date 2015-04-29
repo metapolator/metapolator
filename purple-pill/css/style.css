@@ -179,6 +179,12 @@
 				border: 2px solid #515151;
 			}
 			
+	   #name-and-version {
+	       float: right;
+	       padding: 8px;
+	       color: #aaa;
+	   }
+			
         #help {
             padding: 0;
             float: right;
@@ -1052,8 +1058,8 @@
         }
         
             #parameters-of-master .parameters-selection-body {
-                background: #515151;
-                color: #eee;
+                background: #eee;
+                color: #515151;
             }
             
             #parameters-of-glyph .parameters-selection-body {
@@ -1069,11 +1075,11 @@
             
                 .parameter-row input {
                     background: transparent;
-                    padding: 4px;
+                    padding: 6px 4px;
                 }
                 
                     #parameters-of-master .parameter-row input {
-                        color: #eee;
+                        color: #515151;
                     }
                     
                     #parameters-of-glyph .parameter-row input {
@@ -1664,7 +1670,7 @@
     
     #cursor-helper {
         font-size: 17px;
-        padding-top: 2px;
+        padding-top: 1px;
         color: #fff;
         text-align: center;
         width: 20px;

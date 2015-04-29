@@ -192,7 +192,10 @@ app.controller("parametersController", function($scope, sharedScope) {
                 operator.low = round(parseFloat(operator.low) - step, dec);
             }
 
-            keyEvent.preventDefault();
+            if (keyEvent != "blur") {
+               keyEvent.preventDefault(); 
+            }
+            
 
             var key = parameterName + "F";
             if (parameterName == "spacing") {
