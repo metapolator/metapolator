@@ -145,6 +145,39 @@ var substitutes = [{
 }, {
     before : "0",
     after : "zero"
+}, {
+    before : "Á",
+    after : "A_acute"
+}, {
+    before : "æ",
+    after : "ae"
+}, {
+    before : "´",
+    after : "acute"
+}, {
+    before : "Æ",
+    after : "A_E"
+}, {
+    before : "≈",
+    after : "approxequal"
+}, {
+    before : "^",
+    after : "asciicircum"
+}, {
+    before : "∼",
+    after : "asciitilde"
+}, {
+    before : "*",
+    after : "asterisk"
+}, {
+    before : "@",
+    after : "at"
+}, {
+    before : "|",
+    after : "bar"
+}, {
+    before : "{",
+    after : "braceleft"
 }];
 
 app.filter('specimenFilter', function() {
