@@ -20,12 +20,19 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         $scope.data.localmenu.fonts = false;
     };
 
+    var export_is_running = false;
     $scope.data.exportFonts = function() {
 
         //Do not trigger the export routine if no instance is selected for export,
         //otherwise it would result in an empty ZIP file.
         if (!$scope.data.instancesForExport())
             return;
+
+        //Also avoid triggering a new export while we're still not finished
+        if (export_is_running)
+            return;
+
+        export_is_running = true;
 
         function zero_padding(value){
             return value < 10 ? "0" + String(value) : String(value);
@@ -164,6 +171,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                 var bundle_data = bundle.generate({type:"blob"});
                 $scope.data.stateless.saveAs(bundle_data, bundle_filename);
                 completeProgress();
+                export_is_running = false;
             }
         }
 
@@ -180,6 +188,13 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
             });
         });
         return instancesForExport;
+    };
+
+    $scope.data.exportButtonIsActive = function() {
+        if (export_is_running)
+            return false;
+        else
+            return ($scope.data.instancesForExport() > 0);
     };
 
 }]);
