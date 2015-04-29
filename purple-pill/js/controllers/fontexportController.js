@@ -122,6 +122,8 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         
         function completeProgress() {
             $("#progressbar").css("opacity", 0);
+            $("#progressbar").css("width", 0);
+            $("#progresslabel").html("");
         }
           
         function exportFont_compute_CPS_chunk(){
