@@ -1375,8 +1375,12 @@
             color: #000;
         }
 
-
-
+        #blob_download {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            color: #000;
+        }
             
 /**************** local menu ************************/
 
