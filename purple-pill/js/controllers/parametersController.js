@@ -183,6 +183,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (keyEvent.keyCode == 40) {
                 operator.low = parseFloat(operator.low) - step;
             }
+            operator.low = (operator.low).toFixed(3);
 
             keyEvent.preventDefault();
 

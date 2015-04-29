@@ -1075,7 +1075,7 @@
             
                 .parameter-row input {
                     background: transparent;
-                    padding: 4px;
+                    padding: 6px 4px;
                 }
                 
                     #parameters-of-master .parameter-row input {
