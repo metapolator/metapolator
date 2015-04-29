@@ -179,6 +179,12 @@
 				border: 2px solid #515151;
 			}
 			
+	   #name-and-version {
+	       float: right;
+	       padding: 8px;
+	       color: #aaa;
+	   }
+			
         #help {
             padding: 0;
             float: right;
