@@ -154,7 +154,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
 
-
             if (typeof(operator.low) == "string") {
               operator.low = operator.low.replace(',', '.');
             }
@@ -165,16 +164,27 @@ app.controller("parametersController", function($scope, sharedScope) {
               operator.prev = operator.low;
             }
 
-            var increment = 0.1;
+            // Step size
+            var step = 0.1;
+            if (parameterName == "width") {
+                step = 0.005;
+            } else if (parameterName == "height") {
+                step = 0.02;
+            } else if (parameterName == "spacing") {
+                step = 1;
+            }
+
             if (keyEvent.shiftKey) {
-                increment = 1;
+                step = step * 10;
             }
             if (keyEvent.keyCode == 38) {
-                operator.low = parseFloat(operator.low) + increment;
+                operator.low = parseFloat(operator.low) + step;
             }
             if (keyEvent.keyCode == 40) {
-                operator.low = parseFloat(operator.low) - increment;
+                operator.low = parseFloat(operator.low) - step;
             }
+
+            keyEvent.preventDefault();
 
             var key = parameterName + "F";
             if (parameterName == "spacing") {
