@@ -1058,8 +1058,8 @@
         }
         
             #parameters-of-master .parameters-selection-body {
-                background: #515151;
-                color: #eee;
+                background: #eee;
+                color: #515151;
             }
             
             #parameters-of-glyph .parameters-selection-body {
@@ -1075,11 +1075,11 @@
             
                 .parameter-row input {
                     background: transparent;
-                    padding: 0 4px;
+                    padding: 3px 4px 1px 4px;
                 }
                 
                     #parameters-of-master .parameter-row input {
-                        color: #eee;
+                        color: #515151;
                     }
                     
                     #parameters-of-glyph .parameter-row input {
@@ -1087,8 +1087,8 @@
                     }
                     
                     #parameters-of-master input:focus, #parameters-of-master input:hover {
-                        background: #F01616;
-                        color: #515151;
+                        background: #DC1F20;
+                        color: #eee;
                     }
                     
                     #parameters-of-glyph input:focus, #parameters-of-glyph input:hover {
@@ -1100,7 +1100,7 @@
                     width: 40%;
                     display: inline-block;
                     text-align: right;
-                    padding: 2px;
+                    padding-top: 4px;
                     float: left;
                 }
                 
@@ -1108,14 +1108,14 @@
                     width: 10%;
                     display: inline-block;
                     text-align: center;
-                    padding: 2px;
+                    padding-top: 4px;
                     float: left;
                 }
                 
                 .operator-value {
                     width: 50%;
                     display: inline-block;
-                    padding: 2px;
+                    padding: 1px;
                     float: left;
                     padding-right: 20px;
                 }
@@ -1660,7 +1660,7 @@
     
     #cursor-helper {
         font-size: 17px;
-        padding-top: 2px;
+        padding-top: 1px;
         color: #fff;
         text-align: center;
         width: 20px;

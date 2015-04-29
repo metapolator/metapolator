@@ -295,9 +295,9 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
                 setPositionCursorHelper(e.pageX, e.pageY);
                 if (isInDesignspace(master.name)) {
-                    setColorCursorHelper("red", "×") ;
+                    setColorCursorHelper("#DC1F20", "×") ;
                 } else {
-                    setColorCursorHelper("#4FC400", "+");
+                    setColorCursorHelper("#A9D323", "+");
                     $(".drop-area").addClass("drag-over");
                 }
             } else {
