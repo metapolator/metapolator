@@ -150,6 +150,10 @@ app.controller("parametersController", function($scope, sharedScope) {
         return elements;
     };
 
+    function round(value, decimals) {
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    }
+
     $scope.changeParameter = function(parameterName, operator, elementType, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
@@ -166,22 +170,26 @@ app.controller("parametersController", function($scope, sharedScope) {
 
             // Step size
             var step = 0.1;
+            var dec = 2;
             if (parameterName == "width") {
                 step = 0.005;
+                dec = 4;
             } else if (parameterName == "height") {
                 step = 0.02;
+                dec = 3;
             } else if (parameterName == "spacing") {
                 step = 1;
+                dec = 1;
             }
 
             if (keyEvent.shiftKey) {
                 step = step * 10;
             }
             if (keyEvent.keyCode == 38) {
-                operator.low = parseFloat(operator.low) + step;
+                operator.low = round(parseFloat(operator.low) + step, dec);
             }
             if (keyEvent.keyCode == 40) {
-                operator.low = parseFloat(operator.low) - step;
+                operator.low = round(parseFloat(operator.low) - step, dec);
             }
 
             keyEvent.preventDefault();
