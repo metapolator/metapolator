@@ -572,6 +572,7 @@
         padding: 40px;
         color: #eee;
         font-style: italic;
+        text-align: center;
     }
 
     .choose-space-type {
@@ -593,7 +594,7 @@
 
     .drop-area {
         width: 100%;
-        background: #fff;
+        background: #eee;
         border: 2px solid #eee;
         position: relative;
     }
