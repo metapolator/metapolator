@@ -137,6 +137,8 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
             $("#blob_download").children("a").html(text).click(function(){
                 $scope.data.stateless.saveAs(blob, filename);
                 resetProgressBar();
+                $(this).unbind("click");
+                delete bundle_data;
             });
         }
         
