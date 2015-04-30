@@ -1,5 +1,5 @@
-app.controller('specimenController', ['$scope', '$sce', 'sharedScope',
-function($scope, $sce, sharedScope) {
+app.controller('specimenController', ['$scope', '$sce', 'sharedScope', '$http',
+function($scope, $sce, sharedScope, $http) {
     $scope.data = sharedScope.data;
 
     $scope.data.renderGlyphs = function(masterName, glyphName) {
@@ -45,6 +45,32 @@ function($scope, $sce, sharedScope) {
         name : "Paragraph 1",
         text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armourlike back and if he lifted his head a little, he could see his brown belly slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
     }]];
+    
+    
+    // load font mapping
+    
+    $scope.loadMapping = function() {
+        $http.get("templates/mapping.csv").success(function(data) {
+            $scope.data.mapping = processCSV(data);
+        });
+    };
+
+    function processCSV(data) {
+        var cols = 3;
+        var lines = data.split(/\r\n|\n/);
+        var output = [];
+        for (var i = 0; i < lines.length; i++) {
+            var thisSet = lines[i].split(";");
+            var thisGlyph = {
+                unicode: thisSet[0],
+                glyphName: thisSet[1],
+                description: thisSet[2],
+            };
+            output.push(thisGlyph);
+        }
+        return output;
+    }
+
 
     // only for the masters specimen panel
     $scope.addGlyphRange = function() {
@@ -53,7 +79,7 @@ function($scope, $sce, sharedScope) {
         }];
         $scope.specimen.push(glyphRange);
     };
-
+    
     $scope.selectedSpecimen = $scope.specimen[0][0];
     $scope.fontSize = 144;
     $scope.lineHeight = 0;
@@ -67,7 +93,7 @@ function($scope, $sce, sharedScope) {
     var manageSpacesTimer;
     var sizeCounter = 0;
 
-    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
+    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance:data.mapping", function(newVal) {
         $scope.filteredGlyphs = newVal;
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
@@ -136,11 +162,11 @@ function($scope, $sce, sharedScope) {
     $scope.updateLineHeight = function() {
         $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
     };
-    
-    $scope.getLineHeight = function (glyphName) {
+
+    $scope.getLineHeight = function(glyphName) {
         var lineHeight = $scope.lineHeight * $scope.fontSize;
         if (glyphName == "*specimenbreak") {
-            lineHeight /= 2; 
+            lineHeight /= 2;
         }
         return lineHeight;
     };

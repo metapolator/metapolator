@@ -13,8 +13,8 @@ app.controller('menuController', function($scope, $http, sharedScope) {
             $("#confirm").hide();
         }, 2000);
     };
-    
-    $scope.renameProject = function () {
+
+    $scope.renameProject = function() {
         $scope.data.localmenu.project = false;
         $("#project-name").attr("contenteditable", "true");
         $("#project-name").addClass("renaming");
@@ -23,13 +23,13 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.newDocument = function() {
-        myRef = window.open(''+self.location,'New Metapolator window');
+        myRef = window.open('' + self.location, 'New Metapolator window');
         $scope.data.localmenu.project = false;
     };
 
     $scope.closeDocument = function() {
         if (confirm("Close this window?\n\nWARNING: This is a demo,\neverything will be lost")) {
-          window.close();
+            window.close();
         }
         $scope.data.localmenu.project = false;
     };
@@ -71,8 +71,8 @@ app.controller('menuController', function($scope, $http, sharedScope) {
             $("#dialog-close").show();
         }
     };
-    
-    $scope.data.closeDialog = function () {
+
+    $scope.data.closeDialog = function() {
         $("#layover").fadeOut(300);
         $("#dialog").fadeOut(100);
     };
@@ -88,9 +88,9 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         var x = "calc(" + (parts / -16) + " * 100%)";
         return x;
     };
-    
-    $scope.data.fontExportWidth;
-    
+
+    $scope.data.fontExportWidth
+
     $scope.setFontExportPanel = function() {
         // this measurement sets the font export panel to a fixed with of 80px. It balances the font family panels with the difference
         var windowWidth = $(window).outerWidth();
@@ -103,7 +103,7 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         exportWidth = 80;
         $scope.data.fontExportWidth = exportWidth;
     };
-    
+
     $scope.setFontExportPanel();
 
 });
