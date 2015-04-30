@@ -181,8 +181,8 @@ var substitutes = [{
 }];
 
 app.filter('specimenFilter', function() {
-    return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
-        if (specimen.name != "Glyph Range") {
+    return function(specimen, options, sequences, families, specimenPanel, currentInstance, fontMapping) {
+        if (specimen.name != "Glyph Range" && fontMapping) {
             function isSpaceGlyph(glyph) {
                 if (glyph == "space" || glyph == "*n" || glyph == "*p") {
                     return true;
@@ -192,14 +192,27 @@ app.filter('specimenFilter', function() {
             }
 
             function substitute(glyph) {
-                var pos = -1;
-                for ( i = 0; i < substitutes.length; i++) {
-                    if (glyph == substitutes[i].before) {
-                        pos = i;
-                        break;
+                // check if glyph is a-z A-Z
+                if (/^[a-zA-Z]*$/.test(glyph)) {
+                    return -1;
+                } else {
+                    // we should add var pos = -2. So -1 is regular alphabetic, -2 is unknown
+                    var pos = -1;
+                    var preUnicode = glyph.charCodeAt(0).toString(16).toUpperCase();
+                    var n = 4 - preUnicode.length;
+                    var pre = "";
+                    for (var q = 0; q < n; q++) {
+                        pre += "0";
                     }
+                    var unicode = pre + preUnicode;
+                    for ( i = 0; i < fontMapping.length; i++) {
+                        if (unicode == fontMapping[i].unicode) {
+                            pos = i;
+                            break;
+                        }
+                    }  
+                    return pos;
                 }
-                return pos;
             }
 
             function stringToGlyphs(string, unique, includeSpaces) {
@@ -231,7 +244,7 @@ app.filter('specimenFilter', function() {
                             i = i + glyph.length + 1;
                         }
                     } else if (substitutePosition > -1) {
-                        glyph = substitutes[substitutePosition].after;
+                        glyph = fontMapping[substitutePosition].glyphName;
                     }
                     if (unique) {
                         // unique is set for the filter
