@@ -135,7 +135,6 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
             $("#blob_download").children("a").html(text).click(function(){
                 $scope.data.stateless.saveAs(blob, filename);
                 resetProgressBar();
-                $(this).unbind("click");
                 delete bundle_data;
             });
         }
@@ -143,7 +142,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         function resetProgressBar() {
             $("#progressbar").animate({"opacity": 0, "width": 0}, /*duration:*/ 0); // (that means "do it immediately!")
             $("#progresslabel").html("");
-            $("#blob_download").css("display", "none");
+            $("#blob_download").css("display", "none").children("a").unbind("click");
         }
           
         function exportFont_compute_CPS_chunk(){
