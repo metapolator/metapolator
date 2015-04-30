@@ -60,7 +60,7 @@
                     <img src="img/deleteInstance.png">
                 </div>
             </div>
-            <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': !data.instancesForExport()}" ng-style="{'width': (data.fontExportWidth - 10) + 'px'}">
+            <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': !data.exportButtonIsActive()}" ng-style="{'width': (data.fontExportWidth - 10) + 'px'}">
                 Export…
             </div>
         </div>

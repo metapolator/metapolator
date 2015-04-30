@@ -20,12 +20,20 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
         $scope.data.localmenu.fonts = false;
     };
 
+    var export_is_running = false;
     $scope.data.exportFonts = function() {
 
         //Do not trigger the export routine if no instance is selected for export,
         //otherwise it would result in an empty ZIP file.
         if (!$scope.data.instancesForExport())
             return;
+
+        //Also avoid triggering a new export while we're still not finished
+        if (export_is_running)
+            return;
+
+        export_is_running = true;
+        resetProgressBar();
 
         function zero_padding(value){
             return value < 10 ? "0" + String(value) : String(value);
@@ -49,6 +57,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           , bundleFolderName = "metapolator-export-" + get_timestamp()
           , bundle_filename = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
+          , bundle_data
           ;
 
 /*
@@ -119,11 +128,25 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
             if (text)
                 $("#progresslabel").html(text);
         }
+
+        function setDownloadBlobLink(text, blob, filename) {
+            $("#progressbar").css("width", "100%");
+            $("#progressbar").css("opacity", 1);
+            $("#progresslabel").html("");
+            $("#blob_download").css("display", "block");
+            $("#blob_download").children("a").html(text).click(function(){
+                $scope.data.stateless.saveAs(blob, filename);
+                resetProgressBar();
+                $(this).unbind("click");
+                delete bundle_data;
+            });
+        }
         
-        function completeProgress() {
+        function resetProgressBar() {
             $("#progressbar").css("opacity", 0);
             $("#progressbar").css("width", 0);
             $("#progresslabel").html("");
+            $("#blob_download").css("display", "none");
         }
           
         function exportFont_compute_CPS_chunk(){
@@ -161,9 +184,9 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                 setProgress(CPS_phase_percentage + (100 - CPS_phase_percentage) * (current_instance+1) / total_instances);
                 $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             } else {
-                var bundle_data = bundle.generate({type:"blob"});
-                $scope.data.stateless.saveAs(bundle_data, bundle_filename);
-                completeProgress();
+                bundle_data = bundle.generate({type:"blob"});
+                setDownloadBlobLink(bundle_filename, bundle_data, bundle_filename);
+                export_is_running = false;
             }
         }
 
@@ -180,6 +203,13 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
             });
         });
         return instancesForExport;
+    };
+
+    $scope.data.exportButtonIsActive = function() {
+        if (export_is_running)
+            return false;
+        else
+            return ($scope.data.instancesForExport() > 0);
     };
 
 }]);
