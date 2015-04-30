@@ -157,11 +157,11 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                   , text
                   ;
                 model.getComputedStyle(glyph);
-                text = "Computing: " + current_glyph + "th glyph of " + total_glyphs + " glyphs...";
+                text = total_glyphs + " total glyphs to export in .glif format, calculating glyph #" + current_glyph;
                 setProgress(CPS_phase_percentage * (current_glyph+1) / total_glyphs, text);
                 $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
             } else {
-                text = "Packing UFO ZIP instances... <em>(this may take a while)</em>";
+                text = total_instances + " total instances to export in .ufo.zip format, zipping instance #" + (current_instance+1) + " (can take a while)";
                 setProgress(CPS_phase_percentage, text);
                 $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             }
@@ -180,7 +180,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                 bundleFolder.file(filename, zipped_data, {binary:true});
                 var text;
                 if (current_instance == total_instances)
-                    text = "Generating the final ZIP container...";
+                    text = "Packing all " + total_instances + " instances into final .zip (can take a while)";
                 setProgress(CPS_phase_percentage + (100 - CPS_phase_percentage) * (current_instance+1) / total_instances);
                 $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             } else {
