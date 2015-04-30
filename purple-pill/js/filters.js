@@ -196,6 +196,7 @@ app.filter('specimenFilter', function() {
                 if (/^[a-zA-Z]*$/.test(glyph)) {
                     return -1;
                 } else {
+                    // we should add var pos = -2. So -1 is regular alphabetic, -2 is unknown
                     var pos = -1;
                     var preUnicode = glyph.charCodeAt(0).toString(16).toUpperCase();
                     var n = 4 - preUnicode.length;
@@ -244,7 +245,6 @@ app.filter('specimenFilter', function() {
                         }
                     } else if (substitutePosition > -1) {
                         glyph = fontMapping[substitutePosition].glyphName;
-                        console.log(glyph);
                     }
                     if (unique) {
                         // unique is set for the filter
