@@ -117,8 +117,8 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           , total_glyphs = glyphs_for_cache.length
           , current_instance = 0
           , total_instances = instances_for_export.length
-          , UI_UPDATE_TIMESLICE = 100 //msecs
-          , CPS_phase_percentage = 80 //The other 20% of the time is estimated to be spent packing
+          , UI_UPDATE_TIMESLICE = 50 // msecs
+          , CPS_phase_percentage = 50 //The other 50% of the time is estimated to be spent packing
                                       //the instances and the final zip file.
           ;
           
