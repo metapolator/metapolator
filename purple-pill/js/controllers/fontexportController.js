@@ -156,6 +156,7 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
                   , glyph = value[1]
                   , text
                   ;
+                // TODO model.getComputedStyle(glyph) basically does nothing, so @graphicore will make this actually do something
                 model.getComputedStyle(glyph);
                 text = total_glyphs + " total glyphs to export in .glif format, calculating glyph #" + current_glyph;
                 setProgress(CPS_phase_percentage * (current_glyph+1) / total_glyphs, text);
