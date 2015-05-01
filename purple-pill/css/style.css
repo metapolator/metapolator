@@ -1365,7 +1365,6 @@
             background: #c9eac8;
             height: 100%;
             width: 0;
-            transition: all 0.5s;
         }
         
         #progresslabel {
