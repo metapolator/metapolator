@@ -1,5 +1,5 @@
-app.controller('fontexportController', ['$scope', '$http', 'sharedScope', 'ngProgress', '$timeout',
-function($scope, $http, sharedScope, ngProgress, $timeout) {
+app.controller('fontexportController', ['$scope', '$http', 'sharedScope', '$timeout',
+function($scope, $http, sharedScope, $timeout) {
     $scope.data = sharedScope.data;
 
     $scope.checkAll = function() {
