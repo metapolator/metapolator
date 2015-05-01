@@ -19,6 +19,16 @@ Throughout 2015 and beyond.
 As of April 2015 the project has no major financial support, so the implementation of new features is unpredictable.
 But we'll continue to add the features we think are most important, and the demo will slowly become a [minimum viable product](http://en.wikipedia.org/wiki/Minimum_viable_product).
 
+#### What is the roadmap?
+
+Here's the application's interaction design plan:
+
+https://github.com/metapolator/metapolator/wiki/interaction-design
+
+And here are the _rubber meets the road_ roadmap documents:
+
+https://github.com/metapolator/metapolator/wiki/roadmap
+
 #### When I enter my own specimen text, how do I add linebreaks or paragraph breaks?
 
 Use the special codes `*n` for new lines and `*p` for new paragraphs.
