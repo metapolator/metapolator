@@ -11,7 +11,7 @@ app.controller('engine', function($scope, sharedScope) {
         // adding initial masters
         var masters = $scope.data.stateful.controller.queryAll("master");
         var masterId = 0;
-        for (var i = 0; i < masters.length; i++) {
+        for (var i = 0, l = masters.length; i < l; i++) {
             var master = masters[i];
             var masterName = master.id;
             // skip base for the ui
@@ -19,7 +19,7 @@ app.controller('engine', function($scope, sharedScope) {
                 var glyphs = master.children;
                 var glyphs = [];
                 // adding glyphs to each master
-                for (var j = 0; j < master.children.length; j++) {
+                for (var j = 0, m = master.children.length; j < m; j++) {
                     glyphs.push({
                         name : master.children[j].id,
                         elementType : "glyph",
