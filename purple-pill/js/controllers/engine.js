@@ -143,7 +143,7 @@ app.controller('engine', function($scope, sharedScope) {
                     unit : "",
                     operators : [{
                         name : "x",
-                        value : 1
+                        value : (i+1)
                     }]
 
                 }, {

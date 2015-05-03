@@ -1076,32 +1076,16 @@
                 .parameter-row input {
                     background: transparent;
                     padding: 6px 4px;
+                    color: #515151;
                 }
-                
-                    #parameters-of-master .parameter-row input {
-                        color: #515151;
-                    }
-                    
-                    #parameters-of-glyph .parameter-row input {
-                        color: #515151;
-                    }
 
-                    #parameters-of-master input:hover {
-                        background-color: #6a6a6a;
-                    }
-
-                    #parameters-of-master input:focus {
-                        background: white;
-                        color: black;
-                    }
-
-                    #parameters-of-glyph input:hover {
+                    .parameter-row input:hover {
                         background: #dcdcdc;
                     }
 
-                    #parameters-of-glyph input:focus {
-                        background: white;
-                        color: black;
+                    .parameter-row input:focus {
+                        background: #fff;
+                        color: #000;
                     }
         
                 .parameter-key {
@@ -1133,8 +1117,15 @@
                         width: 100%;
                         border: 0;
                         line-height: 1em;
-                        /*font-family: sans-serif;*/
                     }
+                    
+                        .operator-value input.range-input {
+                            width: 40%;
+                        }
+                        
+                        .range-left {
+                            text-align: right;
+                        }
                     
                     .calculated-value {
                         width: 40%;
