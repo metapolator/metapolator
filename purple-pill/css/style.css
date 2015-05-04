@@ -424,17 +424,21 @@
         }
    
         localmenu.lm-fontby {
-            width: 90px;
+            width: 130px;
             display: inline-block;
-            float: right;
         }
         
             localmenu.lm-fontby .lm-head {
                 background: transparent;
             }
+            
+                localmenu.lm-fontby .lm-head-label {
+                    width: 100px;
+                    display: inline-block;
+                }
         
             localmenu.lm-fontby .lm-body {
-                width: 90px;
+                width: 130px;
             }
     
 

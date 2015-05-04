@@ -44,7 +44,7 @@ app.directive('glyph', function($compile) {
 
             element.bind('$destroy', function(event) {
                 if (scope.data.pill == "red") {
-                    scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);
+                    //scope.data.stateful.glyphRendererAPI.revoke(masterName, glyphName);
                 }
             });
 
