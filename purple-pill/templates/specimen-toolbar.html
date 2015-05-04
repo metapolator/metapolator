@@ -20,23 +20,23 @@
 
     <localmenu class="localmenu lm-lineheight specimen-tool">
         <div class="lm-head" ng-mousedown="data.selectMenu('lineheight')">
-            <div ng-if="lineHeightSetting != 'Custom'" class="lineheight-icon-head" >
-                <img ng-src="img/{{lineHeightSetting}}.png" title="{{lineHeightSetting}}">
+            <div ng-if="lineHeightSetting.name != 'custom'" class="lineheight-icon-head" >
+                <img ng-src="img/{{lineHeightSetting.img}}" title="Amount of line spacing (leading) in em">
             </div>
-            <input class="lineheight-custom" ng-if="lineHeightSetting == 'Custom'" ng-model="data.customLineHeight" ng-focus="updateLineHeightCustom('blur')" ng-keyup="updateLineHeightCustom($event)">
+            <input class="lineheight-custom" ng-if="lineHeightSetting.name == 'custom'" ng-model="data.customLineHeight" ng-focus="updateLineHeightCustom('blur')" ng-keyup="updateLineHeightCustom($event)">
         </div>
         <div class="lm-body" ng-if="data.localmenu.lineheight">
-            <div class="lm-button" ng-mouseup="changeLineHeightSetting(option)" ng-repeat="option in lineHeightOptions track by $index">
-                <div class="lm-checkmark"><span ng-if="option == lineHeightSetting">H</span></div>{{option}}
+            <div class="lm-button" ng-mouseup="changeLineHeightSetting(option)" ng-repeat="option in lineHeightOptions track by $index" title="{{option.title}}">
+                <div class="lm-checkmark"><span ng-if="option.name == lineHeightSetting.name">H</span></div>{{option.name}}
             </div>
             <div class="lm-divider"></div>
-            <div class="lm-button" ng-mouseup="changeLineHeightSetting('Custom')" ng-class="{'lm-selected': lineHeightSetting == 'Custom'}">
-                <div class="lm-checkmark"><span ng-if="option == lineHeightSetting">H</span></div>Custom
+            <div class="lm-button" ng-mouseup="changeLineHeightSetting(lineHeightOptionCustom)">
+                <div class="lm-checkmark"><span ng-if="option.name == 'custom'">H</span></div>Custom
             </div>
         </div>
     </localmenu>
 </div>
-    
+       
 <div class="toolbar-set">
     <input ng-if="selectedSpecimen.name != 'Glyph Range'" placeholder="Mix glyphs…" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
     <input ng-if="selectedSpecimen.name == 'Glyph Range'" placeholder="Filter" type="text" id="filter" ng-model="filterOptions.filter" ng-trim="false" size="7" class="specimen-tool">
