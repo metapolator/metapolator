@@ -112,13 +112,13 @@ So we decided that keeping the system entirely in JavaScript was viable and woul
 
 ##### Is swapping out native development and toolchains for various abstractions on top of the web technologies stack really a good idea?
 
-_This question came up during the Q+A of [Dave Crossland's presentation of Metapolator](https://github.com/davelab6/lgm-2015/blob/master/goodbye-fontforge.md) at the Libre Graphics Meeting in May 2015, and this text was written by Dave in a discussion with Pippin_
+_This question came up during the Q+A of [@davelab6's presentation of Metapolator](https://github.com/davelab6/lgm-2015/blob/master/goodbye-fontforge.md) at the Libre Graphics Meeting in May 2015, and this text was written by Dave in a discussion with [@hodefoting](http://pippin.gimp.org)
 
 Dave presented a brief history of his involvement in libre graphics, how he became dishearted by the rate of progress with FontForge, and how he saw Metapolator and other web-based font applications as more likely to become participatory projects and deliver the promise of user freedom made by the software freedom movement.
 His argument is that since most graphic designers and typographers are trained to build websites: they now learn how to create HTML/CSS markup and do basic JS programming.
 This means they have prepared some basic developer skills and are more able and likely to directly participate in web app project.
 
-Pippin responded to this in the Q+A to say that not everything using web tech can have its UI adapted by web-savvy designers.
+@hodefoting responded to this in the Q+A to say that not everything using web tech can have its UI adapted by web-savvy designers.
 He noted that the reason fontforge has become slow to advance is its high technical debt, which is even worse than some other native libre graphics applications like Inkscape that Dave has participated in developing font related features for.
 He noted that the web stack is not magical, and that many of the web libraries used in the course of Metapolator's development will age badly, just as Fontforge's custom toolkit has done.
 
