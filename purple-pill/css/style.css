@@ -353,14 +353,27 @@
                 padding: 0;
             }
             
-                .toolbar-set.lm-specimen .lm-head {
+                .toolbar-set .lm-head {
                     background: #eee;
                     padding: 0 2px 2px 0;
+                    height: 29px;
                 }
+                
+                    .toolbar-set .lm-lineheight .lm-head {
+                        padding: 7px;
+                    }
+                
+                    .toolbar-set .lm-fontby .lm-head {
+                        padding: 7px;
+                    }
             
                 .lm-specimen input {
                     width: 130px;    
                 }
+                
+                 .toolbar-set.lm-specimen .lm-body {
+                     width: 154px;
+                 }
 
            .size-nr {
                width: 38px;
@@ -372,6 +385,24 @@
                 width: 16px;
                 height: 16px;
             }
+            
+                .lineheight-custom {
+                    width: 32px;
+                }
+                            
+                .lineheight-icon-head {
+                    display: inline-block;
+                    height: 29px;
+                }
+                
+                .lineheight-icon-head {
+                    width: 32px;
+                    height: 28px;
+                    padding: 4px 4px 0 6px;
+                    background: #fff;
+                    display: inline-block;;
+                }
+
             
             .strict-box {
                 padding-top: 3px;
@@ -1076,32 +1107,16 @@
                 .parameter-row input {
                     background: transparent;
                     padding: 6px 4px;
+                    color: #515151;
                 }
-                
-                    #parameters-of-master .parameter-row input {
-                        color: #515151;
-                    }
-                    
-                    #parameters-of-glyph .parameter-row input {
-                        color: #515151;
-                    }
 
-                    #parameters-of-master input:hover {
-                        background-color: #6a6a6a;
-                    }
-
-                    #parameters-of-master input:focus {
-                        background: white;
-                        color: black;
-                    }
-
-                    #parameters-of-glyph input:hover {
+                    .parameter-row input:hover {
                         background: #dcdcdc;
                     }
 
-                    #parameters-of-glyph input:focus {
-                        background: white;
-                        color: black;
+                    .parameter-row input:focus {
+                        background: #fff;
+                        color: #000;
                     }
         
                 .parameter-key {
@@ -1133,8 +1148,15 @@
                         width: 100%;
                         border: 0;
                         line-height: 1em;
-                        /*font-family: sans-serif;*/
                     }
+                    
+                        .operator-value input.range-input {
+                            width: 40%;
+                        }
+                        
+                        .range-left {
+                            text-align: right;
+                        }
                     
                     .calculated-value {
                         width: 40%;
@@ -1365,7 +1387,6 @@
             background: #c9eac8;
             height: 100%;
             width: 0;
-            transition: all 0.5s;
         }
         
         #progresslabel {

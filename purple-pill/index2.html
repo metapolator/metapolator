@@ -45,7 +45,6 @@
         
         <!-- Angular -->
         <script src="js/angular/angular.min.js" type="text/javascript"></script>
-        <script src='../bower_components/ngprogress/build/ngProgress.js' type='text/javascript'></script>
         <script src='js/app.js' type='text/javascript'></script>
         <script src='js/factory.js' type='text/javascript'></script>
         <script src='js/templates.js' type='text/javascript'></script>
@@ -92,7 +91,7 @@
                 </div>
                 
                 
-                <specimen id="panel-1" ng-controller="specimenController" ng-init="addGlyphRange(); specimenPanel = 1" class="sub-panel panel" ng-style="{'width': 'calc(' + (data.view.panels[1] / data.view.totalPanelParts) + '* 100%)'}"></specimen>
+                <specimen id="panel-1" ng-controller="specimenController" ng-init="addGlyphRange(); specimenPanel = 1; loadMapping();" class="sub-panel panel" ng-style="{'width': 'calc(' + (data.view.panels[1] / data.view.totalPanelParts) + '* 100%)'}"></specimen>
 
                 <!-- start of view 2 -->
                 <div id="panel-2" class="panel" ng-style="{'width': 'calc(' + (data.view.panels[2] / data.view.totalPanelParts) + '* 100%)'}">

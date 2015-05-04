@@ -1,5 +1,5 @@
-app.controller('specimenController', ['$scope', '$sce', 'sharedScope',
-function($scope, $sce, sharedScope) {
+app.controller('specimenController', ['$scope', '$sce', 'sharedScope', '$http',
+function($scope, $sce, sharedScope, $http) {
     $scope.data = sharedScope.data;
 
     $scope.data.renderGlyphs = function(masterName, glyphName) {
@@ -21,30 +21,48 @@ function($scope, $sce, sharedScope) {
         name : "[Enter your own text]",
         text : "Metapolator"
     }], [{
-        name : "Pangram 1",
-        text : "The quick brown fox jumps over the lazy dog."
+        name : "3 Pangrams",
+        text : "Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog. Bright vixens jump dozy fowl quack."
     }, {
-        name : "Pangram 2",
-        text : "Bright vixens jump dozy fowl quack."
+        name : "Capitalised Pan",
+        text : "Aladine Biopsia Cumbia Diego Espejo Flecha Gaveta Hockey Index Jaque Kurdos Ludwing Motivo Nylon Ortiz Profit Quiff Roving Sioux Tizzy Unwary Vertex Wrathy Xammar Yachts Zaque"
     }, {
-        name : "Pangram 3",
-        text : "Quick wafting zephyrs vex bold Jim."
+        name : "Ruder",
+        text : "vertrag crainte screw, bibel malhabile modo. verwalter croyant science, biegen peuple punibile. verzicht fratricide sketchy, blind qualifier quindi. vorrede frivolité story, damals quelle dinamica. yankee instruction take, china quelque analiso. zwetschge lyre treaty, schaden salomon macchina. zypresse navette tricycle, schein sellier secondo. fraktur nocturne typograph, lager sommier singolo. kraft pervertir vanity, legion unique possibile. raffeln presto victory, mime unanime unico. reaktion prévoyant vivacity, mohn usuel legge. rekord priorité wayward, nagel abonner unione. revolte proscrire efficiency, puder agir punizione. tritt raviver without, quälen aiglon dunque. trotzkopf tactilité through, huldigen allégir quando. tyrann arrêt known, geduld alliance uomini."
     }], [{
-        name : "Something With Breaks",
-        text : "Hey you,*nthe rock*nsteady crew."
+        name : "Aa12%@…",
+        text : "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*n1234567890*n( { [ . , ¡ ! ¿ ? * ' ‘ ’ \" \“ \” ] } ) $ € £ % @ & ¶ § ¢ † ‡"
     }, {
-        name : "AaBbCcDdEe...",
-        text : "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789"
-    }, {
-        name : "Numbers",
-        text : "0123456789"
-    }, {
-        name : "???",
-        text : "ÁæÆ≈∼@"
+        name : "Number Grid",
+        text : "12345678901*n23456789012*n34567890123*n45678901234*n56789012345*n67890123456*n78901234567*n89012345678*n90123456789*n01234567890"
     }], [{
-        name : "Paragraph 1",
+        name : "Paragraph",
         text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armourlike back and if he lifted his head a little, he could see his brown belly slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
     }]];
+
+    // load font mapping
+
+    $scope.loadMapping = function() {
+        $http.get("templates/mapping.csv").success(function(data) {
+            $scope.data.mapping = processCSV(data);
+        });
+    };
+
+    function processCSV(data) {
+        var cols = 3;
+        var lines = data.split(/\r\n|\n/);
+        var output = [];
+        for (var i = 0; i < lines.length; i++) {
+            var thisSet = lines[i].split(";");
+            var thisGlyph = {
+                unicode : thisSet[0],
+                glyphName : thisSet[1],
+                description : thisSet[2],
+            };
+            output.push(thisGlyph);
+        }
+        return output;
+    }
 
     // only for the masters specimen panel
     $scope.addGlyphRange = function() {
@@ -63,11 +81,12 @@ function($scope, $sce, sharedScope) {
         strict : 1,
         selectedFontby : $scope.fontbys[2]
     };
+    
 
     var manageSpacesTimer;
     var sizeCounter = 0;
 
-    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance", function(newVal) {
+    $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance:data.mapping", function(newVal) {
         $scope.filteredGlyphs = newVal;
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
@@ -131,19 +150,47 @@ function($scope, $sce, sharedScope) {
             }
         });
     }
-
+    
+    // lineheight tools
+    
+    $scope.lineHeightOptions = ["tight", "normal", "loose"];
+    $scope.lineHeightSetting = $scope.lineHeightOptions[1];
+    $scope.data.customLineHeight = parseFloat(1).toFixed(2); // need to keep this global, otherwise the input can't reach it, because ng-if makes a child scope
+    
+    $scope.changeLineHeightSetting = function (option) {
+        $scope.lineHeightSetting = option;
+        $scope.updateLineHeight();
+        $scope.data.localmenu.lineheight = false;
+    };
 
     $scope.updateLineHeight = function() {
-        $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+        if ($scope.lineHeightSetting == "normal") {
+            $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+        } else if ($scope.lineHeightSetting == "tight") {
+            $scope.lineHeight = 1 / (0.1525 * $scope.fontSize + 0.85) + 0.7785;
+        } else if ($scope.lineHeightSetting == "loose") {
+            $scope.lineHeight = 1 / (0.087 * $scope.fontSize + 0.195) + 1.062;
+        }
     };
     
-    $scope.getLineHeight = function (glyphName) {
+    $scope.updateLineHeightCustom = function(keyEvent) {
+        if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+            $scope.data.customLineHeight = parseFloat($scope.data.customLineHeight).toFixed(2);
+            $scope.lineHeight = $scope.data.customLineHeight;
+        }
+        $scope.data.localmenu.lineheight = false;
+    };
+
+    $scope.getLineHeight = function(glyphName) {
         var lineHeight = $scope.lineHeight * $scope.fontSize;
         if (glyphName == "*specimenbreak") {
-            lineHeight /= 2; 
+            lineHeight /= 2;
         }
         return lineHeight;
     };
+    
+    
+    
 
     $scope.selectSpecimen = function(specimen) {
         $scope.selectedSpecimen = specimen;

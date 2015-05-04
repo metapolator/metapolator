@@ -102,87 +102,9 @@ app.filter('rangeFilter', function() {
     };
 });
 
-// mapping from glyphs form input to a glyph name
-var substitutes = [{
-    before : " ",
-    after : "space"
-}, {
-    before : ".",
-    after : "period"
-}, {
-    before : ",",
-    after : "comma"
-}, {
-    before : ";",
-    after : "semicolon"
-}, {
-    before : "1",
-    after : "one"
-}, {
-    before : "2",
-    after : "two"
-}, {
-    before : "3",
-    after : "three"
-}, {
-    before : "4",
-    after : "four"
-}, {
-    before : "5",
-    after : "five"
-}, {
-    before : "6",
-    after : "six"
-}, {
-    before : "7",
-    after : "seven"
-}, {
-    before : "8",
-    after : "eight"
-}, {
-    before : "9",
-    after : "nine"
-}, {
-    before : "0",
-    after : "zero"
-}, {
-    before : "Á",
-    after : "A_acute"
-}, {
-    before : "æ",
-    after : "ae"
-}, {
-    before : "´",
-    after : "acute"
-}, {
-    before : "Æ",
-    after : "A_E"
-}, {
-    before : "≈",
-    after : "approxequal"
-}, {
-    before : "^",
-    after : "asciicircum"
-}, {
-    before : "∼",
-    after : "asciitilde"
-}, {
-    before : "*",
-    after : "asterisk"
-}, {
-    before : "@",
-    after : "at"
-}, {
-    before : "|",
-    after : "bar"
-}, {
-    before : "{",
-    after : "braceleft"
-}];
-
 app.filter('specimenFilter', function() {
-    return function(specimen, options, sequences, families, specimenPanel, currentInstance) {
-        if (specimen.name != "Glyph Range") {
+    return function(specimen, options, sequences, families, specimenPanel, currentInstance, fontMapping) {
+        if (specimen.name != "Glyph Range" && fontMapping) {
             function isSpaceGlyph(glyph) {
                 if (glyph == "space" || glyph == "*n" || glyph == "*p") {
                     return true;
@@ -192,14 +114,27 @@ app.filter('specimenFilter', function() {
             }
 
             function substitute(glyph) {
-                var pos = -1;
-                for ( i = 0; i < substitutes.length; i++) {
-                    if (glyph == substitutes[i].before) {
-                        pos = i;
-                        break;
+                // check if glyph is a-z A-Z
+                if (/^[a-zA-Z]*$/.test(glyph)) {
+                    return -1;
+                } else {
+                    // we should add var pos = -2. So -1 is regular alphabetic, -2 is unknown
+                    var pos = -1;
+                    var preUnicode = glyph.charCodeAt(0).toString(16).toUpperCase();
+                    var n = 4 - preUnicode.length;
+                    var pre = "";
+                    for (var q = 0; q < n; q++) {
+                        pre += "0";
                     }
+                    var unicode = pre + preUnicode;
+                    for ( i = 0; i < fontMapping.length; i++) {
+                        if (unicode == fontMapping[i].unicode) {
+                            pos = i;
+                            break;
+                        }
+                    }  
+                    return pos;
                 }
-                return pos;
             }
 
             function stringToGlyphs(string, unique, includeSpaces) {
@@ -231,7 +166,7 @@ app.filter('specimenFilter', function() {
                             i = i + glyph.length + 1;
                         }
                     } else if (substitutePosition > -1) {
-                        glyph = substitutes[substitutePosition].after;
+                        glyph = fontMapping[substitutePosition].glyphName;
                     }
                     if (unique) {
                         // unique is set for the filter

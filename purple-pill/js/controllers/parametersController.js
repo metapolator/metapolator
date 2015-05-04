@@ -5,32 +5,44 @@ app.controller("parametersController", function($scope, sharedScope) {
         name : "weight",
         displayName : "Weight",
         unit : "",
+        step : 0.1,
+        decimals : 2
     }, {
         name : "width",
         displayName : "Width",
         unit : "",
+        step : 0.005,
+        decimals : 4
     }, {
         name : "height",
         displayName : "Height",
         unit : "",
+        step : 0.02,
+        decimals : 3
     }, {
         name : "spacing",
         displayName : "Spacing",
         unit : "",
+        step : 1,
+        decimals : 1
     }];
 
     $scope.operators = [{
         name : "x",
         standardValue : 1,
+        type : "stack"
     }, {
         name : "÷",
         standardValue : 1,
+        type : "stack"
     }, {
         name : "+",
         standardValue : 0,
+        type : "stack"
     }, {
         name : "-",
         standardValue : 0,
+        type : "stack"
     }];
 
     $scope.selectionParametersMasters = [];
@@ -52,7 +64,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var nrOfHasOperator = 0;
                 var lowest = null;
                 var highest = null;
-                var prev = null;
                 // get all the elements - depending on the level we are in - with edit == true
                 var elements = $scope.findElements(level);
                 angular.forEach(elements, function(element) {
@@ -75,7 +86,8 @@ app.controller("parametersController", function($scope, sharedScope) {
                         }
                     });
                 });
-                // when a multiple selection contains one object with a setting and onther without, the standard value is used
+                // when a multiple selection contains one object with a setting and another without
+                // the standard value is used
                 if (nrOfElements > nrOfHasOperator && nrOfHasOperator > 0) {
                     if (theOperator.standardValue < lowest) {
                         lowest = theOperator.standardValue;
@@ -90,17 +102,18 @@ app.controller("parametersController", function($scope, sharedScope) {
                     range = false;
                 }
 
-                if (!prev) {
-                  prev = lowest;
-                }
-
                 if (hasThisOperator) {
                     theOperators.push({
                         name : theOperator.name,
                         range : range,
-                        low : lowest,
-                        high : highest,
-                        prev: prev
+                        low : {
+                            current : lowest,
+                            fallback : lowest
+                        },
+                        high : {
+                            current : highest,
+                            fallback : highest
+                        }
                     });
                 }
             });
@@ -122,8 +135,8 @@ app.controller("parametersController", function($scope, sharedScope) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
                         var thisElement = {
-                            element: master,
-                            master: master
+                            element : master,
+                            master : master
                         };
                         elements.push(thisElement);
                     }
@@ -137,8 +150,8 @@ app.controller("parametersController", function($scope, sharedScope) {
                             if (glyph.edit) {
                                 // changeParameter needs to know the master when editing on glyph level
                                 var thisElement = {
-                                    element: glyph,
-                                    master: master
+                                    element : glyph,
+                                    master : master
                                 };
                                 elements.push(thisElement);
                             }
@@ -151,57 +164,51 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     function round(value, decimals) {
-      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+        return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
     }
 
-    $scope.changeParameter = function(parameterName, operator, elementType, range, keyEvent) {
-        if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
-            var operatorName = operator.name;
 
-            if (typeof(operator.low) == "string") {
-              operator.low = operator.low.replace(',', '.');
-            }
-            if (isNaN(operator.low) || operator.low === "") {
-              // Not a number! Use previous value.
-              operator.low = operator.prev;
-            } else {
-              operator.prev = operator.low;
-            }
-
-            // Step size
-            var step = 0.1;
-            var dec = 2;
-            if (parameterName == "width") {
-                step = 0.005;
-                dec = 4;
-            } else if (parameterName == "height") {
-                step = 0.02;
-                dec = 3;
-            } else if (parameterName == "spacing") {
-                step = 1;
-                dec = 1;
-            }
-
+    $scope.managedInputValue = function(value, parameterName, operatorName, keyEvent) {
+        var currentValue = value.current;
+        // Not a number: use the fallback value.
+        if (isNaN(currentValue) || currentValue === "") {
+            currentValue = value.fallback;
+        }
+        if ( typeof (currentValue) == "string") {
+            currentValue = parseFloat(currentValue.replace(',', '.'));
+        }
+        // Step size
+        var thisParameter = $scope.getParameterByName(parameterName);
+        var step = thisParameter.step;
+        var decimals = thisParameter.decimals;
+        if (keyEvent != "blur") {
+            keyEvent.preventDefault();
             if (keyEvent.shiftKey) {
                 step = step * 10;
             }
             if (keyEvent.keyCode == 38) {
-                operator.low = round(parseFloat(operator.low) + step, dec);
+                currentValue = round(parseFloat(currentValue) + step, decimals);
+            } else if (keyEvent.keyCode == 40) {
+                currentValue = round(parseFloat(currentValue) - step, decimals);
             }
-            if (keyEvent.keyCode == 40) {
-                operator.low = round(parseFloat(operator.low) - step, dec);
-            }
+        }
+        return currentValue;
+    };
 
-            if (keyEvent != "blur") {
-               keyEvent.preventDefault(); 
-            }
-            
+    $scope.changeParameter = function(parameterName, operator, value, elementType, range, keyEvent) {
+        if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
+            var operatorName = operator.name;
+            var thisValue = $scope.managedInputValue(value, parameterName, operatorName, keyEvent);
+            value.current = thisValue;
+            value.fallback = thisValue;
 
+            // temp hack untill #392 is fixed
             var key = parameterName + "F";
             if (parameterName == "spacing") {
                 var key = parameterName + "S";
             }
 
+            // find which elements (master(s) or glyph(s) - later also deeper levels - to edit with this value
             var elements = $scope.findElements(elementType);
             angular.forEach(elements, function(element) {
                 if (element.element.ruleIndex) {
@@ -209,73 +216,60 @@ app.controller("parametersController", function($scope, sharedScope) {
                 } else {
                     var ruleIndex = $scope.addRullAPI(elementType, element.master, element.element.name);
                 }
+                // if there is a range, we have to find the value for this element within the range
                 if (range) {
-                    var value = $scope.validateValue($scope.getRangeValue(element.element, parameterName, operator, elementType));
-                } else {
-                    // temp hack untill the initial value issue is implemented. Then all the operators together produce a calculated value.
-                    // That value is passed to the setParameter(parameterDict, key, value)
-                    if (operator.name == "÷") {
-                        var value = $scope.validateValue(1 / operator.low);
-                    } else if (operator.name == "-") {
-                        var value = $scope.validateValue(- operator.low);
-                    } else {
-                        var value = $scope.validateValue(operator.low);
-                    }
+                    thisValue = $scope.getRangeValue(element.element, parameterName, operator, elementType);
                 }
-                $scope.setParameterModel(element.master, element.element, parameterName, operatorName, value);
-                $scope.setParameterAPI(element.master, ruleIndex, key, value);
+                // temp hack untill #392 is fixed
+                // Untill the initial value issue is implemented. Then all the operators together produce a calculated value.
+                // That value is passed to the setParameter(parameterDict, key, value)
+                if (operator.name == "÷") {
+                    thisValue = 1 / thisValue;
+                } else if (operator.name == "-") {
+                    thisValue = -thisValue;
+                }
+                $scope.setParameterModel(element.master, element.element, parameterName, operatorName, thisValue);
+                $scope.setParameterAPI(element.master, ruleIndex, key, thisValue);
             });
-            $scope.optimizeOperators();
+            if (range) {
+                // update the range boundaries after setting each element,
+                // so the new value of a (inbetween range) element
+                // gets the right myPosition relative to the new boundaries
+                operator.low.old = operator.low.current;
+                operator.high.old = operator.high.current;
+            }
+            //$scope.optimizeOperators();
         }
-    };
-
-    $scope.validateValue = function(x) {
-        if (isNaN(x) || x == "") {
-            x = 0;
-        }
-        var roundedX = Math.round(x * 100) / 100;
-        var toF = roundedX.toFixed(2);
-        return toF;
     };
 
     $scope.getRangeValue = function(element, parameterName, myOperator, elementType) {
+        var scale, myPosition, newValue;
+        var decimals = $scope.getParameterByName(parameterName).decimals;
         var operatorName = myOperator.name;
-        var oldLow = myOperator.low;
-        var oldHigh = myOperator.high;
-        var newLow = parseFloat(myOperator.newLow);
-        var newHigh = parseFloat(myOperator.newHigh);
+        var oldLow = myOperator.low.old;
+        var oldHigh = myOperator.high.old;
+        var newLow = myOperator.low.current;
+        var newHigh = myOperator.high.current;
         var currentValue = null;
-        var newValue;
-        // find current value
+        // find current value of the specific element
         angular.forEach(element.parameters, function(parameter) {
             if (parameter.name == parameterName) {
                 angular.forEach(parameter.operators, function(operator) {
                     if (operator.name == operatorName) {
-                        currentValue = parseFloat(operator.value);
+                        currentValue = operator.value;
                     }
                 });
             }
         });
         if (currentValue == null) {
-            angular.forEach($scope.operators, function(globalOperator) {
-                if (globalOperator.name == operatorName) {
-                    currentValue = globalOperator.standardValue;
-                }
-            });
+            currentValue = getOperatorByName(operatorName).standardValue;
         }
         if (oldLow == newLow && oldHigh == newHigh) {
-            // no change
+            newValue = currentValue;
         } else {
-            var scale = oldHigh - oldLow;
-            if (oldLow == newLow) {
-                var changeFactor = newHigh / oldHigh;
-                var change = newHigh - oldHigh;
-            } else {
-                var changeFactor = newLow / oldLow;
-                var change = newLow - oldLow;
-            }
-            var myShare = (currentValue - oldLow) / scale;
-            var newValue = myShare * change + currentValue;
+            scale = oldHigh - oldLow;
+            myPosition = (currentValue - oldLow) / scale;
+            newValue = round(((newHigh - newLow) * myPosition + newLow), decimals);
         }
         return newValue;
     };

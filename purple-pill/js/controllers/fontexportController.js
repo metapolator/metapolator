@@ -1,5 +1,5 @@
-app.controller('fontexportController', ['$scope', '$http', 'sharedScope', 'ngProgress', '$timeout',
-function($scope, $http, sharedScope, ngProgress, $timeout) {
+app.controller('fontexportController', ['$scope', '$http', 'sharedScope', '$timeout',
+function($scope, $http, sharedScope, $timeout) {
     $scope.data = sharedScope.data;
 
     $scope.checkAll = function() {
@@ -123,30 +123,26 @@ function($scope, $http, sharedScope, ngProgress, $timeout) {
           ;
           
         function setProgress(width, text) {
-            $("#progressbar").css("opacity", 1);
-            $("#progressbar").css("width", width + "%");
+            $("#progressbar").animate({"opacity": 1, "width": width + "%"}, /*duration:*/ UI_UPDATE_TIMESLICE);
             if (text)
                 $("#progresslabel").html(text);
         }
 
         function setDownloadBlobLink(text, blob, filename) {
-            $("#progressbar").css("width", "100%");
-            $("#progressbar").css("opacity", 1);
+            $("#progressbar").animate({"width": "100%", "opacity": 1}, /*duration:*/ UI_UPDATE_TIMESLICE);
             $("#progresslabel").html("");
             $("#blob_download").css("display", "block");
             $("#blob_download").children("a").html(text).click(function(){
                 $scope.data.stateless.saveAs(blob, filename);
                 resetProgressBar();
-                $(this).unbind("click");
                 delete bundle_data;
             });
         }
         
         function resetProgressBar() {
-            $("#progressbar").css("opacity", 0);
-            $("#progressbar").css("width", 0);
+            $("#progressbar").animate({"opacity": 0, "width": 0}, /*duration:*/ 0); // (that means "do it immediately!")
             $("#progresslabel").html("");
-            $("#blob_download").css("display", "none");
+            $("#blob_download").css("display", "none").children("a").unbind("click");
         }
           
         function exportFont_compute_CPS_chunk(){

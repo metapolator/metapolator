@@ -459,6 +459,7 @@ app.directive('strict', function() {
     };
 });
 
+
 app.directive('specGlyphBox', function($document) {
     return {
         restrict : 'C',

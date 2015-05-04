@@ -38,6 +38,7 @@ app.factory("sharedScope", function($rootScope) {
             specimen2: false,
             fontby1: false,
             fontby2: false,
+            lineheight: false
         },
         view : {
             menuItems : ["Parameters", "Design Spaces", "Fonts"],
