@@ -153,7 +153,7 @@ function($scope, $sce, sharedScope, $http) {
     
     // lineheight tools
     
-    $scope.lineHeightOptions = ["Tight", "Normal", "Loose"];
+    $scope.lineHeightOptions = ["tight", "normal", "loose"];
     $scope.lineHeightSetting = $scope.lineHeightOptions[1];
     $scope.data.customLineHeight = parseFloat(1).toFixed(2); // need to keep this global, otherwise the input can't reach it, because ng-if makes a child scope
     
@@ -164,11 +164,11 @@ function($scope, $sce, sharedScope, $http) {
     };
 
     $scope.updateLineHeight = function() {
-        if ($scope.lineHeightSetting == "Normal") {
+        if ($scope.lineHeightSetting == "normal") {
             $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
-        } else if ($scope.lineHeightSetting == "Tight") {
+        } else if ($scope.lineHeightSetting == "tight") {
             $scope.lineHeight = 1 / (0.1525 * $scope.fontSize + 0.85) + 0.7785;
-        } else if ($scope.lineHeightSetting == "Loose") {
+        } else if ($scope.lineHeightSetting == "loose") {
             $scope.lineHeight = 1 / (0.087 * $scope.fontSize + 0.195) + 1.062;
         }
     };
