@@ -110,6 +110,30 @@ Lasse Fister had already ported much of RoboFab to JavaScript in [ufoJS](https:/
 
 So we decided that keeping the system entirely in JavaScript was viable and wouldn't slow us down much compared to the long term benefits.
 
+##### Is swapping out native development and toolchains for various abstractions on top of the web technologies stack really a good idea?
+
+_This question came up during the Q+A of [Dave Crossland's presentation of Metapolator](https://github.com/davelab6/lgm-2015/blob/master/goodbye-fontforge.md) at the Libre Graphics Meeting in May 2015, and this text was written by Dave in a discussion with Pippin_
+
+Dave presented a brief history of his involvement in libre graphics, how he became dishearted by the rate of progress with FontForge, and how he saw Metapolator and other web-based font applications as more likely to become participatory projects and deliver the promise of user freedom made by the software freedom movement.
+His argument is that since most graphic designers and typographers are trained to build websites: they now learn how to create HTML/CSS markup and do basic JS programming.
+This means they have prepared some basic developer skills and are more able and likely to directly participate in web app project.
+
+Pippin responded to this in the Q+A to say that not everything using web tech can have its UI adapted by web-savvy designers.
+He noted that the reason fontforge has become slow to advance is its high technical debt, which is even worse than some other native libre graphics applications like Inkscape that Dave has participated in developing font related features for.
+He noted that the web stack is not magical, and that many of the web libraries used in the course of Metapolator's development will age badly, just as Fontforge's custom toolkit has done.
+
+While writing from scratch is more fun whether it is native or web based, a project always accumulates technical debt, and Pippin notes that the web stack has enough incompatible abstractions and annoyances to keep someone with web front end engineering skills, rather than designers, occupied forever. 
+Dealing with engineering problems and paying down technical debts needs as hard-core or even more hard-core engineering skills than for native code, because the tooling for native code is often more sophisticated.
+
+While Dave says he is disinclined to contribute to native applications and recommends libre graphics developers simimlarly reconsider, Pippin suggests that a better, longer term, solution is to improve state education with a focus on algorithms and code early in the core mathematics curriculum.
+This would help people who eventually become graphics designers to be generally more capable of contributing directly to software projects, no matter what the stack.
+
+Dave agrees that this trend, well underway with efforts like Raspberry Pi in the UK school curriculum, is a good one, and will surely help schoolage people learn more about code. 
+However, Dave thinks that specialisation and division of labour is a central aspect of industrial society.
+Dave does not claim that specialisation is required to participate in design, or that designers should not learn more about software engineering. 
+While he thinks it is unreasonable to expect visually focused designers to become very skilled with software engineering, it is clear (like from the graph above) that JavaScript is becoming the most widely-known programming language on the planet, and many more designers will know JavaScript than any native platform, so that in itself is likely to make web based projects more participatory than other languages.
+
+
 #### I don’t like uploading my fonts to cloud editors
 
 We share this concern.
