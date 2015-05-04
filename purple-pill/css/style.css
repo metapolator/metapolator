@@ -1534,7 +1534,7 @@
         
 /**************** alert ************************/
 
-    #dialog {
+    #importufo_dialog, #dialog {
         display: none;
         position: fixed;
         z-index: 10001;

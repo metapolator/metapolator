@@ -26386,7 +26386,8 @@ define('metapolator/project/ImportController',[
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(log, project, masterName, sourceUFODir) {
+    function ImportController(io, log, project, masterName, sourceUFODir) {
+        this._io = io;
         this._project = project;
         this._log = log;
         this._masterName = masterName;
@@ -37413,8 +37414,18 @@ define('metapolator/project/MetapolatorProject',[
         return this._controller;
     };
 
-    _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( this._log, this,
+    _p.ImportZippedUFOInstance = function(filename, blob) {
+        var mem_io = new InMemory();
+        zipUtil.unpack(false, blob, mem_io, "/");
+        var names = mem_io.readDir(false, "/");
+        var sourceUFODir = names[0]; //This may be wrong in some cases. We need a more robust implementation.
+        var glyphs = undefined; //I still don't know what is this used for.
+        var masterName = sourceUFODir; //we may want to split out the .ufo suffix...
+        this.import(mem_io, masterName, sourceUFODir, glyphs);
+    };
+
+    _p.import = function(io, masterName, sourceUFODir, glyphs) {
+        var importer = new ImportController( io, this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
 
