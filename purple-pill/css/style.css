@@ -382,6 +382,10 @@
                 height: 16px;
             }
             
+                .lm-lineheight {
+                    width: 70px;
+                }
+            
                 .lm-lineheight .lm-body {
                     width: 90px;
                 }
@@ -396,13 +400,20 @@
                 }
                 
                 .lineheight-icon-head {
-                    width: 32px;
+                    width: 48px;
                     height: 28px;
-                    padding: 0 8px;
+                    padding-right: 8px;
                     background: #fff;
-                    display: inline-block;;
+                    display: inline-block;
+                    text-align: right;
                 }
-
+                
+                .lineheight-custom-head {
+                    width: 48px;
+                    height: 28px;
+                    display: inline-block;
+                    text-align: right;
+                }
             
             .strict-box {
                 padding-top: 3px;

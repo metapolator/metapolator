@@ -20,10 +20,12 @@
 
     <localmenu class="localmenu lm-lineheight specimen-tool">
         <div class="lm-head" ng-mousedown="data.selectMenu('lineheight')">
-            <div ng-if="lineHeightSetting.name != 'custom'" class="lineheight-icon-head" >
+            <div ng-if="lineHeightSetting.name != 'custom'" class="lineheight-icon-head">
                 <img ng-src="img/{{lineHeightSetting.img}}" title="Amount of line spacing (leading) in em">
             </div>
-            <input class="lineheight-custom" ng-if="lineHeightSetting.name == 'custom'" ng-model="data.customLineHeight" ng-focus="updateLineHeightCustom('blur')" ng-keyup="updateLineHeightCustom($event)">
+            <div ng-if="lineHeightSetting.name == 'custom'" class="lineheight-custom-head">
+                / <input class="lineheight-custom" ng-model="data.customLineHeight" ng-focus="updateLineHeightCustom('blur')" ng-keyup="updateLineHeightCustom($event)">
+            </div>
         </div>
         <div class="lm-body" ng-if="data.localmenu.lineheight">
             <div class="lm-button" ng-mouseup="changeLineHeightSetting(option)" ng-repeat="option in lineHeightOptions track by $index" title="{{option.title}}">
