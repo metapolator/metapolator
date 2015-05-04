@@ -147,9 +147,13 @@ When [Adobe Multiple Master](http://en.wikipedia.org/wiki/Multiple_master_fonts)
 The Metapolator drawing model supports regular outline contours but can also create outlines from the higher-level abstraction of strokes.
 These strokes have a center line contour formed by points that have width and angle properties to create left and right side outline points.
 The points also have tension and direction properties for calculating the contours as [Hobby Splines](https://www.google.com/search?q=hobby%20spline). 
-Here is an example of a glyph with the center line visible:
+Here is an example of a Latin and a Devanagari glyph with the center line visible:
 
-![Metapolator Center Line Example](http://metapolator.com/images/wiki/center-line.png)
+![Metapolator Center Line Example: Latin](http://metapolator.com/images/wiki/center-line-latin.png)
+
+![Metapolator Center Line Example: Non Latin](http://metapolator.com/images/wiki/center-line-nonlatin.png)
+
+
 
 #### What is Metafont? 
 
