@@ -1498,7 +1498,7 @@
         }
         
             .lm-button:hover, .lm-button.lm-selected {
-                background: #eee;
+                background: #dcdcdc;
             }
             
             .lm-button-hover {
