@@ -4,8 +4,8 @@
     </div>
     <div class="lm-body" ng-if="data.localmenu.specimen1">
         <div ng-repeat-start="specimenCat in specimen">
-            <div class="lm-button" ng-repeat="specim in specimenCat" ng-class="{'lm-selected': specim == selectedSpecimen}" ng-mouseup="selectSpecimen(specim)">
-                {{specim.name}}
+            <div class="lm-button" ng-repeat="specim in specimenCat" ng-mouseup="selectSpecimen(specim)">
+                <div class="lm-checkmark"><span ng-if="specim == selectedSpecimen">H</span></div>{{specim.name}}
             </div>
         </div>
         <div ng-repeat-end class="lm-divider" ng-if="!$last"></div>
@@ -26,12 +26,12 @@
             <input class="lineheight-custom" ng-if="lineHeightSetting == 'Custom'" ng-model="data.customLineHeight" ng-focus="updateLineHeightCustom('blur')" ng-keyup="updateLineHeightCustom($event)">
         </div>
         <div class="lm-body" ng-if="data.localmenu.lineheight">
-            <div class="lm-button" ng-click="changeLineHeightSetting(option)" ng-repeat="option in lineHeightOptions track by $index" ng-class="{'lm-selected': option == lineHeightSetting}">
-                {{option}}
+            <div class="lm-button" ng-mouseup="changeLineHeightSetting(option)" ng-repeat="option in lineHeightOptions track by $index">
+                <div class="lm-checkmark"><span ng-if="option == lineHeightSetting">H</span></div>{{option}}
             </div>
             <div class="lm-divider"></div>
-            <div class="lm-button" ng-click="changeLineHeightSetting('Custom')" ng-class="{'lm-selected': lineHeightSetting == 'Custom'}">
-                Custom
+            <div class="lm-button" ng-mouseup="changeLineHeightSetting('Custom')" ng-class="{'lm-selected': lineHeightSetting == 'Custom'}">
+                <div class="lm-checkmark"><span ng-if="option == lineHeightSetting">H</span></div>Custom
             </div>
         </div>
     </localmenu>
@@ -52,8 +52,8 @@
             <div class="lm-head-label">Font by: {{filterOptions.selectedFontby}}</div>
         </div>
         <div class="lm-body" ng-if="data.localmenu.fontby1">
-            <div class="lm-button" ng-repeat="fontby in fontbys" ng-class="{'lm-selected': fontby == filterOptions.selectedFontby}" ng-mouseup="selectFontby(fontby)">
-                {{fontby}}
+            <div class="lm-button" ng-repeat="fontby in fontbys" ng-mouseup="selectFontby(fontby)">
+                <div class="lm-checkmark"><span ng-if="fontby == filterOptions.selectedFontby">H</span></div>{{fontby}}
             </div>
         </div>
     </localmenu>

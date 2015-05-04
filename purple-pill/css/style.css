@@ -368,7 +368,7 @@
                 }
                 
                  .toolbar-set.lm-specimen .lm-body {
-                     width: 154px;
+                     width: 170px;
                  }
 
            .size-nr {
@@ -383,7 +383,7 @@
             }
             
                 .lm-lineheight .lm-body {
-                    width: 70px;
+                    width: 90px;
                 }
             
                 .lineheight-custom {
@@ -1481,6 +1481,14 @@
             width: 100%;
             cursor: default;
         }
+        
+            .lm-button .lm-checkmark {
+                padding-top: 2px;
+                display: inline-block;
+                width: 20px;
+                font-family: 'icons';
+                color: #000;
+            }
         
         .lm-button a {
             display: block;
