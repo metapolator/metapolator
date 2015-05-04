@@ -348,20 +348,16 @@
                margin-right: 4px;
            }
            
-            .toolbar-set.lm-specimen {
+            .lm-specimen {
                 width: 154px;
                 padding: 0;
             }
             
-                .toolbar-set .lm-head {
+                specimentoolbar .lm-head {
                     background: #eee;
                     padding: 0 2px 2px 0;
                     height: 29px;
                 }
-                
-                    .toolbar-set .lm-lineheight .lm-head {
-                        padding: 7px;
-                    }
                 
                     .toolbar-set .lm-fontby .lm-head {
                         padding: 7px;
@@ -381,10 +377,14 @@
            }
            
             .size-rope {
-                padding-top: 4px;
+                padding-top: 7px;
                 width: 16px;
                 height: 16px;
             }
+            
+                .lm-lineheight .lm-body {
+                    width: 70px;
+                }
             
                 .lineheight-custom {
                     width: 32px;
@@ -398,7 +398,7 @@
                 .lineheight-icon-head {
                     width: 32px;
                     height: 28px;
-                    padding: 4px 4px 0 6px;
+                    padding: 0 8px;
                     background: #fff;
                     display: inline-block;;
                 }
