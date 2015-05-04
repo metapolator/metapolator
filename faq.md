@@ -160,3 +160,11 @@ A libre web tool for exploring the permutations possible after metafont programs
 #### Where were these concepts discussed?
 
 https://github.com/metapolator/metapolator/issues/109
+
+#### What were the previous versions of Metapolator like?
+
+Simon Egli led the development of 2 Metapolator prototypes in 2013/2014, until the current version began after the Libre Graphics Meeting 2014 in Leipzig. 
+These were important for understanding the defining concepts of Metapolator in a concrete way.
+Here is a screenshot of the 2nd prototype, on January 30 2014:
+
+![Metapolator at 2014-01-30](https://cloud.githubusercontent.com/assets/261579/7455987/edc1732e-f24e-11e4-913e-37012d53ed89.png)
