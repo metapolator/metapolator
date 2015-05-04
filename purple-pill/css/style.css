@@ -353,14 +353,27 @@
                 padding: 0;
             }
             
-                .toolbar-set.lm-specimen .lm-head {
+                .toolbar-set .lm-head {
                     background: #eee;
                     padding: 0 2px 2px 0;
+                    height: 29px;
                 }
+                
+                    .toolbar-set .lm-lineheight .lm-head {
+                        padding: 7px;
+                    }
+                
+                    .toolbar-set .lm-fontby .lm-head {
+                        padding: 7px;
+                    }
             
                 .lm-specimen input {
                     width: 130px;    
                 }
+                
+                 .toolbar-set.lm-specimen .lm-body {
+                     width: 154px;
+                 }
 
            .size-nr {
                width: 38px;
@@ -372,6 +385,24 @@
                 width: 16px;
                 height: 16px;
             }
+            
+                .lineheight-custom {
+                    width: 32px;
+                }
+                            
+                .lineheight-icon-head {
+                    display: inline-block;
+                    height: 29px;
+                }
+                
+                .lineheight-icon-head {
+                    width: 32px;
+                    height: 28px;
+                    padding: 4px 4px 0 6px;
+                    background: #fff;
+                    display: inline-block;;
+                }
+
             
             .strict-box {
                 padding-top: 3px;

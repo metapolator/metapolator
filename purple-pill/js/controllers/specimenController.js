@@ -81,6 +81,7 @@ function($scope, $sce, sharedScope, $http) {
         strict : 1,
         selectedFontby : $scope.fontbys[2]
     };
+    
 
     var manageSpacesTimer;
     var sizeCounter = 0;
@@ -149,10 +150,35 @@ function($scope, $sce, sharedScope, $http) {
             }
         });
     }
-
+    
+    // lineheight tools
+    
+    $scope.lineHeightOptions = ["Tight", "Normal", "Loose"];
+    $scope.lineHeightSetting = $scope.lineHeightOptions[1];
+    $scope.data.customLineHeight = parseFloat(1).toFixed(2); // need to keep this global, otherwise the input can't reach it, because ng-if makes a child scope
+    
+    $scope.changeLineHeightSetting = function (option) {
+        $scope.lineHeightSetting = option;
+        $scope.updateLineHeight();
+        $scope.data.localmenu.lineheight = false;
+    };
 
     $scope.updateLineHeight = function() {
-        $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+        if ($scope.lineHeightSetting == "Normal") {
+            $scope.lineHeight = 1 / (0.1 * $scope.fontSize + 0.58) + 0.8673;
+        } else if ($scope.lineHeightSetting == "Tight") {
+            $scope.lineHeight = 1 / (0.1525 * $scope.fontSize + 0.85) + 0.7785;
+        } else if ($scope.lineHeightSetting == "Loose") {
+            $scope.lineHeight = 1 / (0.087 * $scope.fontSize + 0.195) + 1.062;
+        }
+    };
+    
+    $scope.updateLineHeightCustom = function(keyEvent) {
+        if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+            $scope.data.customLineHeight = parseFloat($scope.data.customLineHeight).toFixed(2);
+            $scope.lineHeight = $scope.data.customLineHeight;
+        }
+        $scope.data.localmenu.lineheight = false;
     };
 
     $scope.getLineHeight = function(glyphName) {
@@ -162,6 +188,9 @@ function($scope, $sce, sharedScope, $http) {
         }
         return lineHeight;
     };
+    
+    
+    
 
     $scope.selectSpecimen = function(specimen) {
         $scope.selectedSpecimen = specimen;
