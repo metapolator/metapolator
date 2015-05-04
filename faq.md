@@ -156,3 +156,7 @@ Here is an example of a glyph with the center line visible:
 Metafont is parametric typeface design system developed by Dr Donald Knuth at Stanford in the 1980s as part of the TeX project.
 It is a programming language for describing letterforms with algebra equations, and used Hobby Splines. While it is famous in the history of digital typography, it is almost never used in practice because the requirement to be good with type, programming and mathematics is too much.
 A libre web tool for exploring the permutations possible after metafont programs are written is available at [www.metaflop.com](http://www.metaflop.com), and that project was a springboard for Metapolator, which uses Metafont technologies in an entirely visual workflow.
+
+#### Where were these concepts discussed?
+
+https://github.com/metapolator/metapolator/issues/109
