@@ -39,9 +39,16 @@ function($scope, $sce, sharedScope, $http) {
         name : "Paragraph",
         text : "Grumpy wizards make toxic brew for the evil Queen and Jack. One morning when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.*pHe lay on his armourlike back and if he lifted his head a little, he could see his brown belly slightly domed and divided by arches into stiff sections.*pThe bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs pitifully thin compared with the size of the rest of him, waved about helplessly as he looked."
     }]];
+    
+    // only for the masters specimen panel
+    $scope.addGlyphRange = function() {
+        var glyphRange = [{
+            name : "Glyph Range"
+        }];
+        $scope.specimen.push(glyphRange);
+    };
 
     // load font mapping
-
     $scope.loadMapping = function() {
         $http.get("templates/mapping.csv").success(function(data) {
             $scope.data.mapping = processCSV(data);
@@ -64,14 +71,7 @@ function($scope, $sce, sharedScope, $http) {
         return output;
     }
 
-    // only for the masters specimen panel
-    $scope.addGlyphRange = function() {
-        var glyphRange = [{
-            name : "Glyph Range"
-        }];
-        $scope.specimen.push(glyphRange);
-    };
-
+    // specimen toolbar initial settings
     $scope.selectedSpecimen = $scope.specimen[0][0];
     $scope.fontSize = 144;
     $scope.lineHeight = 0;
@@ -82,11 +82,26 @@ function($scope, $sce, sharedScope, $http) {
         selectedFontby : $scope.fontbys[2]
     };
     
+    $scope.selectSpecimen = function(specimen) {
+        //console.clear();
+        //console.log("change specimen:" + new Date().getTime());
+        $scope.selectedSpecimen = specimen;
+        $scope.data.localmenu.specimen1 = false;
+        $scope.data.localmenu.specimen2 = false;
+    };
 
+    $scope.selectFontby = function(fontby) {
+        $scope.filterOptions.selectedFontby = fontby;
+        $scope.data.localmenu.fontby1 = false;
+        $scope.data.localmenu.fontby2 = false;
+    };
+    
+    // size tools
     var manageSpacesTimer;
     var sizeCounter = 0;
 
     $scope.$watch("selectedSpecimen | specimenFilter:filterOptions:data.sequences:data.families:specimenPanel:data.currentInstance:data.mapping", function(newVal) {
+        //console.log("detected specimen change:" + new Date().getTime());
         $scope.filteredGlyphs = newVal;
         clearTimeout(manageSpacesTimer);
         manageSpacesTimer = setTimeout(function() {
@@ -114,6 +129,7 @@ function($scope, $sce, sharedScope, $http) {
     var startPosition = parseInt($("#specimen-content").css("padding-left"));
 
     function manageSpaces() {
+        //console.log("start wordwrapping:" + new Date().getTime());
         var spaces = $(".space-character");
         var x = 0;
         var prev_x = 0;
@@ -149,10 +165,10 @@ function($scope, $sce, sharedScope, $http) {
                 brokenEnd = true;
             }
         });
+        //console.log("end word wrapping:" + new Date().getTime());
     }
     
     // lineheight tools
-    
     $scope.lineHeightOptions = [{
         name: "Tight",
         img: "tight.png",
@@ -208,17 +224,7 @@ function($scope, $sce, sharedScope, $http) {
     
     
 
-    $scope.selectSpecimen = function(specimen) {
-        $scope.selectedSpecimen = specimen;
-        $scope.data.localmenu.specimen1 = false;
-        $scope.data.localmenu.specimen2 = false;
-    };
 
-    $scope.selectFontby = function(fontby) {
-        $scope.filterOptions.selectedFontby = fontby;
-        $scope.data.localmenu.fontby1 = false;
-        $scope.data.localmenu.fontby2 = false;
-    };
 
     /***************** setting the edit mode of glyphs *****************/
 
