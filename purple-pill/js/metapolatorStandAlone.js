@@ -37414,7 +37414,7 @@ define('metapolator/project/MetapolatorProject',[
         return this._controller;
     };
 
-    _p.ImportZippedUFOInstance = function(filename, blob) {
+    _p.importZippedUFOInstance = function(filename, blob) {
         var mem_io = new InMemory();
         zipUtil.unpack(false, blob, mem_io, "/");
         var names = mem_io.readDir(false, "/");

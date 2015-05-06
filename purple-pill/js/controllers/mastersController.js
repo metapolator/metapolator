@@ -95,7 +95,7 @@ app.controller("mastersController", function($scope, sharedScope) {
           ;
         $scope.data.dialog("Importing UFO ZIP...", false, "close");
         reader.onload = function(e) {
-            $scope.data.stateful.project.importZippedUFO(e.target.result);
+            $scope.data.stateful.project.importZippedUFOInstance(e.target.result);
         };
         reader.readAsArrayBuffer(ufozipfile);
     };
