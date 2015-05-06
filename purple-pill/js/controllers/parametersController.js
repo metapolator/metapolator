@@ -1,7 +1,7 @@
 app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
     
-    $scope.levels = ["Master", "Glyph"];
+    $scope.levels = ["master", "glyph"];
 
     $scope.parameters = [{
         name : "Weight",
@@ -14,19 +14,19 @@ app.controller("parametersController", function($scope, sharedScope) {
         unit : "em",
         step : 0.005,
         decimals : 4,
-        effectiveLevel : "Glyph"
+        effectiveLevel : "glyph"
     }, {
         name : "Height",
         unit : "em",
         step : 0.02,
         decimals : 3,
-        effectiveLevel : "Glyph"
+        effectiveLevel : "glyph"
     }, {
         name : "Spacing",
         unit : "em",
         step : 1,
         decimals : 1,
-        effectiveLevel : "Glyph"
+        effectiveLevel : "glyph"
     }];
 
     $scope.operators = [{
@@ -52,16 +52,16 @@ app.controller("parametersController", function($scope, sharedScope) {
     }];
 
     $scope.parameterSelection = {
-        Master: [],
-        Glyph: []
+        master: [],
+        glyph: []
     };
 
     $scope.data.updateSelectionParameters = function(selectionChanged) {
         if (selectionChanged) {
             $scope.destackOperators();
         }
-        $scope.parameterSelection.Master = $scope.updateSelectionParametersElements("Master");
-        $scope.parameterSelection.Glyph = $scope.updateSelectionParametersElements("Glyph");
+        $scope.parameterSelection.master = $scope.updateSelectionParametersElements("master");
+        $scope.parameterSelection.glyph = $scope.updateSelectionParametersElements("glyph");
     };
 
     $scope.updateSelectionParametersElements = function(level) {
@@ -160,7 +160,7 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.findElementsEdit = function(level) {
         var elements = [];
-        if (level == "Master") {
+        if (level == "master") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
@@ -172,7 +172,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     }
                 });
             });
-        } else if (level == "Glyph") {
+        } else if (level == "glyph") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
@@ -328,10 +328,17 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.setParameterAPI = function(master, ruleIndex, key, value) {
+            console.log(master.cpsFile);
+            console.log(ruleIndex);
+            console.log(key);
+            console.log(value);
         if ($scope.data.pill != "blue") {
+
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
             var cpsRule = parameterCollection.getItem(ruleIndex);
+            console.log(cpsRule);
             var parameterDict = cpsRule.parameters;
+            console.log(parameterDict);
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
             setParameter(parameterDict, key, value);
         }
@@ -581,7 +588,7 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.areElementsSelected = function(level) {
         var selected = false;
-        if (level == "Master") {
+        if (level == "master") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
@@ -589,7 +596,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     }
                 });
             });
-        } else if (level == "Glyph") {
+        } else if (level == "glyph") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
