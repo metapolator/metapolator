@@ -2,47 +2,51 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
 
     $scope.parameters = [{
-        name : "weight",
-        displayName : "Weight",
+        name : "Weight",
         unit : "em",
         step : 0.1,
-        decimals : 2
+        decimals : 2,
+        effectiveLevel : "point"
     }, {
-        name : "width",
-        displayName : "Width",
+        name : "Width",
         unit : "em",
         step : 0.005,
-        decimals : 4
+        decimals : 4,
+        effectiveLevel : "glyph"
     }, {
-        name : "height",
-        displayName : "Height",
+        name : "Height",
         unit : "em",
         step : 0.02,
-        decimals : 3
+        decimals : 3,
+        effectiveLevel : "glyph"
     }, {
-        name : "spacing",
-        displayName : "Spacing",
+        name : "Spacing",
         unit : "em",
         step : 1,
-        decimals : 1
+        decimals : 1,
+        effectiveLevel : "glyph"
     }];
 
     $scope.operators = [{
         name : "x",
         standardValue : 1,
-        type : "stack"
+        type : "stack",
+        usesUnit : false
     }, {
         name : "÷",
         standardValue : 1,
-        type : "stack"
+        type : "stack",
+        usesUnit : false
     }, {
         name : "+",
         standardValue : 0,
-        type : "stack"
+        type : "stack",
+        usesUnit : true
     }, {
         name : "-",
         standardValue : 0,
-        type : "stack"
+        type : "stack",
+        usesUnit : true
     }];
 
     $scope.selectionParametersMasters = [];
@@ -143,7 +147,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (hasThisParameter) {
                 selectionParameters.push({
                     name : theParameter.name,
-                    displayName : theParameter.displayName,
                     operators : theOperators
                 });
             }
@@ -231,7 +234,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         return currentValue;
     };
 
-    $scope.changeParameter = function(parameterName, operator, value, elementType, range, keyEvent) {
+    $scope.changeValue = function(parameterName, operator, value, elementType, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
             var thisValue = $scope.managedInputValue(value, parameterName, operatorName, keyEvent);
@@ -337,8 +340,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (parameter.name == parameterName) {
                 theParameter = parameter;
                 angular.forEach(parameter.operators, function(operator) {
-                    if ((operator.name == operatorName) && ((operator.id == operatorId) || (!operator.id  && !operatorId))) {
-                        console.log("!");
+                    if ((operator.name == operatorName) && ((operator.id == operatorId) || (!operator.id && !operatorId))) {
                         theOperator = operator;
                     }
                 });
@@ -438,6 +440,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     // when te selection is lost, and de-stacking the operatorers, the id is removed.
     // prevent use of 0, because that will match undefined
     $scope.operatorId = 1;
+    $scope.parameterId = 1;
 
     $scope.addParameterToPanel = function(parameter) {
         $scope.panelParameter = parameter;
@@ -478,18 +481,18 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (!hasParameter) {
                 element.parameters.push({
                     name : parameter.name,
-                    displayName : parameter.displayName,
-                    unit : parameter.unit,
+                    id : $scope.parameterId,
                     operators : [{
                         name : operator.name,
                         value : operator.standardValue,
                         id : $scope.operatorId
                     }]
                 });
+                $scope.parameterId++;
             }
         });
         $scope.operatorId++;
-        $scope.data.parametersPanel = 0;
+        $scope.data.view.parameterOperatorPanel = 0;
         $scope.data.updateSelectionParameters(false);
     };
 
@@ -517,7 +520,6 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.destackOperators = function() {
-        console.clear();
         var elements = $scope.findAllElements();
         angular.forEach(elements, function(element) {
             angular.forEach(element.parameters, function(parameter) {
@@ -531,6 +533,8 @@ app.controller("parametersController", function($scope, sharedScope) {
                 angular.forEach(parameter.operators, function(operator, index) {
                     // reset the id of the operator. So later we know that operators without id are destacked
                     operator.id = null;
+                    // to do: check if operator type is 'stack'.
+                    // This matters when non-stack operators (like =) are added
                     if (operator.name == lastOperator.name) {
                         if (operator.name == "+" || operator.name == "-") {
                             newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
@@ -553,119 +557,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
     };
 
-    /***** ranges *****/
 
-    /*
-    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
-        $scope.filteredGlyphParameters = newVal;
-    }, true);
-
-    $scope.editParameter = function(editParameter, editOperator) {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.edit) {
-                            angular.forEach(glyph.parameters, function(parameter) {
-                                if (parameter.name == editParameter.name) {
-                                    angular.forEach(parameter.operations, function(operation) {
-                                        if (operation.operator == editOperator.operator) {
-                                            if (!editOperator.range) {
-                                                operation.value = parseFloat(editOperator.low);
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        });
-    };
-
-
-
-    $scope.hasInheritance = function(theParameter) {
-        var inheritance = false;
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    angular.forEach(master.parameters, function(parameter) {
-                        if (parameter.name == theParameter.name) {
-                            inheritance = true;
-                        }
-                    });
-                }
-            });
-        });
-        return inheritance;
-    };
-
-    $scope.calculatedValue = function(theParameter) {
-        var operations = [];
-        var masterFixed = null;
-        var glyphFixed = null;
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    angular.forEach(master.parameters, function(parameter) {
-                        if (parameter.name == theParameter.name) {
-                            angular.forEach(parameter.operations, function(operation) {
-                                if (operation.operator == "=") {
-                                    masterFixed = operation.value;
-                                } else {
-                                    operations.push({
-                                        operator : operation.operator,
-                                        value : operation.value
-                                    });
-                                }
-                            });
-                        }
-                    });
-                    angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.edit) {
-                            angular.forEach(glyph.parameters, function(parameter) {
-                                if (parameter.name == theParameter.name) {
-                                    angular.forEach(parameter.operations, function(operation) {
-                                        if (operation.operator == "=") {
-                                            glyphFixed = operation.value;
-                                        } else {
-                                            operations.push({
-                                                operator : operation.operator,
-                                                value : operation.value
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        });
-        if (glyphFixed) {
-            var calculatedValue = glyphFixed;
-        } else if (masterFixed) {
-            var calculatedValue = masterFixed;
-        }
-        angular.forEach(operations, function(operation) {
-            if (operation.operator == "+") {
-                calculatedValue += parseFloat(operation.value);
-            } else if (operation.operator == "-") {
-                calculatedValue -= parseFloat(operation.value);
-            } else if (operation.operator == "x") {
-                calculatedValue *= parseFloat(operation.value);
-            } else if (operation.operator == "÷") {
-                calculatedValue /= parseFloat(operation.value);
-            }
-        });
-        return calculatedValue;
-    };
-    
-    */
-    
-    // parameters panel settings 
+    // panel handling
     
     $scope.parametersWindow = function(event, target, level) {
         $scope.parameterLevel = level;
@@ -675,10 +568,10 @@ app.controller("parametersController", function($scope, sharedScope) {
         var left = $(event.target).offset().left + 20;
         $scope.parameterPanelTop = top;
         $scope.parameterPanelLeft = left;
-        if (target != $scope.data.parametersPanel) {
-            $scope.data.parametersPanel = target;
+        if (target != $scope.data.view.parameterOperatorPanel) {
+            $scope.data.view.parameterOperatorPanel = target;
         } else {
-            $scope.data.parametersPanel = 0;
+            $scope.data.view.parameterOperatorPanel = 0;
         }
     };
 
@@ -709,5 +602,250 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         return selected;
     };
+
+    $scope.openParameterPanel = function(parameter, event, level) {
+        console.log(event);
+        var target = event.currentTarget;
+        $(target).addClass("selected-parameter");
+        var targetLeft = event.clientX;
+        var targetTop = event.clientY;
+        $scope.data.view.parameterPanel.display = true;
+        $scope.data.view.parameterPanel.left = targetLeft;
+        $scope.data.view.parameterPanel.top = targetTop;
+        $scope.data.view.parameterPanel.level = level;
+        $scope.data.view.parameterPanel.selected = parameter.name;
+    };
+
+    $scope.changeParameter = function(parameter) {
+        var oldParameterName = $scope.data.view.parameterPanel.selected;
+        if (oldParameterName != parameter.name) {
+            var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
+            angular.forEach(elements, function(element) {
+                angular.forEach(element.element.parameters, function(thisParameter) {
+                    if (thisParameter.name == oldParameterName) {
+                        // todo: change by API
+                        thisParameter.name = parameter.name;
+                    }
+                });
+            });
+        }
+        $scope.data.updateSelectionParameters(false);
+        $scope.data.closeParameterPanel();
+    };
+
+    $scope.removeParameter = function() {
+        var oldParameterName = $scope.data.view.parameterPanel.selected;
+        var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
+        angular.forEach(elements, function(element) {
+            var parameters = element.element.parameters;
+            angular.forEach(parameters, function(thisParameter) {
+                if (thisParameter.name == oldParameterName) {
+                    // todo: change by API
+                    parameters.splice(parameters.indexOf(thisParameter), 1);
+                }
+                if (parameters.length == 0) {
+                    // todo: remove rule in api and in model
+                }
+            });
+        });
+        $scope.data.updateSelectionParameters(false);
+        $scope.data.closeParameterPanel();
+    };
+    
+    $scope.data.closeParameterPanel = function () {
+        $scope.data.view.parameterPanel.display = false;
+        $scope.data.view.parameterPanel.selected = null;
+        $scope.data.view.parameterPanel.level = null;
+        $("parameters .parameter-key").each(function() {
+           $(this).removeClass("selected-parameter"); 
+        });
+    };
+
+    $scope.openOperatorPanel = function(parameter, operator, event, level) {
+        var target = event.currentTarget;
+        $(target).addClass("selected-parameter");
+        var targetLeft = event.clientX;
+        var targetTop = event.clientY;
+        $scope.data.view.operatorPanel.display = true;
+        $scope.data.view.operatorPanel.left = targetLeft;
+        $scope.data.view.operatorPanel.top = targetTop;
+        $scope.data.view.operatorPanel.level = level;
+        $scope.data.view.operatorPanel.selectedParameter = parameter.name;
+        $scope.data.view.operatorPanel.selected = operator.name;
+    };
+
+    $scope.changeOperator = function(operator) {
+        var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
+        var oldOperatorName = $scope.data.view.operatorPanel.selected;
+        if (oldOperatorName != operator.name) {
+            var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
+            angular.forEach(elements, function(element) {
+                angular.forEach(element.element.parameters, function(thisParameter) {
+                    if (thisParameter.name == oldParameterName) {
+                        angular.forEach(thisParameter.operators, function(thisOperator) {
+                            if (thisOperator.name == oldOperatorName) {
+                                // todo: change by API
+                                thisOperator.name = operator.name;
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        $scope.data.updateSelectionParameters(false);
+        $scope.data.closeOperatorPanel();
+    };
+
+    $scope.removeOperator = function() {
+        var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
+        var oldOperatorName = $scope.data.view.operatorPanel.selected;
+        var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
+        angular.forEach(elements, function(element) {
+            var parameters = element.element.parameters;
+            angular.forEach(parameters, function(thisParameter) {
+                if (thisParameter.name == oldParameterName) {
+                    angular.forEach(thisParameter.operators, function(thisOperator) {
+                        var thisOperators = thisParameter.operators;
+                        if (thisOperator.name == oldOperatorName) {
+                            // todo: change by API
+                            thisOperators.splice(thisOperators.indexOf(thisOperator), 1);
+                        }
+                        if (thisOperators.length == 0) {
+                            parameters.splice(parameters.indexOf(thisParameter), 1);
+                            // todo: remove rule in api and in model
+                        }
+                    });
+                }
+            });
+        });
+        $scope.data.updateSelectionParameters(false);
+        $scope.data.closeOperatorPanel();
+    };
+    
+    $scope.data.closeOperatorPanel = function () {
+        $scope.data.view.operatorPanel.display = false;
+        $scope.data.view.operatorPanel.selectedParameter = null;
+        $scope.data.view.operatorPanel.selected = null;
+        $scope.data.view.operatorPanel.level = null;
+        $("parameters .parameter-operator").each(function() {
+           $(this).removeClass("selected-parameter"); 
+        });
+    };
+    
+    
+
+    /***** ranges *****/
+
+    /*
+    $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
+    $scope.filteredGlyphParameters = newVal;
+    }, true);
+
+    $scope.editParameter = function(editParameter, editOperator) {
+    angular.forEach($scope.data.sequences, function(sequence) {
+    angular.forEach(sequence.masters, function(master) {
+    if (master.edit[0]) {
+    angular.forEach(master.glyphs, function(glyph) {
+    if (glyph.edit) {
+    angular.forEach(glyph.parameters, function(parameter) {
+    if (parameter.name == editParameter.name) {
+    angular.forEach(parameter.operations, function(operation) {
+    if (operation.operator == editOperator.operator) {
+    if (!editOperator.range) {
+    operation.value = parseFloat(editOperator.low);
+    }
+    }
+    });
+    }
+    });
+    }
+    });
+    }
+    });
+    });
+    };
+
+    $scope.hasInheritance = function(theParameter) {
+    var inheritance = false;
+    angular.forEach($scope.data.sequences, function(sequence) {
+    angular.forEach(sequence.masters, function(master) {
+    if (master.edit[0]) {
+    angular.forEach(master.parameters, function(parameter) {
+    if (parameter.name == theParameter.name) {
+    inheritance = true;
+    }
+    });
+    }
+    });
+    });
+    return inheritance;
+    };
+
+    $scope.calculatedValue = function(theParameter) {
+    var operations = [];
+    var masterFixed = null;
+    var glyphFixed = null;
+    angular.forEach($scope.data.sequences, function(sequence) {
+    angular.forEach(sequence.masters, function(master) {
+    if (master.edit[0]) {
+    angular.forEach(master.parameters, function(parameter) {
+    if (parameter.name == theParameter.name) {
+    angular.forEach(parameter.operations, function(operation) {
+    if (operation.operator == "=") {
+    masterFixed = operation.value;
+    } else {
+    operations.push({
+    operator : operation.operator,
+    value : operation.value
+    });
+    }
+    });
+    }
+    });
+    angular.forEach(master.glyphs, function(glyph) {
+    if (glyph.edit) {
+    angular.forEach(glyph.parameters, function(parameter) {
+    if (parameter.name == theParameter.name) {
+    angular.forEach(parameter.operations, function(operation) {
+    if (operation.operator == "=") {
+    glyphFixed = operation.value;
+    } else {
+    operations.push({
+    operator : operation.operator,
+    value : operation.value
+    });
+    }
+    });
+    }
+    });
+    }
+    });
+    }
+    });
+    });
+    if (glyphFixed) {
+    var calculatedValue = glyphFixed;
+    } else if (masterFixed) {
+    var calculatedValue = masterFixed;
+    }
+    angular.forEach(operations, function(operation) {
+    if (operation.operator == "+") {
+    calculatedValue += parseFloat(operation.value);
+    } else if (operation.operator == "-") {
+    calculatedValue -= parseFloat(operation.value);
+    } else if (operation.operator == "x") {
+    calculatedValue *= parseFloat(operation.value);
+    } else if (operation.operator == "÷") {
+    calculatedValue /= parseFloat(operation.value);
+    }
+    });
+    return calculatedValue;
+    };
+
+    */
+
+    // parameters panel settings
+
+
 
 });

@@ -34,11 +34,11 @@ app.factory("sharedScope", function($rootScope) {
             instances : false,
             designspace : false,
             fonts : false,
-            specimen1: false,
-            specimen2: false,
-            fontby1: false,
-            fontby2: false,
-            lineheight: false
+            specimen1 : false,
+            specimen2 : false,
+            fontby1 : false,
+            fontby2 : false,
+            lineheight : false
         },
         view : {
             menuItems : ["Parameters", "Design Spaces", "Fonts"],
@@ -100,10 +100,26 @@ app.factory("sharedScope", function($rootScope) {
                 contain : "left",
                 limitMin : 260,
                 limitMax : 350
-            }]
+            }],
+            parameterOperatorPanel : 0,
+            parameterPanel : {
+                display: false,
+                left: null,
+                top: null,
+                selected: null,
+                level: null
+            },
+            operatorPanel : {
+                display: false,
+                left: null,
+                top: null,
+                selectedParameter: null,
+                selected: null,
+                level: null
+            }
 
         },
-        parametersPanel : 0,
+
     };
     return scope;
 });

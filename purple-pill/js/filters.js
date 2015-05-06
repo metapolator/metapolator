@@ -105,6 +105,9 @@ app.filter('rangeFilter', function() {
 app.filter('specimenFilter', function() {
     return function(specimen, options, sequences, families, specimenPanel, currentInstance, fontMapping) {
         if (specimen.name != "Glyph Range" && fontMapping) {
+            //console.log("start filtering:" + new Date().getTime());
+           
+            
             function isSpaceGlyph(glyph) {
                 if (glyph == "space" || glyph == "*n" || glyph == "*p") {
                     return true;
@@ -328,7 +331,11 @@ app.filter('specimenFilter', function() {
                     });
                 }
             }
+            //var time2 = new Date().getTime();
+            //console.log("end filtering:" + time2);
+            return filtered;
         }
-        return filtered;
+
+        
     };
 });

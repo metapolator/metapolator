@@ -62,6 +62,7 @@ app.directive('glyph', function($compile) {
                     var svg = scope.data.renderGlyphs(masterName, glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
+                    //console.log("append: " + glyphName + " " + new Date().getTime());
                 } else {
                     var svg = scope.data.fakeSVG[glyphName];
                     element.append(svg);
@@ -216,7 +217,13 @@ app.directive('body', function() {
                     }
                 }
                 if (!$(event.target).hasClass('parameters-add') && !$(event.target).hasClass('control-panel-button') && !$(event.target).hasClass('control-panel')) {
-                    scope.data.parametersPanel = 0;
+                    scope.data.view.parameterOperatorPanel = 0;
+                }
+                if (!$(event.target).hasClass('parameter-key') && !$(event.target).hasClass('control-panel-button') && !$(event.target).hasClass('control-panel')) {
+                    scope.data.closeParameterPanel();
+                }
+                if (!$(event.target).hasClass('parameter-operator') && !$(event.target).hasClass('control-panel-button') && !$(event.target).hasClass('control-panel')) {
+                    scope.data.closeOperatorPanel();
                 }
                 scope.$apply();
             });

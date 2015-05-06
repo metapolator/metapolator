@@ -41,33 +41,26 @@ app.controller('engine', function($scope, sharedScope) {
                     glyphs : glyphs,
                     elementType : "master",
                     parameters : [{
-                        name : "weight",
-                        displayName : "Weight",
-                        unit : "",
+                        name : "Weight",
                         operators : [{
                             name : "x",
                             value : 1
                         }]
 
                     }, {
-                        name : "width",
-                        displayName : "Width",
-                        unit : "",
+                        name : "Width",
                         operators : [{
                             name : "x",
                             value : 1
                         }]
                     }, {
-                        name : "height",
-                        displayName : "Height",
-                        unit : "",
+                        name : "Height",
                         operators : [{
                             name : "x",
                             value : 1
                         }]
                     }, {
-                        name : "spacing",
-                        displayName : "Spacing",
+                        name : "Spacing",
                         unit : "",
                         operators : [{
                             name : "+",
@@ -138,25 +131,20 @@ app.controller('engine', function($scope, sharedScope) {
                 ag : "ag",
                 glyphs : glyphs,
                 parameters : [{
-                    name : "weight",
-                    displayName : "Weight",
-                    unit : "",
+                    name : "Weight",
                     operators : [{
                         name : "x",
                         value : (i+1)
                     }]
 
                 }, {
-                    name : "width",
-                    displayName : "Width",
-                    unit : "",
+                    name : "Width",
                     operators : [{
                         name : "x",
                         value : 1
                     }]
                 }, {
-                    name : "height",
-                    displayName : "Height",
+                    name : "Height",
                     unit : "",
                     operators : [{
                         name : "x",

@@ -1191,15 +1191,22 @@
         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
     } 
     
+    .single-panel {
+        display: block;
+        position: fixed;
+        z-index: 102;
+        width: 100px;
+        background: #eee;
+        padding: 8px;
+        box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
+    }
+    
         #control-panel-parameters {
             width: 65%;
+            padding-right: 2px;
             display: inline-block;
             float: left;
         }       
-        
-            .control-panel-parameter{
-                width: calc(100% - 2px);
-            }
 
         #control-panel-operators {
             width: 35%;
@@ -1230,6 +1237,10 @@
                 text-align: center;
                 font-weight: 700;
             }
+            
+    .selected-parameter {
+        background: #F01616;
+    }
             
         
 
