@@ -328,17 +328,10 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.setParameterAPI = function(master, ruleIndex, key, value) {
-            console.log(master.cpsFile);
-            console.log(ruleIndex);
-            console.log(key);
-            console.log(value);
         if ($scope.data.pill != "blue") {
-
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
             var cpsRule = parameterCollection.getItem(ruleIndex);
-            console.log(cpsRule);
             var parameterDict = cpsRule.parameters;
-            console.log(parameterDict);
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
             setParameter(parameterDict, key, value);
         }
