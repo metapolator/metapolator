@@ -36077,7 +36077,31 @@ define('io/zipUtil',[
     var NotImplementedError = errors.NotImplemented;
 
     var unpack = function(async, zipData, io, targetPath){
-        throw new NotImplementedError('ZIP unpack method is not yet implemented');
+        if (async)
+            throw new NotImplementedError('Asynchronous ZIP unpack method is not yet implemented');
+
+        console.log("unpacking zipData: ", zipData);
+        var zip = new JSZip(zipData);
+        var files = zip.files;
+        console.log("unpacking files: ", files);
+        var i;
+
+        for (i in files){
+            var file = files[i];
+            console.log("targetPath:" + targetPath);
+            console.log("file.name:"+file.name);
+console.log(targetPath.split()[-1]=="/");
+            var absolute_path = [targetPath, file.name].join(targetPath.split()[-1]=="/" ? "" : "/");
+            console.log("absolute_path="+absolute_path+" i="+i+" file.dir="+file.dir);
+
+            if (file.dir){
+                console.log("io.mkDir(false, '"+absolute_path+"');");
+                io.mkDir(false, absolute_path);
+            } else {
+                console.log("io.writeFile(false, '"+absolute_path+"', file.asBinary());");
+                io.writeFile(false, absolute_path, file.asBinary());
+            }
+        }
     };
 
     var encode = function(async, io, sourcePath, dataType){
@@ -37416,11 +37440,22 @@ define('metapolator/project/MetapolatorProject',[
 
     _p.importZippedUFOInstance = function(filename, blob) {
         var mem_io = new InMemory();
-        zipUtil.unpack(false, blob, mem_io, "/");
-        var names = mem_io.readDir(false, "/");
-        var sourceUFODir = names[0]; //This may be wrong in some cases. We need a more robust implementation.
+        zipUtil.unpack(false, blob, mem_io, "");
+        var dirs = mem_io.readDir(false, "/");
+        console.log("dirs:", dirs);
+        var names = mem_io.readDir(false, dirs[0]);
+        var UFOZip = dirs[0] + names[0]; //This may be wrong in some cases. We need a more robust implementation.
+        console.log("UFOZip:", UFOZip);
+
+        var another_blob = mem_io.readFile(false, UFOZip);
+        zipUtil.unpack(false, another_blob, mem_io, dirs[0]);
+
+        var _names = mem_io.readDir(false, dirs[0]);
+        var sourceUFODir = dirs[0] + _names[0]; //This may be wrong in some cases. We need a more robust implementation.
+        console.log("_names:", _names);
+        console.log("sourceUFODir:", sourceUFODir);
         var glyphs = undefined; //I still don't know what is this used for.
-        var masterName = sourceUFODir; //we may want to split out the .ufo suffix...
+        var masterName = sourceUFODir; //we may want to split out the .ufo suffix (and maybe the fullPath as well)...
         this.import(mem_io, masterName, sourceUFODir, glyphs);
     };
 
