@@ -1075,7 +1075,7 @@
         width: 100%;
     }
     
-    #parameters-of-master {
+    .parameter-level {
         overflow: auto;
     }
         
@@ -1103,12 +1103,7 @@
             padding: 10px 0;
         }
         
-            #parameters-of-master .parameters-selection-body {
-                background: #eee;
-                color: #515151;
-            }
-            
-            #parameters-of-glyph .parameters-selection-body {
+            .parameters-selection-body {
                 background: #eee;
                 color: #515151;
             }

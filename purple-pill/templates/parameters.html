@@ -1,44 +1,22 @@
 <div class="panel-border panel-border-without-menu">
     <div id="parameters-selection">
-        <div id="parameters-of-master" ng-if="areMastersSelected()">
-            <div class="parameters-selection-head">Master</div><div class="parameters-add" ng-click="parametersWindow($event, 1, 'master')">+</div>
+        <div class="parameter-level" ng-repeat="level in levels" ng-if="areElementsSelected(level)">
+            <div class="parameters-selection-head">{{level}}</div><div class="parameters-add" ng-click="parametersWindow($event, 1, level)">+</div>
             <div class="parameters-selection-body">
-                <div ng-repeat="parameter in selectionParametersMasters" class="parameter-row">
+                <div ng-repeat="parameter in parameterSelection[level]" class="parameter-row">
                     <div ng-repeat="operator in parameter.operators track by $index">
-                        <div ng-click="openParameterPanel(parameter, $event, 'master')" class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
-                        <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, 'master')">{{operator.name}}</div>
+                        <div ng-click="openParameterPanel(parameter, $event, level)" class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
+                        <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, level)">{{operator.name}}</div>
                         <div class="operator-value">
                             <span ng-if="!operator.range">
-                                <input ng-model="operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, 'master', false, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, 'master', false, $event)"> 
+                                <input ng-model="operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, level, false, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, level, false, $event)"> 
                             </span>
                             <span ng-if="operator.range"> 
-                                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, 'master', true, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, 'master', true, $event)"> to
-                                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current"  ng-blur="changeValue(parameter.name, operator, operator.high, 'master', true, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.high, 'master', true, $event)">
+                                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, level, true, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, level, true, $event)"> to
+                                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current"  ng-blur="changeValue(parameter.name, operator, operator.high, level, true, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.high, level, true, $event)">
                             </span>
                         </div>
                     </div> 
-                </div>
-            </div>
-        </div>
-        
-
-        <div id="parameters-of-glyph" ng-if="areGlyphsSelected()">
-            <div class="parameters-selection-head">Glyph</div><div class="parameters-add" ng-click="parametersWindow($event, 2, 'glyph')">+</div>
-            <div class="parameters-selection-body">
-                <div ng-repeat="parameter in selectionParametersGlyphs" class="parameter-row">
-                    <div ng-repeat="operator in parameter.operators track by $index">
-                        <div ng-click="openParameterPanel(parameter, $event, 'glyph')" class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
-                        <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, 'glyph')">{{operator.name}}</div>
-                        <div class="operator-value">
-                            <span ng-if="!operator.range">
-                                <input ng-model="operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, 'glyph', false, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, 'glyph', false, $event)"> 
-                            </span>
-                            <span ng-if="operator.range"> 
-                                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, 'glyph', true, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, 'glyph', true, $event)"> to
-                                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current" ng-blur="changeValue(parameter.name, operator, operator.high, 'glyph', true, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.high, 'glyph', true, $event)">
-                            </span>
-                        </div>
-                    </div>               
                 </div>
             </div>
         </div>
@@ -56,14 +34,14 @@
         </div>
     </div>
     
-    <div class="single-panel" ng-if="data.view.parameterPanel.display" ng-style="{'left': data.view.parameterPanel.left + 'px', 'top': data.view.parameterPanel.top + 'px'}">
+    <div class="single-panel control-panel" ng-if="data.view.parameterPanel.display" ng-style="{'left': data.view.parameterPanel.left + 'px', 'top': data.view.parameterPanel.top + 'px'}">
         <div ng-repeat="parameter in parameters" ng-class="{'selected': parameter.name == data.view.parameterPanel.selected}" class="control-panel-parameter control-panel-button push-button" ng-click="changeParameter(parameter)">{{parameter.name}}</div>
         <div class="control-panel-cancel control-panel-button push-button" ng-click="removeParameter()">
             Remove
         </div>
     </div>
     
-    <div class="single-panel" class="control-panel" ng-if="data.view.operatorPanel.display" ng-style="{'left': data.view.operatorPanel.left + 'px', 'top': data.view.operatorPanel.top + 'px'}">
+    <div class="single-panel control-panel" ng-if="data.view.operatorPanel.display" ng-style="{'left': data.view.operatorPanel.left + 'px', 'top': data.view.operatorPanel.top + 'px'}">
         <div ng-repeat="operator in operators" ng-class="{'selected': operator.name == data.view.operatorPanel.selected}" class="control-panel-parameter control-panel-button push-button" ng-click="changeOperator(operator)">{{operator.name}}</div>
         <div class="control-panel-cancel control-panel-button push-button" ng-click="removeOperator()">
             Remove

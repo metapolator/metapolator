@@ -1,5 +1,7 @@
 app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
+    
+    $scope.levels = ["Master", "Glyph"];
 
     $scope.parameters = [{
         name : "Weight",
@@ -12,19 +14,19 @@ app.controller("parametersController", function($scope, sharedScope) {
         unit : "em",
         step : 0.005,
         decimals : 4,
-        effectiveLevel : "glyph"
+        effectiveLevel : "Glyph"
     }, {
         name : "Height",
         unit : "em",
         step : 0.02,
         decimals : 3,
-        effectiveLevel : "glyph"
+        effectiveLevel : "Glyph"
     }, {
         name : "Spacing",
         unit : "em",
         step : 1,
         decimals : 1,
-        effectiveLevel : "glyph"
+        effectiveLevel : "Glyph"
     }];
 
     $scope.operators = [{
@@ -49,15 +51,17 @@ app.controller("parametersController", function($scope, sharedScope) {
         usesUnit : true
     }];
 
-    $scope.selectionParametersMasters = [];
-    $scope.selectionParametersGlyphs = [];
+    $scope.parameterSelection = {
+        Master: [],
+        Glyph: []
+    };
 
     $scope.data.updateSelectionParameters = function(selectionChanged) {
         if (selectionChanged) {
             $scope.destackOperators();
         }
-        $scope.selectionParametersMasters = $scope.updateSelectionParametersElements("master");
-        $scope.selectionParametersGlyphs = $scope.updateSelectionParametersElements("glyph");
+        $scope.parameterSelection.Master = $scope.updateSelectionParametersElements("Master");
+        $scope.parameterSelection.Glyph = $scope.updateSelectionParametersElements("Glyph");
     };
 
     $scope.updateSelectionParametersElements = function(level) {
@@ -156,7 +160,7 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.findElementsEdit = function(level) {
         var elements = [];
-        if (level == "master") {
+        if (level == "Master") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
@@ -168,7 +172,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     }
                 });
             });
-        } else if (level == "glyph") {
+        } else if (level == "Glyph") {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
@@ -575,31 +579,29 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.areGlyphsSelected = function() {
+    $scope.areElementsSelected = function(level) {
         var selected = false;
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.edit) {
-                            selected = true;
-                        }
-                    });
-                }
+        if (level == "Master") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        selected = true;
+                    }
+                });
             });
-        });
-        return selected;
-    };
-
-    $scope.areMastersSelected = function() {
-        var selected = false;
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    selected = true;
-                }
-            });
-        });
+        } else if (level == "Glyph") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        angular.forEach(master.glyphs, function(glyph) {
+                            if (glyph.edit) {
+                                selected = true;
+                            }
+                        });
+                    }
+                });
+            }); 
+        }
         return selected;
     };
 
