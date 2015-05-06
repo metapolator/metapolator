@@ -66,22 +66,42 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var highest = null;
                 // get all the elements - depending on the level we are in - with edit == true
                 var elements = $scope.findElements(level);
-                angular.forEach(elements, function(element) {
+                angular.forEach(elements, function(element, index) {
                     nrOfElements++;
                     angular.forEach(element.element.parameters, function(elementParameter) {
                         if (elementParameter.name == theParameter.name) {
                             hasThisParameter = true;
                             angular.forEach(elementParameter.operators, function(operator) {
                                 if (operator.name == theOperator.name) {
-                                    hasThisOperator = true;
-                                    nrOfHasOperator++;
-                                    if (operator.value < lowest || lowest == null) {
-                                        lowest = operator.value;
+                                    if (!operator.id) {
+                                        // an operator without id is a de-stacked operator
+                                        hasThisOperator = true;
+                                        nrOfHasOperator++;
+                                        if (operator.value < lowest || lowest == null) {
+                                            lowest = operator.value;
+                                        }
+                                        if (operator.value > highest || highest == null) {
+                                            highest = operator.value;
+                                        }
+                                    } else {
+                                        // an operator with an id is a stacked operator
+                                        // added during the current selection process. 
+                                        // the id will be removed after deselecting + de-stacking
+                                        // range is always false, because it is added after selecting
+                                        // only at index == 0, because this counts for all elements the same
+                                        if (index == 0) {
+                                            theOperators.push({
+                                                name : operator.name,
+                                                range : false,
+                                                low : {
+                                                    current : operator.value,
+                                                    fallback : operator.value
+                                                },
+                                                id : operator.id
+                                            });
+                                        }
                                     }
-                                    if (operator.value > highest || highest == null) {
-                                        highest = operator.value;
-                                    }
-                                }
+                                } 
                             });
                         }
                     });
@@ -396,6 +416,10 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.parameterLevel = null;
     $scope.panelParameter = null;
     $scope.panelOperator = null;
+    // to keep track of an added operator, an id is added to it,
+    // because an element could have multiple of the same parameter+instance
+    // when te selection is lost, and de-stacking the operatorers, the id is removed.
+    $scope.operatorId = 0;
 
     $scope.addParameterToPanel = function(parameter) {
         $scope.panelParameter = parameter;
@@ -412,52 +436,43 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.addParameterToElements = function(parameter, operator) {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    if ($scope.parameterLevel == "master") {
-                        $scope.pushParameterToModel(master, parameter, operator);
-                    } else if ($scope.parameterLevel == "glyph") {
-                        angular.forEach(master.glyphs, function(glyph) {
-                            if (glyph.edit) {
-                                $scope.pushParameterToModel(glyph, parameter, operator);
-                            }
-                        });
-                    }
+        // get all the elements - depending on the level we are in - with edit == true
+        var level = $scope.parameterLevel;
+        var elements = $scope.findElements(level);
+        angular.forEach(elements, function(thisElement) {
+            var element = thisElement.element;
+            var hasRule = false;
+            if (element.parameters.length > 0) {
+                hasRule = true;
+            }
+            var hasParameter = false;
+            angular.forEach(element.parameters, function(thisParameter) {
+                if (thisParameter.name == parameter.name) {
+                    hasParameter = true;
+                    thisParameter.operators.push({
+                        name : operator.name,
+                        value : operator.standardValue,
+                        id : $scope.operatorId
+                    });
+                    //thisParameter.operators = $scope.reorderOperators(thisParameter.operators);
                 }
             });
-        });
-        $scope.data.parametersPanel = 0;
-        $scope.data.updateSelectionParameters();
-    };
-
-    $scope.pushParameterToModel = function(element, newParameter, newOperator) {
-        var hasRule = false;
-        if (element.parameters.length > 0) {
-            hasRule = true;
-        }
-        var hasParameter = false;
-        angular.forEach(element.parameters, function(parameter) {
-            if (parameter.name == newParameter.name) {
-                hasParameter = true;
-                parameter.operators.push({
-                    name : newOperator.name,
-                    value : newOperator.standardValue
+            if (!hasParameter) {
+                element.parameters.push({
+                    name : parameter.name,
+                    displayName : parameter.displayName,
+                    unit : parameter.unit,
+                    operators : [{
+                        name : operator.name,
+                        value : operator.standardValue,
+                        id : $scope.operatorId
+                    }]
                 });
-                parameter.operators = $scope.reorderOperators(parameter.operators);
             }
         });
-        if (!hasParameter) {
-            element.parameters.push({
-                name : newParameter.name,
-                displayName : newParameter.displayName,
-                unit : newParameter.unit,
-                operators : [{
-                    name : newOperator.name,
-                    value : newOperator.standardValue
-                }]
-            });
-        }
+        $scope.operatorId++;
+        $scope.data.parametersPanel = 0;
+        $scope.data.updateSelectionParameters();
     };
 
     $scope.reorderOperators = function(operators) {
