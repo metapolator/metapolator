@@ -242,7 +242,7 @@ function($scope, $sce, sharedScope, $http) {
                 }
             });
         });
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(true);
     };
 
     $scope.toggleGlyph = function(sequenceId, masterId, glyphName) {
@@ -257,7 +257,7 @@ function($scope, $sce, sharedScope, $http) {
                 }
             });
         });
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(true);
     };
 
     $scope.selectSet = function(set) {
@@ -281,7 +281,7 @@ function($scope, $sce, sharedScope, $http) {
                 }
             });
         });
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(true);
     };
 
     $scope.toggleSet = function(set) {
@@ -303,7 +303,7 @@ function($scope, $sce, sharedScope, $http) {
                 }
             });
         });
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(true);
     };
 
     $scope.deselectAll = function() {
@@ -316,7 +316,7 @@ function($scope, $sce, sharedScope, $http) {
                 }
             });
         });
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(true);
     };
 
     // find out if the glyph edit is true

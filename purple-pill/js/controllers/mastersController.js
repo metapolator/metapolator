@@ -187,7 +187,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                 }
             });
         });
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(true);
     };
 
     $scope.selectEdit = function(set) {
@@ -206,7 +206,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     $scope.deselectAllGlyphs(master);
                 }
             });
-            $scope.data.updateSelectionParameters();
+            $scope.data.updateSelectionParameters(true);
         });
     };
 
@@ -218,7 +218,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                     $scope.deselectAllGlyphs(master);
                 });
             });
-            $scope.data.updateSelectionParameters();
+            $scope.data.updateSelectionParameters(true);
         }
     };
 

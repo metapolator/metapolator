@@ -4,25 +4,25 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.parameters = [{
         name : "weight",
         displayName : "Weight",
-        unit : "",
+        unit : "em",
         step : 0.1,
         decimals : 2
     }, {
         name : "width",
         displayName : "Width",
-        unit : "",
+        unit : "em",
         step : 0.005,
         decimals : 4
     }, {
         name : "height",
         displayName : "Height",
-        unit : "",
+        unit : "em",
         step : 0.02,
         decimals : 3
     }, {
         name : "spacing",
         displayName : "Spacing",
-        unit : "",
+        unit : "em",
         step : 1,
         decimals : 1
     }];
@@ -48,7 +48,10 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.selectionParametersMasters = [];
     $scope.selectionParametersGlyphs = [];
 
-    $scope.data.updateSelectionParameters = function() {
+    $scope.data.updateSelectionParameters = function(selectionChanged) {
+        if (selectionChanged) {
+            $scope.destackOperators();
+        }
         $scope.selectionParametersMasters = $scope.updateSelectionParametersElements("master");
         $scope.selectionParametersGlyphs = $scope.updateSelectionParametersElements("glyph");
     };
@@ -65,7 +68,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var lowest = null;
                 var highest = null;
                 // get all the elements - depending on the level we are in - with edit == true
-                var elements = $scope.findElements(level);
+                var elements = $scope.findElementsEdit(level);
                 angular.forEach(elements, function(element, index) {
                     nrOfElements++;
                     angular.forEach(element.element.parameters, function(elementParameter) {
@@ -85,7 +88,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                                         }
                                     } else {
                                         // an operator with an id is a stacked operator
-                                        // added during the current selection process. 
+                                        // added during the current selection process.
                                         // the id will be removed after deselecting + de-stacking
                                         // range is always false, because it is added after selecting
                                         // only at index == 0, because this counts for all elements the same
@@ -101,7 +104,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                                             });
                                         }
                                     }
-                                } 
+                                }
                             });
                         }
                     });
@@ -148,7 +151,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         return selectionParameters;
     };
 
-    $scope.findElements = function(level) {
+    $scope.findElementsEdit = function(level) {
         var elements = [];
         if (level == "master") {
             angular.forEach($scope.data.sequences, function(sequence) {
@@ -180,6 +183,19 @@ app.controller("parametersController", function($scope, sharedScope) {
                 });
             });
         }
+        return elements;
+    };
+
+    $scope.findAllElements = function() {
+        var elements = [];
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                elements.push(master);
+                angular.forEach(master.glyphs, function(glyph) {
+                    elements.push(glyph);
+                });
+            });
+        });
         return elements;
     };
 
@@ -219,6 +235,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
             var thisValue = $scope.managedInputValue(value, parameterName, operatorName, keyEvent);
+            var operatorId = operator.id;
             value.current = thisValue;
             value.fallback = thisValue;
 
@@ -229,7 +246,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
 
             // find which elements (master(s) or glyph(s) - later also deeper levels - to edit with this value
-            var elements = $scope.findElements(elementType);
+            var elements = $scope.findElementsEdit(elementType);
             angular.forEach(elements, function(element) {
                 if (element.element.ruleIndex) {
                     var ruleIndex = element.element.ruleIndex;
@@ -248,7 +265,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 } else if (operator.name == "-") {
                     thisValue = -thisValue;
                 }
-                $scope.setParameterModel(element.master, element.element, parameterName, operatorName, thisValue);
+                $scope.setParameterModel(element.master, element.element, parameterName, operatorName, thisValue, operatorId);
                 $scope.setParameterAPI(element.master, ruleIndex, key, thisValue);
             });
             if (range) {
@@ -258,7 +275,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                 operator.low.old = operator.low.current;
                 operator.high.old = operator.high.current;
             }
-            //$scope.optimizeOperators();
         }
     };
 
@@ -314,14 +330,15 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.setParameterModel = function(master, element, parameterName, operatorName, value) {
+    $scope.setParameterModel = function(master, element, parameterName, operatorName, value, operatorId) {
         var theParameter = null;
         var theOperator = null;
         angular.forEach(element.parameters, function(parameter) {
             if (parameter.name == parameterName) {
                 theParameter = parameter;
                 angular.forEach(parameter.operators, function(operator) {
-                    if (operator.name == operatorName) {
+                    if ((operator.name == operatorName) && ((operator.id == operatorId) || (!operator.id  && !operatorId))) {
+                        console.log("!");
                         theOperator = operator;
                     }
                 });
@@ -419,7 +436,8 @@ app.controller("parametersController", function($scope, sharedScope) {
     // to keep track of an added operator, an id is added to it,
     // because an element could have multiple of the same parameter+instance
     // when te selection is lost, and de-stacking the operatorers, the id is removed.
-    $scope.operatorId = 0;
+    // prevent use of 0, because that will match undefined
+    $scope.operatorId = 1;
 
     $scope.addParameterToPanel = function(parameter) {
         $scope.panelParameter = parameter;
@@ -438,7 +456,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.addParameterToElements = function(parameter, operator) {
         // get all the elements - depending on the level we are in - with edit == true
         var level = $scope.parameterLevel;
-        var elements = $scope.findElements(level);
+        var elements = $scope.findElementsEdit(level);
         angular.forEach(elements, function(thisElement) {
             var element = thisElement.element;
             var hasRule = false;
@@ -454,7 +472,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                         value : operator.standardValue,
                         id : $scope.operatorId
                     });
-                    //thisParameter.operators = $scope.reorderOperators(thisParameter.operators);
+                    thisParameter.operators = $scope.reorderOperators(thisParameter.operators);
                 }
             });
             if (!hasParameter) {
@@ -472,7 +490,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         $scope.operatorId++;
         $scope.data.parametersPanel = 0;
-        $scope.data.updateSelectionParameters();
+        $scope.data.updateSelectionParameters(false);
     };
 
     $scope.reorderOperators = function(operators) {
@@ -498,56 +516,46 @@ app.controller("parametersController", function($scope, sharedScope) {
         return newOperators;
     };
 
-    $scope.optimizeOperators = function() {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    if (master.parameters.length > 0) {
-                        $scope.optimize(master.parameters);
-                    }
-                    angular.forEach(master.glyphs, function(glyph) {
-                        if (glyph.edit[0] && glyph.parameters.length > 0) {
-                            $scope.optimize(glyph.parameters);
+    $scope.destackOperators = function() {
+        console.clear();
+        var elements = $scope.findAllElements();
+        angular.forEach(elements, function(element) {
+            angular.forEach(element.parameters, function(parameter) {
+                var lastOperator = {
+                    name : null,
+                    value : null
+                };
+                var newSetOperators = [];
+                var newOperator;
+                var changeOfOperator;
+                angular.forEach(parameter.operators, function(operator, index) {
+                    // reset the id of the operator. So later we know that operators without id are destacked
+                    operator.id = null;
+                    if (operator.name == lastOperator.name) {
+                        if (operator.name == "+" || operator.name == "-") {
+                            newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
+                        } else if (operator.name == "x" || operator.name == "÷") {
+                            newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
                         }
-                    });
-                }
-            });
-        });
-    };
+                    } else {
+                        if (index != 0) {
+                            newSetOperators.push(newOperator);
+                        }
+                        newOperator = operator;
+                    }
+                    lastOperator = operator;
 
-    $scope.optimize = function(parameters) {
-        angular.forEach(parameters, function(parameter) {
-            var lastOperator = {
-                name : null,
-                value : null
-            };
-            var newSetOperators = [];
-            var newOperator;
-            var changeOfOperator;
-            angular.forEach(parameter.operators, function(operator, index) {
-                if (operator.name == lastOperator.name) {
-                    if (operator.name == "+" || operator.name == "-") {
-                        newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                    } else if (operator.name == "x" || operator.name == "÷") {
-                        newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
-                    }
-                } else {
-                    if (index != 0) {
-                        newSetOperators.push(newOperator);
-                    }
-                    newOperator = operator;
-                }
-                lastOperator = operator;
+                });
+                newSetOperators.push(newOperator);
+                parameter.operators = newSetOperators;
 
             });
-            newSetOperators.push(newOperator);
-            parameter.operators = newSetOperators;
-
         });
     };
 
     /***** ranges *****/
 
+    /*
     $scope.$watch("data.sequences | glyphsInEditFilter:parameters:operators", function(newVal) {
         $scope.filteredGlyphParameters = newVal;
     }, true);
@@ -576,20 +584,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
     };
 
-    $scope.parametersWindow = function(event, target, level) {
-        $scope.parameterLevel = level;
-        $scope.panelOperator = null;
-        $scope.panelParameter = null;
-        var top = $(event.target).offset().top + 20;
-        var left = $(event.target).offset().left + 20;
-        $scope.parameterPanelTop = top;
-        $scope.parameterPanelLeft = left;
-        if (target != $scope.data.parametersPanel) {
-            $scope.data.parametersPanel = target;
-        } else {
-            $scope.data.parametersPanel = 0;
-        }
-    };
+
 
     $scope.hasInheritance = function(theParameter) {
         var inheritance = false;
@@ -667,6 +662,25 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         return calculatedValue;
     };
+    
+    */
+    
+    // parameters panel settings 
+    
+    $scope.parametersWindow = function(event, target, level) {
+        $scope.parameterLevel = level;
+        $scope.panelOperator = null;
+        $scope.panelParameter = null;
+        var top = $(event.target).offset().top + 20;
+        var left = $(event.target).offset().left + 20;
+        $scope.parameterPanelTop = top;
+        $scope.parameterPanelLeft = left;
+        if (target != $scope.data.parametersPanel) {
+            $scope.data.parametersPanel = target;
+        } else {
+            $scope.data.parametersPanel = 0;
+        }
+    };
 
     $scope.areGlyphsSelected = function() {
         var selected = false;
@@ -695,4 +709,5 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         return selected;
     };
+
 });
