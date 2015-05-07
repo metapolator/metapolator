@@ -41,7 +41,7 @@ app.controller('engine', function($scope, sharedScope) {
                                         name : "=",
                                         value : point.get("onLength")
                                     }, {
-                                        name : "->",
+                                        name : "effectiveValue",
                                         initial : point.get("onLength"),
                                         value : point.get("onLength")
                                     }]
@@ -70,7 +70,7 @@ app.controller('engine', function($scope, sharedScope) {
                                 name : "=",
                                 value : initialWidth
                             }, {
-                                name : "->",
+                                name : "effectiveValue",
                                 initial : initialWidth,
                                 value : initialWidth
                             }]
@@ -173,7 +173,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 514
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 514,
                             "value" : 514
                         }]
@@ -194,7 +194,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -209,7 +209,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -231,7 +231,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -246,7 +246,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.40175425099138
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.40175425099138,
                                     "value" : 11.40175425099138
                                 }]
@@ -261,7 +261,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.111874208078342
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.111874208078342,
                                     "value" : 10.111874208078342
                                 }]
@@ -276,7 +276,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 9.7082439194738
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 9.7082439194738,
                                     "value" : 9.7082439194738
                                 }]
@@ -298,7 +298,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -313,7 +313,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -335,7 +335,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 8.514693182963201
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 8.514693182963201,
                                     "value" : 8.514693182963201
                                 }]
@@ -350,7 +350,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 9.013878188659973
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 9.013878188659973,
                                     "value" : 9.013878188659973
                                 }]
@@ -365,7 +365,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.045361017187261
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.045361017187261,
                                     "value" : 11.045361017187261
                                 }]
@@ -380,7 +380,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.198039027185569
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.198039027185569,
                                     "value" : 10.198039027185569
                                 }]
@@ -395,7 +395,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 7.7781745930520225
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 7.7781745930520225,
                                     "value" : 7.7781745930520225
                                 }]
@@ -413,7 +413,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 581
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 581,
                             "value" : 581
                         }]
@@ -434,7 +434,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -449,7 +449,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -464,7 +464,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 7.7781745930520225
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 7.7781745930520225,
                                     "value" : 7.7781745930520225
                                 }]
@@ -479,7 +479,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.5
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.5,
                                     "value" : 10.5
                                 }]
@@ -494,7 +494,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.547511554864494
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.547511554864494,
                                     "value" : 10.547511554864494
                                 }]
@@ -509,7 +509,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.012492197250394
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
@@ -524,7 +524,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -539,7 +539,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -554,7 +554,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.259142264341596
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.259142264341596,
                                     "value" : 10.259142264341596
                                 }]
@@ -572,7 +572,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 568
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 568,
                             "value" : 568
                         }]
@@ -593,7 +593,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -608,7 +608,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.977249200050075
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.977249200050075,
                                     "value" : 10.977249200050075
                                 }]
@@ -630,7 +630,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.01135777277262
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
@@ -645,7 +645,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -660,7 +660,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.01135777277262
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
@@ -675,7 +675,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.04987562112089
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.04987562112089,
                                     "value" : 10.04987562112089
                                 }]
@@ -690,7 +690,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.01135777277262
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
@@ -712,7 +712,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 7.810249675906654
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 7.810249675906654,
                                     "value" : 7.810249675906654
                                 }]
@@ -727,7 +727,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.045361017187261
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.045361017187261,
                                     "value" : 11.045361017187261
                                 }]
@@ -742,7 +742,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 9.7082439194738
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 9.7082439194738,
                                     "value" : 9.7082439194738
                                 }]
@@ -757,7 +757,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.04987562112089
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.04987562112089,
                                     "value" : 10.04987562112089
                                 }]
@@ -772,7 +772,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.012492197250394
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
@@ -787,7 +787,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.01135777277262
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
@@ -802,7 +802,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 8.139410298049853
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 8.139410298049853,
                                     "value" : 8.139410298049853
                                 }]
@@ -820,7 +820,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 222
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 222,
                             "value" : 222
                         }]
@@ -841,7 +841,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -856,7 +856,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -878,7 +878,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -893,7 +893,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -915,7 +915,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -930,7 +930,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -952,7 +952,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -967,7 +967,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -985,7 +985,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 644
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 644,
                             "value" : 644
                         }]
@@ -1006,7 +1006,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1021,7 +1021,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.012492197250394
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
@@ -1036,7 +1036,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1051,7 +1051,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.012492197250394
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
@@ -1066,7 +1066,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1084,7 +1084,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 627
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 627,
                             "value" : 627
                         }]
@@ -1105,7 +1105,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1120,7 +1120,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1142,7 +1142,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1157,7 +1157,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1179,7 +1179,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1194,7 +1194,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1216,7 +1216,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 8.902246907382429
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 8.902246907382429,
                                     "value" : 8.902246907382429
                                 }]
@@ -1231,7 +1231,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.012492197250394
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
@@ -1246,7 +1246,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.01135777277262
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
@@ -1261,7 +1261,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1276,7 +1276,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 8.902246907382429
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 8.902246907382429,
                                     "value" : 8.902246907382429
                                 }]
@@ -1298,7 +1298,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1313,7 +1313,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1331,7 +1331,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 405
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 405,
                             "value" : 405
                         }]
@@ -1352,7 +1352,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1367,7 +1367,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1389,7 +1389,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1404,7 +1404,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1426,7 +1426,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1441,7 +1441,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1463,7 +1463,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1478,7 +1478,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -1500,7 +1500,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 7.5
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 7.5,
                                     "value" : 7.5
                                 }]
@@ -1515,7 +1515,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1533,7 +1533,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 464
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 464,
                             "value" : 464
                         }]
@@ -1554,7 +1554,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1569,7 +1569,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1591,7 +1591,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 9.617692030835672
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 9.617692030835672,
                                     "value" : 9.617692030835672
                                 }]
@@ -1606,7 +1606,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10.04987562112089
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10.04987562112089,
                                     "value" : 10.04987562112089
                                 }]
@@ -1621,7 +1621,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.01135777277262
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
@@ -1636,7 +1636,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 12.776932339180638
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 12.776932339180638,
                                     "value" : 12.776932339180638
                                 }]
@@ -1654,7 +1654,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 781
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 781,
                             "value" : 781
                         }]
@@ -1675,7 +1675,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1690,7 +1690,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1712,7 +1712,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1727,7 +1727,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1749,7 +1749,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1764,7 +1764,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1786,7 +1786,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1801,7 +1801,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1823,7 +1823,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.067971810589327
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.067971810589327,
                                     "value" : 11.067971810589327
                                 }]
@@ -1838,7 +1838,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.423659658795863
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.423659658795863,
                                     "value" : 11.423659658795863
                                 }]
@@ -1860,7 +1860,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.5
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.5,
                                     "value" : 11.5
                                 }]
@@ -1875,7 +1875,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1897,7 +1897,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 12
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 12,
                                     "value" : 12
                                 }]
@@ -1912,7 +1912,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1930,7 +1930,7 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : "=",
                             "value" : 909
                         }, {
-                            "name" : "->",
+                            "name" : "effectiveValue",
                             "initial" : 909,
                             "value" : 909
                         }]
@@ -1951,7 +1951,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1966,7 +1966,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -1988,7 +1988,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2003,7 +2003,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2025,7 +2025,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2040,7 +2040,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2062,7 +2062,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2077,7 +2077,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2099,7 +2099,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2114,7 +2114,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2136,7 +2136,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2151,7 +2151,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2173,7 +2173,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -2188,7 +2188,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2210,7 +2210,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -2225,7 +2225,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2247,7 +2247,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11,
                                     "value" : 11
                                 }]
@@ -2262,7 +2262,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]
@@ -2284,7 +2284,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 11.5
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 11.5,
                                     "value" : 11.5
                                 }]
@@ -2299,7 +2299,7 @@ app.controller('engine', function($scope, sharedScope) {
                                     "name" : "=",
                                     "value" : 10
                                 }, {
-                                    "name" : "->",
+                                    "name" : "effectiveValue",
                                     "initial" : 10,
                                     "value" : 10
                                 }]

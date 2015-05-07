@@ -72,8 +72,8 @@ app.controller("parametersController", function($scope, sharedScope) {
         usesUnit : true,
         effectiveLocal : false
     }, {
-        name : "->",
-        type : "dontuse",
+        name : "effectiveValue",
+        icon: "->",
         usesUnit : true,
     }];
 
@@ -277,7 +277,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 angular.forEach(thisElement.parameters, function(parameter) {
                     if (parameter.name == parameterName) {
                         angular.forEach(parameter.operators, function(operator) {
-                            if (operator.name == "->") {
+                            if (operator.name == "effectiveValue") {
                                 operator.value = $scope.updateEffectiveValue (thisElement, parameterName);
                             }
                         });
@@ -289,7 +289,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
                     angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == "->") {
+                        if (operator.name == "effectiveValue") {
                             operator.value = $scope.updateEffectiveValue (element, parameterName);
                         }
                     });
