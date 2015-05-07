@@ -19,7 +19,7 @@ app.filter('glyphsInEditFilter', function() {
         angular.forEach(sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
+                    angular.forEach(master.children, function(glyph) {
                         if (glyph.edit) {
                             selectedGlyphs.push({
                                 parameters : glyph.parameters,

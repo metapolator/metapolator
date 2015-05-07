@@ -232,7 +232,7 @@ function($scope, $sce, sharedScope, $http) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
+                    angular.forEach(master.children, function(glyph) {
                         if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = true;
                         } else {
@@ -249,7 +249,7 @@ function($scope, $sce, sharedScope, $http) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
+                    angular.forEach(master.children, function(glyph) {
                         if (glyph.name == glyphName && sequence.id == sequenceId && master.id == masterId) {
                             glyph.edit = !glyph.edit;
                         }
@@ -264,7 +264,7 @@ function($scope, $sce, sharedScope, $http) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
+                    angular.forEach(master.children, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
                             if (glyph.name == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
@@ -288,7 +288,7 @@ function($scope, $sce, sharedScope, $http) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit[0]) {
-                    angular.forEach(master.glyphs, function(glyph) {
+                    angular.forEach(master.children, function(glyph) {
                         var isinset = false;
                         for (var m = 0; m < set.length; m++) {
                             if (glyph.name == set[m].glyph && sequence.id == set[m].sequence && master.id == set[m].master) {
@@ -310,7 +310,7 @@ function($scope, $sce, sharedScope, $http) {
         angular.forEach($scope.data.sequences, function(sequence) {
             angular.forEach(sequence.masters, function(master) {
                 if (master.edit[$scope.data.view.viewState]) {
-                    angular.forEach(master.glyphs, function(glyph) {
+                    angular.forEach(master.children, function(glyph) {
                         glyph.edit = false;
                     });
                 }
@@ -326,7 +326,7 @@ function($scope, $sce, sharedScope, $http) {
             if (sequence.id == sequenceId) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.id == masterId && master.edit[0]) {
-                        angular.forEach(master.glyphs, function(glyph) {
+                        angular.forEach(master.children, function(glyph) {
                             if (glyph.name == glyphName) {
                                 if (glyph.edit) {
                                     edit = true;

@@ -39,8 +39,10 @@ app.controller('engine', function($scope, sharedScope) {
                                     name : "Weight",
                                     operators : [{
                                         name : "=",
+                                        value : point.get("onLength")
+                                    }, {
+                                        name : "->",
                                         initial : point.get("onLength"),
-                                        effective : point.get("onLength"),
                                         value : point.get("onLength")
                                     }]
                                 }]
@@ -52,7 +54,7 @@ app.controller('engine', function($scope, sharedScope) {
                             level : "stroke",
                             initial : {},
                             parameters : [],
-                            points : points
+                            children : points
                         });
                     }
                     // temp hack untill #392 is fixed
@@ -66,12 +68,14 @@ app.controller('engine', function($scope, sharedScope) {
                             name : "Width",
                             operators : [{
                                 name : "=",
+                                value : initialWidth
+                            }, {
+                                name : "->",
                                 initial : initialWidth,
-                                effective : initialWidth,
                                 value : initialWidth
                             }]
                         }],
-                        strokes : strokes
+                        children : strokes
                     });
                 }
                 // temp private method, see issue #332
@@ -85,7 +89,7 @@ app.controller('engine', function($scope, sharedScope) {
                     display : false,
                     edit : [true, false],
                     ag : "Ag",
-                    glyphs : glyphs,
+                    children : glyphs,
                     level : "master",
                     parameters : [{
                         name : "Weight",
@@ -158,7 +162,7 @@ app.controller('engine', function($scope, sharedScope) {
                 "display" : false,
                 "edit" : [true, false],
                 "ag" : "Ag",
-                "glyphs" : [{
+                "children" : [{
                     "name" : "a",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
@@ -167,18 +171,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 514
+                        }, {
+                            "name" : "->",
                             "initial" : 514,
-                            "effective" : 514,
                             "value" : 514
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "a"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -186,8 +192,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -199,8 +207,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -211,7 +221,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -219,8 +229,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -232,8 +244,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.40175425099138
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.40175425099138,
-                                    "effective" : 11.40175425099138,
                                     "value" : 11.40175425099138
                                 }]
                             }]
@@ -245,8 +259,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.111874208078342
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.111874208078342,
-                                    "effective" : 10.111874208078342,
                                     "value" : 10.111874208078342
                                 }]
                             }]
@@ -258,8 +274,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 9.7082439194738
+                                }, {
+                                    "name" : "->",
                                     "initial" : 9.7082439194738,
-                                    "effective" : 9.7082439194738,
                                     "value" : 9.7082439194738
                                 }]
                             }]
@@ -270,7 +288,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -278,8 +296,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -291,8 +311,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -303,7 +325,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -311,8 +333,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 8.514693182963201
+                                }, {
+                                    "name" : "->",
                                     "initial" : 8.514693182963201,
-                                    "effective" : 8.514693182963201,
                                     "value" : 8.514693182963201
                                 }]
                             }]
@@ -324,8 +348,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 9.013878188659973
+                                }, {
+                                    "name" : "->",
                                     "initial" : 9.013878188659973,
-                                    "effective" : 9.013878188659973,
                                     "value" : 9.013878188659973
                                 }]
                             }]
@@ -337,8 +363,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.045361017187261
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.045361017187261,
-                                    "effective" : 11.045361017187261,
                                     "value" : 11.045361017187261
                                 }]
                             }]
@@ -350,8 +378,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.198039027185569
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.198039027185569,
-                                    "effective" : 10.198039027185569,
                                     "value" : 10.198039027185569
                                 }]
                             }]
@@ -363,8 +393,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 7.7781745930520225
+                                }, {
+                                    "name" : "->",
                                     "initial" : 7.7781745930520225,
-                                    "effective" : 7.7781745930520225,
                                     "value" : 7.7781745930520225
                                 }]
                             }]
@@ -379,18 +411,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 581
+                        }, {
+                            "name" : "->",
                             "initial" : 581,
-                            "effective" : 581,
                             "value" : 581
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "e"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -398,8 +432,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -411,8 +447,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -424,8 +462,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 7.7781745930520225
+                                }, {
+                                    "name" : "->",
                                     "initial" : 7.7781745930520225,
-                                    "effective" : 7.7781745930520225,
                                     "value" : 7.7781745930520225
                                 }]
                             }]
@@ -437,8 +477,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.5
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.5,
-                                    "effective" : 10.5,
                                     "value" : 10.5
                                 }]
                             }]
@@ -450,8 +492,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.547511554864494
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.547511554864494,
-                                    "effective" : 10.547511554864494,
                                     "value" : 10.547511554864494
                                 }]
                             }]
@@ -463,8 +507,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.012492197250394
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.012492197250394,
-                                    "effective" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
                             }]
@@ -476,8 +522,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -489,8 +537,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -502,8 +552,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.259142264341596
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.259142264341596,
-                                    "effective" : 10.259142264341596,
                                     "value" : 10.259142264341596
                                 }]
                             }]
@@ -518,18 +570,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 568
+                        }, {
+                            "name" : "->",
                             "initial" : 568,
-                            "effective" : 568,
                             "value" : 568
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "g"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -537,8 +591,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -550,8 +606,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.977249200050075
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.977249200050075,
-                                    "effective" : 10.977249200050075,
                                     "value" : 10.977249200050075
                                 }]
                             }]
@@ -562,7 +620,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -570,8 +628,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.01135777277262
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.01135777277262,
-                                    "effective" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
                             }]
@@ -583,8 +643,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -596,8 +658,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.01135777277262
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.01135777277262,
-                                    "effective" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
                             }]
@@ -609,8 +673,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.04987562112089
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.04987562112089,
-                                    "effective" : 10.04987562112089,
                                     "value" : 10.04987562112089
                                 }]
                             }]
@@ -622,8 +688,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.01135777277262
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.01135777277262,
-                                    "effective" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
                             }]
@@ -634,7 +702,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -642,8 +710,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 7.810249675906654
+                                }, {
+                                    "name" : "->",
                                     "initial" : 7.810249675906654,
-                                    "effective" : 7.810249675906654,
                                     "value" : 7.810249675906654
                                 }]
                             }]
@@ -655,8 +725,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.045361017187261
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.045361017187261,
-                                    "effective" : 11.045361017187261,
                                     "value" : 11.045361017187261
                                 }]
                             }]
@@ -668,8 +740,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 9.7082439194738
+                                }, {
+                                    "name" : "->",
                                     "initial" : 9.7082439194738,
-                                    "effective" : 9.7082439194738,
                                     "value" : 9.7082439194738
                                 }]
                             }]
@@ -681,8 +755,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.04987562112089
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.04987562112089,
-                                    "effective" : 10.04987562112089,
                                     "value" : 10.04987562112089
                                 }]
                             }]
@@ -694,8 +770,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.012492197250394
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.012492197250394,
-                                    "effective" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
                             }]
@@ -707,8 +785,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.01135777277262
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.01135777277262,
-                                    "effective" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
                             }]
@@ -720,8 +800,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 8.139410298049853
+                                }, {
+                                    "name" : "->",
                                     "initial" : 8.139410298049853,
-                                    "effective" : 8.139410298049853,
                                     "value" : 8.139410298049853
                                 }]
                             }]
@@ -736,18 +818,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 222
+                        }, {
+                            "name" : "->",
                             "initial" : 222,
-                            "effective" : 222,
                             "value" : 222
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "l"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -755,8 +839,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -768,8 +854,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -780,7 +868,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -788,8 +876,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -801,8 +891,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -813,7 +905,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -821,8 +913,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -834,8 +928,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -846,7 +942,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -854,8 +950,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -867,8 +965,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -883,18 +983,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 644
+                        }, {
+                            "name" : "->",
                             "initial" : 644,
-                            "effective" : 644,
                             "value" : 644
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "o"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -902,8 +1004,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -915,8 +1019,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.012492197250394
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.012492197250394,
-                                    "effective" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
                             }]
@@ -928,8 +1034,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -941,8 +1049,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.012492197250394
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.012492197250394,
-                                    "effective" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
                             }]
@@ -954,8 +1064,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -970,18 +1082,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 627
+                        }, {
+                            "name" : "->",
                             "initial" : 627,
-                            "effective" : 627,
                             "value" : 627
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "p"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -989,8 +1103,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1002,8 +1118,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1014,7 +1132,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1022,8 +1140,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1035,8 +1155,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1047,7 +1169,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1055,8 +1177,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1068,8 +1192,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1080,7 +1206,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1088,8 +1214,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 8.902246907382429
+                                }, {
+                                    "name" : "->",
                                     "initial" : 8.902246907382429,
-                                    "effective" : 8.902246907382429,
                                     "value" : 8.902246907382429
                                 }]
                             }]
@@ -1101,8 +1229,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.012492197250394
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.012492197250394,
-                                    "effective" : 10.012492197250394,
                                     "value" : 10.012492197250394
                                 }]
                             }]
@@ -1114,8 +1244,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.01135777277262
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.01135777277262,
-                                    "effective" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
                             }]
@@ -1127,8 +1259,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1140,8 +1274,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 8.902246907382429
+                                }, {
+                                    "name" : "->",
                                     "initial" : 8.902246907382429,
-                                    "effective" : 8.902246907382429,
                                     "value" : 8.902246907382429
                                 }]
                             }]
@@ -1152,7 +1288,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1160,8 +1296,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -1173,8 +1311,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -1189,18 +1329,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 405
+                        }, {
+                            "name" : "->",
                             "initial" : 405,
-                            "effective" : 405,
                             "value" : 405
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "r"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1208,8 +1350,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1221,8 +1365,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1233,7 +1379,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1241,8 +1387,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1254,8 +1402,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1266,7 +1416,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1274,8 +1424,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1287,8 +1439,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1299,7 +1453,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1307,8 +1461,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -1320,8 +1476,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -1332,7 +1490,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1340,8 +1498,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 7.5
+                                }, {
+                                    "name" : "->",
                                     "initial" : 7.5,
-                                    "effective" : 7.5,
                                     "value" : 7.5
                                 }]
                             }]
@@ -1353,8 +1513,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1369,18 +1531,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 464
+                        }, {
+                            "name" : "->",
                             "initial" : 464,
-                            "effective" : 464,
                             "value" : 464
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "t"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1388,8 +1552,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1401,8 +1567,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1413,7 +1581,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1421,8 +1589,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 9.617692030835672
+                                }, {
+                                    "name" : "->",
                                     "initial" : 9.617692030835672,
-                                    "effective" : 9.617692030835672,
                                     "value" : 9.617692030835672
                                 }]
                             }]
@@ -1434,8 +1604,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10.04987562112089
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10.04987562112089,
-                                    "effective" : 10.04987562112089,
                                     "value" : 10.04987562112089
                                 }]
                             }]
@@ -1447,8 +1619,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.01135777277262
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.01135777277262,
-                                    "effective" : 11.01135777277262,
                                     "value" : 11.01135777277262
                                 }]
                             }]
@@ -1460,8 +1634,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 12.776932339180638
+                                }, {
+                                    "name" : "->",
                                     "initial" : 12.776932339180638,
-                                    "effective" : 12.776932339180638,
                                     "value" : 12.776932339180638
                                 }]
                             }]
@@ -1476,18 +1652,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 781
+                        }, {
+                            "name" : "->",
                             "initial" : 781,
-                            "effective" : 781,
                             "value" : 781
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "A"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1495,8 +1673,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1508,8 +1688,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1520,7 +1702,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1528,8 +1710,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1541,8 +1725,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1553,7 +1739,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1561,8 +1747,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1574,8 +1762,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1586,7 +1776,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1594,8 +1784,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1607,8 +1799,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1619,7 +1813,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1627,8 +1821,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.067971810589327
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.067971810589327,
-                                    "effective" : 11.067971810589327,
                                     "value" : 11.067971810589327
                                 }]
                             }]
@@ -1640,8 +1836,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.423659658795863
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.423659658795863,
-                                    "effective" : 11.423659658795863,
                                     "value" : 11.423659658795863
                                 }]
                             }]
@@ -1652,7 +1850,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1660,8 +1858,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.5
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.5,
-                                    "effective" : 11.5,
                                     "value" : 11.5
                                 }]
                             }]
@@ -1673,8 +1873,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1685,7 +1887,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1693,8 +1895,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 12
+                                }, {
+                                    "name" : "->",
                                     "initial" : 12,
-                                    "effective" : 12,
                                     "value" : 12
                                 }]
                             }]
@@ -1706,8 +1910,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1722,18 +1928,20 @@ app.controller('engine', function($scope, sharedScope) {
                         "name" : "Width",
                         "operators" : [{
                             "name" : "=",
+                            "value" : 909
+                        }, {
+                            "name" : "->",
                             "initial" : 909,
-                            "effective" : 909,
                             "value" : 909
                         }]
                     }],
-                    "strokes" : [{
+                    "children" : [{
                         "name" : null,
                         "parent" : ["glyph", "M"],
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1741,8 +1949,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1754,8 +1964,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1766,7 +1978,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1774,8 +1986,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1787,8 +2001,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1799,7 +2015,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1807,8 +2023,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1820,8 +2038,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1832,7 +2052,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1840,8 +2060,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1853,8 +2075,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1865,7 +2089,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1873,8 +2097,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1886,8 +2112,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1898,7 +2126,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1906,8 +2134,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1919,8 +2149,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1931,7 +2163,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1939,8 +2171,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -1952,8 +2186,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1964,7 +2200,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -1972,8 +2208,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -1985,8 +2223,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -1997,7 +2237,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -2005,8 +2245,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11,
-                                    "effective" : 11,
                                     "value" : 11
                                 }]
                             }]
@@ -2018,8 +2260,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]
@@ -2030,7 +2274,7 @@ app.controller('engine', function($scope, sharedScope) {
                         "level" : "stroke",
                         "initial" : {},
                         "parameters" : [],
-                        "points" : [{
+                        "children" : [{
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
@@ -2038,8 +2282,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 11.5
+                                }, {
+                                    "name" : "->",
                                     "initial" : 11.5,
-                                    "effective" : 11.5,
                                     "value" : 11.5
                                 }]
                             }]
@@ -2051,8 +2297,10 @@ app.controller('engine', function($scope, sharedScope) {
                                 "name" : "Weight",
                                 "operators" : [{
                                     "name" : "=",
+                                    "value" : 10
+                                }, {
+                                    "name" : "->",
                                     "initial" : 10,
-                                    "effective" : 10,
                                     "value" : 10
                                 }]
                             }]

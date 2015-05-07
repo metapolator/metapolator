@@ -116,7 +116,7 @@ app.controller("mastersController", function($scope, sharedScope) {
                             display : false,
                             edit : [true, true],
                             ag : angular.copy(master.ag),
-                            glyphs : angular.copy(master.glyphs),
+                            glyphs : angular.copy(master.children),
                             parameters : angular.copy(master.parameters)
                         });
                     }
@@ -229,7 +229,7 @@ app.controller("mastersController", function($scope, sharedScope) {
     };
 
     $scope.deselectAllGlyphs = function(master) {
-        angular.forEach(master.glyphs, function(glyph) {
+        angular.forEach(master.children, function(glyph) {
             glyph.edit = false;
         });
     };

@@ -1153,6 +1153,10 @@
                     padding-right: 5px;
                 }
                 
+                .operator-value-effective {
+                    padding: 4px;
+                }
+                
                     .operator-value input {
                         background: transparent;
                         width: 100%;
