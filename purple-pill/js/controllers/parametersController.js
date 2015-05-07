@@ -41,26 +41,37 @@ app.controller("parametersController", function($scope, sharedScope) {
         effectiveLevel : "glyph"
     }];
 
+
     $scope.operators = [{
         name : "x",
         standardValue : 1,
         type : "stack",
-        usesUnit : false
+        usesUnit : false,
+        effectiveLocal: true
     }, {
         name : "÷",
         standardValue : 1,
         type : "stack",
-        usesUnit : false
+        usesUnit : false,
+        effectiveLocal: true
     }, {
         name : "+",
         standardValue : 0,
         type : "stack",
-        usesUnit : true
+        usesUnit : true,
+        effectiveLocal: false
     }, {
         name : "-",
         standardValue : 0,
         type : "stack",
-        usesUnit : true
+        usesUnit : true,
+        effectiveLocal: false
+    }, {
+        name : "=",
+        standardValue : null,
+        type : "unique",
+        usesUnit : true,
+        effectiveLocal: false
     }];
 
     $scope.parameterSelection = {
@@ -79,13 +90,9 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.updateSelectionParametersElements = function(level) {
         var selectionParameters = [];
         angular.forEach($scope.parameters, function(theParameter) {
-            var findEffectiveValue = false;
             var theOperators = [];
             var hasThisParameter = false;
-            if (level == theParameter.effectiveLevel) {
-                findEffectiveValue = true;
-            }
-            angular.forEach($scope.operators, function(theOperator) {
+            angular.forEach($scope.operators, function(theOperator, operatorIndex) {
                 var hasThisOperator = false;
                 var nrOfElements = 0;
                 var nrOfHasOperator = 0;
@@ -132,11 +139,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                             });
                         }
                     });
-                    if (findEffectiveValue) {
-                        var initial = element.element.initial[theParameter.name];
-                        console.log(initial);  
-                    }
-
                 });
                 // when a multiple selection contains one object with a setting and another without
                 // the standard value is used
@@ -169,7 +171,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     });
                 }
             });
-            if (hasThisParameter || findEffectiveValue) {
+            if (hasThisParameter) {
                 selectionParameters.push({
                     name : theParameter.name,
                     operators : theOperators
@@ -207,7 +209,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         return currentValue;
     };
 
-    $scope.changeValue = function(parameterName, operator, value, elementType, range, keyEvent) {
+    $scope.changeValue = function(parameterName, operator, value, level, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
             var thisValue = $scope.managedInputValue(value, parameterName, operatorName, keyEvent);
@@ -222,16 +224,16 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
 
             // find which elements (master(s) or glyph(s) - later also deeper levels - to edit with this value
-            var elements = $scope.findElementsEdit(elementType);
+            var elements = $scope.findElementsEdit(level);
             angular.forEach(elements, function(element) {
                 if (element.element.ruleIndex) {
                     var ruleIndex = element.element.ruleIndex;
                 } else {
-                    var ruleIndex = $scope.addRullAPI(elementType, element.master, element.element.name);
+                    var ruleIndex = $scope.addRullAPI(level, element.master, element.element.name);
                 }
                 // if there is a range, we have to find the value for this element within the range
                 if (range) {
-                    thisValue = $scope.getRangeValue(element.element, parameterName, operator, elementType);
+                    thisValue = $scope.getRangeValue(element.element, parameterName, operator, level);
                 }
                 // temp hack untill #392 is fixed
                 // Untill the initial value issue is implemented. Then all the operators together produce a calculated value.
@@ -253,8 +255,90 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         }
     };
+    
+    $scope.findElementWithEffectiveValue = function () {
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                angular.forEach(master.glyphs, function(glyph) {
 
-    $scope.getRangeValue = function(element, parameterName, myOperator, elementType) {
+                });
+            });
+        });  
+    };
+    
+    $scope.updateEffectiveValue = function(element, parameterName) {
+        var min, max, is, effectiveValue, plusGlyph = [], plusMaster = [], multiplyGlyph = [], multiplyMaster = [];
+        var parentElement = $scope.findParentElement(element.parent[0], element.parent[1]);
+        
+        angular.forEach(parentElement.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == "min") {
+                        min = operator.value;
+                    } else if (operator.name == "max") {
+                        max = operator.value;
+                    } else if (operator.name == "=") {
+                        is = operator.value;
+                    } else if (operator.name == "+") {
+                        plusMaster.push(parseFloat(operator.value));
+                    } else if (operator.name == "-") {
+                        plusMaster.push(parseFloat(-operator.value));
+                    } else if (operator.name == "x") {
+                        multiplyMaster.push(parseFloat(operator.value));
+                    } else if (operator.name == "÷") {
+                        multiplyMaster.push(parseFloat(1 / operator.value));
+                    }
+                });
+            }
+        });
+        
+        // glyph operators overrule the master operators
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == "min") {
+                        min = operator.value;
+                    } else if (operator.name == "max") {
+                        max = operator.value;
+                    } else if (operator.name == "=") {
+                        is = operator.value;
+                    } else if (operator.name == "+") {
+                        plusGlyph.push(parseFloat(operator.value));
+                    } else if (operator.name == "-") {
+                        plusGlyph.push(parseFloat(-operator.value));
+                    } else if (operator.name == "x") {
+                        multiplyGlyph.push(parseFloat(operator.value));
+                    } else if (operator.name == "÷") {
+                        multiplyGlyph.push(parseFloat(1 / operator.value));
+                    }
+                });
+            }
+        });
+        effectiveValue = is;
+        angular.forEach(multiplyGlyph, function(multiply) {
+            effectiveValue *= multiply;
+        });
+        angular.forEach(plusGlyph, function(plus) {
+            effectiveValue += plus;
+        });
+        angular.forEach(multiplyMaster, function(multiply) {
+            effectiveValue *= multiply;
+        });
+        angular.forEach(plusMaster, function(plus) {
+            effectiveValue += plus;
+        });
+        
+        if (effectiveValue > max) {
+            effectiveValue = max;
+        } else if (effectiveValue < min) {
+            effectiveValue = min;
+        }
+        return effectiveValue;
+    };
+    
+
+
+    $scope.getRangeValue = function(element, parameterName, myOperator, level) {
         var scale, myPosition, newValue;
         var decimals = $scope.getParameterByName(parameterName).decimals;
         var operatorName = myOperator.name;
@@ -286,11 +370,11 @@ app.controller("parametersController", function($scope, sharedScope) {
         return newValue;
     };
 
-    $scope.addRullAPI = function(elementType, master, elementName) {
+    $scope.addRullAPI = function(level, master, elementName) {
         if ($scope.data.pill != "blue") {
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
             var l = parameterCollection.length;
-            var selectorListString = elementType + "#" + elementName;
+            var selectorListString = level + "#" + elementName;
             var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
             return ruleIndex;
         }
@@ -715,6 +799,29 @@ app.controller("parametersController", function($scope, sharedScope) {
         return theOperator;
     };
     
+    $scope.findParentElement = function (level, elementName) {
+        var thisElement;
+        if (level == "master") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.name == elementName) {
+                        thisElement = master;
+                    }
+                });
+            });  
+        } else if (level =="glyph") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    angular.forEach(master.glyphs, function(glyph) {
+                        if (glyph.name == elementName) {
+                            thisElement = glyph;
+                        }
+                    });
+                });
+            });  
+        }
+        return thisElement;
+    };
     
     
 
