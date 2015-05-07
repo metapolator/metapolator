@@ -3,6 +3,9 @@ app.controller("parametersController", function($scope, sharedScope) {
     
     $scope.levels = ["master", "glyph"];
 
+    /*
+    // until #392 is fixed, we work only with width and weight
+
     $scope.parameters = [{
         name : "Weight",
         unit : "em",
@@ -26,6 +29,21 @@ app.controller("parametersController", function($scope, sharedScope) {
         unit : "em",
         step : 1,
         decimals : 1,
+        effectiveLevel : "glyph"
+    }];
+    */
+   
+    $scope.parameters = [{
+        name : "Weight",
+        unit : "em",
+        step : 0.1,
+        decimals : 2,
+        effectiveLevel : "point"
+    }, {
+        name : "Width",
+        unit : "em",
+        step : 0.005,
+        decimals : 4,
         effectiveLevel : "glyph"
     }];
 
@@ -157,58 +175,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         return selectionParameters;
     };
-
-    $scope.findElementsEdit = function(level) {
-        var elements = [];
-        if (level == "master") {
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    if (master.edit[0]) {
-                        var thisElement = {
-                            element : master,
-                            master : master
-                        };
-                        elements.push(thisElement);
-                    }
-                });
-            });
-        } else if (level == "glyph") {
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    if (master.edit[0]) {
-                        angular.forEach(master.glyphs, function(glyph) {
-                            if (glyph.edit) {
-                                // changeParameter needs to know the master when editing on glyph level
-                                var thisElement = {
-                                    element : glyph,
-                                    master : master
-                                };
-                                elements.push(thisElement);
-                            }
-                        });
-                    }
-                });
-            });
-        }
-        return elements;
-    };
-
-    $scope.findAllElements = function() {
-        var elements = [];
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                elements.push(master);
-                angular.forEach(master.glyphs, function(glyph) {
-                    elements.push(glyph);
-                });
-            });
-        });
-        return elements;
-    };
-
-    function round(value, decimals) {
-        return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-    }
 
 
     $scope.managedInputValue = function(value, parameterName, operatorName, keyEvent) {
@@ -369,70 +335,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.getParameterByName = function(parameterName) {
-        var theParameter;
-        angular.forEach($scope.parameters, function(parameter) {
-            if (parameter.name == parameterName) {
-                theParameter = parameter;
-            }
-        });
-        return theParameter;
-    };
-
-    $scope.getOperatorByName = function(operatorName) {
-        var theOperator;
-        angular.forEach($scope.operators, function(operator) {
-            if (operator.name == operatorName) {
-                theOperator = operator;
-            }
-        });
-        return theOperator;
-    };
-
-    // check in model if the glyph has this specific parameter
-    $scope.getParameterInRule = function(glyph, parameterName, operatorName) {
-        var theParameter;
-        angular.forEach(glyph.parameters, function(parameter) {
-            if (parameter.name == parameterName) {
-                angular.forEach(parameter.operators, function(operator) {
-                    if (operator.name == operatorName) {
-                        theParameter = operator;
-                    }
-                });
-            }
-        });
-        return theParameter;
-    };
-
-    $scope.hasParameter = function(glyph, key) {
-        var hasParameter = false;
-        angular.forEach(glyph.parameters, function(parameter) {
-            if (parameter.name == key) {
-                hasParameter = true;
-            }
-        });
-        return hasParameter;
-    };
-
-    $scope.data.getParameter = function() {
-        angular.forEach($scope.data.sequences, function(sequence) {
-            angular.forEach(sequence.masters, function(master) {
-                if (master.edit[0]) {
-                    angular.forEach($scope.parameters, function(parameter, index) {
-                        angular.forEach($scope.operators, function(operator) {
-                            var key = parameter + operator.affix;
-                            var masterMOMNode = $scope.data.stateful.controller.query("master#" + master.name);
-                            var styleDict = masterMOMNode.getComputedStyle();
-                            var value = styleDict.get(key);
-                            if (value) {
-                                console.log(key + ": " + value);
-                            }
-                        });
-                    });
-                }
-            });
-        });
-    };
 
     /*** handling the parameter add panel ***/
 
@@ -606,7 +508,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.openParameterPanel = function(parameter, event, level) {
-        console.log(event);
+        $scope.data.closeParameterPanel();
         var target = event.currentTarget;
         $(target).addClass("selected-parameter");
         var targetLeft = event.clientX;
@@ -664,6 +566,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.openOperatorPanel = function(parameter, operator, event, level) {
+        $scope.data.closeOperatorPanel();
         var target = event.currentTarget;
         $(target).addClass("selected-parameter");
         var targetLeft = event.clientX;
@@ -733,6 +636,82 @@ app.controller("parametersController", function($scope, sharedScope) {
            $(this).removeClass("selected-parameter"); 
         });
     };
+    
+    
+    // helper functions
+    
+    $scope.findElementsEdit = function(level) {
+        var elements = [];
+        if (level == "master") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        var thisElement = {
+                            element : master,
+                            master : master
+                        };
+                        elements.push(thisElement);
+                    }
+                });
+            });
+        } else if (level == "glyph") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        angular.forEach(master.glyphs, function(glyph) {
+                            if (glyph.edit) {
+                                // changeParameter needs to know the master when editing on glyph level
+                                var thisElement = {
+                                    element : glyph,
+                                    master : master
+                                };
+                                elements.push(thisElement);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+        return elements;
+    };
+
+    $scope.findAllElements = function() {
+        var elements = [];
+        angular.forEach($scope.data.sequences, function(sequence) {
+            angular.forEach(sequence.masters, function(master) {
+                elements.push(master);
+                angular.forEach(master.glyphs, function(glyph) {
+                    elements.push(glyph);
+                });
+            });
+        });
+        return elements;
+    };
+
+    function round(value, decimals) {
+        return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+    }
+    
+    $scope.getParameterByName = function(parameterName) {
+        var theParameter;
+        angular.forEach($scope.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                theParameter = parameter;
+            }
+        });
+        return theParameter;
+    };
+
+    $scope.getOperatorByName = function(operatorName) {
+        var theOperator;
+        angular.forEach($scope.operators, function(operator) {
+            if (operator.name == operatorName) {
+                theOperator = operator;
+            }
+        });
+        return theOperator;
+    };
+    
     
     
 

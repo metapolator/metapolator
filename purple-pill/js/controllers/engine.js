@@ -20,11 +20,45 @@ app.controller('engine', function($scope, sharedScope) {
                 var glyphs = [];
                 // adding glyphs to each master
                 for (var j = 0, m = master.children.length; j < m; j++) {
+                    var thisGlyph = master.children[j];
+                    var strokes = [];
+                    // adding strokes to each glyph
+                    for (var k = 0, n = thisGlyph.children.length; k < n; k++) {
+                        var points = [];
+                        var thisStroke = thisGlyph.children[k];
+                        // adding points to each stroke
+                        for (var l = 0, o = thisStroke.children.length; l < o; l++) {
+                            var thisPoint = thisStroke.children[l];
+                            // adding points to each stroke
+                            var point = $scope.data.stateful.controller.getComputedStyle(thisPoint.right);
+                            points.push({
+                                name : thisPoint.id,
+                                level : "point",
+                                initial : {
+                                    weight: point.get("onLength") 
+                                },
+                                parameters : []
+                            });   
+                        }
+                        strokes.push({
+                            name : thisStroke.id,
+                            level : "stroke",
+                            initial : {},
+                            parameters : [],
+                            points : points
+                        }); 
+                    }
+                    // temp hack untill #392 is fixed
+                    var initialWidth = thisGlyph._advanceWidth;
                     glyphs.push({
-                        name : master.children[j].id,
-                        elementType : "glyph",
+                        name : thisGlyph.id,
+                        level : "glyph",
                         edit : false,
-                        parameters : []
+                        initial : {
+                            width: initialWidth
+                        },
+                        parameters : [],
+                        strokes: strokes
                     });
                 }
                 // temp private method, see issue #332
@@ -39,7 +73,7 @@ app.controller('engine', function($scope, sharedScope) {
                     edit : [true, false],
                     ag : "Ag",
                     glyphs : glyphs,
-                    elementType : "master",
+                    level : "master",
                     parameters : [{
                         name : "Weight",
                         operators : [{
