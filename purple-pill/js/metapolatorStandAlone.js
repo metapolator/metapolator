@@ -36088,10 +36088,7 @@ define('io/zipUtil',[
 
         for (i in files){
             var file = files[i];
-            console.log("targetPath:" + targetPath);
-            console.log("file.name:"+file.name);
-console.log(targetPath.split()[-1]=="/");
-            var absolute_path = [targetPath, file.name].join(targetPath.split()[-1]=="/" ? "" : "/");
+            var absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
             console.log("absolute_path="+absolute_path+" i="+i+" file.dir="+file.dir);
 
             if (file.dir){
@@ -36099,6 +36096,8 @@ console.log(targetPath.split()[-1]=="/");
                 io.mkDir(false, absolute_path);
             } else {
                 console.log("io.writeFile(false, '"+absolute_path+"', file.asBinary());");
+                var dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));;
+                io.ensureDir(false, dir_abs_path);
                 io.writeFile(false, absolute_path, file.asBinary());
             }
         }
