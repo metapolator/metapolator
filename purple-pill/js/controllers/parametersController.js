@@ -34,12 +34,6 @@ app.controller("parametersController", function($scope, sharedScope) {
     */
    
     $scope.parameters = [{
-        name : "Weight",
-        unit : "em",
-        step : 0.1,
-        decimals : 2,
-        effectiveLevel : "point"
-    }, {
         name : "Width",
         unit : "em",
         step : 0.005,
@@ -85,8 +79,12 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.updateSelectionParametersElements = function(level) {
         var selectionParameters = [];
         angular.forEach($scope.parameters, function(theParameter) {
+            var findEffectiveValue = false;
             var theOperators = [];
             var hasThisParameter = false;
+            if (level == theParameter.effectiveLevel) {
+                findEffectiveValue = true;
+            }
             angular.forEach($scope.operators, function(theOperator) {
                 var hasThisOperator = false;
                 var nrOfElements = 0;
@@ -134,6 +132,11 @@ app.controller("parametersController", function($scope, sharedScope) {
                             });
                         }
                     });
+                    if (findEffectiveValue) {
+                        var initial = element.element.initial[theParameter.name];
+                        console.log(initial);  
+                    }
+
                 });
                 // when a multiple selection contains one object with a setting and another without
                 // the standard value is used
@@ -166,7 +169,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     });
                 }
             });
-            if (hasThisParameter) {
+            if (hasThisParameter || findEffectiveValue) {
                 selectionParameters.push({
                     name : theParameter.name,
                     operators : theOperators

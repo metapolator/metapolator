@@ -35,7 +35,7 @@ app.controller('engine', function($scope, sharedScope) {
                                 name : thisPoint.id,
                                 level : "point",
                                 initial : {
-                                    weight: point.get("onLength") 
+                                    Weight: point.get("onLength") 
                                 },
                                 parameters : []
                             });   
@@ -55,7 +55,7 @@ app.controller('engine', function($scope, sharedScope) {
                         level : "glyph",
                         edit : false,
                         initial : {
-                            width: initialWidth
+                            Width: initialWidth
                         },
                         parameters : [],
                         strokes: strokes
@@ -133,62 +133,1409 @@ app.controller('engine', function($scope, sharedScope) {
     };
 
     $scope.fakeEngine = function() {
-        var masters = [["A", "Regular"], ["B", "Light"], ["C", "Bold"], ["D", "Condensed"]];
-        var myGlyphs = ["a", "e", "l", "m", "o", "p", "r", "t"];
-        var glyphs = [];
-        // adding glyphs to each master
-        for (var j = 0; j < myGlyphs.length; j++) {
-            glyphs.push({
-                name : myGlyphs[j],
-                edit : false,
-                parameters : []
-            });
-        }
-        var newParam = {
-            name : "weight",
-            displayName : "Weight",
-            operators : [{
-                name : "x",
-                value : 3
-            }]
-        };
-        glyphs[3].parameters.push(newParam);
-
-        for (var i = 0; i < masters.length; i++) {
-            $scope.data.sequences[0].masters.push({
-                id : i,
-                name : masters[i][0],
-                displayName : masters[i][1],
-                display : false,
-                edit : [true, false],
-                ruleIndex : 3,
-                ag : "ag",
-                glyphs : glyphs,
-                parameters : [{
-                    name : "Weight",
-                    operators : [{
-                        name : "x",
-                        value : (i+1)
-                    }]
-
-                }, {
-                    name : "Width",
-                    operators : [{
-                        name : "x",
-                        value : 1
-                    }]
-                }, {
-                    name : "Height",
-                    unit : "",
-                    operators : [{
-                        name : "x",
-                        value : 1
-                    }]
-                }]
-
-            });
-        }
-
+        $scope.data.sequences = [{
+            "id": 0,
+            "name": "Sequence 1",
+            "masters": [
+                {
+                    "id": 0,
+                    "name": "regular",
+                    "displayName": "regular",
+                    "cpsFile": "lib/parameters.cps",
+                    "ruleIndex": 3,
+                    "display": false,
+                    "edit": [
+                        true,
+                        false
+                    ],
+                    "ag": "Ag",
+                    "glyphs": [
+                        {
+                            "name": "a",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 514
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.40175425099138
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.111874208078342
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 9.7082439194738
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 8.514693182963201
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 9.013878188659973
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.045361017187261
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.198039027185569
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 7.7781745930520225
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "e",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 581
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 7.7781745930520225
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.5
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.547511554864494
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.012492197250394
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.259142264341596
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "g",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 568
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.977249200050075
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.01135777277262
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.01135777277262
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.04987562112089
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.01135777277262
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 7.810249675906654
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.045361017187261
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 9.7082439194738
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.04987562112089
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.012492197250394
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.01135777277262
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 8.139410298049853
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "l",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 222
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "o",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 644
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.012492197250394
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.012492197250394
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "p",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 627
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 8.902246907382429
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.012492197250394
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.01135777277262
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 8.902246907382429
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "r",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 405
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 7.5
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "t",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 464
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 9.617692030835672
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10.04987562112089
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.01135777277262
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 12.776932339180638
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "A",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 781
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.067971810589327
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.423659658795863
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.5
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 12
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "M",
+                            "level": "glyph",
+                            "edit": false,
+                            "initial": {
+                                "Width": 909
+                            },
+                            "parameters": [],
+                            "strokes": [
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": null,
+                                    "level": "stroke",
+                                    "initial": {},
+                                    "parameters": [],
+                                    "points": [
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 11.5
+                                            },
+                                            "parameters": []
+                                        },
+                                        {
+                                            "name": null,
+                                            "level": "point",
+                                            "initial": {
+                                                "Weight": 10
+                                            },
+                                            "parameters": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "master",
+                    "parameters": [
+                        {
+                            "name": "Weight",
+                            "operators": [
+                                {
+                                    "name": "x",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Width",
+                            "operators": [
+                                {
+                                    "name": "x",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Height",
+                            "operators": [
+                                {
+                                    "name": "x",
+                                    "value": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Spacing",
+                            "unit": "",
+                            "operators": [
+                                {
+                                    "name": "+",
+                                    "value": 0
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }];
         $scope.data.pill = "blue";
         $("#layover").hide();
     };
