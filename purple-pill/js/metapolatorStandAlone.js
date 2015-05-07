@@ -26418,8 +26418,10 @@ define('metapolator/project/ImportController',[
                     return true;
                 }.bind( null, this._master )
             };
-            this._sourceGlyphSet = this._project.getGlyphSet(
-                        false, this._sourceUFODir, undefined, options);
+            console.log("maybe here?")
+            this._sourceGlyphSet = GlyphSet.factory(
+                    false, this._io, this._sourceUFODir, undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
+            console.log("yes, perhaps...")
         }
         return this._sourceGlyphSet;
     };
@@ -37441,21 +37443,36 @@ define('metapolator/project/MetapolatorProject',[
         var mem_io = new InMemory();
         zipUtil.unpack(false, blob, mem_io, "");
         var dirs = mem_io.readDir(false, "/");
+        var baseDir = dirs[0];
         console.log("dirs:", dirs);
-        var names = mem_io.readDir(false, dirs[0]);
-        var UFOZip = dirs[0] + names[0]; //This may be wrong in some cases. We need a more robust implementation.
-        console.log("UFOZip:", UFOZip);
+        var names = mem_io.readDir(false, baseDir);
+        var n, l;
 
-        var another_blob = mem_io.readFile(false, UFOZip);
-        zipUtil.unpack(false, another_blob, mem_io, dirs[0]);
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n];
+            var UFOZip = baseDir + name; //This may be wrong in some cases. We need a more robust implementation.
+            console.log("UFOZip:", UFOZip);
 
-        var _names = mem_io.readDir(false, dirs[0]);
-        var sourceUFODir = dirs[0] + _names[0]; //This may be wrong in some cases. We need a more robust implementation.
-        console.log("_names:", _names);
-        console.log("sourceUFODir:", sourceUFODir);
-        var glyphs = undefined; //I still don't know what is this used for.
-        var masterName = sourceUFODir; //we may want to split out the .ufo suffix (and maybe the fullPath as well)...
-        this.import(mem_io, masterName, sourceUFODir, glyphs);
+            var another_blob = mem_io.readFile(false, UFOZip);
+            zipUtil.unpack(false, another_blob, mem_io, baseDir);
+        }
+
+        var names = mem_io.readDir(false, baseDir);
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n];
+            if (name[name.length-1]=='/'){
+                var sourceUFODir = baseDir + name; //This may be wrong in some cases. We need a more robust implementation.
+                console.log("sourceUFODir:", sourceUFODir);
+                var glyphs = undefined;
+
+                var masterName = name.split(".ufo/")[0];
+
+                console.log("masterName ==> " + masterName);
+                console.log("START");
+                this.import(mem_io, masterName, sourceUFODir, glyphs);
+                console.log("END");
+            }
+        }
     };
 
     _p.import = function(io, masterName, sourceUFODir, glyphs) {
