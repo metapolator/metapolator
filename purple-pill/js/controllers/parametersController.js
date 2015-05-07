@@ -238,6 +238,16 @@ app.controller("parametersController", function($scope, sharedScope) {
         return currentValue;
     };
 
+    $scope.changeValueUp = function(parameterName, operator, value, elementType, range, keyEvent) {
+      keyEvent.keyCode = 38;
+      $scope.changeValue(parameterName, operator, value, elementType, range, keyEvent);
+    };
+
+    $scope.changeValueDown = function(parameterName, operator, value, elementType, range, keyEvent) {
+      keyEvent.keyCode = 40;
+      $scope.changeValue(parameterName, operator, value, elementType, range, keyEvent);
+    };
+
     $scope.changeValue = function(parameterName, operator, value, elementType, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
