@@ -26418,6 +26418,7 @@ define('metapolator/project/ImportController',[
                     return true;
                 }.bind( null, this._master )
             };
+
             console.log("maybe here?")
             this._sourceGlyphSet = GlyphSet.factory(
                     false, this._io, this._sourceUFODir, undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
