@@ -111,7 +111,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         usesUnit : true,
         effectiveLocal : false
     }, {
-        name : "effectiveValue",
+        name : "effectiveValue", // todo find another place for the effective value. That way, we don't have to another updateSelectionParameters() (which makes the input fields lose their focus) to presents its value
         icon : "->",
         usesUnit : true,
     }];
