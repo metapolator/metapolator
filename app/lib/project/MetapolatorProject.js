@@ -509,8 +509,54 @@ define([
         return this._controller;
     };
 
-    _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( this._log, this,
+    _p.importZippedUFOInstances = function(filename, blob) {
+        var mem_io = new InMemory()
+          , imported_instances = Array()
+          ;
+
+        zipUtil.unpack(false, blob, mem_io, "");
+
+        var dirs = mem_io.readDir(false, "/")
+          , baseDir = dirs[0]
+          , names = mem_io.readDir(false, baseDir)
+          , n, l
+          ;
+
+        console.log("dirs:", dirs);
+
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n]
+              , UFOZip = baseDir + name //This may be wrong in some cases. We need a more robust implementation.
+              , another_blob
+              ;
+
+            console.log("UFOZip:", UFOZip);
+
+            another_blob = mem_io.readFile(false, UFOZip);
+            zipUtil.unpack(false, another_blob, mem_io, baseDir);
+        }
+
+        var names = mem_io.readDir(false, baseDir);
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n];
+            if (name[name.length-1]=='/'){
+                var sourceUFODir = baseDir + name.split("/")[0] //This may be wrong in some cases. We need a more robust implementation.
+                  , glyphs = undefined
+                  , masterName = name.split(".ufo/")[0]
+                  ;
+
+                masterName = masterName.split(' ').join('_'); //Metapolator dislikes spaces in master names.
+
+                this.import(mem_io, masterName, sourceUFODir, glyphs);
+                imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
+            }
+        }
+
+        return imported_instances;
+    };
+
+    _p.import = function(io, masterName, sourceUFODir, glyphs) {
+        var importer = new ImportController( io, this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
 
