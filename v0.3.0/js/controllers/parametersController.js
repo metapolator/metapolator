@@ -1,7 +1,15 @@
 app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
 
-    $scope.levels = ["master", "glyph"];
+    $scope.levels = ["master", "glyph", "penstroke", "point"];
+    $scope.parameterSelection = {};
+    
+    $scope.addLevels = function() {
+        angular.forEach($scope.levels, function(level) {
+            $scope.parameterSelection[level] = [];
+        });
+    };
+    $scope.addLevels();
 
     /*
      // until #392 is fixed, we work only with width and weight
@@ -40,6 +48,13 @@ app.controller("parametersController", function($scope, sharedScope) {
         step : 0.005,
         decimals : 4,
         effectiveLevel : 1
+    },{
+        name : "Weight",
+        cpsKey : "WeightF",
+        unit : "em",
+        step : 0.1,
+        decimals : 2,
+        effectiveLevel : 3
     }];
 
     $scope.operators = [{
@@ -78,10 +93,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         usesUnit : true,
     }];
 
-    $scope.parameterSelection = {
-        master : [],
-        glyph : []
-    };
+    
 
     $scope.data.updateSelectionParameters = function(selectionChanged) {
         if (selectionChanged) {
@@ -472,11 +484,28 @@ app.controller("parametersController", function($scope, sharedScope) {
         if ($scope.data.pill != "blue") {
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
             var l = parameterCollection.length;
-            var selectorListString = element.level + "#" + element.name;
-            console.log(selectorListString);
+            var selectorListString = $scope.constructSelectorString(element);
             var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
             element.ruleIndex = ruleIndex;
         }
+    };
+    
+    $scope.constructSelectorString = function (element) {
+        // to reconstruct to remove the hardcoded ifs
+        var level = element.level, string;
+        if (level == "master") {
+            string = level + "#" + element.name;
+        } else if (level == "glyph") {
+            string = level + "#" + element.name;
+        } else if (level == "penstroke") {
+            glyph = $scope.findParentElement(element);
+            string = glyph.level + "#" + glyph.name + " > " + element.name; 
+        } else if (level == "point") {
+            penstroke = $scope.findParentElement(element);
+            glyph = $scope.findParentElement(penstroke);
+            string = glyph.level + "#" + glyph.name + " > " + penstroke.name + " > " + element.name + " > right"; 
+        }
+        return string;
     };
 
     $scope.setParameterAPI = function(master, ruleIndex, cpsKey, value) {
@@ -854,6 +883,46 @@ app.controller("parametersController", function($scope, sharedScope) {
                     }
                 });
             });
+        } else if (level == "penstroke") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        angular.forEach(master.children, function(glyph) {
+                            if (glyph.edit) {
+                                angular.forEach(glyph.children, function(penstroke) {
+                                    // changeParameter needs to know the master when editing on glyph level
+                                    var thisElement = {
+                                        element : penstroke,
+                                        master : master
+                                    };
+                                    elements.push(thisElement);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        } else if (level == "point") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        angular.forEach(master.children, function(glyph) {
+                            if (glyph.edit) {
+                                angular.forEach(glyph.children, function(penstroke) {
+                                    angular.forEach(penstroke.children, function(point) {
+                                        // changeParameter needs to know the master when editing on glyph level
+                                        var thisElement = {
+                                            element : point,
+                                            master : master
+                                        };
+                                        elements.push(thisElement);
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         }
         return elements;
     };
@@ -919,6 +988,32 @@ app.controller("parametersController", function($scope, sharedScope) {
                     });
                 });
             });
+        } else if (level == "penstroke") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    angular.forEach(master.children, function(glyph) {
+                        angular.forEach(glyph.children, function(penstroke) {
+                            if (penstroke.name == elementName) {
+                                thisElement = penstroke;
+                            }
+                        });
+                    });
+                });
+            });
+        } else if (level == "point") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    angular.forEach(master.children, function(glyph) {
+                        angular.forEach(glyph.children, function(penstroke) {
+                            angular.forEach(penstroke.children, function(point) {
+                                if (point.name == elementName) {
+                                    thisElement = point;
+                                }
+                            });
+                        });
+                    });
+                });
+            });
         }
         return thisElement;
     };
@@ -936,10 +1031,9 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.findMasterByElement = function(element) {
         // todo walk up into family tree until level == master
         // temp fix, use findParentElement, because now we only do glyph -> master
-        var master = $scope.findParentElement(element);
-        if (master.level != "master") {
-            console.log("this is not a master. Fix function findMasterByElement()");
+        while (element.level != "master") {
+            element = $scope.findParentElement(element);
         }
-        return master;
+        return element;
     };
 });

@@ -21,19 +21,21 @@ app.controller('engine', function($scope, sharedScope) {
                 // adding glyphs to each master
                 for (var j = 0, m = master.children.length; j < m; j++) {
                     var thisGlyph = master.children[j];
-                    var strokes = [];
+                    var penstrokes = [];
                     // adding strokes to each glyph
                     for (var k = 0, n = thisGlyph.children.length; k < n; k++) {
                         var points = [];
                         var thisStroke = thisGlyph.children[k];
-                        // adding points to each stroke
+                        var strokeName = "penstroke:i(" + k + ")";
+                        // adding points to each penstroke
                         for (var l = 0, o = thisStroke.children.length; l < o; l++) {
                             var thisPoint = thisStroke.children[l];
-                            // adding points to each stroke
+                            // adding points to each penstroke
                             var point = thisPoint.right.getComputedStyle();
+                            var pointName = "point:i(" + l + ")";
                             points.push({
-                                name : thisPoint.id,
-                                parent : ["stroke", thisStroke.id],
+                                name : pointName,
+                                parent : ["penstroke", strokeName],
                                 level : "point",
                                 ruleIndex : null,
                                 parameters : [{
@@ -50,11 +52,11 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             });
                         }
-                        strokes.push({
-                            name : thisStroke.id,
+                        penstrokes.push({
+                            name : strokeName,
                             parent : ["glyph", thisGlyph.id],
-                            level : "stroke",
-                            initial : {},
+                            level : "penstroke",
+                            ruleIndex : null,
                             parameters : [],
                             children : points
                         });
@@ -79,7 +81,7 @@ app.controller('engine', function($scope, sharedScope) {
                                 value : initialWidth
                             }]
                         }],
-                        children : strokes
+                        children : penstrokes
                     });
                 }
                 // temp private method, see issue #332
@@ -189,14 +191,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "a"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -212,8 +214,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -230,14 +232,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "a"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -253,8 +255,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -270,8 +272,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -287,8 +289,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -305,14 +307,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "a"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -328,8 +330,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -346,14 +348,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(3)",
                         "parent" : ["glyph", "a"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -369,8 +371,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -386,8 +388,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -403,8 +405,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -420,8 +422,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(4)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -457,14 +459,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "e"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -480,8 +482,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -497,8 +499,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -514,8 +516,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -531,8 +533,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(4)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -548,8 +550,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(5)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -565,8 +567,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(6)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -582,8 +584,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(7)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -599,8 +601,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(8)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -636,14 +638,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "g"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -659,8 +661,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -677,14 +679,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "g"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -700,8 +702,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -717,8 +719,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -734,8 +736,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -751,8 +753,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(4)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -769,14 +771,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "g"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -792,8 +794,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -809,8 +811,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -826,8 +828,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -843,8 +845,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(4)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -860,8 +862,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(5)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -877,8 +879,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(6)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -914,14 +916,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "l"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -937,8 +939,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -955,14 +957,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "l"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -978,8 +980,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -996,14 +998,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "l"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1019,8 +1021,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1037,14 +1039,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(3)",
                         "parent" : ["glyph", "l"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1060,8 +1062,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1097,14 +1099,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "o"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1120,8 +1122,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1137,8 +1139,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1154,8 +1156,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1171,8 +1173,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(4)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1208,14 +1210,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "p"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1231,8 +1233,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1249,14 +1251,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "p"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1272,8 +1274,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1290,14 +1292,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "p"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1313,8 +1315,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1331,14 +1333,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(3)",
                         "parent" : ["glyph", "p"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1354,8 +1356,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1371,8 +1373,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1388,8 +1390,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1405,8 +1407,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(4)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1423,14 +1425,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(4)",
                         "parent" : ["glyph", "p"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1446,8 +1448,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1483,14 +1485,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "r"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1506,8 +1508,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1524,14 +1526,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "r"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1547,8 +1549,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1565,14 +1567,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "r"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1588,8 +1590,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1606,14 +1608,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(3)",
                         "parent" : ["glyph", "r"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1629,8 +1631,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1647,14 +1649,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(4)",
                         "parent" : ["glyph", "r"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1670,8 +1672,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1707,14 +1709,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "t"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1730,8 +1732,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1748,14 +1750,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "t"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1771,8 +1773,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1788,8 +1790,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(2)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1805,8 +1807,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(3)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1842,14 +1844,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1865,8 +1867,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1883,14 +1885,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1906,8 +1908,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1924,14 +1926,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1947,8 +1949,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1965,14 +1967,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(3)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -1988,8 +1990,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2006,14 +2008,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(4)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2029,8 +2031,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2047,14 +2049,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(5)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(5)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2070,8 +2072,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(5)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2088,14 +2090,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(6)",
                         "parent" : ["glyph", "A"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(6)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2111,8 +2113,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(6)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2148,14 +2150,14 @@ app.controller('engine', function($scope, sharedScope) {
                         }]
                     }],
                     "children" : [{
-                        "name" : null,
+                        "name" : "penstroke:i(0)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2171,8 +2173,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(0)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2189,14 +2191,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(1)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2212,8 +2214,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(1)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2230,14 +2232,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(2)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2253,8 +2255,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(2)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2271,14 +2273,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(3)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2294,8 +2296,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(3)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2312,14 +2314,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(4)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2335,8 +2337,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(4)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2353,14 +2355,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(5)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(5)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2376,8 +2378,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(5)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2394,14 +2396,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(6)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(6)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2417,8 +2419,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(6)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2435,14 +2437,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(7)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(7)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2458,8 +2460,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(7)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2476,14 +2478,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(8)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(8)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2499,8 +2501,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(8)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2517,14 +2519,14 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }]
                     }, {
-                        "name" : null,
+                        "name" : "penstroke:i(9)",
                         "parent" : ["glyph", "M"],
-                        "level" : "stroke",
-                        "initial" : {},
+                        "level" : "penstroke",
+                        "ruleIndex" : null,
                         "parameters" : [],
                         "children" : [{
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(0)",
+                            "parent" : ["penstroke", "penstroke:i(9)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2540,8 +2542,8 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             }]
                         }, {
-                            "name" : null,
-                            "parent" : ["stroke", null],
+                            "name" : "point:i(1)",
+                            "parent" : ["penstroke", "penstroke:i(9)"],
                             "level" : "point",
                             "ruleIndex" : null,
                             "parameters" : [{
@@ -2595,5 +2597,17 @@ app.controller('engine', function($scope, sharedScope) {
         $scope.data.pill = "blue";
         $("#layover").hide();
     };
+
+    var masters = [{
+        name : "",
+        parameters : [],
+        children : [{
+            name : "",
+            parameters : [],
+            children : [{
+
+            }]
+        }]
+    }]
 
 });

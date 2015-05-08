@@ -1,6 +1,6 @@
 <div class="panel-border panel-border-without-menu">
     <div id="parameters-selection">
-        <div class="parameter-level" ng-repeat="level in levels" ng-if="areElementsSelected(level)">
+        <div class="parameter-level" ng-repeat="level in levels">
             <div class="parameters-selection-head">{{level}}</div><div class="parameters-add" ng-click="parametersWindow($event, 1, level)">+</div>
             <div class="parameters-selection-body">
                 <div ng-repeat="parameter in parameterSelection[level]" class="parameter-row">
