@@ -26421,7 +26421,7 @@ define('metapolator/project/ImportController',[
 
             console.log("maybe here?")
             this._sourceGlyphSet = GlyphSet.factory(
-                    false, this._io, this._sourceUFODir, undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
+                    false, this._io, this._sourceUFODir + "/glyphs", undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
             console.log("yes, perhaps...")
         }
         return this._sourceGlyphSet;
@@ -36083,7 +36083,6 @@ define('io/zipUtil',[
         if (async)
             throw new NotImplementedError('Asynchronous ZIP unpack method is not yet implemented');
 
-        console.log("unpacking zipData: ", zipData);
         var zip = new JSZip(zipData);
         var files = zip.files;
         console.log("unpacking files: ", files);
@@ -36092,13 +36091,10 @@ define('io/zipUtil',[
         for (i in files){
             var file = files[i];
             var absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
-            console.log("absolute_path="+absolute_path+" i="+i+" file.dir="+file.dir);
 
             if (file.dir){
-                console.log("io.mkDir(false, '"+absolute_path+"');");
                 io.mkDir(false, absolute_path);
             } else {
-                console.log("io.writeFile(false, '"+absolute_path+"', file.asBinary());");
                 var dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));;
                 io.ensureDir(false, dir_abs_path);
                 io.writeFile(false, absolute_path, file.asBinary());
@@ -37440,21 +37436,30 @@ define('metapolator/project/MetapolatorProject',[
         return this._controller;
     };
 
-    _p.importZippedUFOInstance = function(filename, blob) {
-        var mem_io = new InMemory();
+    _p.importZippedUFOInstances = function(filename, blob) {
+        var mem_io = new InMemory()
+          , imported_instances = Array()
+          ;
+
         zipUtil.unpack(false, blob, mem_io, "");
-        var dirs = mem_io.readDir(false, "/");
-        var baseDir = dirs[0];
+
+        var dirs = mem_io.readDir(false, "/")
+          , baseDir = dirs[0]
+          , names = mem_io.readDir(false, baseDir)
+          , n, l
+          ;
+
         console.log("dirs:", dirs);
-        var names = mem_io.readDir(false, baseDir);
-        var n, l;
 
         for (n=0, l=names.length; n<l; n++){
-            var name = names[n];
-            var UFOZip = baseDir + name; //This may be wrong in some cases. We need a more robust implementation.
+            var name = names[n]
+              , UFOZip = baseDir + name //This may be wrong in some cases. We need a more robust implementation.
+              , another_blob
+              ;
+
             console.log("UFOZip:", UFOZip);
 
-            var another_blob = mem_io.readFile(false, UFOZip);
+            another_blob = mem_io.readFile(false, UFOZip);
             zipUtil.unpack(false, another_blob, mem_io, baseDir);
         }
 
@@ -37462,18 +37467,19 @@ define('metapolator/project/MetapolatorProject',[
         for (n=0, l=names.length; n<l; n++){
             var name = names[n];
             if (name[name.length-1]=='/'){
-                var sourceUFODir = baseDir + name; //This may be wrong in some cases. We need a more robust implementation.
-                console.log("sourceUFODir:", sourceUFODir);
-                var glyphs = undefined;
+                var sourceUFODir = baseDir + name.split("/")[0] //This may be wrong in some cases. We need a more robust implementation.
+                  , glyphs = undefined
+                  , masterName = name.split(".ufo/")[0]
+                  ;
 
-                var masterName = name.split(".ufo/")[0];
+                masterName = masterName.split(' ').join('_');
 
-                console.log("masterName ==> " + masterName);
-                console.log("START");
                 this.import(mem_io, masterName, sourceUFODir, glyphs);
-                console.log("END");
+                imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
             }
         }
+
+        return imported_instances;
     };
 
     _p.import = function(io, masterName, sourceUFODir, glyphs) {

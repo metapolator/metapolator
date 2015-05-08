@@ -93,10 +93,39 @@ app.controller("mastersController", function($scope, sharedScope) {
         var ufozipfile = element.files[0]
           , reader = new FileReader()
           ;
-        $scope.data.dialog("Importing UFO ZIP...", false, "close");
+        $scope.data.dialog("Importing UFO ZIP...", false);
         reader.onload = function(e) {
             console.log("e.target.result:", e.target.result);
-            $scope.data.stateful.project.importZippedUFOInstance(ufozipfile, e.target.result);
+            var imported_instances = $scope.data.stateful.project.importZippedUFOInstances(ufozipfile, e.target.result)
+              , i, l
+              , master = $scope.data.sequences[0].masters[0] //Should I really be doing it this way?
+              ;
+
+            for (i=0, l=imported_instances.length; i<l; i++){
+                var instance = imported_instances[i];
+                var cpsFile = instance['masterName'] + ".cps";
+                // duplicate cps file
+                var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
+                var cpsString = "" + sourceCollection;
+                // create new cps file and new master
+                $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
+                $scope.data.stateful.project.createMaster(instance['masterName'], cpsFile, "skeleton.base");
+                $scope.data.stateful.project.open(instance['masterName']);
+                $scope.data.sequences[0].masters.push({
+                    id : ++$scope.uniqueMasterId,
+                    name : instance['masterName'],
+                    displayName : "Master " + $scope.uniqueMasterId,
+                    cpsFile : cpsFile,
+                    ruleIndex : angular.copy(master.ruleIndex),
+                    display : false,
+                    edit : [true, true],
+                    ag : 'Ag',
+                    glyphs : instance['glyphs'],
+                    parameters : angular.copy(master.parameters)
+                });
+
+                $scope.importUfo_dialog_close();
+            }
         };
         reader.readAsArrayBuffer(ufozipfile);
     };
