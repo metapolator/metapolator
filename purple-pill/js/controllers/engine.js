@@ -30,13 +30,15 @@ app.controller('engine', function($scope, sharedScope) {
                         for (var l = 0, o = thisStroke.children.length; l < o; l++) {
                             var thisPoint = thisStroke.children[l];
                             // adding points to each stroke
-                            var point = $scope.data.stateful.controller.getComputedStyle(thisPoint.right);
+                            var point = thisPoint.right.getComputedStyle();
                             points.push({
                                 name : thisPoint.id,
                                 parent : ["stroke", thisStroke.id],
                                 level : "point",
+                                ruleIndex : null,
                                 parameters : [{
                                     name : "Weight",
+                                    cpsFactor : 1,
                                     operators : [{
                                         name : "=",
                                         value : point.get("onLength")
@@ -63,9 +65,11 @@ app.controller('engine', function($scope, sharedScope) {
                         name : thisGlyph.id,
                         parent : ["master", master.id],
                         level : "glyph",
+                        ruleIndex : null,
                         edit : false,
                         parameters : [{
                             name : "Width",
+                            cpsFactor : 1,
                             operators : [{
                                 name : "=",
                                 value : initialWidth
@@ -85,7 +89,7 @@ app.controller('engine', function($scope, sharedScope) {
                     name : masterName,
                     displayName : masterName,
                     cpsFile : cpsFile,
-                    ruleIndex : 3,
+                    ruleIndex : null,
                     display : false,
                     edit : [true, false],
                     ag : "Ag",
@@ -93,6 +97,7 @@ app.controller('engine', function($scope, sharedScope) {
                     level : "master",
                     parameters : [{
                         name : "Weight",
+                        cpsFactor : 1,
                         operators : [{
                             name : "x",
                             value : 1
@@ -100,18 +105,21 @@ app.controller('engine', function($scope, sharedScope) {
 
                     }, {
                         name : "Width",
+                        cpsFactor : 1,
                         operators : [{
                             name : "x",
                             value : 1
                         }]
                     }, {
                         name : "Height",
+                        cpsFactor : 1,
                         operators : [{
                             name : "x",
                             value : 1
                         }]
                     }, {
                         name : "Spacing",
+                        cpsFactor : 0,
                         unit : "",
                         operators : [{
                             name : "+",
@@ -158,7 +166,7 @@ app.controller('engine', function($scope, sharedScope) {
                 "name" : "regular",
                 "displayName" : "regular",
                 "cpsFile" : "lib/parameters.cps",
-                "ruleIndex" : 3,
+                "ruleIndex" : null,
                 "display" : false,
                 "edit" : [true, false],
                 "ag" : "Ag",
@@ -166,9 +174,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "a",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 514
@@ -188,8 +198,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -203,8 +215,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -225,8 +239,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -240,8 +256,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.40175425099138
@@ -255,8 +273,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.111874208078342
@@ -270,8 +290,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 9.7082439194738
@@ -292,8 +314,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -307,8 +331,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -329,8 +355,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 8.514693182963201
@@ -344,8 +372,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 9.013878188659973
@@ -359,8 +389,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.045361017187261
@@ -374,8 +406,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.198039027185569
@@ -389,8 +423,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 7.7781745930520225
@@ -406,9 +442,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "e",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 581
@@ -428,8 +466,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -443,8 +483,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -458,8 +500,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 7.7781745930520225
@@ -473,8 +517,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.5
@@ -488,8 +534,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.547511554864494
@@ -503,8 +551,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.012492197250394
@@ -518,8 +568,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -533,8 +585,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -548,8 +602,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.259142264341596
@@ -565,9 +621,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "g",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 568
@@ -587,8 +645,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -602,8 +662,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.977249200050075
@@ -624,8 +686,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.01135777277262
@@ -639,8 +703,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -654,8 +720,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.01135777277262
@@ -669,8 +737,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.04987562112089
@@ -684,8 +754,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.01135777277262
@@ -706,8 +778,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 7.810249675906654
@@ -721,8 +795,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.045361017187261
@@ -736,8 +812,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 9.7082439194738
@@ -751,8 +829,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.04987562112089
@@ -766,8 +846,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.012492197250394
@@ -781,8 +863,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.01135777277262
@@ -796,8 +880,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 8.139410298049853
@@ -813,9 +899,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "l",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 222
@@ -835,8 +923,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -850,8 +940,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -872,8 +964,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -887,8 +981,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -909,8 +1005,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -924,8 +1022,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -946,8 +1046,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -961,8 +1063,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -978,9 +1082,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "o",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 644
@@ -1000,8 +1106,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1015,8 +1123,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.012492197250394
@@ -1030,8 +1140,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1045,8 +1157,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.012492197250394
@@ -1060,8 +1174,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1077,9 +1193,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "p",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 627
@@ -1099,8 +1217,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1114,8 +1234,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1136,8 +1258,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1151,8 +1275,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1173,8 +1299,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1188,8 +1316,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1210,8 +1340,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 8.902246907382429
@@ -1225,8 +1357,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.012492197250394
@@ -1240,8 +1374,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.01135777277262
@@ -1255,8 +1391,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1270,8 +1408,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 8.902246907382429
@@ -1292,8 +1432,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1307,8 +1449,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1324,9 +1468,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "r",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 405
@@ -1346,8 +1492,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1361,8 +1509,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1383,8 +1533,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1398,8 +1550,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1420,8 +1574,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1435,8 +1591,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1457,8 +1615,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1472,8 +1632,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -1494,8 +1656,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 7.5
@@ -1509,8 +1673,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1526,9 +1692,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "t",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 464
@@ -1548,8 +1716,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1563,8 +1733,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1585,8 +1757,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 9.617692030835672
@@ -1600,8 +1774,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10.04987562112089
@@ -1615,8 +1791,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.01135777277262
@@ -1630,8 +1808,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 12.776932339180638
@@ -1647,9 +1827,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "A",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 781
@@ -1669,8 +1851,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1684,8 +1868,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1706,8 +1892,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1721,8 +1909,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1743,8 +1933,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1758,8 +1950,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1780,8 +1974,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1795,8 +1991,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1817,8 +2015,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.067971810589327
@@ -1832,8 +2032,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.423659658795863
@@ -1854,8 +2056,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.5
@@ -1869,8 +2073,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1891,8 +2097,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 12
@@ -1906,8 +2114,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1923,9 +2133,11 @@ app.controller('engine', function($scope, sharedScope) {
                     "name" : "M",
                     "parent" : ["master", "regular"],
                     "level" : "glyph",
+                    "ruleIndex" : null,
                     "edit" : false,
                     "parameters" : [{
                         "name" : "Width",
+                        "cpsFactor" : 1,
                         "operators" : [{
                             "name" : "=",
                             "value" : 909
@@ -1945,8 +2157,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1960,8 +2174,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1982,8 +2198,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -1997,8 +2215,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2019,8 +2239,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2034,8 +2256,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2056,8 +2280,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2071,8 +2297,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2093,8 +2321,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2108,8 +2338,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2130,8 +2362,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2145,8 +2379,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2167,8 +2403,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -2182,8 +2420,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2204,8 +2444,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -2219,8 +2461,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2241,8 +2485,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11
@@ -2256,8 +2502,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2278,8 +2526,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 11.5
@@ -2293,8 +2543,10 @@ app.controller('engine', function($scope, sharedScope) {
                             "name" : null,
                             "parent" : ["stroke", null],
                             "level" : "point",
+                            "ruleIndex" : null,
                             "parameters" : [{
                                 "name" : "Weight",
+                                "cpsFactor" : 1,
                                 "operators" : [{
                                     "name" : "=",
                                     "value" : 10
@@ -2310,24 +2562,28 @@ app.controller('engine', function($scope, sharedScope) {
                 "level" : "master",
                 "parameters" : [{
                     "name" : "Weight",
+                    "cpsFactor" : 1,
                     "operators" : [{
                         "name" : "x",
                         "value" : 1
                     }]
                 }, {
                     "name" : "Width",
+                    "cpsFactor" : 1,
                     "operators" : [{
                         "name" : "x",
                         "value" : 1
                     }]
                 }, {
                     "name" : "Height",
+                    "cpsFactor" : 1,
                     "operators" : [{
                         "name" : "x",
                         "value" : 1
                     }]
                 }, {
                     "name" : "Spacing",
+                    "cpsFactor" : 0,
                     "unit" : "",
                     "operators" : [{
                         "name" : "+",
