@@ -1,9 +1,32 @@
 app.controller("parametersController", function($scope, sharedScope) {
     $scope.data = sharedScope.data;
+    /*
+     *  Concepts:
+     *  level               A level is a point in the tree master > glyph > penstroke > point
+     *                      you can go up a level by element.findParentElement() and have an array with its children by element.children
+     *  element             Is the name for an object in any level
+     *  parameter           eg Weight, Width, etc
+     *  -   effectiveLevel  Each parameter is effective at a certain level. Eg. Weight is effective on point level and width on glyph level
+     *  operator            eg '+', '-', etc
+     *  -   step            Users can manipulate values with arrow up and arrow down. For each parameter this step is specified
+     *  -   decimals        An input value can have a number of decimals, by eather user input or by recalculation. For each parameter the number of decimals is specified
+     *  -   effectiveLocal  Some operators influence their own level cpsFactor: eg `x`,  others only influence the cpsFactor at a deeper level
+     *  range               When a selection of elements has different values for a specific operator+parameter. The range are the outer values of the
+     *                      selection. All in between values are changed by ratio when the ranges changes.
+     *  effictiveValue      This value is assigned at the effective level. Its the outcome of all inhereted operators
+     *  cpsFactor           each level (higher or equal to the effective level) can have a cpsFactor. When nothing is assigned by the UI, the 
+     *                      standard value, which is in lib/parameters.cps applies. At a level higher then the effective level, the local 'x' and '÷' make
+     *                      the cpsFactor. At the effective level it is the effectiveValue / (initialValue * ancestorCPSfactors);
+     *  initialValue        Because ao width and height are not real csp properties, we can only inject a factor into cps. To influence the outcome, 
+     *                      we have to know the inital value of a parameter; this is measured at initiation. 
+     *    
+     * 
+     * 
+     */
 
     $scope.levels = ["master", "glyph", "penstroke", "point"];
     $scope.parameterSelection = {};
-    
+
     $scope.addLevels = function() {
         angular.forEach($scope.levels, function(level) {
             $scope.parameterSelection[level] = [];
@@ -48,7 +71,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         step : 0.005,
         decimals : 4,
         effectiveLevel : 1
-    },{
+    }, {
         name : "Weight",
         cpsKey : "WeightF",
         unit : "em",
@@ -92,8 +115,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         icon : "->",
         usesUnit : true,
     }];
-
-    
 
     $scope.data.updateSelectionParameters = function(selectionChanged) {
         if (selectionChanged) {
@@ -369,14 +390,17 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.findParentCPSfactor = function(element, parameterName) {
-        // todo: make this more flexibel, so we can check for mulitiply parents, until we reach master level with a while function
-        var parent = $scope.findParentElement(element), parentCPSfactor = 1;
-        angular.forEach(parent.parameters, function(parameter) {
-            if (parameter.name == parameterName && parameter.cpsFactor) {
-                parentCPSfactor *= parameter.cpsFactor;
-            }
-        });
-        return parentCPSfactor;
+        var ancestorCPSfactor = 1;
+        while (element.level != "master") {
+            element = $scope.findParentElement(element);
+            angular.forEach(element.parameters, function(parameter) {
+                if (parameter.name == parameterName && parameter.cpsFactor) {
+                    ancestorCPSfactor *= parameter.cpsFactor;
+                }
+            });
+
+        }
+        return ancestorCPSfactor;
     };
 
     $scope.updateEffectiveValue = function(element, parameterName) {
@@ -480,7 +504,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         return newValue;
     };
 
-    $scope.addRullAPI = function(master, element) {      
+    $scope.addRullAPI = function(master, element) {
         if ($scope.data.pill != "blue") {
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
             var l = parameterCollection.length;
@@ -489,8 +513,8 @@ app.controller("parametersController", function($scope, sharedScope) {
             element.ruleIndex = ruleIndex;
         }
     };
-    
-    $scope.constructSelectorString = function (element) {
+
+    $scope.constructSelectorString = function(element) {
         // to reconstruct to remove the hardcoded ifs
         var level = element.level, string;
         if (level == "master") {
@@ -499,11 +523,11 @@ app.controller("parametersController", function($scope, sharedScope) {
             string = level + "#" + element.name;
         } else if (level == "penstroke") {
             glyph = $scope.findParentElement(element);
-            string = glyph.level + "#" + glyph.name + " > " + element.name; 
+            string = glyph.level + "#" + glyph.name + " > " + element.name;
         } else if (level == "point") {
             penstroke = $scope.findParentElement(element);
             glyph = $scope.findParentElement(penstroke);
-            string = glyph.level + "#" + glyph.name + " > " + penstroke.name + " > " + element.name + " > right"; 
+            string = glyph.level + "#" + glyph.name + " > " + penstroke.name + " > " + element.name + " > right";
         }
         return string;
     };
@@ -738,7 +762,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(elements, function(element) {
                 angular.forEach(element.element.parameters, function(thisParameter) {
                     if (thisParameter.name == oldParameterName) {
-                        // todo: change by API
                         thisParameter.name = parameter.name;
                     }
                 });
@@ -755,7 +778,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             var parameters = element.element.parameters;
             angular.forEach(parameters, function(thisParameter) {
                 if (thisParameter.name == oldParameterName) {
-                    // todo: change by API
                     parameters.splice(parameters.indexOf(thisParameter), 1);
                 }
                 if (parameters.length == 0) {
@@ -800,7 +822,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                     if (thisParameter.name == oldParameterName) {
                         angular.forEach(thisParameter.operators, function(thisOperator) {
                             if (thisOperator.name == oldOperatorName) {
-                                // todo: change by API
                                 thisOperator.name = operator.name;
                             }
                         });
@@ -834,6 +855,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 }
             });
             $scope.checkEffectiveValueEffects(element.element, element.element.level, oldParameterName, XXXOPERATOR);
+            // todo check if we need the operator here
         });
         $scope.data.updateSelectionParameters(false);
         $scope.data.closeOperatorPanel();
