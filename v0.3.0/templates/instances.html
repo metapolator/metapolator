@@ -1,0 +1,72 @@
+<localmenu class="localmenu" class="left">
+    <div class="lm-head" ng-mousedown="data.selectMenu('instances')" ng-class="{'lm-button-hover':data.localmenu.instances}">
+        <b>Instances</b>
+    </div>
+    <div class="lm-body" ng-if="data.localmenu.instances">
+        <div class="lm-button" ng-class="{'inactive': !data.canAddInstance()}" ng-mouseup="data.addInstance()">New</div>
+        <div class="lm-button" ng-class="{'inactive': !data.currentInstance}" ng-mouseup="data.duplicateInstance(data.currentInstance, null)">Duplicate</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-class="{'inactive': !data.currentInstance}" ng-mouseup="deleteInstance()">Delete</div>
+        
+    </div>
+</localmenu>
+
+    <div id="instances-extra-wide" class="panel-border-with-menu" ng-style="{'width': 'calc(100% + ' + data.fontExportWidth + 'px)'}">
+        <div id="fake-instances-panel" ng-style="{'width': 'calc(100% - ' + data.fontExportWidth + 'px)'}">&nbsp;</div>
+        <div id="fake-fontexport-panel" ng-style="{'width': (data.fontExportWidth - 10) + 'px'}">&nbsp;</div>
+        <div id="instances-list">
+            <ul ui-sortable="sortableOptionsMasters" ng-model="data.families[0].instances" class="list-ul">
+                <li master="{{instance.id}}" sequence="0" display="{{instance.display}}" ng-mouseover="mouseoverInstance(instance)" ng-mouseleave="mouseleaveInstance(instance)" ng-repeat="instance in data.families[0].instances track by instance.id" class="list-li" ng-class="{'selected': instance == data.currentInstance}">
+                    <span class="list-sequence-col instance-diamond">
+                        <svg height="21" width="17">
+                            <polygon points="10,2 4,2 2,6 7,15 12,6" stroke="{{data.colorCoding[instance.id]}}" stroke-width="2" fill="{{getDiamondColor(instance)}}">
+                        </svg> 
+                    </span>
+                    <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}">
+                        <ul>
+                            <li ng-repeat="x in instance.ag"><!--
+                            --><glyph mastername="{{instance.name}}" glyph="{{x}}"></glyph><!--
+                            --></li>
+                        </ul>
+                    </span>
+                    <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}" ng-style="{'width': 'calc(100% - ' + (data.fontExportWidth + 54) + 'px'}"></span>
+                    <div class="export-col" ng-click="instance.exportFont = !instance.exportFont" ng-style="{'width': (data.fontExportWidth - 4) + 'px'}">
+                        <div class="instance-spacer">&nbsp;</div>
+                        <div class="instance-checkmark">
+                            <div ng-if="instance.exportFont">H</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>  
+            <!--
+            <div style="padding: 20px;">
+                <div ng-repeat="instance in data.families[0].instances track by instance.id">
+                    <div>axes: <span ng-repeat="axis in instance.axes">{{axis.value}} | </span></div>
+                    <div>masters: <span ng-repeat="axis in instance.axes">[{{axis.masterdisplayName}}]: {{axis.metapValue | number:3}} | </span></div><br>
+                </div>
+            </div>
+            -->
+        </div> 
+        
+        <div id="instance-tools-container">
+            <div id="instances-tools" ng-style="{'width': 'calc(100% - ' + data.fontExportWidth + 'px)'}">
+                <div title="Add Instance" id="add-instance" ng-click="data.addInstance();" class="list-tool push-button" ng-class="{'inactive': !data.canAddInstance()}">
+                    <img src="img/addInstance.png">
+                </div>
+                <div title="Duplicate Instance" id="duplicate-instance"ng-click="data.duplicateInstance(data.currentInstance, null);" class="list-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+                    <img src="img/duplicateInstance.png">
+                </div>
+                <div title="Delete" id="delete-instance" ng-click="deleteInstance();" class="list-tool push-button" ng-class="{'inactive': !data.currentInstance}">
+                    <img src="img/deleteInstance.png">
+                </div>
+            </div>
+            <div id="export-button" class="push-button" ng-click="data.exportFonts()" ng-class="{'inactive': !data.exportButtonIsActive()}" ng-style="{'width': (data.fontExportWidth - 10) + 'px'}">
+                Export…
+            </div>
+        </div>
+        
+        
+
+        
+
+    </div>

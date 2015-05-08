@@ -1,0 +1,47 @@
+<localmenu class="localmenu" class="left">
+    <div class="lm-head" ng-mousedown="data.selectMenu('masters')" ng-class="{'lm-button-hover':data.localmenu.masters}">
+        <b>Masters</b>
+    </div>
+    <div class="lm-body" ng-if="data.localmenu.masters">
+        <div class="lm-button" ng-mouseup="importUfo()">Import ufo…</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-mouseup="duplicateMasters()" ng-class="{'inactive': !areMastersSelected()}">Duplicate</div>
+        <div class="lm-divider"></div>
+        <div class="lm-button" ng-mouseup="deleteMasters()" ng-class="{'inactive': !areMastersSelected()}">Delete…</div>
+    </div>
+</localmenu>
+
+<div class="panel-border panel-border-with-menu">
+    <div id="masters-list">
+        <ul>
+            <li ng-repeat="sequence in data.sequences">
+                <ul ui-sortable="sortableOptionsMasters" ng-model="sequence.masters" class="list-ul">
+                    <li master="{{master.id}}" sequence="{{sequence.id}}" display="{{master.display}}" ng-mouseover="mouseoverMaster(master)" ng-mouseleave="mouseleaveMaster(master)" ng-repeat="master in sequence.masters" class="list-li" ng-class="{'selected': master.edit[data.view.viewState]}">
+                        <span class="list-sequence-col master-diamond" ng-class="{start : $first && !$last, end : $last, middle : $middle, solo : $first && $last}" ng-mouseover="whileDrag(master, $index)" ng-mousedown="startDrag(master, $index)">
+                            <svg height="12" width="12">
+                                <polygon points="5,0 0,3 0,8 5,11 10,8 10,3">
+                            </svg> 
+                        </span>
+                        <span class="list-view-col" type="master" mastername="{{master.name}}" masterag="{{master.ag}}" ng-model="master.ag" ng-click="toggleDisplay(master)" ng-class="{'selected': master.display}">
+                            <ul>
+                                <li ng-repeat="x in master.ag"><!--
+                                --><glyph mastername="{{master.name}}" glyph="{{x}}"></glyph><!--
+                                --></li>
+                            </ul>
+                        </span>
+                        <span class="list-edit-col rename" ng-model="master.displayName"></span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+    <div id="masters-tools">
+        <div title="Import UFO" id="import-ufo" ng-click="importUfo();" class="list-tool push-button">
+            <img src="img/importUfo.png">
+        </div>
+        <div title="Duplicate Master(s)" id="duplicate-master" ng-click="duplicateMasters();" class="list-tool push-button" ng-class="{'inactive': !areMastersSelected()}">
+            <img src="img/duplicateMaster.png">
+        </div>
+    </div>
+</div>

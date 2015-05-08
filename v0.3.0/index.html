@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Metapolator – Free Font Editor for Designing Typeface Families - Purple Pill Demo</title>
+        <meta name="description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.">
+
+        <meta property="og:title" content="Metapolator – Free Font Editor for Designing Typeface Families" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time." />
+        <meta property="og:url" content="http://metapolator.com/purple-pill" />
+        <meta property="og:image" content="http://metapolator.com/purple-pill/favicon/metapolator.png" />
+        
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@metapolator">
+        <meta name="twitter:creator" content="@metapolator">
+        <meta name="twitter:title" content="Metapolator – Free Font Editor for Designing Typeface Families">
+        <meta name="twitter:description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time." />
+        <meta name="twitter:image" content="http://metapolator.com/purple-pill/favicon/metapolator.png">
+        <meta name="twitter:url" content="http://metapolator.com/purple-pill" />
+
+        <!-- Favicons -->
+        <link rel="icon" href="/purple-pill/favicon/favicon.ico">
+        <link rel="apple-touch-icon" sizes="57x57" href="/purple-pill/favicon/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/purple-pill/favicon/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/purple-pill/favicon/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/purple-pill/favicon/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/purple-pill/favicon/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/purple-pill/favicon/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/purple-pill/favicon/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/purple-pill/favicon/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/purple-pill/favicon/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="/purple-pill/favicon/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/purple-pill/favicon/favicon-194x194.png" sizes="194x194">
+        <link rel="icon" type="image/png" href="/purple-pill/favicon/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="/purple-pill/favicon/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="/purple-pill/favicon/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="/purple-pill/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/purple-pill/favicon/mstile-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- css -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
+
+        <!-- jquery -->
+        <script src='js/jquery/jquery.min.js'></script>
+        <script src='js/jquery/jquery-ui.min.js'></script>
+        <link rel='stylesheet' href='js/jquery/jquery-ui.css'>
+        
+        <!-- Angular -->
+        <script src="js/angular/angular.min.js" type="text/javascript"></script>
+        <script src='js/app.js' type='text/javascript'></script>
+        <script src='js/factory.js' type='text/javascript'></script>
+        <script src='js/templates.js' type='text/javascript'></script>
+        <script src='js/filters.js'></script>
+        <script src='js/controllers/engine.js' type='text/javascript'></script>
+        <script src='js/controllers/menuController.js' type='text/javascript'></script>
+        <script src='js/controllers/parametersController.js' type='text/javascript'></script> 
+        <script src='js/controllers/specimenController.js' type='text/javascript'></script>
+        <script src='js/controllers/mastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/adjustmentMastersController.js' type='text/javascript'></script>
+        <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
+        <script src='js/controllers/instancesController.js' type='text/javascript'></script>
+        <script src='js/controllers/fontexportController.js' type='text/javascript'></script> 
+        <script src='js/controllers/metadataController.js' type='text/javascript'></script> 
+        <script src='js/directives/control.js' type='text/javascript'></script> 
+        <script src='js/directives/dividers.js' type='text/javascript'></script> 
+        <script src='js/directives/directives.js' type='text/javascript'></script>
+        <script src='js/directives/rubberband.js' type='text/javascript'></script>
+        <script src='js/directives/sortable.js' type='text/javascript'></script>
+        <script src='js/functions.js'></script>
+        
+        <!-- d3 JS -->
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
+
+    </HEAD>
+
+    <BODY ng-app="Metapolator" ng-controller="engine" ng-init="engine()">
+        <menubar id="menu" class="unselectable" ng-controller="menuController"></menubar>
+        <!-- end of menu -->
+
+        <div id="pagewrap" class="unselectable">
+            <div id="landscape" ng-style="{'width': 'calc(' + (data.view.totalPanelParts / 16) + '* 100%)', 'left': data.getLandscapeLeft()}" class="transition">
+                <div id="panel-0" class="panel" ng-style="{'width': 'calc(' + (data.view.panels[0] / data.view.totalPanelParts) + '* 100%)'}">
+                    <parameters ng-controller="parametersController" class="sub-panel semi-panel"></parameters>
+                    <dividerHor style="top: 50%"></dividerHor>
+                    <div class="sub-panel semi-panel">
+                        <underconstruction>
+                            <div class="bottom-text">
+                                Coming Soon:<br>More Parameters<br><br>
+                                Want more parameters, including point parameters for fine-tuning? Support the project and buy a T shirt (<a title="Support the project and buy a T shirt (USA)" href="http://teespring.com/metapolator-beta-0-3-0" target="_blank" class="newtab">USA</a>, <a title="Support the project and buy a T shirt (Worldwide)" href="http://metapolator.spreadshirt.com" target="_blank" class="newtab">Worldwide</a>)
+                            </div>
+                        </underconstruction>
+                    </div>
+                </div>
+                <specimen id="panel-1" ng-controller="specimenController" ng-init="addGlyphRange(); specimenPanel = 1; loadMapping();" class="sub-panel panel" ng-style="{'width': 'calc(' + (data.view.panels[1] / data.view.totalPanelParts) + '* 100%)'}"></specimen>
+
+                <!-- start of view 2 -->
+                <div id="panel-2" class="panel" ng-style="{'width': 'calc(' + (data.view.panels[2] / data.view.totalPanelParts) + '* 100%)'}">
+                    <masters ng-controller="mastersController" class="list sub-panel semi-panel" type="master"></masters>
+                    <dividerHor style="top: 50%"></dividerHor>
+                    <div class="sub-panel semi-panel">
+                        <underconstruction>
+                            <div class="bottom-text">
+                                Coming Soon:<br>Adjustment Masters<br><br>
+                                <!-- Pinterest -->
+                                <a href="//www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" ><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
+                                <!-- Facebook -->
+                                <div class="fb-share-button" data-href="https://metapolator.com/purple-pill/" data-layout="button_count"></div>
+                                <!-- Twitter -->
+                                <a class="twitter-share-button"
+                                  href="https://twitter.com/share"
+                                  data-url="https://metapolator.com/purple-pill/"
+                                  data-via="metapolator">
+                                Tweet
+                                </a>
+                                <!-- G+ -->
+                                <div class="g-plusone" data-size="medium"></div>
+                                <div style="display:inline">
+                                <!-- Github Star -->
+                                <iframe src="https://ghbtns.com/github-btn.html?user=metapolator&repo=metapolator&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+                                <!-- Github Watch -->
+                                <iframe src="https://ghbtns.com/github-btn.html?user=metapolator&repo=metapolator&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+                                </div>
+                            </div>
+                        </underconstruction>
+                    </div>
+                </div>
+
+                <div id="panel-3" class="panel" ng-style="{'width': 'calc(' + (data.view.panels[3] / data.view.totalPanelParts) + '* 100%)'}">
+                    <designspace ng-controller="designspaceController" class="sub-panel semi-panel"></designspace>
+                    <dividerHor style="top: 50%"></dividerHor>
+                    <specimen2 ng-controller="specimenController" class="sub-panel semi-panel" ng-init="specimenPanel = 2"></specimen2>
+                </div>
+
+                <!-- start of view 3 -->
+                <instances id="panel-4" ng-controller="instancesController" class="list panel sub-panel" type="instance" ng-style="{'width': 'calc(' + (data.view.panels[4] / data.view.totalPanelParts) + '* 100%)'}"></instances>
+                
+                <fontexport id="panel-5" class="panel sub-panel standard-padding" ng-controller="fontexportController" ng-style="{'width': 'calc(' + (data.view.panels[5] / data.view.totalPanelParts) + '* 100%)'}">
+                </fontexport>
+                
+                <div id="panel-6" class="panel sub-panel" ng-style="{'width': 'calc(' + (data.view.panels[6] / data.view.totalPanelParts) + '* 100%)'}">
+                    <div class="panel-border-without-menu">
+                        <underconstruction id="fontfamily-panel">
+                            <div class="bottom-text">
+                                <form id="export-paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">Want new features?<br> <a title="Give financial support via Paypal" href="javascript:{}" onclick="document.getElementById('export-paypal').submit(); return false;">Donate</a> and we'll make it happen<input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="CMQZM2FJDP4VA"></form><br><br>
+                                Coming Soon:<br>Edit Metadata, Export OTF
+                            </div>
+                        </underconstruction>
+                        <div id="progressbar-container">
+                            <div id="progressbar">&nbsp;</div>
+                            <div id="progresslabel">&nbsp;</div>
+                            <div id="blob_download" style="display:none">Export Complete:&nbsp;<a href="#"></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of landscape -->
+        </div>
+        <!-- end of pagewrap -->
+        
+        <divider ng-repeat="divider in data.view.dividers" divider="{{$index}}" ng-if="divider.view == data.view.viewState"></divider>
+        
+        <div id="layover"></div>
+        
+        <div id="dialog">
+            <div id="dialog-close" ng-click="data.closeDialog()">×</div>
+            <div id="dialog-loading"><img src="img/loading.gif"></div>
+            <div id="dialog-content"></div>
+            <div id="dialog-buttons">
+                <button id="dialog-button">OK</button>
+                <button id="dialog-button">CANCEL</button>
+            </div>
+        </div>
+        
+        <splashscreen></splashscreen>
+        <script src="js/metapolatorStandAlone.js"></script>
+        <!-- Facebook Share Button JS -->
+        <div id="fb-root"></div><script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3"; fjs.parentNode.insertBefore(js, fjs);}(document, 'script', 'facebook-jssdk'));</script>
+        <!-- Twitter Social Sharing JS -->
+        <script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));</script>
+        <!-- Pinterest Social Sharing JS -->
+        <script type="text/javascript" async defer src="//assets.pinterest.com/js/pinit.js"></script>
+        <!-- G+ Social Sharing JS -->
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+    </BODY>
+</html>

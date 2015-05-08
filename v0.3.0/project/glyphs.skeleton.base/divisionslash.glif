@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="divisionslash" format="2"><advance width="928"/><unicode hex="2215"/><outline><contour><point x="249.5" y="-94" type="move"/><point x="391.49858" y="189.99716"/><point x="533.50142" y="474.00284"/><point x="675.5" y="758" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

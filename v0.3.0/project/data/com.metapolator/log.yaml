@@ -1,0 +1,20 @@
+- message: Importing groups.plist into the project.
+  date: 2015-04-28T19:01:33.316Z
+  level:
+    name: WARNING
+    value: 5
+- message: "Import of groups.plist OK.\n"
+  date: 2015-04-28T19:01:33.356Z
+  level:
+    name: WARNING
+    value: 5
+- message: Importing fontinfo.plist into the project.
+  date: 2015-04-28T19:01:33.357Z
+  level:
+    name: WARNING
+    value: 5
+- message: "Import of fontinfo.plist OK.\n"
+  date: 2015-04-28T19:01:33.367Z
+  level:
+    name: WARNING
+    value: 5
