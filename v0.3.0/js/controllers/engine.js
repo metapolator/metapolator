@@ -98,6 +98,7 @@ app.controller('engine', function($scope, sharedScope) {
                 var newMaster = {
                     id : masterId,
                     name : masterName,
+                    parent: $scope.data.sequences[0],
                     displayName : masterName,
                     cpsFile : cpsFile,
                     ruleIndex : null,

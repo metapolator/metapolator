@@ -279,17 +279,17 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.checkEffectiveValueEffects = function(element, level, parameterName, operator) {
         // check if this parameter is effecting this level or also deeper
         var effectiveLevel = $scope.getParameterByName(parameterName).effectiveLevel;
-        var thisLevel = $scope.getLevelIndex(level);
+        var thisLevelIndex = $scope.getLevelIndex(level);
 
         // The operators 'x' and '÷' are effecting the cpsFactor at a local level
         // The other operators effect the cpsFactor at their effective level (eg width -> glyphlevel, weight -> pointlevel)
         var effectiveLocal = $scope.getOperatorByName(operator.name).effectiveLocal;
 
-        if (effectiveLevel > thisLevel) {
+        if (effectiveLevel > thisLevelIndex) {
             // search for efficve level and effect the sibblings
             //var elements = element.children;
-            while (thisLevel < effectiveLevel) {
-                thisLevel++;
+            while (thisLevelIndex < effectiveLevel) {
+                thisLevelIndex++;
                 elements = element.children;
             }
             angular.forEach(elements, function(thisElement) {
@@ -318,20 +318,20 @@ app.controller("parametersController", function($scope, sharedScope) {
                 }
             });
         }
-        if (effectiveLocal || effectiveLevel == thisLevel) {
+        if (effectiveLocal || effectiveLevel == thisLevelIndex) {
             $scope.updateCPSfactor(element, parameterName);
         }
     };
 
     $scope.updateCPSfactor = function(element, parameterName) {
         var multiply = [], cpsFactor = 1, master;
-        var thisLevel = $scope.getLevelIndex(element.level);
+        var thisLevelIndex = $scope.getLevelIndex(element.level);
         var theParameter = $scope.getParameterByName(parameterName);
         var targetLevel = theParameter.effectiveLevel;
         // if we are editing parameter values at the level where the parameter is effective
         // then check for all inhereted parameters ('+', '-', 'min', 'max', '=')
         // else only use local 'x' and '÷'
-        if (thisLevel == targetLevel) {
+        if (thisLevelIndex == targetLevel) {
             // to find the local cpsFactor
             // we need to divide the effectiveValue by the initial value and by all parent cpsFactors
             // all the effiveValues are updated at this time by $scope.updateEffectiveValue()
@@ -404,64 +404,51 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.updateEffectiveValue = function(element, parameterName) {
-        var min, max, is, effectiveValue, plusGlyph = [], plusMaster = [], multiplyGlyph = [], multiplyMaster = [];
-        var parentElement = $scope.findParentElement(element);
-        angular.forEach(parentElement.parameters, function(parameter) {
-            if (parameter.name == parameterName) {
-                angular.forEach(parameter.operators, function(operator) {
-                    if (operator.name == "min") {
-                        min = operator.value;
-                    } else if (operator.name == "max") {
-                        max = operator.value;
-                    } else if (operator.name == "=") {
-                        is = operator.value;
-                    } else if (operator.name == "+") {
-                        plusMaster.push(parseFloat(operator.value));
-                    } else if (operator.name == "-") {
-                        plusMaster.push(parseFloat(-operator.value));
-                    } else if (operator.name == "x") {
-                        multiplyMaster.push(parseFloat(operator.value));
-                    } else if (operator.name == "÷") {
-                        multiplyMaster.push(parseFloat(1 / operator.value));
-                    }
-                });
-            }
-        });
-
-        // glyph operators overrule the master operators
-        angular.forEach(element.parameters, function(parameter) {
-            if (parameter.name == parameterName) {
-                angular.forEach(parameter.operators, function(operator) {
-                    if (operator.name == "min") {
-                        min = operator.value;
-                    } else if (operator.name == "max") {
-                        max = operator.value;
-                    } else if (operator.name == "=") {
-                        is = operator.value;
-                    } else if (operator.name == "+") {
-                        plusGlyph.push(parseFloat(operator.value));
-                    } else if (operator.name == "-") {
-                        plusGlyph.push(parseFloat(-operator.value));
-                    } else if (operator.name == "x") {
-                        multiplyGlyph.push(parseFloat(operator.value));
-                    } else if (operator.name == "÷") {
-                        multiplyGlyph.push(parseFloat(1 / operator.value));
-                    }
-                });
-            }
-        });
+        
+        var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0;
+        
+        while (element.level != "sequence") {
+            angular.forEach(element.parameters, function(parameter) {
+                if (parameter.name == parameterName) {
+                    angular.forEach(parameter.operators, function(operator) {
+                        if (!plus[levelCounter]) {
+                            plus[levelCounter] = [];
+                        }
+                        if (!multiply[levelCounter]) {
+                            multiply[levelCounter] = [];
+                        }
+                        // the deepest level applies for these operators
+                        if (operator.name == "min" && !min) { 
+                            min = operator.value;
+                        } else if (operator.name == "max" && !max) {
+                            max = operator.value;
+                        } else if (operator.name == "=" && !is) {
+                            is = operator.value;
+                        } else if (operator.name == "+") {
+                            plus[levelCounter].push(parseFloat(operator.value));
+                        } else if (operator.name == "-") {
+                            plus[levelCounter].push(parseFloat(-operator.value));
+                        } else if (operator.name == "x") {
+                            multiply[levelCounter].push(parseFloat(operator.value));
+                        } else if (operator.name == "÷") {
+                            multiply[levelCounter].push(parseFloat(1 / operator.value));
+                        }
+                    });
+                }
+            });
+            levelCounter++;
+            element = $scope.findParentElement(element);
+        }
         effectiveValue = is;
-        angular.forEach(multiplyGlyph, function(multiply) {
-            effectiveValue *= multiply;
+        angular.forEach(multiply, function(multiplyLevelSet) {
+            angular.forEach(multiplyLevelSet, function(multiplier) {
+                effectiveValue *= multiplier;
+            });
         });
-        angular.forEach(plusGlyph, function(plus) {
-            effectiveValue += plus;
-        });
-        angular.forEach(multiplyMaster, function(multiply) {
-            effectiveValue *= multiply;
-        });
-        angular.forEach(plusMaster, function(plus) {
-            effectiveValue += plus;
+        angular.forEach(plus, function(plusLevelSet) {
+            angular.forEach(plusLevelSet, function(plusser) {
+                effectiveValue += plusser;
+            });
         });
 
         if (effectiveValue > max) {

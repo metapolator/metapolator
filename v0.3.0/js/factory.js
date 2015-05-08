@@ -3,6 +3,7 @@ app.factory("sharedScope", function($rootScope) {
     scope.data = {
         projectName : "Canola",
         sequences : [{
+            level: "sequence",
             id : 0,
             name : "Sequence 1",
             masters : []
