@@ -480,7 +480,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         return newValue;
     };
 
-    $scope.addRullAPI = function(master, element) {
+    $scope.addRullAPI = function(master, element) {      
         if ($scope.data.pill != "blue") {
             var parameterCollection = $scope.data.stateful.project.ruleController.getRule(false, master.cpsFile);
             var l = parameterCollection.length;
@@ -966,56 +966,8 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.findParentElement = function(element) {
-        // todo: make this flexibel for the levels, fix the hardcoded if
-        var level = element.parent[0];
-        var elementName = element.parent[1];
-        var thisElement;
-        if (level == "master") {
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    if (master.name == elementName) {
-                        thisElement = master;
-                    }
-                });
-            });
-        } else if (level == "glyph") {
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    angular.forEach(master.children, function(glyph) {
-                        if (glyph.name == elementName) {
-                            thisElement = glyph;
-                        }
-                    });
-                });
-            });
-        } else if (level == "penstroke") {
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    angular.forEach(master.children, function(glyph) {
-                        angular.forEach(glyph.children, function(penstroke) {
-                            if (penstroke.name == elementName) {
-                                thisElement = penstroke;
-                            }
-                        });
-                    });
-                });
-            });
-        } else if (level == "point") {
-            angular.forEach($scope.data.sequences, function(sequence) {
-                angular.forEach(sequence.masters, function(master) {
-                    angular.forEach(master.children, function(glyph) {
-                        angular.forEach(glyph.children, function(penstroke) {
-                            angular.forEach(penstroke.children, function(point) {
-                                if (point.name == elementName) {
-                                    thisElement = point;
-                                }
-                            });
-                        });
-                    });
-                });
-            });
-        }
-        return thisElement;
+        var parent = element.parent;
+        return parent;
     };
 
     $scope.getLevelIndex = function(level) {
@@ -1029,8 +981,6 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.findMasterByElement = function(element) {
-        // todo walk up into family tree until level == master
-        // temp fix, use findParentElement, because now we only do glyph -> master
         while (element.level != "master") {
             element = $scope.findParentElement(element);
         }

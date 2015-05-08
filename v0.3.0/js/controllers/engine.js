@@ -33,9 +33,9 @@ app.controller('engine', function($scope, sharedScope) {
                             // adding points to each penstroke
                             var point = thisPoint.right.getComputedStyle();
                             var pointName = "point:i(" + l + ")";
-                            points.push({
+                            var newPoint = {
                                 name : pointName,
-                                parent : ["penstroke", strokeName],
+                                parent : null,
                                 level : "point",
                                 ruleIndex : null,
                                 parameters : [{
@@ -50,22 +50,27 @@ app.controller('engine', function($scope, sharedScope) {
                                         value : point.get("onLength")
                                     }]
                                 }]
-                            });
+                            };
+                            points.push(newPoint);
                         }
-                        penstrokes.push({
+                        var newPenstroke = {
                             name : strokeName,
-                            parent : ["glyph", thisGlyph.id],
+                            parent : null,
                             level : "penstroke",
                             ruleIndex : null,
                             parameters : [],
                             children : points
+                        };
+                        angular.forEach(newPenstroke.children, function(child) {
+                            child.parent = newPenstroke;
                         });
+                        penstrokes.push(newPenstroke);
                     }
                     // temp hack untill #392 is fixed
                     var initialWidth = thisGlyph._advanceWidth;
-                    glyphs.push({
+                    var newGlyph = {
                         name : thisGlyph.id,
-                        parent : ["master", master.id],
+                        parent : null,
                         level : "glyph",
                         ruleIndex : null,
                         edit : false,
@@ -82,11 +87,15 @@ app.controller('engine', function($scope, sharedScope) {
                             }]
                         }],
                         children : penstrokes
+                    };
+                    angular.forEach(newGlyph.children, function(child) {
+                        child.parent = newGlyph;
                     });
+                    glyphs.push(newGlyph);
                 }
                 // temp private method, see issue #332
                 var cpsFile = $scope.data.stateful.controller._getMasterRule(masterName);
-                $scope.data.sequences[0].masters.push({
+                var newMaster = {
                     id : masterId,
                     name : masterName,
                     displayName : masterName,
@@ -128,7 +137,11 @@ app.controller('engine', function($scope, sharedScope) {
                             value : 0
                         }]
                     }]
+                };
+                angular.forEach(newMaster.children, function(child) {
+                    child.parent = newMaster;
                 });
+                $scope.data.sequences[0].masters.push(newMaster);
                 masterId++;
             }
         }
