@@ -69,6 +69,8 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         }
         if (buttons == "close") {
             $("#dialog-close").show();
+        } else {
+            $("#dialog-close").hide();
         }
     };
 

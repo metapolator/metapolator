@@ -37472,7 +37472,7 @@ define('metapolator/project/MetapolatorProject',[
                   , masterName = name.split(".ufo/")[0]
                   ;
 
-                masterName = masterName.split(' ').join('_');
+                masterName = masterName.split(' ').join('_'); //Metapolator dislikes spaces in master names.
 
                 this.import(mem_io, masterName, sourceUFODir, glyphs);
                 imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
