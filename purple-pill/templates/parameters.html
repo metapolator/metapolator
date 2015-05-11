@@ -9,7 +9,13 @@
                         <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, level)">{{operator.name}}</div>
                         <div class="operator-value">
                             <span ng-if="!operator.range">
-                                <input ng-model="operator.low.current" ng-blur="changeValue(parameter.name, operator, operator.low, level, false, 'blur')" ng-keyup="changeValue(parameter.name, operator, operator.low, level, false, $event)">
+                                <input
+                                    ng-model="operator.low.current"
+                                    ng-blur="changeValue(parameter.name, operator, operator.low, level, false, 'blur')"
+                                    ng-keyup="changeValue(parameter.name, operator, operator.low, level, false, $event)"
+                                    mouse-wheel-up="changeValueUp(parameter.name, operator, operator.low, level, false, {})"
+                                    mouse-wheel-down="changeValueDown(parameter.name, operator, operator.low, level, false, {})"
+                                    >
                                 <span class="buttons">
                                   <a class="up" ng-model="operator.low.current" ng-click="changeValueUp(parameter.name, operator, operator.low, level, false, $event)"></a>
                                   <a class="down" ng-model="operator.low.current" ng-click="changeValueDown(parameter.name, operator, operator.low, level, false, $event)"></a>

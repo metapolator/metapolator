@@ -225,7 +225,9 @@ app.controller("parametersController", function($scope, sharedScope) {
         var step = thisParameter.step;
         var decimals = thisParameter.decimals;
         if (keyEvent != "blur") {
-            keyEvent.preventDefault();
+            if (keyEvent.preventDefault) {
+                keyEvent.preventDefault();
+            }
             if (keyEvent.shiftKey) {
                 step = step * 10;
             }
