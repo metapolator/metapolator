@@ -547,7 +547,7 @@ define([
 
                 masterName = masterName.split(' ').join('_'); //Metapolator dislikes spaces in master names.
 
-                this.import(mem_io, masterName, sourceUFODir, glyphs);
+                this.import(masterName, sourceUFODir, glyphs, mem_io);
                 imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
             }
         }
@@ -555,9 +555,9 @@ define([
         return imported_instances;
     };
 
-    _p.import = function(io, masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( io, this._log, this,
-                                             masterName, sourceUFODir);
+    _p.import = function(masterName, sourceUFODir, glyphs, io) {
+        var importer = new ImportController( this._log, this,
+                                             masterName, sourceUFODir, io);
         importer.import(glyphs);
 
         this._importGroupsFile(sourceUFODir, false);

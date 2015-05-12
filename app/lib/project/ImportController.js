@@ -44,7 +44,7 @@ define([
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(io, log, project, masterName, sourceUFODir) {
+    function ImportController(log, project, masterName, sourceUFODir, io) {
         this._io = io;
         this._project = project;
         this._log = log;
@@ -77,10 +77,11 @@ define([
                 }.bind( null, this._master )
             };
 
-            console.log("maybe here?")
-            this._sourceGlyphSet = GlyphSet.factory(
-                    false, this._io, this._sourceUFODir + "/glyphs", undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
-            console.log("yes, perhaps...")
+            if (this._io){
+                this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
+            } else {
+                this._sourceGlyphSet = this._project.getGlyphSet(false, this._sourceUFODir, undefined, options);
+            }
         }
         return this._sourceGlyphSet;
     };
