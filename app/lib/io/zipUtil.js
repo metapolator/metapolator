@@ -15,19 +15,24 @@ define([
         if (async)
             throw new NotImplementedError('Asynchronous ZIP unpack method is not yet implemented');
 
-        var zip = new JSZip(zipData);
-        var files = zip.files;
-        console.log("unpacking files: ", files);
-        var i;
+        var zip = new JSZip(zipData)
+          , files = zip.files
+          , filename
+          , file
+          , absolute_path
+          , dir_abs_path
+          ;
 
-        for (i in files){
-            var file = files[i];
-            var absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
+        console.log("unpacking files: ", files);
+
+        for (filename in files){
+            file = files[filename];
+            absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
 
             if (file.dir){
                 io.mkDir(false, absolute_path);
             } else {
-                var dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));;
+                dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));
                 io.ensureDir(false, dir_abs_path);
                 io.writeFile(false, absolute_path, file.asBinary());
             }
