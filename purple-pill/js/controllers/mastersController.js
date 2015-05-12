@@ -97,7 +97,7 @@ function($scope, sharedScope, $timeout) {
         $scope.data.dialog("Importing UFO ZIP...", true);
         reader.onload = function(e) {
             console.log("e.target.result:", e.target.result);
-            var imported_instances = $scope.data.stateful.project.importZippedUFOInstances(ufozipfile, e.target.result)
+            var imported_instances = $scope.data.stateful.project.importZippedUFOInstances(e.target.result)
               , i, l
               , master = $scope.data.sequences[0].masters[0] //Should I really be doing it this way?
               ;
