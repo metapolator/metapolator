@@ -26419,10 +26419,7 @@ define('metapolator/project/ImportController',[
                 }.bind( null, this._master )
             };
 
-            console.log("maybe here?")
-            this._sourceGlyphSet = GlyphSet.factory(
-                    false, this._io, this._sourceUFODir + "/glyphs", undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
-            console.log("yes, perhaps...")
+            this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
         }
         return this._sourceGlyphSet;
     };
@@ -37479,7 +37476,7 @@ define('metapolator/project/MetapolatorProject',[
 
                 masterName = masterName.split(' ').join('_'); //Metapolator dislikes spaces in master names.
 
-                this.import(mem_io, masterName, sourceUFODir, glyphs);
+                this.import(masterName, sourceUFODir, glyphs, mem_io);
                 imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
             }
         }
@@ -37487,8 +37484,8 @@ define('metapolator/project/MetapolatorProject',[
         return imported_instances;
     };
 
-    _p.import = function(io, masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( io, this._log, this,
+    _p.import = function(masterName, sourceUFODir, glyphs, io) {
+        var importer = new ImportController( io || this._io, this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
 
