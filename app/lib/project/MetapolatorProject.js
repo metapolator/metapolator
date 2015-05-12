@@ -509,7 +509,7 @@ define([
         return this._controller;
     };
 
-    _p.importZippedUFOInstances = function(filename, blob) {
+    _p.importZippedUFOInstances = function(blob) {
         var mem_io = new InMemory()
           , imported_instances = Array()
           ;
@@ -536,7 +536,7 @@ define([
             zipUtil.unpack(false, another_blob, mem_io, baseDir);
         }
 
-        var names = mem_io.readDir(false, baseDir);
+        names = mem_io.readDir(false, baseDir);
         for (n=0, l=names.length; n<l; n++){
             var name = names[n];
             if (name[name.length-1]=='/'){
