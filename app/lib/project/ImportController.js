@@ -65,7 +65,9 @@ define([
      * NOTE: This performs synchronous IO via this._project.getGlyphSet
      */
     _p._getSourceGlyphSet = function() {
-        var options;
+        var options
+          , UFOversion
+          ;
         if(!this._sourceGlyphSet) {
             // tell us about errors instead of throwing it away
             options = {
@@ -77,7 +79,9 @@ define([
                 }.bind( null, this._master )
             };
 
-            this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, /*UFOVersion*/ 2 /*FIXME: this is a hardcoded value!*/, options);
+            console.log("[ImportController._getSourceGlyphSet] this._io:" + this._io);
+            UFOversion = this._project._readUFOFormatVersion(false, this._sourceUFODir, this._io);
+            this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, UFOversion, options);
         }
         return this._sourceGlyphSet;
     };

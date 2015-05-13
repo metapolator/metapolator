@@ -146,26 +146,26 @@ define([
             'path': ['ufoDir', 'fileName',
                 function(ufoDir, fileName){ return [ufoDir, fileName].join('/'); }]
           , 'data': ['contents', plistLib.readPlistFromString.bind(plistLib)]
-          , 'contents': ['path',
-                function(path){ return this._io.readFile(false, path);}]
+          , 'contents': ['path','io',
+                function(path, io){ return (io || this._io).readFile(false, path);}]
         }
       , {
-            'contents': ['path',
-                function(path){ return this._io.readFile(true, path);}]
+            'contents': ['path', 'io',
+                function(path, io){ return (io || this._io).readFile(true, path);}]
         }
-      , ['ufoDir', 'fileName']
+      , ['ufoDir', 'fileName', 'io']
       , function(obtain){ return obtain('data'); }
     );
 
     _p._readUFOFormatVersion = obtain.factory(
         {
-            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), 'io', _p._readPlist]
           , 'formatVersion': ['metainfo', function(data){return data.formatVersion;}]
         }
       , {
-            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), 'io', _p._readPlist]
         }
-      , ['ufoDir']
+      , ['ufoDir', 'io'/*optional*/]
       , function(obtain){ return obtain('formatVersion'); }
     );
 
@@ -181,28 +181,28 @@ define([
      */
     _p.getGlyphSet = obtain.factory(
         {
-            'UFOVersion': [false, 'ufoDir', _p._readUFOFormatVersion]
+            'UFOVersion': [false, 'ufoDir', 'io', _p._readUFOFormatVersion]
           , 'dirName': ['ufoDir', 'layer', function(ufoDir, layer) {
                                     return [ufoDir, layer].join('/');}]
-          , 'layer': ['UFOVersion', 'ufoDir', 'layerName',
-            function(UFOVersion, ufoDir, layerName) {
+          , 'layer': ['UFOVersion', 'ufoDir', 'layerName', 'io',
+            function(UFOVersion, ufoDir, layerName, io) {
                 var layerContents;
                 if(UFOVersion < 3)
                     return 'glyphs';
-                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist');
+                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist', io);
                 return _getLayerDir(layerContents, layerName || 'public.default');
             }]
           , 'GlyphSet': [false, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
         }
       , {
-            'UFOVersion': [true, 'ufoDir', _p._readUFOFormatVersion]
-          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback',
-            function(UFOVersion, ufoDir, layerName, callback, errback) {
+            'UFOVersion': [true, 'ufoDir', 'io', _p._readUFOFormatVersion]
+          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback', 'io',
+            function(UFOVersion, ufoDir, layerName, callback, errback, io) {
                 if(UFOVersion < 3) {
                     setTimeout(callback.bind('glyphs'));
                     return;
                 }
-                this._readPlist(true, ufoDir, 'layercontents.plist')
+                this._readPlist(true, ufoDir, 'layercontents.plist', io)
                 .then(function(layerContents) {
                     callback(_getLayerDir(layerContents, layerName || 'public.default'));
                 })
@@ -211,7 +211,7 @@ define([
           , 'GlyphSet': [true, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
         }
       , ['ufoDir', 'glyphNameFunc'/*optional*/, 'options'/*optional*/
-                    , 'layerName'/*optional default: 'public.default'*/]
+                    , 'layerName'/*optional default: 'public.default'*/, 'io'/*optional*/]
       , function(obtain) {return obtain('GlyphSet');}
     );
 
@@ -521,9 +521,9 @@ define([
      *     └── master3.ufo.zip
      *          └── master3.ufo
      */
-    _p.importZippedUFOInstances = function(blob) {
+    _p.importZippedUFOMasters = function(blob) {
         var mem_io = new InMemory()
-          , imported_instances = Array()
+          , importedMasters = Array()
           ;
 
         zipUtil.unpack(false, blob, mem_io, "");
@@ -563,11 +563,11 @@ define([
                 //       in a selector/cps. (.#>:(){}) etc.
 
                 this.import(masterName, sourceUFODir, glyphs, mem_io);
-                imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
+                importedMasters.push(masterName);
             }
         }
 
-        return imported_instances;
+        return importedMasters;
     };
 
     _p.import = function(masterName, sourceUFODir, glyphs, io) {
