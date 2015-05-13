@@ -98,25 +98,51 @@ function($scope, sharedScope, $timeout) {
         reader.onload = function(e) {
             var importedMasters = $scope.data.stateful.project.importZippedUFOMasters(e.target.result)
               , i, l
-              , referenceMaster = $scope.data.sequences[0].masters[0] //Should I really be doing it this way?
               ;
 
             for (i=0, l=importedMasters.length; i<l; i++){
                 var masterName = importedMasters[i]
                   , model = $scope.data.stateful.project.open(masterName)
                   , master = model.query('master#' + masterName)
+                  , cpsFile = $scope.data.stateful.controller._getMasterRule(masterName)
                   ;
+
                 $scope.data.sequences[0].masters.push({
                     id : ++$scope.uniqueMasterId,
                     name : masterName,
                     displayName : "Master " + $scope.uniqueMasterId,
-//TODO:                    cpsFile : cpsFile,
-//TODO:                    ruleIndex : angular.copy(referenceMaster.ruleIndex),
+                    cpsFile : cpsFile,
                     display : false,
                     edit : [true, true],
                     ag : 'Ag',
                     glyphs : master.children,
-                    parameters : angular.copy(referenceMaster.parameters)
+                    parameters : [{
+                        name : "Weight",
+                        operators : [{
+                            name : "x",
+                            value : 1
+                        }]
+
+                    }, {
+                        name : "Width",
+                        operators : [{
+                            name : "x",
+                            value : 1
+                        }]
+                    }, {
+                        name : "Height",
+                        operators : [{
+                            name : "x",
+                            value : 1
+                        }]
+                    }, {
+                        name : "Spacing",
+                        unit : "",
+                        operators : [{
+                            name : "+",
+                            value : 0
+                        }]
+                    }]
                 });
             }
 
