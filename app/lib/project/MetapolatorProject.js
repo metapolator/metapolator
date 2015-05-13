@@ -548,19 +548,19 @@ define([
         for (n=0, l=names.length; n<l; n++){
             var name = names[n];
             if (name[name.length-1]=='/'){
-                /* This sourceUFODir name may be wrong in some cases.
-                   We need a more robust implementation.
-                   The current implementation works only for
-                   the UFO packing scheme described above. */
+                // This sourceUFODir name may be wrong in some cases.
+                //   We need a more robust implementation.
+                //   The current implementation works only for
+                //   the UFO packing scheme described above.
                 var sourceUFODir = baseDir + name.split("/")[0]
                   , glyphs = undefined
                   , masterName = name.split(".ufo/")[0]
                   ;
 
-                masterName = masterName.split(' ').join('_');
                 //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
                 //       Metapolator dislikes spaces in master names as well as anything that has a meaning
                 //       in a selector/cps. (.#>:(){}) etc.
+                masterName = masterName.split(' ').join('_');
 
                 this.import(masterName, sourceUFODir, glyphs, mem_io);
                 importedMasters.push(masterName);
