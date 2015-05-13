@@ -23,8 +23,6 @@ define([
           , dir_abs_path
           ;
 
-        console.log("unpacking files: ", files);
-
         for (filename in files){
             file = files[filename];
             absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");

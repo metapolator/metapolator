@@ -509,6 +509,18 @@ define([
         return this._controller;
     };
 
+    /**
+     * The blob parameter must be data representing a file containing one or more
+     * UFOs encoded with the following packaging scheme:
+     *
+     * upload.zip
+     *     ├── master1.ufo.zip
+     *     │    └── master1.ufo
+     *     ├── master2.ufo.zip
+     *     │    └── master2.ufo
+     *     └── master3.ufo.zip
+     *          └── master3.ufo
+     */
     _p.importZippedUFOInstances = function(blob) {
         var mem_io = new InMemory()
           , imported_instances = Array()
@@ -522,15 +534,11 @@ define([
           , n, l
           ;
 
-        console.log("dirs:", dirs);
-
         for (n=0, l=names.length; n<l; n++){
             var name = names[n]
-              , UFOZip = baseDir + name //This may be wrong in some cases. We need a more robust implementation.
+              , UFOZip = baseDir + name
               , another_blob
               ;
-
-            console.log("UFOZip:", UFOZip);
 
             another_blob = mem_io.readFile(false, UFOZip);
             zipUtil.unpack(false, another_blob, mem_io, baseDir);
@@ -540,12 +548,19 @@ define([
         for (n=0, l=names.length; n<l; n++){
             var name = names[n];
             if (name[name.length-1]=='/'){
-                var sourceUFODir = baseDir + name.split("/")[0] //This may be wrong in some cases. We need a more robust implementation.
+                /* This sourceUFODir name may be wrong in some cases.
+                   We need a more robust implementation.
+                   The current implementation works only for
+                   the UFO packing scheme described above. */
+                var sourceUFODir = baseDir + name.split("/")[0]
                   , glyphs = undefined
                   , masterName = name.split(".ufo/")[0]
                   ;
 
-                masterName = masterName.split(' ').join('_'); //Metapolator dislikes spaces in master names.
+                masterName = masterName.split(' ').join('_');
+                //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
+                //       Metapolator dislikes spaces in master names as well as anything that has a meaning
+                //       in a selector/cps. (.#>:(){}) etc.
 
                 this.import(masterName, sourceUFODir, glyphs, mem_io);
                 imported_instances.push({'masterName':masterName, 'glyphs':glyphs});
