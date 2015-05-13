@@ -96,26 +96,27 @@ function($scope, sharedScope, $timeout) {
           ;
         $scope.data.dialog("Importing UFO ZIP...", true);
         reader.onload = function(e) {
-            console.log("e.target.result:", e.target.result);
-            var imported_instances = $scope.data.stateful.project.importZippedUFOInstances(e.target.result)
+            var importedMasters = $scope.data.stateful.project.importZippedUFOMasters(e.target.result)
               , i, l
-              , master = $scope.data.sequences[0].masters[0] //Should I really be doing it this way?
+              , referenceMaster = $scope.data.sequences[0].masters[0] //Should I really be doing it this way?
               ;
 
-            for (i=0, l=imported_instances.length; i<l; i++){
-                var instance = imported_instances[i];
-                $scope.data.stateful.project.open(instance['masterName']);
+            for (i=0, l=importedMasters.length; i<l; i++){
+                var masterName = importedMasters[i]
+                  , model = $scope.data.stateful.project.open(masterName)
+                  , master = model.query('master#' + masterName)
+                  ;
                 $scope.data.sequences[0].masters.push({
                     id : ++$scope.uniqueMasterId,
-                    name : instance['masterName'],
+                    name : masterName,
                     displayName : "Master " + $scope.uniqueMasterId,
 //TODO:                    cpsFile : cpsFile,
-//TODO:                    ruleIndex : angular.copy(master.ruleIndex),
+//TODO:                    ruleIndex : angular.copy(referenceMaster.ruleIndex),
                     display : false,
                     edit : [true, true],
                     ag : 'Ag',
-                    glyphs : instance['glyphs'],
-                    parameters : angular.copy(master.parameters)
+                    glyphs : master.children,
+                    parameters : angular.copy(referenceMaster.parameters)
                 });
             }
 
