@@ -73,7 +73,7 @@ define([
                                     + metadata.glyphName + "' reason:" + metadata.message );
                     // try to continue
                     return true;
-                }.bind( null, this._master )
+                }.bind( this, this._master )
             };
             this._sourceGlyphSet = this._project.getGlyphSet(
                         false, this._sourceUFODir, undefined, options);
