@@ -219,33 +219,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         return selectionParameters;
     };
 
-    $scope.managedInputValue = function(value, parameterName, operatorName, keyEvent) {
-        var currentValue = value.current;
-        // Not a number: use the fallback value.
-        if (isNaN(currentValue) || currentValue === "") {
-            currentValue = value.fallback;
-        }
-        if ( typeof (currentValue) == "string") {
-            currentValue = parseFloat(currentValue.replace(',', '.'));
-        }
-        // Step size
-        var thisParameter = $scope.getParameterByName(parameterName);
-        var step = thisParameter.step;
-        var decimals = thisParameter.decimals;
-        if (keyEvent != "blur") {
-            keyEvent.preventDefault();
-            if (keyEvent.shiftKey) {
-                step = step * 10;
-            }
-            if (keyEvent.keyCode == 38) {
-                currentValue = round(parseFloat(currentValue) + step, decimals);
-            } else if (keyEvent.keyCode == 40) {
-                currentValue = round(parseFloat(currentValue) - step, decimals);
-            }
-        }
-        return currentValue;
-    };
-
     $scope.changeValue = function(parameterName, operator, value, level, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
@@ -275,8 +248,45 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         }
     };
+    
+    $scope.setParameterModel = function(master, element, parameterName, operatorName, value, operatorId) {
+        console.log("setParameterModel");
+        var theParameter = null;
+        var theOperator = null;
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                theParameter = parameter;
+                angular.forEach(parameter.operators, function(operator) {
+                    if ((operator.name == operatorName) && ((operator.id == operatorId) || (!operator.id && !operatorId))) {
+                        theOperator = operator;
+                    }
+                });
+            }
+        });
+        // in ranges situation can appear where an element doesn't have the parameter or the operator already
+        if (!theOperator) {
+            // create operator
+            var newOperator = $scope.getOperatorByName(operatorName);
+            newOperator.value = parseFloat(value);
+            if (!theParameter) {
+                // create parameter
+                var newParameter = $scope.getParameterByName(parameterName);
+                newParameter.operators = [];
+                newParameter.operators.push(newOperator);
+                element.parameters.push(newParameter);
+                console.log("   new parameter: " + parameterName);
+            } else {
+                theParameter.operators.push(newOperator);
+                console.log("   new operator: " + newOperator.name);
+            }
+        } else {
+            console.log("   edit operator: " + value);
+            theOperator.value = parseFloat(value);
+        }
+    };
 
     $scope.checkEffectiveValueEffects = function(element, level, parameterName, operator) {
+        console.log("checkEffectiveValueEffects: " + level);
         // check if this parameter is effecting this level or also deeper
         var effectiveLevel = $scope.getParameterByName(parameterName).effectiveLevel;
         var thisLevelIndex = $scope.getLevelIndex(level);
@@ -284,15 +294,21 @@ app.controller("parametersController", function($scope, sharedScope) {
         // The operators 'x' and '÷' are effecting the cpsFactor at a local level
         // The other operators effect the cpsFactor at their effective level (eg width -> glyphlevel, weight -> pointlevel)
         var effectiveLocal = $scope.getOperatorByName(operator.name).effectiveLocal;
-
         if (effectiveLevel > thisLevelIndex) {
-            // search for efficve level and effect the sibblings
-            //var elements = element.children;
+            // search for efficve level and effect the children on that level
+            var levelElements = [element];
+            var tempElements = [];
             while (thisLevelIndex < effectiveLevel) {
                 thisLevelIndex++;
-                elements = element.children;
+                angular.forEach(levelElements, function(levelElement) {
+                    angular.forEach(levelElement.children, function(childElement) {
+                        tempElements.push(childElement);
+                    });
+                });
+                levelElements = tempElements;
+                tempElements = [];
             }
-            angular.forEach(elements, function(thisElement) {
+            angular.forEach(levelElements, function(thisElement) {
                 angular.forEach(thisElement.parameters, function(parameter) {
                     if (parameter.name == parameterName) {
                         angular.forEach(parameter.operators, function(operator) {
@@ -307,6 +323,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 }
             });
         } else {
+            console.log("   this level");
             // effect this level
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
@@ -322,91 +339,9 @@ app.controller("parametersController", function($scope, sharedScope) {
             $scope.updateCPSfactor(element, parameterName);
         }
     };
-
-    $scope.updateCPSfactor = function(element, parameterName) {
-        var multiply = [], cpsFactor = 1, master;
-        var thisLevelIndex = $scope.getLevelIndex(element.level);
-        var theParameter = $scope.getParameterByName(parameterName);
-        var targetLevel = theParameter.effectiveLevel;
-        // if we are editing parameter values at the level where the parameter is effective
-        // then check for all inhereted parameters ('+', '-', 'min', 'max', '=')
-        // else only use local 'x' and '÷'
-        if (thisLevelIndex == targetLevel) {
-            // to find the local cpsFactor
-            // we need to divide the effectiveValue by the initial value and by all parent cpsFactors
-            // all the effiveValues are updated at this time by $scope.updateEffectiveValue()
-            var effeciveValue, initialValue;
-            var parentCPSfactor = $scope.findParentCPSfactor(element, parameterName);
-            angular.forEach(element.parameters, function(parameter) {
-                if (parameter.name == parameterName) {
-                    angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == "effectiveValue") {
-                            effeciveValue = operator.value;
-                            initialValue = operator.initial;
-                        }
-                    });
-                    cpsFactor = effeciveValue / (initialValue * parentCPSfactor);
-                    parameter.cpsFactor = cpsFactor;
-                }
-            });
-            master = $scope.findMasterByElement(element);
-            // check if this element has its own rule already
-            if (!element.ruleIndex) {
-                $scope.addRullAPI(master, element);
-            }
-            $scope.setParameterAPI(master, element.ruleIndex, theParameter.cpsKey, cpsFactor);
-
-        } else {
-            // we are at a higher level then target level. Eg: at masterlevel when editing width (targetlevel for width is glyph)
-            // in this level only the local 'x' and '÷' matter
-            // futurewise we could also check if we are at a deeper level than target. This can't have effect, so we should give a warning
-
-            angular.forEach(element.parameters, function(parameter) {
-                if (parameter.name == parameterName) {
-                    angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == "x") {
-                            multiply.push(parseFloat(operator.value));
-                        } else if (operator.name == "÷") {
-                            multiply.push(parseFloat(1 / operator.value));
-                        }
-                    });
-                    angular.forEach(multiply, function(mtply) {
-                        cpsFactor *= mtply;
-                    });
-                    parameter.cpsFactor = cpsFactor;
-                    if (element.level == "master") {
-                        master = element;
-                    } else {
-                        master = $scope.findMasterByElement(element);
-                    }
-                    // check if this element has its own rule already
-                    if (!element.ruleIndex) {
-                        $scope.addRullAPI(master, element);
-                    }
-                    $scope.setParameterAPI(master, element.ruleIndex, theParameter.cpsKey, cpsFactor);
-                }
-            });
-        }
-    };
-
-    $scope.findParentCPSfactor = function(element, parameterName) {
-        var ancestorCPSfactor = 1;
-        while (element.level != "master") {
-            element = $scope.findParentElement(element);
-            angular.forEach(element.parameters, function(parameter) {
-                if (parameter.name == parameterName && parameter.cpsFactor) {
-                    ancestorCPSfactor *= parameter.cpsFactor;
-                }
-            });
-
-        }
-        return ancestorCPSfactor;
-    };
-
+    
     $scope.updateEffectiveValue = function(element, parameterName) {
-        
         var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0;
-        
         while (element.level != "sequence") {
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
@@ -456,7 +391,92 @@ app.controller("parametersController", function($scope, sharedScope) {
         } else if (effectiveValue < min) {
             effectiveValue = min;
         }
+        console.log("updateEffectiveValue: " + effectiveValue);
         return effectiveValue;
+    };
+
+    $scope.updateCPSfactor = function(element, parameterName) {
+        console.log("updateCPSfactor");
+        var multiply = [], cpsFactor = 1, master;
+        var thisLevelIndex = $scope.getLevelIndex(element.level);
+        var theParameter = $scope.getParameterByName(parameterName);
+        var targetLevel = theParameter.effectiveLevel;
+        // if we are editing parameter values at the level where the parameter is effective
+        // then check for all inhereted parameters ('+', '-', 'min', 'max', '=')
+        // else only use local 'x' and '÷'
+        if (thisLevelIndex == targetLevel) {
+            // to find the local cpsFactor
+            // we need to divide the effectiveValue by the initial value and by all parent cpsFactors
+            // all the effiveValues are updated at this time by $scope.updateEffectiveValue()
+            var effeciveValue, initialValue;
+            var parentCPSfactor = $scope.findParentCPSfactor(element, parameterName);
+            angular.forEach(element.parameters, function(parameter) {
+                if (parameter.name == parameterName) {
+                    angular.forEach(parameter.operators, function(operator) {
+                        if (operator.name == "effectiveValue") {
+                            effeciveValue = operator.value;
+                            initialValue = operator.initial;
+                        }
+                    });
+                    cpsFactor = effeciveValue / (initialValue * parentCPSfactor);
+                    parameter.cpsFactor = cpsFactor;
+                    console.log("  local level: " + cpsFactor);
+                }
+            });
+            master = $scope.findMasterByElement(element);
+            // check if this element has its own rule already
+            if (!element.ruleIndex) {
+                $scope.addRullAPI(master, element);
+            }
+            $scope.setParameterAPI(master, element.ruleIndex, theParameter.cpsKey, cpsFactor);
+
+        } else {
+            // we are at a higher level then target level. Eg: at masterlevel when editing width (targetlevel for width is glyph)
+            // in this level only the local 'x' and '÷' matter
+            // futurewise we could also check if we are at a deeper level than target. This can't have effect, so we should give a warning
+            
+            angular.forEach(element.parameters, function(parameter) {
+                if (parameter.name == parameterName) {
+                    angular.forEach(parameter.operators, function(operator) {
+                        if (operator.name == "x") {
+                            multiply.push(parseFloat(operator.value));
+                        } else if (operator.name == "÷") {
+                            multiply.push(parseFloat(1 / operator.value));
+                        }
+                    });
+                    angular.forEach(multiply, function(mtply) {
+                        cpsFactor *= mtply;
+                    });
+                    parameter.cpsFactor = cpsFactor;
+                    console.log("  other level: " + cpsFactor);
+                    if (element.level == "master") {
+                        master = element;
+                    } else {
+                        master = $scope.findMasterByElement(element);
+                    }
+                    // check if this element has its own rule already
+                    if (!element.ruleIndex) {
+                        $scope.addRullAPI(master, element);
+                    }
+                    $scope.setParameterAPI(master, element.ruleIndex, theParameter.cpsKey, cpsFactor);
+                }
+            });
+        }
+    };
+
+    $scope.findParentCPSfactor = function(element, parameterName) {
+        var ancestorCPSfactor = 1;
+        while (element.level != "master") {
+            element = $scope.findParentElement(element);
+            angular.forEach(element.parameters, function(parameter) {
+                if (parameter.name == parameterName && parameter.cpsFactor) {
+                    ancestorCPSfactor *= parameter.cpsFactor;
+                }
+            });
+
+        }
+        console.log("findParentCPSfactor: " + ancestorCPSfactor);
+        return ancestorCPSfactor;
     };
 
     $scope.getRangeValue = function(element, parameterName, myOperator, level) {
@@ -488,6 +508,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             myPosition = (currentValue - oldLow) / scale;
             newValue = round(((newHigh - newLow) * myPosition + newLow), decimals);
         }
+        console.log("getRangeValue: " + newValue);
         return newValue;
     };
 
@@ -498,11 +519,12 @@ app.controller("parametersController", function($scope, sharedScope) {
             var selectorListString = $scope.constructSelectorString(element);
             var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
             element.ruleIndex = ruleIndex;
+            console.log("addRullAPI: " + ruleIndex);
         }
     };
 
     $scope.constructSelectorString = function(element) {
-        // to reconstruct to remove the hardcoded ifs
+        // todo: reconstruct to remove the hardcoded ifs
         var level = element.level, string;
         if (level == "master") {
             string = level + "#" + element.name;
@@ -516,6 +538,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             glyph = $scope.findParentElement(penstroke);
             string = glyph.level + "#" + glyph.name + " > " + penstroke.name + " > " + element.name + " > right";
         }
+        console.log("constructSelectorString: " + string);
         return string;
     };
 
@@ -526,40 +549,11 @@ app.controller("parametersController", function($scope, sharedScope) {
             var parameterDict = cpsRule.parameters;
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
             setParameter(parameterDict, cpsKey, value);
+            console.log("setParameterAPI | rule: " + ruleIndex + ", key: " + cpsKey + "value: " + value);
         }
     };
 
-    $scope.setParameterModel = function(master, element, parameterName, operatorName, value, operatorId) {
-        var theParameter = null;
-        var theOperator = null;
-        angular.forEach(element.parameters, function(parameter) {
-            if (parameter.name == parameterName) {
-                theParameter = parameter;
-                angular.forEach(parameter.operators, function(operator) {
-                    if ((operator.name == operatorName) && ((operator.id == operatorId) || (!operator.id && !operatorId))) {
-                        theOperator = operator;
-                    }
-                });
-            }
-        });
-        // in ranges situation can appear where an element doesn't have the parameter or the operator already
-        if (!theOperator) {
-            // create operator
-            var newOperator = $scope.getOperatorByName(operatorName);
-            newOperator.value = parseFloat(value);
-            if (!theParameter) {
-                // create parameter
-                var newParameter = $scope.getParameterByName(parameterName);
-                newParameter.operators = [];
-                newParameter.operators.push(newOperator);
-                element.parameters.push(newParameter);
-            } else {
-                theParameter.operators.push(newOperator);
-            }
-        } else {
-            theOperator.value = parseFloat(value);
-        }
-    };
+
 
     /*** handling the parameter add panel ***/
 
@@ -994,5 +988,32 @@ app.controller("parametersController", function($scope, sharedScope) {
             element = $scope.findParentElement(element);
         }
         return element;
+    };
+    
+    $scope.managedInputValue = function(value, parameterName, operatorName, keyEvent) {
+        var currentValue = value.current;
+        // Not a number: use the fallback value.
+        if (isNaN(currentValue) || currentValue === "") {
+            currentValue = value.fallback;
+        }
+        if ( typeof (currentValue) == "string") {
+            currentValue = parseFloat(currentValue.replace(',', '.'));
+        }
+        // Step size
+        var thisParameter = $scope.getParameterByName(parameterName);
+        var step = thisParameter.step;
+        var decimals = thisParameter.decimals;
+        if (keyEvent != "blur") {
+            keyEvent.preventDefault();
+            if (keyEvent.shiftKey) {
+                step = step * 10;
+            }
+            if (keyEvent.keyCode == 38) {
+                currentValue = round(parseFloat(currentValue) + step, decimals);
+            } else if (keyEvent.keyCode == 40) {
+                currentValue = round(parseFloat(currentValue) - step, decimals);
+            }
+        }
+        return currentValue;
     };
 });
