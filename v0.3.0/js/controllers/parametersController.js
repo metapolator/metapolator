@@ -741,6 +741,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.changeParameter = function(parameter) {
+        /*
         var oldParameterName = $scope.data.view.parameterPanel.selected;
         if (oldParameterName != parameter.name) {
             var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
@@ -754,9 +755,11 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
         $scope.data.updateSelectionParameters(false);
         $scope.data.closeParameterPanel();
+        */
     };
 
     $scope.removeParameter = function() {
+        /*
         var oldParameterName = $scope.data.view.parameterPanel.selected;
         var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
         angular.forEach(elements, function(element) {
@@ -772,6 +775,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         $scope.data.updateSelectionParameters(false);
         $scope.data.closeParameterPanel();
+        */
     };
 
     $scope.data.closeParameterPanel = function() {
@@ -798,6 +802,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.changeOperator = function(operator) {
+        /*
         var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
         var oldOperatorName = $scope.data.view.operatorPanel.selected;
         if (oldOperatorName != operator.name) {
@@ -816,9 +821,11 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
         $scope.data.updateSelectionParameters(false);
         $scope.data.closeOperatorPanel();
+        */
     };
 
     $scope.removeOperator = function() {
+        /*
         var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
         var oldOperatorName = $scope.data.view.operatorPanel.selected;
         var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
@@ -844,6 +851,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         $scope.data.updateSelectionParameters(false);
         $scope.data.closeOperatorPanel();
+        */
     };
 
     $scope.data.closeOperatorPanel = function() {
