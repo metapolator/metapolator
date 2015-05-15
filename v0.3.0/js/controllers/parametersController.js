@@ -863,6 +863,25 @@ app.controller("parametersController", function($scope, sharedScope) {
             $(this).removeClass("selected-parameter");
         });
     };
+    
+    $scope.showOperator = function (thisOperator) {
+        var display = true, hasThisOperator = false;
+        var level = $scope.data.view.operatorPanel.level;
+        var parameterName = $scope.data.view.operatorPanel.selectedParameter;
+        angular.forEach($scope.parameterSelection[level], function(parameter) {
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == thisOperator.name) {
+                        hasThisOperator = true;
+                    }
+                });
+            }
+        });
+        if (thisOperator.name != $scope.data.view.operatorPanel.selected && thisOperator.type == "unique" && hasThisOperator) {
+            display = false;
+        }
+        return display;
+    }
 
     /***
      Helper functions

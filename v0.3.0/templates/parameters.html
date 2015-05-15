@@ -52,7 +52,7 @@
     </div>
     
     <div class="single-panel control-panel" ng-if="data.view.operatorPanel.display" ng-style="{'left': data.view.operatorPanel.left + 'px', 'top': data.view.operatorPanel.top + 'px'}">
-        <div ng-repeat="operator in operators" ng-if="operator.name != 'effectiveValue'" ng-class="{'selected': operator.name == data.view.operatorPanel.selected}" class="control-panel-parameter control-panel-button push-button" ng-click="changeOperator(operator)">{{operator.name}}</div>
+        <div ng-repeat="operator in operators" ng-if="operator.name != 'effectiveValue' && showOperator(operator)" ng-class="{'selected': operator.name == data.view.operatorPanel.selected}" class="control-panel-parameter control-panel-button push-button" ng-click="changeOperator(operator)">{{operator.name}}</div>
         <div class="control-panel-cancel control-panel-button push-button" ng-click="removeOperator()">
             Remove
         </div>
