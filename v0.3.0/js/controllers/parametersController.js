@@ -258,7 +258,6 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.setParameterModel = function(master, element, parameterName, operatorName, value, operatorId) {
-        console.log("setParameterModel");
         var theParameter = null;
         var theOperator = null;
         angular.forEach(element.parameters, function(parameter) {
@@ -282,19 +281,15 @@ app.controller("parametersController", function($scope, sharedScope) {
                 newParameter.operators = [];
                 newParameter.operators.push(newOperator);
                 element.parameters.push(newParameter);
-                console.log("   new parameter: " + parameterName);
             } else {
                 theParameter.operators.push(newOperator);
-                console.log("   new operator: " + newOperator.name);
             }
         } else {
-            console.log("   edit operator: " + value);
             theOperator.value = parseFloat(value);
         }
     };
 
     $scope.checkEffectiveValueEffects = function(element, level, parameterName, operator) {
-        console.log("checkEffectiveValueEffects: " + level);
         // check if this parameter is effecting this level or also deeper
         var effectiveLevel = $scope.getParameterByName(parameterName).effectiveLevel;
         var thisLevelIndex = $scope.getLevelIndex(level);
@@ -331,7 +326,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                 }
             });
         } else {
-            console.log("   this level");
             // effect this level
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
@@ -399,12 +393,10 @@ app.controller("parametersController", function($scope, sharedScope) {
         } else if (effectiveValue < min) {
             effectiveValue = min;
         }
-        console.log("updateEffectiveValue: " + effectiveValue);
         return effectiveValue;
     };
 
     $scope.updateCPSfactor = function(element, parameterName) {
-        console.log("updateCPSfactor");
         var multiply = [], cpsFactor = 1, master;
         var thisLevelIndex = $scope.getLevelIndex(element.level);
         var theParameter = $scope.getParameterByName(parameterName);
@@ -428,7 +420,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                     });
                     cpsFactor = effeciveValue / (initialValue * parentCPSfactor);
                     parameter.cpsFactor = cpsFactor;
-                    console.log("  local level: " + cpsFactor);
                 }
             });
             master = $scope.findMasterByElement(element);
@@ -456,7 +447,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                         cpsFactor *= mtply;
                     });
                     parameter.cpsFactor = cpsFactor;
-                    console.log("  other level: " + cpsFactor);
                     if (element.level == "master") {
                         master = element;
                     } else {
@@ -483,7 +473,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             });
 
         }
-        console.log("findParentCPSfactor: " + ancestorCPSfactor);
         return ancestorCPSfactor;
     };
 
@@ -498,7 +487,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             var selectorListString = $scope.constructSelectorString(element);
             var ruleIndex = $scope.data.stateless.cpsAPITools.addNewRule(parameterCollection, l, selectorListString);
             element.ruleIndex = ruleIndex;
-            console.log("addRullAPI: " + ruleIndex);
         }
     };
 
@@ -517,7 +505,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             glyph = $scope.findParentElement(penstroke);
             string = glyph.level + "#" + glyph.name + " > " + penstroke.name + " > " + element.name + " > right";
         }
-        console.log("constructSelectorString: " + string);
         return string;
     };
 
@@ -528,7 +515,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             var parameterDict = cpsRule.parameters;
             var setParameter = $scope.data.stateless.cpsAPITools.setParameter;
             setParameter(parameterDict, cpsKey, value);
-            console.log("setParameterAPI | rule: " + ruleIndex + ", key: " + cpsKey + "value: " + value);
+            console.log(parameterCollection.toString());
         }
     };
 
@@ -1037,7 +1024,6 @@ app.controller("parametersController", function($scope, sharedScope) {
             myPosition = (currentValue - oldLow) / scale;
             newValue = round(((newHigh - newLow) * myPosition + newLow), decimals);
         }
-        console.log("getRangeValue: " + newValue);
         return newValue;
     };
 
