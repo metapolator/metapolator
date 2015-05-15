@@ -718,6 +718,30 @@ app.controller("parametersController", function($scope, sharedScope) {
                     }
                 });
             });
+        } else if (level == "penstroke") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        angular.forEach(master.children, function(glyph) {
+                            if (glyph.edit) {
+                                selected = true;
+                            }
+                        });
+                    }
+                });
+            });
+        } else if (level == "point") {
+            angular.forEach($scope.data.sequences, function(sequence) {
+                angular.forEach(sequence.masters, function(master) {
+                    if (master.edit[0]) {
+                        angular.forEach(master.children, function(glyph) {
+                            if (glyph.edit) {
+                                selected = true;
+                            }
+                        });
+                    }
+                });
+            });
         }
         return selected;
     };
