@@ -14,14 +14,14 @@ app.controller("parametersController", function($scope, sharedScope) {
      *  range               When a selection of elements has different values for a specific operator+parameter. The range are the outer values of the
      *                      selection. All in between values are changed by ratio when the ranges changes.
      *  effictiveValue      This value is assigned at the effective level. Its the outcome of all inhereted operators
-     *  cpsFactor           each level (higher or equal to the effective level) can have a cpsFactor. When nothing is assigned by the UI, the 
+     *  cpsFactor           each level (higher or equal to the effective level) can have a cpsFactor. When nothing is assigned by the UI, the
      *                      standard value, which is in lib/parameters.cps applies. At a level higher then the effective level, the local 'x' and '÷' make
      *                      the cpsFactor. At the effective level it is the effectiveValue / (initialValue * ancestorCPSfactors);
-     *  initialValue        Because ao width and height are not real csp properties, we can only inject a factor into cps. To influence the outcome, 
-     *                      we have to know the inital value of a parameter; this is measured at initiation. 
-     *    
-     * 
-     * 
+     *  initialValue        Because ao width and height are not real csp properties, we can only inject a factor into cps. To influence the outcome,
+     *                      we have to know the inital value of a parameter; this is measured at initiation.
+     *
+     *
+     *
      */
 
     $scope.levels = ["master", "glyph", "penstroke", "point"];
@@ -115,6 +115,10 @@ app.controller("parametersController", function($scope, sharedScope) {
         icon : "->",
         usesUnit : true,
     }];
+
+    /***
+     Parameters selection functions
+     ***/
 
     $scope.data.updateSelectionParameters = function(selectionChanged) {
         if (selectionChanged) {
@@ -219,6 +223,10 @@ app.controller("parametersController", function($scope, sharedScope) {
         return selectionParameters;
     };
 
+    /***
+     Value change functions
+     ***/
+
     $scope.changeValue = function(parameterName, operator, value, level, range, keyEvent) {
         if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
             var operatorName = operator.name;
@@ -248,7 +256,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         }
     };
-    
+
     $scope.setParameterModel = function(master, element, parameterName, operatorName, value, operatorId) {
         console.log("setParameterModel");
         var theParameter = null;
@@ -339,7 +347,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             $scope.updateCPSfactor(element, parameterName);
         }
     };
-    
+
     $scope.updateEffectiveValue = function(element, parameterName) {
         var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0;
         while (element.level != "sequence") {
@@ -353,7 +361,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                             multiply[levelCounter] = [];
                         }
                         // the deepest level applies for these operators
-                        if (operator.name == "min" && !min) { 
+                        if (operator.name == "min" && !min) {
                             min = operator.value;
                         } else if (operator.name == "max" && !max) {
                             max = operator.value;
@@ -434,7 +442,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             // we are at a higher level then target level. Eg: at masterlevel when editing width (targetlevel for width is glyph)
             // in this level only the local 'x' and '÷' matter
             // futurewise we could also check if we are at a deeper level than target. This can't have effect, so we should give a warning
-            
+
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
                     angular.forEach(parameter.operators, function(operator) {
@@ -479,38 +487,9 @@ app.controller("parametersController", function($scope, sharedScope) {
         return ancestorCPSfactor;
     };
 
-    $scope.getRangeValue = function(element, parameterName, myOperator, level) {
-        var scale, myPosition, newValue;
-        var decimals = $scope.getParameterByName(parameterName).decimals;
-        var operatorName = myOperator.name;
-        var oldLow = myOperator.low.old;
-        var oldHigh = myOperator.high.old;
-        var newLow = myOperator.low.current;
-        var newHigh = myOperator.high.current;
-        var currentValue = null;
-        // find current value of the specific element
-        angular.forEach(element.parameters, function(parameter) {
-            if (parameter.name == parameterName) {
-                angular.forEach(parameter.operators, function(operator) {
-                    if (operator.name == operatorName) {
-                        currentValue = operator.value;
-                    }
-                });
-            }
-        });
-        if (currentValue == null) {
-            currentValue = getOperatorByName(operatorName).standardValue;
-        }
-        if (oldLow == newLow && oldHigh == newHigh) {
-            newValue = currentValue;
-        } else {
-            scale = oldHigh - oldLow;
-            myPosition = (currentValue - oldLow) / scale;
-            newValue = round(((newHigh - newLow) * myPosition + newLow), decimals);
-        }
-        console.log("getRangeValue: " + newValue);
-        return newValue;
-    };
+    /***
+     API functions
+     ***/
 
     $scope.addRullAPI = function(master, element) {
         if ($scope.data.pill != "blue") {
@@ -553,9 +532,71 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
     };
 
+    /***
+     Efficiency functions
+     ***/
 
+    $scope.reorderOperators = function(operators) {
+        var temp = [], newOperators = [];
+        angular.forEach(operators, function(operator) {
+            angular.forEach($scope.operators, function(theOperator, index) {
+                if (operator.name == theOperator.name) {
+                    if (!temp[index]) {
+                        temp[index] = [];
+                    }
+                    temp[index].push(operator);
+                }
+            });
+        });
+        angular.forEach(temp, function(tempset) {
+            if (tempset.length > 0) {
+                newOperators = newOperators.concat(tempset);
+            }
 
-    /*** handling the parameter add panel ***/
+        });
+        return newOperators;
+    };
+
+    $scope.destackOperators = function() {
+        var elements = $scope.findAllElements();
+        angular.forEach(elements, function(element) {
+            angular.forEach(element.parameters, function(parameter) {
+                var lastOperator = {
+                    name : null,
+                    value : null
+                };
+                var newSetOperators = [];
+                var newOperator;
+                var changeOfOperator;
+                angular.forEach(parameter.operators, function(operator, index) {
+                    // reset the id of the operator. So later we know that operators without id are destacked
+                    operator.id = null;
+                    // to do: check if operator type is 'stack'.
+                    // This matters when non-stack operators (like =) are added
+                    if (operator.name == lastOperator.name) {
+                        if (operator.name == "+" || operator.name == "-") {
+                            newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
+                        } else if (operator.name == "x" || operator.name == "÷") {
+                            newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
+                        }
+                    } else {
+                        if (index != 0) {
+                            newSetOperators.push(newOperator);
+                        }
+                        newOperator = operator;
+                    }
+                    lastOperator = operator;
+
+                });
+                newSetOperators.push(newOperator);
+                parameter.operators = newSetOperators;
+            });
+        });
+    };
+
+    /***
+     Handling the parameter add panel
+     ***/
 
     $scope.parameterLevel = null;
     $scope.panelParameter = null;
@@ -619,66 +660,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         $scope.data.view.parameterOperatorPanel = 0;
         $scope.data.updateSelectionParameters(false);
     };
-
-    $scope.reorderOperators = function(operators) {
-        var temp = [], newOperators = [];
-        angular.forEach(operators, function(operator) {
-            angular.forEach($scope.operators, function(theOperator, index) {
-                if (operator.name == theOperator.name) {
-                    if (!temp[index]) {
-                        temp[index] = [];
-                    }
-                    temp[index].push(operator);
-                }
-            });
-        });
-        angular.forEach(temp, function(tempset) {
-            if (tempset.length > 0) {
-                newOperators = newOperators.concat(tempset);
-            }
-
-        });
-        return newOperators;
-    };
-
-    $scope.destackOperators = function() {
-        var elements = $scope.findAllElements();
-        angular.forEach(elements, function(element) {
-            angular.forEach(element.parameters, function(parameter) {
-                var lastOperator = {
-                    name : null,
-                    value : null
-                };
-                var newSetOperators = [];
-                var newOperator;
-                var changeOfOperator;
-                angular.forEach(parameter.operators, function(operator, index) {
-                    // reset the id of the operator. So later we know that operators without id are destacked
-                    operator.id = null;
-                    // to do: check if operator type is 'stack'.
-                    // This matters when non-stack operators (like =) are added
-                    if (operator.name == lastOperator.name) {
-                        if (operator.name == "+" || operator.name == "-") {
-                            newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                        } else if (operator.name == "x" || operator.name == "÷") {
-                            newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
-                        }
-                    } else {
-                        if (index != 0) {
-                            newSetOperators.push(newOperator);
-                        }
-                        newOperator = operator;
-                    }
-                    lastOperator = operator;
-
-                });
-                newSetOperators.push(newOperator);
-                parameter.operators = newSetOperators;
-            });
-        });
-    };
-
-    // panel handling
 
     $scope.parametersWindow = function(event, target, level) {
         $scope.parameterLevel = level;
@@ -875,7 +856,9 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
     };
 
-    // helper functions
+    /***
+     Helper functions
+     ***/
 
     $scope.findElementsEdit = function(level) {
         // todo: make this flexibel for the levels, fix the hardcoded if
@@ -993,7 +976,44 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
         return element;
     };
-    
+
+    /***
+     Input helper functions
+     ***/
+
+    $scope.getRangeValue = function(element, parameterName, myOperator, level) {
+        var scale, myPosition, newValue;
+        var decimals = $scope.getParameterByName(parameterName).decimals;
+        var operatorName = myOperator.name;
+        var oldLow = myOperator.low.old;
+        var oldHigh = myOperator.high.old;
+        var newLow = myOperator.low.current;
+        var newHigh = myOperator.high.current;
+        var currentValue = null;
+        // find current value of the specific element
+        angular.forEach(element.parameters, function(parameter) {
+            if (parameter.name == parameterName) {
+                angular.forEach(parameter.operators, function(operator) {
+                    if (operator.name == operatorName) {
+                        currentValue = operator.value;
+                    }
+                });
+            }
+        });
+        if (currentValue == null) {
+            currentValue = getOperatorByName(operatorName).standardValue;
+        }
+        if (oldLow == newLow && oldHigh == newHigh) {
+            newValue = currentValue;
+        } else {
+            scale = oldHigh - oldLow;
+            myPosition = (currentValue - oldLow) / scale;
+            newValue = round(((newHigh - newLow) * myPosition + newLow), decimals);
+        }
+        console.log("getRangeValue: " + newValue);
+        return newValue;
+    };
+
     $scope.managedInputValue = function(value, parameterName, operatorName, keyEvent) {
         var currentValue = value.current;
         // Not a number: use the fallback value.
