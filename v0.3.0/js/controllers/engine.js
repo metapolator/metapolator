@@ -11,30 +11,23 @@ app.controller('engine', function($scope, sharedScope) {
         // adding initial masters
         var masters = $scope.data.stateful.controller.queryAll("master");
         var masterId = 0;
-        for (var i = 0, l = masters.length; i < l; i++) {
-            var master = masters[i];
-            var masterName = master.id;
+        angular.forEach(masters, function(thisMaster) {
+            var masterName = thisMaster.id;
             // skip base for the ui
             if (masterName != "base") {
-                var glyphs = master.children;
                 var glyphs = [];
                 // adding glyphs to each master
-                for (var j = 0, m = master.children.length; j < m; j++) {
-                    var thisGlyph = master.children[j];
+                angular.forEach(thisMaster.children, function(thisGlyph) {
                     var penstrokes = [];
                     // adding strokes to each glyph
-                    for (var k = 0, n = thisGlyph.children.length; k < n; k++) {
+                    angular.forEach(thisGlyph.children, function(thisStroke, k) {
                         var points = [];
-                        var thisStroke = thisGlyph.children[k];
-                        var strokeName = "penstroke:i(" + k + ")";
                         // adding points to each penstroke
-                        for (var l = 0, o = thisStroke.children.length; l < o; l++) {
-                            var thisPoint = thisStroke.children[l];
+                        angular.forEach(thisStroke.children, function(thisPoint, l) {
                             // adding points to each penstroke
                             var point = thisPoint.right.getComputedStyle();
-                            var pointName = "point:i(" + l + ")";
                             var newPoint = {
-                                name : pointName,
+                                name : "point:i(" + l + ")",
                                 parent : null,
                                 level : "point",
                                 ruleIndex : null,
@@ -52,9 +45,9 @@ app.controller('engine', function($scope, sharedScope) {
                                 }]
                             };
                             points.push(newPoint);
-                        }
+                        });
                         var newPenstroke = {
-                            name : strokeName,
+                            name : "penstroke:i(" + k + ")",
                             parent : null,
                             level : "penstroke",
                             ruleIndex : null,
@@ -65,7 +58,7 @@ app.controller('engine', function($scope, sharedScope) {
                             child.parent = newPenstroke;
                         });
                         penstrokes.push(newPenstroke);
-                    }
+                    });
                     // temp hack untill #392 is fixed
                     var initialWidth = thisGlyph._advanceWidth;
                     var newGlyph = {
@@ -92,13 +85,13 @@ app.controller('engine', function($scope, sharedScope) {
                         child.parent = newGlyph;
                     });
                     glyphs.push(newGlyph);
-                }
+                });
                 // temp private method, see issue #332
                 var cpsFile = $scope.data.stateful.controller._getMasterRule(masterName);
                 var newMaster = {
                     id : masterId,
                     name : masterName,
-                    parent: $scope.data.sequences[0],
+                    parent : $scope.data.sequences[0],
                     displayName : masterName,
                     cpsFile : cpsFile,
                     ruleIndex : null,
@@ -107,37 +100,7 @@ app.controller('engine', function($scope, sharedScope) {
                     ag : "Ag",
                     children : glyphs,
                     level : "master",
-                    parameters : [{
-                        name : "Weight",
-                        cpsFactor : 1,
-                        operators : [{
-                            name : "x",
-                            value : 1
-                        }]
-
-                    }, {
-                        name : "Width",
-                        cpsFactor : 1,
-                        operators : [{
-                            name : "x",
-                            value : 1
-                        }]
-                    }, {
-                        name : "Height",
-                        cpsFactor : 1,
-                        operators : [{
-                            name : "x",
-                            value : 1
-                        }]
-                    }, {
-                        name : "Spacing",
-                        cpsFactor : 0,
-                        unit : "",
-                        operators : [{
-                            name : "+",
-                            value : 0
-                        }]
-                    }]
+                    parameters : []
                 };
                 angular.forEach(newMaster.children, function(child) {
                     child.parent = newMaster;
@@ -145,10 +108,11 @@ app.controller('engine', function($scope, sharedScope) {
                 $scope.data.sequences[0].masters.push(newMaster);
                 masterId++;
             }
-        }
+        });
         $scope.data.updateSelectionParameters();
         $scope.data.pill = "red";
         $scope.$apply();
+        // hide intro screen
         $("#layover").hide();
         $("splashscreen").hide();
     }

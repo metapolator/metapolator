@@ -92,35 +92,93 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     $scope.duplicateMasters = function() {
         if ($scope.areMastersSelected()) {
+            var toBeCopied = [];
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[$scope.data.view.viewState]) {
+                        toBeCopied.push(master);
                         // deselect this one
                         master.edit[$scope.data.view.viewState] = false;
-                        $scope.uniqueMasterId++;
-                        var masterName = "master" + $scope.uniqueMasterId;
-                        var cpsFile = masterName + ".cps";
-                        // duplicate cps file
-                        var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
-                        var cpsString = "" + sourceCollection;
-                        // create new cps file and new master
-                        $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
-                        $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
-                        $scope.data.stateful.project.open(masterName);
-                        $scope.data.sequences[0].masters.push({
-                            id : $scope.uniqueMasterId,
-                            name : masterName,
-                            displayName : "Master " + $scope.uniqueMasterId,
-                            cpsFile : cpsFile,
-                            ruleIndex : angular.copy(master.ruleIndex),
-                            display : false,
-                            edit : [true, true],
-                            ag : angular.copy(master.ag),
-                            glyphs : angular.copy(master.children),
-                            parameters : angular.copy(master.parameters)
-                        });
+
                     }
                 });
+            });
+            angular.forEach(toBeCopied, function(master) {
+                $scope.uniqueMasterId++;
+                var masterName = "master" + $scope.uniqueMasterId;
+                var cpsFile = masterName + ".cps";
+                // duplicate cps file
+                var sourceCollection = $scope.data.stateful.controller.getMasterCPS(false, master.name);
+                var cpsString = "" + sourceCollection;
+                // create new cps file and new master
+                $scope.data.stateful.project.ruleController.write(false, cpsFile, cpsString);
+                $scope.data.stateful.project.createMaster(masterName, cpsFile, "skeleton.base");
+                $scope.data.stateful.project.open(masterName);
+                
+                // rebuilding the family tree of the master, to assign the right parent at each level
+                var duplicate = {};
+                angular.forEach(master, function(value, key) {
+                    // don't copy the angular hashkey
+                    if (key != "$$hashKey") {
+                        if (key == "children") {
+                            var duplicateGlyphs = [];
+                            angular.forEach(master.children, function(glyph) {
+                                var thisGlyph = {};
+                                angular.forEach(glyph, function(value, key) {
+                                    if (key == "parent") {
+                                        thisGlyph.parent = duplicate;
+                                    } else if (key == "children") {
+                                        var duplicatePenstrokes = [];
+                                        angular.forEach(glyph.children, function(penstroke) {
+                                            var thisPenstroke = {};
+                                            angular.forEach(penstroke, function(value, key) {
+                                                if (key == "parent") {
+                                                    thisPenstroke.parent = thisGlyph;
+                                                } else if (key == "children") {
+                                                    var duplicatePoints = [];
+                                                    angular.forEach(penstroke.children, function(point) {
+                                                        var thisPoint = {};
+                                                        angular.forEach(point, function(value, key) {
+                                                            if (key == "parent") {
+                                                                thisPoint.parent = thisPenstroke;
+                                                            } else {
+                                                                thisPoint[key] = value;
+                                                            }
+                                                        });
+                                                        duplicatePoints.push(thisPoint);
+                                                    });
+                                                    thisPenstroke.children = duplicatePoints;
+                                                } else {
+                                                    thisPenstroke[key] = value;
+                                                }
+                                            });
+                                            duplicatePenstrokes.push(thisPenstroke);
+                                        });
+                                        thisGlyph.children = duplicatePenstrokes;
+                                    } else  {
+                                        thisGlyph[key] = value;
+                                    }
+                                });
+                                duplicateGlyphs.push(thisGlyph);
+                            });
+                            duplicate.children = duplicateGlyphs;
+                        } else if (key == "parent") {
+                            duplicate.parent = $scope.data.sequences[0];
+                        } else  {
+                            console.log(key);
+                            duplicate[key] = value;
+                        }
+                    }
+                });
+
+                duplicate.id = $scope.uniqueMasterId;
+                duplicate.name = masterName;
+                duplicate.displayName = "Master " + $scope.uniqueMasterId;
+                duplicate.cpsFile = cpsFile;
+                duplicate.display = false;
+                duplicate.edit = [true, true];
+                console.log(duplicate);
+                $scope.data.sequences[0].masters.push(duplicate);
             });
             // close menu
             $scope.data.localmenu.masters = false;
