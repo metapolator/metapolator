@@ -140,7 +140,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var elements = $scope.findElementsEdit(level);
                 angular.forEach(elements, function(element, index) {
                     nrOfElements++;
-                    angular.forEach(element.element.parameters, function(elementParameter) {
+                    angular.forEach(element.parameters, function(elementParameter) {
                         if (elementParameter.name == theParameter.name) {
                             hasThisParameter = true;
                             angular.forEach(elementParameter.operators, function(operator) {
@@ -232,11 +232,11 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(elements, function(element) {
                 // if there is a range, we have to find the value for this element within the range
                 if (range) {
-                    thisValue = $scope.getRangeValue(element.element, parameterName, operator, level);
+                    thisValue = $scope.getRangeValue(element, parameterName, operator, level);
                 }
-
-                $scope.setParameterModel(element.master, element.element, parameterName, operatorName, thisValue, operatorId);
-                $scope.checkEffectiveValueEffects(element.element, level, parameterName, operator);
+                var elementsMaster = $scope.findMasterByElement(element);
+                $scope.setParameterModel(elementsMaster, element, parameterName, operatorName, thisValue, operatorId);
+                $scope.checkEffectiveValueEffects(element, level, parameterName, operator);
                 $scope.data.updateSelectionParameters(false);
             });
             if (range) {
@@ -585,8 +585,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         // get all the elements - depending on the level we are in - with edit == true
         var level = $scope.parameterLevel;
         var elements = $scope.findElementsEdit(level);
-        angular.forEach(elements, function(thisElement) {
-            var element = thisElement.element;
+        angular.forEach(elements, function(element) {
             var hasRule = false;
             if (element.parameters.length > 0) {
                 hasRule = true;
@@ -741,7 +740,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (oldParameterName != parameter.name) {
             var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
             angular.forEach(elements, function(element) {
-                angular.forEach(element.element.parameters, function(thisParameter) {
+                angular.forEach(element.parameters, function(thisParameter) {
                     if (thisParameter.name == oldParameterName) {
                         thisParameter.name = parameter.name;
                     }
@@ -756,7 +755,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var oldParameterName = $scope.data.view.parameterPanel.selected;
         var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
         angular.forEach(elements, function(element) {
-            var parameters = element.element.parameters;
+            var parameters = element.parameters;
             angular.forEach(parameters, function(thisParameter) {
                 if (thisParameter.name == oldParameterName) {
                     parameters.splice(parameters.indexOf(thisParameter), 1);
@@ -799,7 +798,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         if (oldOperatorName != operator.name) {
             var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
             angular.forEach(elements, function(element) {
-                angular.forEach(element.element.parameters, function(thisParameter) {
+                angular.forEach(element.parameters, function(thisParameter) {
                     if (thisParameter.name == oldParameterName) {
                         angular.forEach(thisParameter.operators, function(thisOperator) {
                             if (thisOperator.name == oldOperatorName) {
@@ -819,7 +818,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         var oldOperatorName = $scope.data.view.operatorPanel.selected;
         var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
         angular.forEach(elements, function(element) {
-            var parameters = element.element.parameters;
+            var parameters = element.parameters;
             angular.forEach(parameters, function(thisParameter) {
                 if (thisParameter.name == oldParameterName) {
                     angular.forEach(thisParameter.operators, function(thisOperator) {
@@ -835,7 +834,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     });
                 }
             });
-            $scope.checkEffectiveValueEffects(element.element, element.element.level, oldParameterName, XXXOPERATOR);
+            $scope.checkEffectiveValueEffects(element, element.level, oldParameterName, XXXOPERATOR);
             // todo check if we need the operator here
         });
         $scope.data.updateSelectionParameters(false);
@@ -861,11 +860,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach($scope.data.sequences, function(sequence) {
                 angular.forEach(sequence.masters, function(master) {
                     if (master.edit[0]) {
-                        var thisElement = {
-                            element : master,
-                            master : master
-                        };
-                        elements.push(thisElement);
+                        elements.push(master);
                     }
                 });
             });
@@ -875,12 +870,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                     if (master.edit[0]) {
                         angular.forEach(master.children, function(glyph) {
                             if (glyph.edit) {
-                                // changeParameter needs to know the master when editing on glyph level
-                                var thisElement = {
-                                    element : glyph,
-                                    master : master
-                                };
-                                elements.push(thisElement);
+                                elements.push(glyph);
                             }
                         });
                     }
@@ -893,12 +883,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                         angular.forEach(master.children, function(glyph) {
                             if (glyph.edit) {
                                 angular.forEach(glyph.children, function(penstroke) {
-                                    // changeParameter needs to know the master when editing on glyph level
-                                    var thisElement = {
-                                        element : penstroke,
-                                        master : master
-                                    };
-                                    elements.push(thisElement);
+                                    elements.push(penstroke);
                                 });
                             }
                         });
@@ -913,12 +898,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                             if (glyph.edit) {
                                 angular.forEach(glyph.children, function(penstroke) {
                                     angular.forEach(penstroke.children, function(point) {
-                                        // changeParameter needs to know the master when editing on glyph level
-                                        var thisElement = {
-                                            element : point,
-                                            master : master
-                                        };
-                                        elements.push(thisElement);
+                                        elements.push(point);
                                     });
                                 });
                             }
