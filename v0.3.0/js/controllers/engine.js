@@ -25,23 +25,17 @@ app.controller('engine', function($scope, sharedScope) {
                         // adding points to each penstroke
                         angular.forEach(thisStroke.children, function(thisPoint, l) {
                             // adding points to each penstroke
-                            var point = thisPoint.right.getComputedStyle();
+                            //var point = thisPoint.right.getComputedStyle();
                             var newPoint = {
                                 name : "point:i(" + l + ")",
                                 parent : null,
                                 level : "point",
                                 ruleIndex : null,
+                                apiReference: thisPoint,
                                 parameters : [{
                                     name : "Weight",
                                     cpsFactor : 1,
-                                    operators : [{
-                                        name : "=",
-                                        value : point.get("onLength")
-                                    }, {
-                                        name : "effectiveValue",
-                                        initial : point.get("onLength"),
-                                        value : point.get("onLength")
-                                    }]
+                                    operators : []
                                 }]
                             };
                             points.push(newPoint);
@@ -59,25 +53,18 @@ app.controller('engine', function($scope, sharedScope) {
                         });
                         penstrokes.push(newPenstroke);
                     });
-                    // temp hack untill #392 is fixed
-                    var initialWidth = thisGlyph._advanceWidth;
                     var newGlyph = {
                         name : thisGlyph.id,
                         parent : null,
                         level : "glyph",
                         ruleIndex : null,
                         edit : false,
+                        rendered : false,
+                        apiReference: thisGlyph,
                         parameters : [{
                             name : "Width",
                             cpsFactor : 1,
-                            operators : [{
-                                name : "=",
-                                value : initialWidth
-                            }, {
-                                name : "effectiveValue",
-                                initial : initialWidth,
-                                value : initialWidth
-                            }]
+                            operators : []
                         }],
                         children : penstrokes
                     };

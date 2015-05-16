@@ -19,7 +19,7 @@ function($scope, $sce, sharedScope, $http) {
     // NOTE: This is an array of arrays, to create the specimen dropdown picker's separators
     $scope.specimen = [[{
         name : "[Enter your own text]",
-        text : "Metapolator"
+        text : "Met"
     }], [{
         name : "3 Pangrams",
         text : "Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog. Bright vixens jump dozy fowl quack."

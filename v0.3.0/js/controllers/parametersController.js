@@ -38,12 +38,13 @@ app.controller("parametersController", function($scope, sharedScope) {
      // until #392 is fixed, we work only with width and weight
 
      $scope.parameters = [{
-     name : "Weight",
-     unit : "em",
-     step : 0.1,
-     decimals : 2,
-     effectiveLevel : "point"
-     }, {
+        name : "Weight",
+        cpsKey : "WeightF",
+        unit : "em",
+        step : 0.1,
+        decimals : 2,
+        effectiveLevel : 3
+    }, {
      name : "Width",
      unit : "em",
      step : 0.005,
@@ -70,14 +71,21 @@ app.controller("parametersController", function($scope, sharedScope) {
         unit : "em",
         step : 0.005,
         decimals : 4,
-        effectiveLevel : 1
+        effectiveLevel : 1,
+        getInitial : function(element){
+            // temp hack untill #392 is fixed
+            return element._advanceWidth;
+        }
     }, {
         name : "Weight",
         cpsKey : "WeightF",
         unit : "em",
         step : 0.1,
         decimals : 2,
-        effectiveLevel : 3
+        effectiveLevel : 3,
+        getInitial : function(element) {
+            return element.right.getComputedStyle().get("onLength");
+        }
     }];
 
     $scope.operators = [{
@@ -114,6 +122,37 @@ app.controller("parametersController", function($scope, sharedScope) {
         name : "effectiveValue", // todo find another place for the effective value. That way, we don't have to another updateSelectionParameters() (which makes the input fields lose their focus) to presents its value
         usesUnit : true,
     }];
+
+    /***
+     Measure the inital values on first render of a glyph
+     ***/
+
+    $scope.data.measureParameters = function(glyph) {
+        //  loop through all parameters
+        angular.forEach($scope.parameters, function(parameter) {
+            // find the effective children of the glyph depending on effective level of the parameter
+            var elements = $scope.getElementsByLevel(glyph, parameter.effectiveLevel, 1);
+            angular.forEach(elements, function(element) {
+                angular.forEach(element.parameters, function(thisParameter) {
+                    if (thisParameter.name == parameter.name) {
+                        var value = parameter.getInitial(element.apiReference);
+                        var initial = {
+                            name : "=",
+                            value : value
+                        };
+                        thisParameter.operators.push(initial);
+                        var effective = {
+                            name : "effectiveValue",
+                            initial : value,
+                            value : value
+                        };
+                        thisParameter.operators.push(effective);
+                    }    
+                });
+            });
+        });
+        glyph.rendered = true;
+    };
 
     /***
      Parameters selection functions
@@ -554,28 +593,30 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var newSetOperators = [];
                 var newOperator;
                 var changeOfOperator;
-                angular.forEach(parameter.operators, function(operator, index) {
-                    // reset the id of the operator. So later we know that operators without id are destacked
-                    operator.id = null;
-                    // to do: check if operator type is 'stack'.
-                    // This matters when non-stack operators (like =) are added
-                    if (operator.name == lastOperator.name) {
-                        if (operator.name == "+" || operator.name == "-") {
-                            newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                        } else if (operator.name == "x" || operator.name == "÷") {
-                            newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
+                if (parameter.operators.length > 0) {
+                    angular.forEach(parameter.operators, function(operator, index) {
+                        // reset the id of the operator. So later we know that operators without id are destacked
+                        operator.id = null;
+                        // to do: check if operator type is 'stack'.
+                        // This matters when non-stack operators (like =) are added
+                        if (operator.name == lastOperator.name) {
+                            if (operator.name == "+" || operator.name == "-") {
+                                newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
+                            } else if (operator.name == "x" || operator.name == "÷") {
+                                newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
+                            }
+                        } else {
+                            if (index != 0) {
+                                newSetOperators.push(newOperator);
+                            }
+                            newOperator = operator;
                         }
-                    } else {
-                        if (index != 0) {
-                            newSetOperators.push(newOperator);
-                        }
-                        newOperator = operator;
-                    }
-                    lastOperator = operator;
-
-                });
-                newSetOperators.push(newOperator);
-                parameter.operators = newSetOperators;
+                        lastOperator = operator;
+    
+                    });
+                    newSetOperators.push(newOperator);
+                    parameter.operators = newSetOperators; 
+                }
             });
         });
     };
@@ -728,40 +769,40 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.changeParameter = function(parameter) {
         /*
-        var oldParameterName = $scope.data.view.parameterPanel.selected;
-        if (oldParameterName != parameter.name) {
-            var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
-            angular.forEach(elements, function(element) {
-                angular.forEach(element.parameters, function(thisParameter) {
-                    if (thisParameter.name == oldParameterName) {
-                        thisParameter.name = parameter.name;
-                    }
-                });
-            });
-        }
-        $scope.data.updateSelectionParameters(false);
-        $scope.data.closeParameterPanel();
-        */
+         var oldParameterName = $scope.data.view.parameterPanel.selected;
+         if (oldParameterName != parameter.name) {
+         var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
+         angular.forEach(elements, function(element) {
+         angular.forEach(element.parameters, function(thisParameter) {
+         if (thisParameter.name == oldParameterName) {
+         thisParameter.name = parameter.name;
+         }
+         });
+         });
+         }
+         $scope.data.updateSelectionParameters(false);
+         $scope.data.closeParameterPanel();
+         */
     };
 
     $scope.removeParameter = function() {
         /*
-        var oldParameterName = $scope.data.view.parameterPanel.selected;
-        var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
-        angular.forEach(elements, function(element) {
-            var parameters = element.parameters;
-            angular.forEach(parameters, function(thisParameter) {
-                if (thisParameter.name == oldParameterName) {
-                    parameters.splice(parameters.indexOf(thisParameter), 1);
-                }
-                if (parameters.length == 0) {
-                    // todo: remove rule in api and in model
-                }
-            });
-        });
-        $scope.data.updateSelectionParameters(false);
-        $scope.data.closeParameterPanel();
-        */
+         var oldParameterName = $scope.data.view.parameterPanel.selected;
+         var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
+         angular.forEach(elements, function(element) {
+         var parameters = element.parameters;
+         angular.forEach(parameters, function(thisParameter) {
+         if (thisParameter.name == oldParameterName) {
+         parameters.splice(parameters.indexOf(thisParameter), 1);
+         }
+         if (parameters.length == 0) {
+         // todo: remove rule in api and in model
+         }
+         });
+         });
+         $scope.data.updateSelectionParameters(false);
+         $scope.data.closeParameterPanel();
+         */
     };
 
     $scope.data.closeParameterPanel = function() {
@@ -789,55 +830,55 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.changeOperator = function(operator) {
         /*
-        var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
-        var oldOperatorName = $scope.data.view.operatorPanel.selected;
-        if (oldOperatorName != operator.name) {
-            var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
-            angular.forEach(elements, function(element) {
-                angular.forEach(element.parameters, function(thisParameter) {
-                    if (thisParameter.name == oldParameterName) {
-                        angular.forEach(thisParameter.operators, function(thisOperator) {
-                            if (thisOperator.name == oldOperatorName) {
-                                thisOperator.name = operator.name;
-                            }
-                        });
-                    }
-                });
-            });
-        }
-        $scope.data.updateSelectionParameters(false);
-        $scope.data.closeOperatorPanel();
-        */
+         var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
+         var oldOperatorName = $scope.data.view.operatorPanel.selected;
+         if (oldOperatorName != operator.name) {
+         var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
+         angular.forEach(elements, function(element) {
+         angular.forEach(element.parameters, function(thisParameter) {
+         if (thisParameter.name == oldParameterName) {
+         angular.forEach(thisParameter.operators, function(thisOperator) {
+         if (thisOperator.name == oldOperatorName) {
+         thisOperator.name = operator.name;
+         }
+         });
+         }
+         });
+         });
+         }
+         $scope.data.updateSelectionParameters(false);
+         $scope.data.closeOperatorPanel();
+         */
     };
 
     $scope.removeOperator = function() {
         /*
-        var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
-        var oldOperatorName = $scope.data.view.operatorPanel.selected;
-        var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
-        angular.forEach(elements, function(element) {
-            var parameters = element.parameters;
-            angular.forEach(parameters, function(thisParameter) {
-                if (thisParameter.name == oldParameterName) {
-                    angular.forEach(thisParameter.operators, function(thisOperator) {
-                        var thisOperators = thisParameter.operators;
-                        if (thisOperator.name == oldOperatorName) {
-                            // todo: change by API
-                            thisOperators.splice(thisOperators.indexOf(thisOperator), 1);
-                        }
-                        if (thisOperators.length == 0) {
-                            parameters.splice(parameters.indexOf(thisParameter), 1);
-                            // todo: remove rule in api and in model
-                        }
-                    });
-                }
-            });
-            $scope.checkEffectiveValueEffects(element, element.level, oldParameterName, XXXOPERATOR);
-            // todo check if we need the operator here
-        });
-        $scope.data.updateSelectionParameters(false);
-        $scope.data.closeOperatorPanel();
-        */
+         var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
+         var oldOperatorName = $scope.data.view.operatorPanel.selected;
+         var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
+         angular.forEach(elements, function(element) {
+         var parameters = element.parameters;
+         angular.forEach(parameters, function(thisParameter) {
+         if (thisParameter.name == oldParameterName) {
+         angular.forEach(thisParameter.operators, function(thisOperator) {
+         var thisOperators = thisParameter.operators;
+         if (thisOperator.name == oldOperatorName) {
+         // todo: change by API
+         thisOperators.splice(thisOperators.indexOf(thisOperator), 1);
+         }
+         if (thisOperators.length == 0) {
+         parameters.splice(parameters.indexOf(thisParameter), 1);
+         // todo: remove rule in api and in model
+         }
+         });
+         }
+         });
+         $scope.checkEffectiveValueEffects(element, element.level, oldParameterName, XXXOPERATOR);
+         // todo check if we need the operator here
+         });
+         $scope.data.updateSelectionParameters(false);
+         $scope.data.closeOperatorPanel();
+         */
     };
 
     $scope.data.closeOperatorPanel = function() {
@@ -849,8 +890,8 @@ app.controller("parametersController", function($scope, sharedScope) {
             $(this).removeClass("selected-parameter");
         });
     };
-    
-    $scope.showOperator = function (thisOperator) {
+
+    $scope.showOperator = function(thisOperator) {
         var display = true, hasThisOperator = false;
         var level = $scope.data.view.operatorPanel.level;
         var parameterName = $scope.data.view.operatorPanel.selectedParameter;
@@ -868,7 +909,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
         return display;
     }
-
     /***
      Helper functions
      ***/
@@ -988,6 +1028,36 @@ app.controller("parametersController", function($scope, sharedScope) {
             element = $scope.findParentElement(element);
         }
         return element;
+    };
+
+    $scope.data.getGlyphByMasterAndGlyphName = function(glyphName, masterName) {
+        var thisGlyph;
+        angular.forEach($scope.data.sequences[0].masters, function(master) {
+            if (master.name == masterName) {
+                angular.forEach(master.children, function(glyph) {
+                    if (glyph.name == glyphName) {
+                        thisGlyph = glyph;
+                    }
+                });
+            }
+        });
+        return thisGlyph;
+    };
+    
+    $scope.getElementsByLevel = function(glyph, effectiveLevel, thisLevelIndex) {
+        var levelElements = [glyph];
+        var tempElements = [];
+        while (thisLevelIndex < effectiveLevel) {
+            thisLevelIndex++;
+            angular.forEach(levelElements, function(levelElement) {
+                angular.forEach(levelElement.children, function(childElement) {
+                    tempElements.push(childElement);
+                });
+            });
+            levelElements = tempElements;
+            tempElements = [];
+        }
+        return levelElements;
     };
 
     /***
