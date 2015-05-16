@@ -1145,6 +1145,11 @@
                     float: left;
                 }
                 
+                    .effective-icon {
+                        font-size: 20px;
+                        line-height: 16px;
+                    }
+                
                 .operator-value {
                     width: 50%;
                     display: inline-block;
