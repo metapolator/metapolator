@@ -3,9 +3,9 @@ Here are a few tips to make it happen:
 
 1. Discuss! 
 
-File an issue proposing what you want to do, so that other members of the community can help your ideas fit.
+[File an issue](https://guides.github.com/features/issues/) proposing what you want to do, so that other members of the community can help your ideas fit.
 
-We have a detailed interaction architecture plan that we are following to build this product. 
+We have a detailed interaction architecture plan (on [our wiki](https://github.com/metapolator/metapolator/wiki/interaction-design)), and [milestones](https://github.com/metapolator/metapolator/milestones) that we are following to build this product. 
 So it is possible that if you run ahead, your ideas could go to waste if they don't fit smoothly into the project. 
 We don't want that, we want you to become an active part of this adventure!
 
