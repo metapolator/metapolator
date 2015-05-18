@@ -148,9 +148,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.measureInitialForElement = function(element, thisParameter) {
-        console.log(element.name);
         var value = $scope.getParameterByName(thisParameter.name).getInitial(element.apiReference);
-        console.log(value);
         thisParameter.initial = value;
     };
 
@@ -453,7 +451,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                             $scope.measureInitialForElement(element, parameter);
                         }
                         initial = parameter.initial;
-                        console.log(initial);
                     }
 
                     angular.forEach(parameter.operators, function(operator) {
@@ -506,7 +503,6 @@ app.controller("parametersController", function($scope, sharedScope) {
         } else if (effectiveValue < min) {
             effectiveValue = min;
         }
-        console.log(effectiveValue);
         return effectiveValue;
     };
 

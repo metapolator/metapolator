@@ -6,7 +6,7 @@
         <div id="non-glyph-range" ng-if="selectedSpecimen.name != 'Glyph Range'">
             <ul id="specimen-ul-0">
                 <li ng-repeat="glyph in filteredGlyphs track by glyph.glyphId" ng-style="{'height': getLineHeight(glyph.glyphName) + 'px'}"><!--
-                    --><glyph id="glyph-spec1-{{$index}}" mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph><!--
+                    --><glyph type="master" id="glyph-spec1-{{$index}}" mastername="{{glyph.master.name}}" sequence="{{glyph.master.sequenceId}}" master="{{glyph.master.masterId}}" glyph="{{glyph.glyphName}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable" ng-class="{'master-edit': glyph.master.edit,'selected-glyph':askIfEditGlyph(glyph.glyphName, glyph.master.masterId, glyph.master.sequenceId)}"></glyph><!--
                 --></li>
             </ul>
         </div>
@@ -16,7 +16,7 @@
             <div ng-repeat="sequence in data.sequences">
                 <ul id="specimen-ul-0" class="glyph-range-master glyph-range" ng-style="{'margin-bottom': (fontSize * lineHeight / 2) + 'px'}"  ng-model="master.children" ng-repeat="master in sequence.masters" ng-if="master.display || master.edit[0]">
                     <li ng-style="{'height': (fontSize * lineHeight) + 'px', 'margin': (fontSize / 5) + 'px'}" ng-repeat="glyph in filteredRangeGlyphs=(master.children | rangeFilter:filterOptions.filter)" class="no-rubberband spec-glyph-box-range"><!--
-                        --><glyph id="glyph-spec1-{{$index}}" mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{glyph.id}}" glyph="{{glyph.name}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'master-edit': master.edit[0],'selected-glyph':(glyph.edit && master.edit[0])}"></glyph><!--
+                        --><glyph type="master" id="glyph-spec1-{{$index}}" mastername="{{master.name}}" sequence="{{sequence.id}}" master="{{glyph.id}}" glyph="{{glyph.name}}" ng-style="{'height': fontSize + 'px'}" class="spec-glyph-box catchme unselectable no-rubberband" ng-class="{'master-edit': master.edit[0],'selected-glyph':(glyph.edit && master.edit[0])}"></glyph><!--
                     --></li>
                 </ul>
             </div>

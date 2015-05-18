@@ -41,6 +41,7 @@ app.directive('glyph', function($compile) {
         link : function(scope, element, attrs, ctrl) {
             var masterName = attrs.mastername;
             var glyphName = attrs.glyph;
+            var type = attrs.type;
 
             element.bind('$destroy', function(event) {
                 if (scope.data.pill == "red") {
@@ -59,9 +60,11 @@ app.directive('glyph', function($compile) {
                 element.parent().addClass("specimen-break");
             } else {
                 if (scope.data.pill == "red") {
-                    var glyph = scope.data.getGlyphByMasterAndGlyphName(glyphName, masterName);
-                    if (!glyph.rendered) {
-                        scope.data.measureInitialForGlyph(glyph);
+                    if (type == "master") {
+                        var glyph = scope.data.getGlyphByMasterAndGlyphName(glyphName, masterName);
+                        if (!glyph.rendered) {
+                            scope.data.measureInitialForGlyph(glyph);
+                        }
                     }
                     var svg = scope.data.renderGlyphs(masterName, glyphName);
                     $compile(svg)(scope);
