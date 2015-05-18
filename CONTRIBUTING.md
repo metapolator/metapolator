@@ -1,6 +1,6 @@
 # How To Contribute To Metapolator
 
-We're looking forward to accepting your contributions to this project! 
+We're looking forward to accepting your contributions to this project, from a community idea to a code contribution that is implemented and shipping in the product.
 Here are a few tips to make it happen:
 
 ### 1\. Discuss! 
