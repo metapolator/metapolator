@@ -38,13 +38,13 @@ app.controller("parametersController", function($scope, sharedScope) {
      // until #392 is fixed, we work only with width and weight
 
      $scope.parameters = [{
-        name : "Weight",
-        cpsKey : "WeightF",
-        unit : "em",
-        step : 0.1,
-        decimals : 2,
-        effectiveLevel : 3
-    }, {
+     name : "Weight",
+     cpsKey : "WeightF",
+     unit : "em",
+     step : 0.1,
+     decimals : 2,
+     effectiveLevel : 3
+     }, {
      name : "Width",
      unit : "em",
      step : 0.005,
@@ -72,7 +72,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         step : 0.005,
         decimals : 4,
         effectiveLevel : 1,
-        getInitial : function(element){
+        getInitial : function(element) {
             // temp hack untill #392 is fixed
             return element._advanceWidth;
         }
@@ -136,18 +136,9 @@ app.controller("parametersController", function($scope, sharedScope) {
                 angular.forEach(element.parameters, function(thisParameter) {
                     if (thisParameter.name == parameter.name) {
                         var value = parameter.getInitial(element.apiReference);
-                        var initial = {
-                            name : "=",
-                            value : value
-                        };
-                        thisParameter.operators.push(initial);
-                        var effective = {
-                            name : "effectiveValue",
-                            initial : value,
-                            value : value
-                        };
-                        thisParameter.operators.push(effective);
-                    }    
+                        thisParameter.initial = value;
+                        thisParameter.effective = value;
+                    }
                 });
             });
         });
@@ -164,11 +155,20 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
         angular.forEach($scope.levels, function(level) {
             $scope.parameterSelection[level] = $scope.updateSelectionParametersElements(level);
+            $scope.updateEffectiveValueElements(level);
+        });
+    };
+    
+    $scope.updateEffectiveValueForAllLevels = function () {
+        angular.forEach($scope.levels, function(level) {
+            $scope.updateEffectiveValueElements(level);
         });
     };
 
     $scope.updateSelectionParametersElements = function(level) {
         var selectionParameters = [];
+        // get all the elements - depending on the level we are in - with edit == true
+        var elements = $scope.findElementsEdit(level);
         angular.forEach($scope.parameters, function(theParameter) {
             var theOperators = [];
             var hasThisParameter = false;
@@ -178,8 +178,6 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var nrOfHasOperator = 0;
                 var lowest = null;
                 var highest = null;
-                // get all the elements - depending on the level we are in - with edit == true
-                var elements = $scope.findElementsEdit(level);
                 angular.forEach(elements, function(element, index) {
                     nrOfElements++;
                     angular.forEach(element.parameters, function(elementParameter) {
@@ -254,11 +252,68 @@ app.controller("parametersController", function($scope, sharedScope) {
             if (hasThisParameter) {
                 selectionParameters.push({
                     name : theParameter.name,
-                    operators : theOperators
+                    operators : theOperators,
+                    hasContent: 1
+                });
+            } else {
+                selectionParameters.push({
+                    name : theParameter.name,
+                    hasContent: 0
                 });
             }
         });
         return selectionParameters;
+    };
+
+    $scope.updateEffectiveValueElements = function(level) {
+        var effectiveValuesThisLevel = [];
+        // get all the elements - depending on the level we are in - with edit == true
+        var elements = $scope.findElementsEdit(level);
+        angular.forEach($scope.parameters, function(theParameter) {
+            var effectiveLevel = theParameter.effectiveLevel;
+            // there are only effective values to find at the effective level of this parameter
+            if ($scope.getLevelIndex(level) == effectiveLevel) {
+                var hasThisParameter = false;
+                var lowest = null;
+                var highest = null;
+                angular.forEach(elements, function(element, index) {
+                    angular.forEach(element.parameters, function(elementParameter) {
+                        if (elementParameter.name == theParameter.name) {
+                            hasThisParameter = true;
+                            if (elementParameter.effective) {
+                                var elementValue = elementParameter.effective;
+                                if (elementValue < lowest || lowest == null) {
+                                    lowest = elementValue;
+                                }
+                                if (elementValue > highest || highest == null) {
+                                    highest = elementValue;
+                                }
+                            }
+                        }
+                    });
+                });
+                // if the values within a selection differ, we are having a range
+                var range = true;
+                if (lowest == highest) {
+                    range = false;
+                }
+                var thisEffectiveValue = {
+                    name : "effective",
+                    range : range,
+                    low : lowest,
+                    high : highest
+                };
+                // insert the effective values into the parameters selection
+                if (hasThisParameter) {
+                    angular.forEach($scope.parameterSelection[level], function(parameterOfSelection) {
+                        if (parameterOfSelection.name == theParameter.name) {
+                            parameterOfSelection.effective = thisEffectiveValue;
+                            parameterOfSelection.hasContent++;
+                         }
+                     });
+                }
+            }
+        });
     };
 
     /***
@@ -283,7 +338,7 @@ app.controller("parametersController", function($scope, sharedScope) {
                 var elementsMaster = $scope.findMasterByElement(element);
                 $scope.setParameterModel(elementsMaster, element, parameterName, operatorName, thisValue, operatorId);
                 $scope.checkEffectiveValueEffects(element, level, parameterName, operator);
-                $scope.data.updateSelectionParameters(false);
+                $scope.updateEffectiveValueForAllLevels();
             });
             if (range) {
                 // update the range boundaries after setting each element,
@@ -352,11 +407,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(levelElements, function(thisElement) {
                 angular.forEach(thisElement.parameters, function(parameter) {
                     if (parameter.name == parameterName) {
-                        angular.forEach(parameter.operators, function(operator) {
-                            if (operator.name == "effectiveValue") {
-                                operator.value = $scope.updateEffectiveValue(thisElement, parameterName);
-                            }
-                        });
+                        parameter.effective = $scope.updateEffectiveValue(thisElement, parameterName);
                     }
                 });
                 if (!effectiveLocal) {
@@ -368,9 +419,7 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
                     angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == "effectiveValue") {
-                            operator.value = $scope.updateEffectiveValue(element, parameterName);
-                        }
+                        parameter.effective = $scope.updateEffectiveValue(element, parameterName);
                     });
                 }
             });
@@ -381,10 +430,13 @@ app.controller("parametersController", function($scope, sharedScope) {
     };
 
     $scope.updateEffectiveValue = function(element, parameterName) {
-        var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0;
+        var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0, initial;
         while (element.level != "sequence") {
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
+                    if(parameter.initial) {
+                        initial = parameter.initial;
+                    }
                     angular.forEach(parameter.operators, function(operator) {
                         if (!plus[levelCounter]) {
                             plus[levelCounter] = [];
@@ -414,7 +466,11 @@ app.controller("parametersController", function($scope, sharedScope) {
             levelCounter++;
             element = $scope.findParentElement(element);
         }
-        effectiveValue = is;
+        if (is) {
+            effectiveValue = is;
+        } else {
+            effectiveValue = initial;
+        }
         angular.forEach(multiply, function(multiplyLevelSet) {
             angular.forEach(multiplyLevelSet, function(multiplier) {
                 effectiveValue *= multiplier;
@@ -450,12 +506,10 @@ app.controller("parametersController", function($scope, sharedScope) {
             var parentCPSfactor = $scope.findParentCPSfactor(element, parameterName);
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
-                    angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == "effectiveValue") {
-                            effeciveValue = operator.value;
-                            initialValue = operator.initial;
-                        }
-                    });
+                    if (parameter.effective) {
+                        effeciveValue = parameter.effective;
+                        initialValue = parameter.initial;
+                    }
                     cpsFactor = effeciveValue / (initialValue * parentCPSfactor);
                     parameter.cpsFactor = cpsFactor;
                 }
@@ -612,10 +666,10 @@ app.controller("parametersController", function($scope, sharedScope) {
                             newOperator = operator;
                         }
                         lastOperator = operator;
-    
+
                     });
                     newSetOperators.push(newOperator);
-                    parameter.operators = newSetOperators; 
+                    parameter.operators = newSetOperators;
                 }
             });
         });
@@ -1043,7 +1097,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         });
         return thisGlyph;
     };
-    
+
     $scope.getElementsByLevel = function(glyph, effectiveLevel, thisLevelIndex) {
         var levelElements = [glyph];
         var tempElements = [];

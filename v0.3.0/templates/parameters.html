@@ -3,7 +3,7 @@
         <div class="parameter-level" ng-repeat="level in levels" ng-if="areElementsSelected(level)">
             <div class="parameters-selection-head">{{level}}</div><div class="parameters-add" ng-click="parametersWindow($event, 1, level)">+</div>
             <div class="parameters-selection-body">
-                <div ng-repeat="parameter in parameterSelection[level]" class="parameter-row">
+                <div ng-repeat="parameter in parameterSelection[level]" class="parameter-row" ng-if="parameter.hasContent > 0">
                     <div ng-repeat="operator in parameter.operators track by $index">
                         <div ng-if="operator.name != 'effectiveValue'">
                             <div ng-click="openParameterPanel(parameter, $event, level)" class="parameter-key"><span ng-if="$index == 0">{{parameter.name}}</span></div>
@@ -18,15 +18,15 @@
                                 </span>
                             </div>
                         </div>
-                        <div ng-if="operator.name == 'effectiveValue'">
-                            <div class="parameter-key"></div>
-                            <div class="parameter-operator effective-icon">&#10171;</div>
-                            <div class="operator-value operator-value-effective">
-                                <span ng-if="!operator.range">{{operator.low.current}}</span>
-                                <span ng-if="operator.range">{{operator.low.current}} to {{operator.high.current}}</span>
-                            </div>
-                        </div>
                     </div> 
+                    <div ng-if="parameter.effective">
+                        <div class="parameter-key"><span ng-if="parameter.hasContent == 1">{{parameter.name}}</span></div>
+                        <div class="parameter-operator effective-icon">&#10171;</div>
+                        <div class="operator-value operator-value-effective">
+                            <span ng-if="!parameter.effective.range">{{parameter.effective.low}}</span>
+                            <span ng-if="parameter.effective.range">{{parameter.effective.low}} to {{parameter.effective.high}}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
