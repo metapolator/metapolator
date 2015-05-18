@@ -1,9 +1,15 @@
+# How To Contribute To Metapolator
+
 We're looking forward to accepting your contributions to this project! 
 Here are a few tips to make it happen:
 
-1. Discuss! 
+### 1\. Discuss! 
 
-[File an issue](https://guides.github.com/features/issues/) proposing what you want to do, so that other members of the community can help your ideas fit.
+First step is to propose what you want to do, so that other members of the community can help your ideas fit into the architecture and schedule of the project.
+
+If you just have an idea, chat with us in our [G+ Community Page](https://plus.google.com/communities/110027004108709154749)
+
+If you have a concrete set of tasks already formed, [file an issue](https://guides.github.com/features/issues/) outlining them. 
 
 We have a detailed interaction architecture plan (on [our wiki](https://github.com/metapolator/metapolator/wiki/interaction-design)), and [milestones](https://github.com/metapolator/metapolator/milestones) that we are following to build this product. 
 So it is possible that if you run ahead, your ideas could go to waste if they don't fit smoothly into the project. 
@@ -17,20 +23,22 @@ Or the discussions lose sight of whats important and become centered around init
 The balance of those risks is up to us all to keep steady. 
 When you drop a note on the issue tracker, we'll take your ideas seriously. 
 
-2\. Prototype! 
+### 2\. Prototype! 
 
 Nothing is better than taking action and making your ideas real. 
 After you're satisfied that your ideas will be accepted, please plough ahead! 
 Some things can fit in a [http://jsbin.com] prototype, while others will need to live in your fork of Metapolator.
 
-3\. Pull Request!
+### 3\. Pull Request!
 
 When your prototype is ready to consider for inclusion in the next release, make a [pull request](https://help.github.com/articles/using-pull-requests/).
 
-4\. Credit!
+### 4\. Credit!
 
 After your contribution is included, you will be listed in the CONTRIBUTORS and/or AUTHORS files. 
 CONTRIBUTORS is the official list of people who can contribute (and typically have contributed) code to this repository, while the AUTHORS file lists the copyright holders.
+
+## Further Reading
 
 The contribution guide of nodejs covers most aspects of what we do pretty well: <http://nodejs.org/documentation/contributing/>
 
