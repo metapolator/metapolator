@@ -43,8 +43,42 @@ app.factory("sharedScope", function($rootScope) {
         view : {
             menuItems : ["Parameters", "Design Spaces", "Fonts"],
             viewState : 0,
-            panels : [3, 10, 3, 10, 3, 1, 12],
+            panels : [{
+                share : 3,
+                restricted : true,
+                giveTo: [1],
+                min : 180,
+                max : 270
+            }, {
+                share : 10,
+                restricted : false
+            }, {
+                share : 3,
+                restricted : true,
+                giveTo: [1, 3],
+                min : 180,
+                max : 270
+            }, {
+                share : 10,
+                restricted : false
+            }, {
+                share : 3,
+                restricted : true,
+                giveTo: [3, 6],
+                min : 180,
+                max : 270
+            }, {
+                share : 1,
+                restricted : true,
+                gitTo: [6],
+                min : 80,
+                max : 80
+            }, {
+                share : 12,
+                restricted : false
+            }],
             totalPanelParts : 42,
+            dividerTrigger : 0,
             dividers : [{
                 add : 0,
                 subtract : 1,
@@ -103,19 +137,19 @@ app.factory("sharedScope", function($rootScope) {
             }],
             parameterOperatorPanel : 0,
             parameterPanel : {
-                display: false,
-                left: null,
-                top: null,
-                selected: null,
-                level: null
+                display : false,
+                left : null,
+                top : null,
+                selected : null,
+                level : null
             },
             operatorPanel : {
-                display: false,
-                left: null,
-                top: null,
-                selectedParameter: null,
-                selected: null,
-                level: null
+                display : false,
+                left : null,
+                top : null,
+                selectedParameter : null,
+                selected : null,
+                level : null
             }
 
         },

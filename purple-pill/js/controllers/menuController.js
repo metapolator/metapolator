@@ -83,7 +83,7 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         var end = $scope.data.view.viewState * 2;
         var parts = 0;
         for (var i = 0; i < end; i++) {
-            parts += $scope.data.view.panels[i];
+            parts += $scope.data.view.panels[i].share;
         }
         var x = "calc(" + (parts / -16) + " * 100%)";
         return x;
@@ -98,12 +98,46 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         var difference = 80 - exportWidth;
         var newShare = ((windowWidth * 12 / 16) - difference) / windowWidth * 16;
         var newShare2 = ((windowWidth / 16) + difference) / windowWidth * 16;
-        $scope.data.view.panels[5] = newShare2;
-        $scope.data.view.panels[6] = newShare;
+        $scope.data.view.panels[5].share = newShare2;
+        $scope.data.view.panels[6].share = newShare;
         exportWidth = 80;
         $scope.data.fontExportWidth = exportWidth;
     };
 
+    $scope.reAdjustPanels = function (){
+        var windowWidth = $(window).outerWidth();
+        angular.forEach($scope.data.view.panels, function(panel) {
+            if (panel.restricted) {
+                var width = panel.share / 16 * windowWidth, difference;
+                if (width < panel.min) {
+                    difference = width - panel.min;
+                } else if (width > panel.max) {
+                    difference = width - panel.max;
+                }
+                if (difference) {
+                    panel.share = (width - difference) / windowWidth * 16;
+                    angular.forEach(panel.giveTo, function(giveTo) {
+                        var giveToPanel = $scope.data.view.panels[giveTo];
+                        var newShare = ((giveToPanel.share / 16 * windowWidth) + difference) / windowWidth * 16;
+                        giveToPanel.share = newShare; 
+                    });
+                }
+            }
+        });
+        $scope.data.view.totalPanelParts = $scope.data.getTotalParts();
+        // trigger to reposition the dividers
+        $scope.data.view.dividerTrigger++;
+    };
+    
+    $scope.data.getTotalParts = function() {
+        var parts = 0;
+        angular.forEach($scope.data.view.panels, function(panel) {
+            parts += panel.share;
+        });  
+        return parts;
+    };
+
     $scope.setFontExportPanel();
+    $scope.reAdjustPanels();
 
 });

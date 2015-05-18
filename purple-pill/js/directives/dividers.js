@@ -13,6 +13,10 @@ app.directive('divider', function($document) {
                 setContainment();
             });
             
+            scope.$watch('data.view.dividerTrigger', function(newVal) {
+                return redraw();
+            }, true);
+            
             redraw();
             setContainment();
             
@@ -28,7 +32,7 @@ app.directive('divider', function($document) {
                     }
                     startAdd = thisPosition / screenWidth * screenParts;
                     if (divider.mirror) {
-                        startMirror = scope.data.view.panels[divider.mirror];
+                        startMirror = scope.data.view.panels[divider.mirror].share;
                     }
                 },
                 drag : function() {
@@ -38,14 +42,14 @@ app.directive('divider', function($document) {
                         thisPosition = screenWidth - $(this).offset().left;
                     }
                     var addShare = thisPosition / screenWidth * screenParts;
-                    var subtractShare = screenParts - scope.data.view.panels[divider.dead] - addShare;
-                    scope.data.view.panels[divider.add] = addShare;
-                    scope.data.view.panels[divider.subtract] = subtractShare;
+                    var subtractShare = screenParts - scope.data.view.panels[divider.dead].share - addShare;
+                    scope.data.view.panels[divider.add].share = addShare;
+                    scope.data.view.panels[divider.subtract].share = subtractShare;
                     if (divider.mirror) {
                         mirrorShare = startMirror - (addShare - startAdd);
-                        scope.data.view.panels[divider.mirror] = mirrorShare;
+                        scope.data.view.panels[divider.mirror].share = mirrorShare;
                     }
-                    scope.data.view.totalPanelParts = getTotalParts();
+                    scope.data.view.totalPanelParts = scope.data.getTotalParts();
                     scope.$apply();
                 },
                 stop : function() {
@@ -63,15 +67,6 @@ app.directive('divider', function($document) {
                 }
             }
             
-            function getTotalParts() {
-                var parts = 0;
-                angular.forEach(scope.data.view.panels, function(panel) {
-                    parts += panel;
-                });  
-                return parts;
-            }
-            
-            
             function redraw() {
                 screenWidth = $(window).outerWidth();
                 screenParts = getScreenParts();
@@ -80,13 +75,13 @@ app.directive('divider', function($document) {
                 function getPosition() {
                     var x = 0;
                     angular.forEach(divider.position, function(panelId) {
-                        x += scope.data.view.panels[panelId] / screenParts * screenWidth;
+                        x += scope.data.view.panels[panelId].share / screenParts * screenWidth;
                     });  
                     return x;
                 }
                 
                 function getScreenParts() {
-                    var parts = scope.data.view.panels[0] + scope.data.view.panels[1] + scope.data.view.panels[2];
+                    var parts = scope.data.view.panels[0].share + scope.data.view.panels[1].share + scope.data.view.panels[2].share;
                     return parts;
                 }
             }
