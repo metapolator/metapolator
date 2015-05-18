@@ -268,6 +268,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     // todo: combine this function more with $scope.updateSelectionParametersElements, so the selectionmaker doesn't have to run
     // twice through the elements. The updating of the effective values has to be able to be called seperatly, otherwise when updated
     // the focus of the inputs will be lost if we always combine it with updating the parameters selection
+    // or when a new parameter+operator is added, just push it to the selection parameters.
     $scope.updateEffectiveValueElements = function(level) {
         var effectiveValuesThisLevel = [];
         // get all the elements - depending on the level we are in - with edit == true
