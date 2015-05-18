@@ -5,12 +5,15 @@ Here are a few tips to make it happen:
 
 File an issue proposing what you want to do, so that other members of the community can help your ideas fit.
 
-We want your ideas to fit smoothly into the project and for you to become an active part of this adventure, not for them to go to waste. 
-We have a detailed interaction architecture plan that we are following to build this product.
+We have a detailed interaction architecture plan that we are following to build this product. 
+So it is possible that if you run ahead, your ideas could go to waste if they don't fit smoothly into the project. 
+We don't want that, we want you to become an active part of this adventure!
+
 You might not want to prematurely address the community via the issue tracker with a detailed proposal, and instead explore your ideas by prototyping them. 
 Surely this risks wasting their time prototyping stuff that doesn't fit and is never merged. 
 On the other hand, you just as surely risk wasting time in conceptual discussions that turn out to lead to dead ends because they weren't put into practice and tested soon enough. 
 Or the discussions lose sight of whats important and become centered around initial details and descend into bike-shedding. 
+
 The balance of those risks is up to us all to keep steady. 
 When you drop a note on the issue tracker, we'll take your ideas seriously. 
 
