@@ -2,7 +2,7 @@
  * This can be distilled down to the non es6 file by running the following
  * from the root of the git repository
  *
- * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
+ * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/UFOExportController.es6.js; popd
  *
  */
 /**
@@ -481,7 +481,7 @@
  * This can be distilled down to the non es6 file by running the following
  * from the root of the git repository
  *
- * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/ExportController.es6.js; popd
+ * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/project/UFOExportController.es6.js; popd
  *
  */
 define([
@@ -503,13 +503,13 @@ define([
       , CPSKeyError = errors.CPSKey
     ;
 
-    function ExportController(master, model, glyphSet, precision) {
+    function UFOExportController(master, model, glyphSet, precision) {
         this._master = master;
         this._model = model;
         this._glyphSet = glyphSet;
         this._precision = precision;
     }
-    var _p = ExportController.prototype;
+    var _p = UFOExportController.prototype;
 
     // FIXME: "export" is a future reserved keyword
     _p.export = function() {
@@ -529,8 +529,8 @@ define([
             drawFunc = this.drawGlyphToPointPen.bind(
                 this
               , {
-                      penstroke: ExportController.renderPenstrokeOutline
-                    , contour: ExportController.renderContour
+                      penstroke: UFOExportController.renderPenstrokeOutline
+                    , contour: UFOExportController.renderContour
                 }
               , this._model, glyph);
 
@@ -711,7 +711,7 @@ define([
         }
         pen.endPath();
     }
-    ExportController.renderPenstrokeOutline = renderPenstrokeOutline;
+    UFOExportController.renderPenstrokeOutline = renderPenstrokeOutline;
 
     function renderContour( pen, model, contour ) {
         var points = contour.children
@@ -737,7 +737,7 @@ define([
         }
         pen.endPath();
     }
-    ExportController.renderContour = renderContour;
+    UFOExportController.renderContour = renderContour;
 
     function renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
@@ -764,7 +764,7 @@ define([
         }
         pen.endPath();
     }
-    ExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
+    UFOExportController.renderPenstrokeCenterline = renderPenstrokeCenterline;
 
     function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
         var generator = regeneratorRuntime.mark(function generator() {
@@ -825,14 +825,14 @@ define([
 
         return generator();
     }
-    ExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
+    UFOExportController.drawGlyphToPointPenGenerator = drawGlyphToPointPenGenerator;
 
-    ExportController.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
+    UFOExportController.drawGlyphToPointPen = function(renderer, model, glyph, pen ) {
         var gen = drawGlyphToPointPenGenerator(renderer, model, glyph, pen);
         while(!(gen.next().done));
     };
 
-    _p.drawGlyphToPointPen = ExportController.drawGlyphToPointPen;
+    _p.drawGlyphToPointPen = UFOExportController.drawGlyphToPointPen;
 
-    return ExportController;
+    return UFOExportController;
 });
