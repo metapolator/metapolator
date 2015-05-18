@@ -127,7 +127,7 @@ app.controller("parametersController", function($scope, sharedScope) {
      Measure the inital values on first render of a glyph
      ***/
 
-    $scope.data.measureParameters = function(glyph) {
+    $scope.data.measureInitialForGlyph = function(glyph) {
         //  loop through all parameters
         angular.forEach($scope.parameters, function(parameter) {
             // find the effective children of the glyph depending on effective level of the parameter
@@ -135,14 +135,23 @@ app.controller("parametersController", function($scope, sharedScope) {
             angular.forEach(elements, function(element) {
                 angular.forEach(element.parameters, function(thisParameter) {
                     if (thisParameter.name == parameter.name) {
-                        var value = parameter.getInitial(element.apiReference);
-                        thisParameter.initial = value;
-                        thisParameter.effective = value;
+                        if (!thisParameter.initial) {
+                            var value = parameter.getInitial(element.apiReference);
+                            thisParameter.initial = value;
+                            thisParameter.effective = value;
+                        }
                     }
                 });
             });
         });
         glyph.rendered = true;
+    };
+
+    $scope.measureInitialForElement = function(element, thisParameter) {
+        console.log(element.name);
+        var value = $scope.getParameterByName(thisParameter.name).getInitial(element.apiReference);
+        console.log(value);
+        thisParameter.initial = value;
     };
 
     /***
@@ -158,8 +167,8 @@ app.controller("parametersController", function($scope, sharedScope) {
             $scope.updateEffectiveValueElements(level);
         });
     };
-    
-    $scope.updateEffectiveValueForAllLevels = function () {
+
+    $scope.updateEffectiveValueForAllLevels = function() {
         angular.forEach($scope.levels, function(level) {
             $scope.updateEffectiveValueElements(level);
         });
@@ -253,12 +262,12 @@ app.controller("parametersController", function($scope, sharedScope) {
                 selectionParameters.push({
                     name : theParameter.name,
                     operators : theOperators,
-                    hasContent: 1
+                    hasContent : 1
                 });
             } else {
                 selectionParameters.push({
                     name : theParameter.name,
-                    hasContent: 0
+                    hasContent : 0
                 });
             }
         });
@@ -313,8 +322,8 @@ app.controller("parametersController", function($scope, sharedScope) {
                         if (parameterOfSelection.name == theParameter.name) {
                             parameterOfSelection.effective = thisEffectiveValue;
                             parameterOfSelection.hasContent++;
-                         }
-                     });
+                        }
+                    });
                 }
             }
         });
@@ -435,12 +444,18 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.updateEffectiveValue = function(element, parameterName) {
         var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0, initial;
+
         while (element.level != "sequence") {
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
-                    if(parameter.initial) {
+                    if (levelCounter == 0) {
+                        if (!parameter.initial) {
+                            $scope.measureInitialForElement(element, parameter);
+                        }
                         initial = parameter.initial;
+                        console.log(initial);
                     }
+
                     angular.forEach(parameter.operators, function(operator) {
                         if (!plus[levelCounter]) {
                             plus[levelCounter] = [];
@@ -491,6 +506,7 @@ app.controller("parametersController", function($scope, sharedScope) {
         } else if (effectiveValue < min) {
             effectiveValue = min;
         }
+        console.log(effectiveValue);
         return effectiveValue;
     };
 
@@ -510,10 +526,8 @@ app.controller("parametersController", function($scope, sharedScope) {
             var parentCPSfactor = $scope.findParentCPSfactor(element, parameterName);
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
-                    if (parameter.effective) {
-                        effeciveValue = parameter.effective;
-                        initialValue = parameter.initial;
-                    }
+                    effeciveValue = parameter.effective;
+                    initialValue = parameter.initial;
                     cpsFactor = effeciveValue / (initialValue * parentCPSfactor);
                     parameter.cpsFactor = cpsFactor;
                 }

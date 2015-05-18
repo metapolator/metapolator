@@ -61,7 +61,7 @@ app.directive('glyph', function($compile) {
                 if (scope.data.pill == "red") {
                     var glyph = scope.data.getGlyphByMasterAndGlyphName(glyphName, masterName);
                     if (!glyph.rendered) {
-                        scope.data.measureParameters(glyph);
+                        scope.data.measureInitialForGlyph(glyph);
                     }
                     var svg = scope.data.renderGlyphs(masterName, glyphName);
                     $compile(svg)(scope);
