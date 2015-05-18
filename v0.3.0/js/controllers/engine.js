@@ -81,7 +81,7 @@ app.controller('engine', function($scope, sharedScope) {
                     parent : $scope.data.sequences[0],
                     displayName : masterName,
                     cpsFile : cpsFile,
-                    ruleIndex : 3,
+                    ruleIndex : 3, // hardcoded, until #593 fixes
                     display : false,
                     edit : [true, false],
                     ag : "Ag",
