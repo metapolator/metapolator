@@ -124,7 +124,7 @@ app.controller("parametersController", function($scope, sharedScope) {
     }];
 
     /***
-     Measure the inital values on first render of a glyph
+     Measurement functions
      ***/
 
     $scope.data.measureInitialForGlyph = function(glyph) {
@@ -150,6 +150,16 @@ app.controller("parametersController", function($scope, sharedScope) {
     $scope.measureInitialForElement = function(element, thisParameter) {
         var value = $scope.getParameterByName(thisParameter.name).getInitial(element.apiReference);
         thisParameter.initial = value;
+    };
+    
+    $scope.data.checkBaseMaster = function(instanceName, glyphName) {
+        var instance = $scope.data.getInstanceByName(instanceName);
+        angular.forEach(instance.axes, function(axis) {
+            var glyph = $scope.data.getGlyphByMasterAndGlyphName(glyphName, axis.masterName);
+            if (!glyph.rendered) {
+                $scope.updateCPSforGlyph(glyph);
+            }
+        });
     };
 
     /***
@@ -409,7 +419,14 @@ app.controller("parametersController", function($scope, sharedScope) {
                 thisLevelIndex++;
                 angular.forEach(levelElements, function(levelElement) {
                     angular.forEach(levelElement.children, function(childElement) {
-                        tempElements.push(childElement);
+                        // for efficiency reasons we are only afffecting the glyphs which are (or were) visible (and therefor have been measured already)
+                        if (thisLevelIndex == 1) {
+                            if (childElement.rendered) {
+                                tempElements.push(childElement);
+                            }
+                        } else {
+                            tempElements.push(childElement);
+                        }
                     });
                 });
                 levelElements = tempElements;
@@ -442,7 +459,6 @@ app.controller("parametersController", function($scope, sharedScope) {
 
     $scope.updateEffectiveValue = function(element, parameterName) {
         var min, max, is, effectiveValue, plus = [], multiply = [], levelCounter = 0, initial;
-
         while (element.level != "sequence") {
             angular.forEach(element.parameters, function(parameter) {
                 if (parameter.name == parameterName) {
@@ -505,6 +521,10 @@ app.controller("parametersController", function($scope, sharedScope) {
         }
         return effectiveValue;
     };
+    
+    /***
+     CPS functions
+     ***/
 
     $scope.updateCPSfactor = function(element, parameterName) {
         var multiply = [], cpsFactor = 1, master;
@@ -580,6 +600,53 @@ app.controller("parametersController", function($scope, sharedScope) {
 
         }
         return ancestorCPSfactor;
+    };
+    
+    // this functions checks if this glyph needs to add rules (on glyph, stroke or point level)
+    // because it wasn't rendered before by the parameters-specimen, but now a metapolation master is using this glyph
+    $scope.updateCPSforGlyph = function(glyph) {
+        var measured = false;
+        var elements = [glyph.parent];
+        var level = 0;
+        var inheritance = {};
+        var tempElements = [];
+        // go down the element tree from master to point
+        while (level < 4) {
+            angular.forEach(elements, function(element) {
+                angular.forEach(element.parameters, function(parameter) {
+                    var thisParameterLevel = $scope.getParameterByName(parameter.name).effectiveLevel;
+                    angular.forEach(parameter.operators, function(operator) {
+                        var thisOperator = $scope.getOperatorByName(operator.name);
+                        // check if the used operator is a `+` or etc. If so, it causes inheritance
+                        if (!thisOperator.effectiveLocal) {
+                            inheritance[parameter.name] = true;
+                        }
+                    });
+                    // if the parameter has inheritance and we are at the effective level of the parameter, then update the elements cps
+                    if (inheritance[parameter.name] && thisParameterLevel == level) {
+                        if (!measured) {
+                            // set initial values
+                            $scope.data.measureInitialForGlyph(glyph);
+                            glyph.rendered = true;
+                        }
+                        // update effective
+                        parameter.effective = $scope.updateEffectiveValue(element, parameter.name);
+                        $scope.updateCPSfactor(element, parameter.name);
+                    }
+                });
+                if (level == 0) {
+                    // when we go down the tree we only want to take the glyph we are looking at
+                    tempElements.push(glyph);
+                } else {
+                    angular.forEach(element.children, function(child) {
+                        tempElements.push(child);
+                    });
+                }
+            });
+            elements = tempElements;
+            tempElements = [];
+            level++;
+        }
     };
 
     /***
@@ -976,7 +1043,8 @@ app.controller("parametersController", function($scope, sharedScope) {
             display = false;
         }
         return display;
-    }
+    };
+    
     /***
      Helper functions
      ***/

@@ -446,4 +446,16 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             }
         }
     };
+    
+    // helper functions
+    
+    $scope.data.getInstanceByName = function(instanceName) {
+        var thisInstance;
+        angular.forEach($scope.data.families[0].instances, function(instance) {
+            if (instance.name == instanceName) {
+                thisInstance = instance;
+            }
+        });
+        return thisInstance;
+    };
 });

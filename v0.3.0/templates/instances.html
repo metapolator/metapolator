@@ -25,7 +25,7 @@
                     <span class="list-view-col ag" type="instance" mastername="{{instance.name}}" masterag="{{instance.ag}}" ng-model="instance.ag" ng-click="toggleDisplay(instance)" ng-class="{'selected': instance.display}">
                         <ul>
                             <li ng-repeat="x in instance.ag"><!--
-                            --><glyph mastername="{{instance.name}}" glyph="{{x}}"></glyph><!--
+                            --><glyph  type="instance"  mastername="{{instance.name}}" glyph="{{x}}"></glyph><!--
                             --></li>
                         </ul>
                     </span>

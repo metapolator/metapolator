@@ -42,6 +42,7 @@ app.directive('glyph', function($compile) {
             var masterName = attrs.mastername;
             var glyphName = attrs.glyph;
             var type = attrs.type;
+            var parent = element.parent();
 
             element.bind('$destroy', function(event) {
                 if (scope.data.pill == "red") {
@@ -50,14 +51,13 @@ app.directive('glyph', function($compile) {
             });
 
             if (glyphName == "space") {
-                element.parent().addClass("space-character");
-            }
-            if (glyphName == "*n") {
-                element.parent().addClass("line-break");
+                parent.addClass("space-character");
+            } else if (glyphName == "*n") {
+                parent.addClass("line-break");
             } else if (glyphName == "*p") {
-                element.parent().addClass("paragraph-break");
+                parent.addClass("paragraph-break");
             } else if (glyphName == "*specimenbreak") {
-                element.parent().addClass("specimen-break");
+                parent.addClass("specimen-break");
             } else {
                 if (scope.data.pill == "red") {
                     if (type == "master") {
@@ -65,11 +65,13 @@ app.directive('glyph', function($compile) {
                         if (!glyph.rendered) {
                             scope.data.measureInitialForGlyph(glyph);
                         }
+                    } else if (type == "instance") {
+                        // check if the requested glyph has its glyph of the basemasters rendered already
+                        scope.data.checkBaseMaster(masterName, glyphName);
                     }
                     var svg = scope.data.renderGlyphs(masterName, glyphName);
                     $compile(svg)(scope);
                     element.append(svg);
-                    //console.log("append: " + glyphName + " " + new Date().getTime());
                 } else {
                     var svg = scope.data.fakeSVG[glyphName];
                     element.append(svg);
