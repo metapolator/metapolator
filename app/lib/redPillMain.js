@@ -29,7 +29,7 @@ else {
     ) {
         return {
             io: io
-          , fsEvents: socketio.connect('/fsEvents/project')
+          , fsEvents: socketio.connect(window.location.origin + '/fsEvents/project')
           , promise: false
           // NOTE: using `loadTextEditor:true` in this io context works
           // despite of the missing CodeMirror buffer update on file change
