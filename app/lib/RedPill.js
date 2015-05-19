@@ -1,10 +1,15 @@
 define([
     'metapolator/errors'
   , 'metapolator/webAPI/window'
+  , 'metapolator/webAPI/document'
+  , 'metapolator/ui/services/GlyphRendererAPI'
   , 'codemirror/lib/codemirror'
 ], function(
     errors
   , window
+  , document
+  , GlyphRendererAPI
+  , _
 ) {
     "use strict";
 
@@ -17,6 +22,10 @@ define([
         this.frontend = undefined;
         this.project = project;
         this.loadTextEditor = loadTextEditor;
+        this.glyphRendererAPI = new GlyphRendererAPI(document, this.project.controller,
+            {noParentSizing: true}
+        );
+
         this.model = {
             masters: this.project.masters
         };
@@ -35,6 +44,7 @@ define([
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
+        this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
         this.angularApp.constant('io', io);
         this.angularApp.constant('config', {loadTextEditor: loadTextEditor});
 

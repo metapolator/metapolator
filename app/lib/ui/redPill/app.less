@@ -5,6 +5,7 @@
 @app-color: #CCC;
 @app-gap: .5em;
 @app-border: 1px solid black;
+@glyph-outline: 1px solid rgba(0, 0, 0, .1);
 
 html {
     font-family: monospace;
@@ -80,11 +81,25 @@ mtk-red-pill-glyphs > label > * {
 
 mtk-red-pill-glyph {
     display: block;
-    border: @app-border;
-    margin-left: @app-gap;
-    margin-bottom: @app-gap;
-    overflow: auto;
-    background: white;
+    overflow: visible;
+    height: 100%;
+
+    position: relative;
+    span.particulars {
+        position: absolute;
+        display: inline-block;
+        white-space: nowrap;
+        top: 0
+        left: 0;
+        width: 0;
+        overflow: hidden;
+        background: lightgoldenrodyellow
+    }
+
+    svg {
+        outline: @glyph-outline;
+        height: 100%;
+    }
 
     svg g.layer-centerline {
         fill: none;
@@ -105,6 +120,11 @@ mtk-red-pill-glyph {
     }
 }
 
+mtk-red-pill-glyph:hover span.particulars {
+    width: auto;
+    z-index: 100;
+}
+
 mtk-red-pill-glyphs ol{
     white-space: normal;
     padding:0;
@@ -113,7 +133,6 @@ mtk-red-pill-glyphs ol{
 mtk-red-pill-glyphs li {
     display: inline-block;
     vertical-align: top;
-    width:33.333%
 }
 
 red-pill .children {

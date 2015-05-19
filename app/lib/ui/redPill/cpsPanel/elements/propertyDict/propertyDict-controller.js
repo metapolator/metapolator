@@ -23,7 +23,7 @@ define([
     function _getItems(cpsPropertyDict) {
         return cpsPropertyDict.items.map(function(item, index) {
                 var ctor = item.constructor.name;
-                // FIXME: failes when renaming Parameter to Property
+                // FIXME: fails when renaming Parameter to Property
                 if(ctor === 'Parameter')
                     // NOTE: future proof mapping, can be replaced with `ctor`
                     // when Parameter got renamed to Property.

@@ -33,7 +33,7 @@ define([
 
     // if possible invalid and valid parameters equal from their inputs but differ in style
 
-    // Propertys are in:
+    // Properties are in:
     // StyleDict dictionary displays
     // Rule Displays (PropertyDict)
 

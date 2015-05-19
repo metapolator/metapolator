@@ -17,7 +17,7 @@ define([
     PropertyController.$inject = ['$scope'];
     var _p = PropertyController.prototype;
 
-    // FIXME: move this to a central place
+    // FIXME: move this to a central place/make a higher level API
     // also: take care of the dependencies of this module:
     // ParameterValue, parameterRegistry, Parameter
     function updateProperty(propertyDict, index, name, value) {
