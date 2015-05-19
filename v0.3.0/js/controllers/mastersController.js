@@ -315,8 +315,8 @@ app.controller("mastersController", function($scope, sharedScope) {
 
     function createCursorHelper(x, y) {
         cursorHelper = true;
-        var cursorHelper = "<div id='cursor-helper' style='left:" + (x + 10) + "px; top:" + (y + 10) + "px'></div>";
-        $(document.body).append(cursorHelper);
+        var helper = "<div id='cursor-helper' style='left:" + (x + 10) + "px; top:" + (y + 10) + "px'></div>";
+        $(document.body).append(helper);
     }
 
     function destroyCursorHelper() {
