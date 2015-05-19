@@ -101,6 +101,9 @@ function($scope, $http, sharedScope, $timeout) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont){
+                    // check the instance if its basemaster has some unrendered glyphs
+                    // so it might be the case that there has to be produced some cps for these glyphs
+                    $scope.data.checkBaseMastersBeforeExport(instance);
                     instances_for_export.push(instance);
                     var model = $scope.data.stateful.project.open(instance.name)
                       , glyphs = model.query('master#' + instance.name).children

@@ -161,6 +161,18 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         });
     };
+    
+    $scope.data.checkBaseMastersBeforeExport = function(instance) {
+        angular.forEach(instance.axes, function(axis) {
+            var master = $scope.data.findMaster(axis.masterName);
+            angular.forEach(master.children, function(glyph) {
+                if (!glyph.rendered) {
+                    console.log(glyph);
+                    $scope.updateCPSforGlyph(glyph);
+                }
+            });
+        });
+    };
 
     /***
      Parameters selection functions
