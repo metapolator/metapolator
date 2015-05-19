@@ -27,7 +27,6 @@ define([
         Parent.call(this);
         this._source = source;
         this._lineNo = lineNo;
-        Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
 
         // the `reset` method of ParameterCollection will call this constructor
         // repeatedly. So we need a way to detect if this is was already
@@ -35,6 +34,7 @@ define([
         if(!this.__firstTimeInitFlag) {
             emitterMixin.init(this);
             Object.defineProperty(this, '__firstTimeInitFlag', {value: true});
+            Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
         }
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
