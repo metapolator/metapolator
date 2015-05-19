@@ -93,7 +93,7 @@ app.controller('menuController', function($scope, $http, sharedScope) {
 
     $scope.setFontExportPanel = function() {
         // this measurement sets the font export panel to a fixed with of 80px. It balances the font family panels with the difference
-        var windowWidth = $(window).outerWidth();
+        var windowWidth = $("body").outerWidth();
         var exportWidth = windowWidth / 16;
         var difference = 80 - exportWidth;
         var newShare = ((windowWidth * 12 / 16) - difference) / windowWidth * 16;

@@ -73,7 +73,7 @@ app.directive('divider', function($document) {
             
             
             function redraw() {
-                screenWidth = $(window).outerWidth();
+                screenWidth = $("body").outerWidth();
                 screenParts = getScreenParts();
                 $(element[0]).css('left', getPosition());
                 

@@ -504,7 +504,7 @@ app.directive('sizeRope', function($document) {
     return {
         restrict : 'E',
         link : function(scope, element, attrs, ctrl) {
-            var templayer = '<div id="templayer" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 10000;"></div>';
+            var templayer = '<div id="templayer" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 10000;"></div>';
             var svg = d3.select(element[0]).append('svg').attr('width', '18px').attr('height', '18px');
             var svgT;
             var gT;

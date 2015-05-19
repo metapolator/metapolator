@@ -92,6 +92,7 @@ app.controller('engine', function($scope, sharedScope) {
                 angular.forEach(newMaster.children, function(child) {
                     child.parent = newMaster;
                 });
+                console.log(newMaster);
                 $scope.data.sequences[0].masters.push(newMaster);
                 masterId++;
             }
