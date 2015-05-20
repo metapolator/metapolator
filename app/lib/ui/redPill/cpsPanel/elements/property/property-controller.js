@@ -12,6 +12,9 @@ define([
         this.$scope = $scope;
         // when name or value change do this:
         $scope.changeHandler = changeHandler
+
+        $scope.sizeName = $scope.property[2].length
+        $scope.sizeValue = $scope.property[3].length
     }
 
     PropertyController.$inject = ['$scope'];
@@ -36,6 +39,8 @@ define([
         //          Error: [$rootScope:inprog] $apply already in progress
         //    cpsPropertyDict.on should probably better trigger async when
         //    used by ui code(?)
+        this.sizeName = this.property[2].length
+        this.sizeValue = this.property[3].length
         setTimeout(updateProperty, 0, this.cpsPropertyDict
             , this.property[1], this.property[2], this.property[3]);
     }

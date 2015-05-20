@@ -3,17 +3,11 @@ define([
 ) {
     "use strict";
     function CpsPanelController($scope, model) {
-        var masterName = 'interpolated'
+        var masterName = 'wl'
           ,parameterCollection = model.getMasterCPS(false, masterName)
-          // NOTE: We must know where the rule is, it's the third one in
-          // this case. Also, the items in a parameterCollection must
-          // not all be of type CPS/Rule. There are also @namespace/@import
-          // collections and comments.
-          , cpsRule = parameterCollection.getItem(2)
-          , propertyDict = cpsRule.parameters
           ;
         this.$scope = $scope;
-        this.$scope.propertyDict = propertyDict;
+        this.$scope.collection = parameterCollection;
     }
     CpsPanelController.$inject = ['$scope', 'ModelController'];
     var _p = CpsPanelController.prototype;

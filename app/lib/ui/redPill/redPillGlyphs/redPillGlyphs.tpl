@@ -5,7 +5,7 @@
         />
 </label>
 <label>glyph size:
-    <input type="range" min="0.01" max="1024" step="0.0001" ng-model="glyphsize"/>
+    <input type="range" min="0" max="1024" step="1" ng-model="glyphsize"/>
     {{ glyphsize || initialGlypsize}}px
 </label>
 
