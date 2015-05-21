@@ -93,7 +93,7 @@ mtk-red-pill-glyph {
         left: 0;
         width: 0;
         overflow: hidden;
-        background: lightgoldenrodyellow
+        background: lightyellow
     }
 
     svg {
@@ -150,6 +150,17 @@ red-pill .children {
 }
 
 
+mtk-cps-collection.root {
+    display: block;
+    overflow-y: scroll;
+    overflow-x: auto;
+    max-height: 300px;
+}
+
+mtk-cps-rule {
+    display: block;
+}
+
 mtk-cps-property-dict{
     ol::before{
         content: '{'
@@ -162,7 +173,7 @@ mtk-cps-property-dict{
         display: inline;
         list-style: none;
         padding: 0;
-        font-family: "Ubuntu Mono", monospace;
+        font-family: monospace;
         font-size: .9em;
         li {
             padding-left: 1em;
@@ -170,16 +181,40 @@ mtk-cps-property-dict{
     }
 }
 
-mtk-cps-property{
-    input[type=text]{
+mtk-cps-property, mtk-cps-new-property {
+    line-height: 1.2em; /* this is also hardcoded in the template of the textarea! */
+    input[type=text], textarea{
+        vertical-align: top;
         background: lightyellow;
         border: none;
         padding: 0;
         font-family: inherit;
         font-size: inherit;
+        resize: none;
+    }
+    input[type=text]:first-child {
+        color: green;
+    }
+    > div {
+        display: inline;
+        position: relative;
+    }
+    .invalid {
+    }
+    .invalid:after {
+        content: "\26A0  invalid property \26A0";
+        font-family: sans-serif;
+        position: absolute;
+        color: red;
+        white-space: nowrap;
+        cursor: help;
     }
 }
 
+mtk-cps-collection {
+    background-color: rgba(100, 155, 50, 0.05);
+    display: block;
+}
 mtk-cps-collection > *{
     padding-left: 1em;
 }

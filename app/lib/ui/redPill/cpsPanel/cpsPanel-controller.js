@@ -4,7 +4,8 @@ define([
     "use strict";
     function CpsPanelController($scope, model) {
         var masterName = 'wl'
-          ,parameterCollection = model.getMasterCPS(false, masterName)
+          // ,parameterCollection = model.getMasterCPS(false, masterName)
+          , parameterCollection = model._ruleController.getRule(false, 'lib/metapolate-4.cps')
           ;
         this.$scope = $scope;
         this.$scope.collection = parameterCollection;

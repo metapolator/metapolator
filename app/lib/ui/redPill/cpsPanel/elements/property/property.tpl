@@ -1,2 +1,13 @@
-<input type="text" ng-model="property[2]" size="{{sizeName}}" ng-change="changeHandler()" />:
-<input type="text" ng-model="property[3]" size="{{sizeValue}}" ng-change="changeHandler()" />;
+<div title="{{message}}" ng-class="{invalid: invalid}">
+<input type="text"
+       ng-model="propertyModel.name" ng-trim="false"
+       size="{{propertyModel.name.length || 1}}"
+       ng-change="changeHandler()"
+       />:
+<textarea
+       ng-model="propertyModel.value" ng-trim="false"
+       style="height:{{(valueHeight || 1) * 1.2}}em"
+       cols="{{valueWidth < 2 ? 2 : valueWidth}}"
+       ng-change="changeHandler()"
+       ></textarea>;
+</div>

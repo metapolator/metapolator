@@ -5,7 +5,8 @@ define([
     function PropertyDictController($scope) {
         this.$scope = $scope;
 
-        $scope.properties = _getItems($scope.cpsPropertyDict);
+        //$scope.properties = _getItems($scope.cpsPropertyDict);
+        $scope.items = $scope.cpsPropertyDict.items
 
         // subscribe to propertyDict
         this._propertyDictSubscription = $scope.cpsPropertyDict.on(
@@ -34,7 +35,7 @@ define([
 
     _p._propertyDictUpdateHandler = function() {
         this.$scope.$apply(function($scope) {
-            $scope.properties = _getItems($scope.cpsPropertyDict);
+            $scope.items = $scope.cpsPropertyDict.items
         });
     }
 

@@ -9,7 +9,7 @@ define([
 ) {
     "use strict";
 
-    function PropertyDirective() {
+    function NewPropertyDirective() {
         function link(scope, element, attrs) {
             element.on('click', helpers.stopPropagation);
             element.on('dblclick', helpers.stopPropagation);
@@ -19,12 +19,14 @@ define([
               , timer
               ;
 
+            // focus the first input element on init
+            input.focus();
+
             // if both elements lost focus run scope.finalize
             timer = new helpers.Timer(function(){
                 scope.finalize();
                 scope.$apply();
             });
-
             angular.element([input, textarea])
                    // when an element gets focuss
                    .on('focus', timer.cancel)
@@ -34,13 +36,13 @@ define([
 
         return {
             restrict: 'E' // only matches element names
-          , controller: 'PropertyController'
+          , controller: 'NewPropertyController'
           , replace: false
           , template: template
-          , scope: {cpsPropertyDict: '=', property: '=', index: '='}
+          , scope: {cpsPropertyDict: '='}
           , link: link
         };
     }
-    PropertyDirective.$inject = [];
-    return PropertyDirective;
+    NewPropertyDirective.$inject = [];
+    return NewPropertyDirective;
 });

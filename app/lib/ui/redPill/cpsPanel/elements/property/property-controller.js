@@ -1,49 +1,95 @@
 define([
-    'metapolator/models/CPS/elements/ParameterValue'
-  , 'metapolator/models/CPS/elements/Parameter'
-  , 'metapolator/project/parameters/registry'
+    'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
 ], function(
-    ParameterValue
-  , Parameter
-  , parameterRegistry
+    cpsTools
 ) {
     "use strict";
     function PropertyController($scope) {
         this.$scope = $scope;
         // when name or value change do this:
-        $scope.changeHandler = changeHandler
+        $scope.changeHandler = this._changeHandler.bind(this);
+        $scope.finalize = this._finalize.bind(this);
 
-        $scope.sizeName = $scope.property[2].length
-        $scope.sizeValue = $scope.property[3].length
+        this._initPropertyModel();
+        this._setValueBoxSize($scope.propertyModel.value);
     }
 
     PropertyController.$inject = ['$scope'];
     var _p = PropertyController.prototype;
+    _p.constructor = PropertyController;
 
-    // FIXME: move this to a central place/make a higher level API
-    // also: take care of the dependencies of this module:
-    // ParameterValue, parameterRegistry, Parameter
-    function updateProperty(propertyDict, index, name, value) {
-        var _value = new ParameterValue([value], [])
-          , parameter
-          , factory = parameterRegistry.getFactory(name)
+
+    _p._initPropertyModel = function() {
+        var $scope = this.$scope
+          , property = $scope.property
+          , value = property.value.toString()
           ;
-        _value.initializeTypeFactory(name, factory);
-        parameter = new Parameter({name:name}, _value);
-        propertyDict.splice(index, 1, [parameter]);
-    }
+        $scope.propertyModel = {
+            name: property.name
+          , value: value
+        };
+        $scope.invalid = property.invalid;
+        $scope.message = property.message || '';
+    };
 
-    function changeHandler() {
-        // $scope === this;
+    _p._setValueBoxSize = function(value) {
+        var lines = value.split('\n')
+          , longestLine = 0, i, l
+          , $scope = this.$scope
+          ;
+        for(i=0,l=lines.length;i<l;i++)
+            if(lines[i].length > longestLine)
+                longestLine = lines[i].length;
+
+        $scope.valueWidth = longestLine;
+        $scope.valueHeight = lines.length;
+    };
+
+    _p._updateProperty = function(property) {
+        var $scope = this.$scope;
         // FIXME: without setTimeout I get:
         //          Error: [$rootScope:inprog] $apply already in progress
         //    cpsPropertyDict.on should probably better trigger async when
         //    used by ui code(?)
-        this.sizeName = this.property[2].length
-        this.sizeValue = this.property[3].length
-        setTimeout(updateProperty, 0, this.cpsPropertyDict
-            , this.property[1], this.property[2], this.property[3]);
-    }
+        setTimeout(cpsTools.updateProperty, 0, $scope.cpsPropertyDict
+                                             , $scope.index, property);
+    };
+
+    _p._getNewProperty = function() {
+        var $scope = this.$scope;
+        return cpsTools.makeProperty($scope.propertyModel.name
+                                           , $scope.propertyModel.value);
+    };
+
+    _p._changeHandler = function () {
+        var $scope = this.$scope
+          , property = this._getNewProperty()
+          ;
+        this._setValueBoxSize($scope.propertyModel.value);
+
+        // mark if invalid and show the message
+        $scope.invalid = property.invalid;
+        $scope.message = property.invalid
+            ? (property.message || 'no message :-(')
+            : ''
+            ;
+
+        // don't set an invalid property.
+        if(!property.invalid)
+            this._updateProperty(property);
+    };
+
+    _p._finalize = function() {
+        var $scope = this.$scope;
+        // On blur, if property is invalid it is be better to restore
+        // the old property (from $scope.property)
+        var property = this._getNewProperty();
+        if(property.invalid) {
+            // reset
+            this._initPropertyModel();
+            this._setValueBoxSize($scope.propertyModel.value);
+        }
+    };
 
     return PropertyController;
 });
