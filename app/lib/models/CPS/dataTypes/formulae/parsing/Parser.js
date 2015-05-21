@@ -646,6 +646,8 @@ define([
     _p.parse = function(string, selectorEngine) {
         var tokens = this.tokenize(string, selectorEngine);
         tokens = this.infixToPostfix(tokens);
+        if(!tokens.length)
+            throw new CPSFormulaError('The input string did not produce any instructions.');
         return new Stack(tokens, this._finalizeMethod);
     };
 
