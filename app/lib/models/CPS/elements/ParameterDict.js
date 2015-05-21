@@ -312,6 +312,9 @@ define([
     };
 
     _p._splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
+        if(!this._dict)
+            this._buildIndex();
+
         var insertions = _insertions instanceof Array
             ? _insertions
             : [_insertions]
@@ -326,7 +329,9 @@ define([
           ;
         for(i=0,l=insertionsLength;i<l; i++)
             if(!_checkItem(insertions[i]))
-                throw new ValueError('Trying to insert an invalid item: ' + insertions[i]);
+                throw new ValueError('Trying to insert an invalid item: '
+                                        + '"'+insertions[i]+'"'
+                                        + (insertions[i].message ? ' message: "' + insertions[i].message+'"' : ''));
 
         args = [startIndex, deleteCount];
         Array.prototype.push.apply(args, insertions);
