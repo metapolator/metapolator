@@ -7,7 +7,7 @@ define([
 ) {
     "use strict";
 
-    var CPSFormulaeError = errors.CPSFormulae;
+    var CPSFormula = errors.CPSFormula;
 
     function SharedFormulaeFactory(TypeConstructor) {
         this.TypeConstructor = TypeConstructor;
@@ -19,14 +19,14 @@ define([
         var invalidParamterMessage = false
           , stack
           ;
-        // Throws CPSFormulaeError on fail
-        // We let it fail on purpose by now. Catching CPSFormulaeError
-        // and using invalidParamterMessage = error.message;
-        // would make it possible to react more gracefully by skipping
-        // invalid values, but right now we have no good way to tell the
-        // user that this happened.
-        // setInvalidAPI(invalidParamterMessage) will be the way to do so.
-        stack = formulaEngine.parse(parameterValue.valueString);
+        try {
+            stack = formulaEngine.parse(parameterValue.valueString);
+        }
+        catch(error) {
+            if(!(error instanceof CPSFormula))
+                throw error;
+            invalidParamterMessage = error.message;
+        }
 
         if(invalidParamterMessage) {
             setInvalidAPI(invalidParamterMessage);
