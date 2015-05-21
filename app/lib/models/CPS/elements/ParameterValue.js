@@ -22,7 +22,8 @@ define([
         this._comments = comments;
         this._factory = undefined;
         this.factory = undefined;
-        this._invalid = undefined;
+        this.invalid = false;
+        this.message = undefined;
     }
     var _p = ParameterValue.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterValue;
@@ -36,13 +37,20 @@ define([
         if(this._factory !== undefined)
             throw new errors.CPS('Can\'t mark as invalid: factory is already '
                                 + 'set.');
-        this._invalid = true;
-        this._message = message || '(no message left)';
+        Object.defineProperty(this, 'invalid', {
+            value: true
+          , enumerable: true
+        });
+
+        Object.defineProperty(this, 'message', {
+            value: message
+          , enumerable: true
+        });
     }
 
     function _setFactoryAPI(factory) {
         /*jshint validthis:true*/
-        if(this._invalid)
+        if(this.invalid)
             throw new errors.CPS('Can\'t set factory: value is already '
                                 + 'marked as invalid: ' + this._message);
         if(this._factory !== undefined)
@@ -60,20 +68,16 @@ define([
     _p.initializeTypeFactory = function(name, typeDefinition) {
         if(this._factory !== undefined)
             throw new errors.CPS('Factory is already set!');
-        if(this._invalid)
+        if(this.invalid)
             throw new errors.CPS('Can\'t set factory: value is already '
                     + 'marked as invalid: ' + this._message);
         typeDefinition.init(this, _setFactoryAPI.bind(this),
                                   _setInvalidAPI.bind(this));
 
-        if(this._factory === undefined && this._invalid === undefined)
+        if(this._factory === undefined && this.invalid === false)
             throw new errors.CPS('TypeDefinition for ' + name
                             + ' did not initialize this ParameterValue');
     };
-
-    Object.defineProperty(_p, 'invalid', {
-        get: function(){ return this._invalid;}
-    });
 
     // this property ommits the comments on purpose
     Object.defineProperty(_p, 'valueString', {
