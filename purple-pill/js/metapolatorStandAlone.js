@@ -26813,11 +26813,7 @@ define('metapolator/models/Geometry',[
 ],
 function()
 {
-
-    function Geometry() {
-
-    }
-    var _p = Geometry.prototype;
+   "use strict";
 
     /**
      * Get control point vectors from (MOM Point) StyleDicts.
@@ -26835,12 +26831,12 @@ function()
      *
      * See the comment of drawPenstrokeToPointPen for more detail.
      */
-    _p.getControlsFromStyle = function (p0, p1, terminal) {
+    function getControlsFromStyle (p0, p1, terminal) {
         return [
               p0.get(terminal === 'start' ? 'in': 'out')
             , p1.get(terminal === 'end' ? 'out' :'in')
         ];
-    };
+    }
 
     /**
      * The translation from Metapolator Penstrokes to Outlines:
@@ -26895,7 +26891,7 @@ function()
      *          on6.left in out on5.left
      *              => out in 8
      */
-    _p.renderPenstrokeOutline = function ( pen, model, penstroke ) {
+    function renderPenstrokeOutline ( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -26921,7 +26917,7 @@ function()
                     terminal = false;
                     prePoint = model.getComputedStyle(points[i-1].right);
                 }
-                ctrls = this.getControlsFromStyle(prePoint, point, terminal);
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
                 /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
                 /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             }
@@ -26949,7 +26945,7 @@ function()
                     prePoint = point;
                     point = model.getComputedStyle(points[i+1].left);
                 }
-                ctrls = this.getControlsFromStyle(prePoint, point, terminal);
+                ctrls = getControlsFromStyle(prePoint, point, terminal);
                 if(!terminal) {
                     // reverse on curve and of curve points, prePoint
                     // is no longer needed.
@@ -26966,9 +26962,9 @@ function()
             /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
-    };
+    }
 
-    _p.renderContour = function ( pen, model, contour ) {
+    function renderContour ( pen, model, contour ) {
         var points = contour.children
           , point
           , segmentType
@@ -26991,9 +26987,9 @@ function()
             /* yield*/ pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
         }
         pen.endPath();
-    };
+    }
 
-    _p.renderPenstrokeCenterline = function ( pen, model, penstroke ) {
+    function renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -27007,7 +27003,7 @@ function()
             if(i !== 0) {
                 segmentType = 'curve';
                 prePoint = model.getComputedStyle(points[i-1].center);
-                ctrls = this.getControlsFromStyle(prePoint, point);
+                ctrls = getControlsFromStyle(prePoint, point);
                 /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
                 /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             }
@@ -27017,9 +27013,14 @@ function()
             /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
-    };
+    }
 
-    return Geometry;
+    return {
+		renderPenstrokeOutline: renderPenstrokeOutline
+	  ,	getControlsFromStyle: getControlsFromStyle
+	  , renderContour: renderContour
+	  ,	renderPenstrokeCenterline: renderPenstrokeCenterline
+	}
 });
 
 /*!
