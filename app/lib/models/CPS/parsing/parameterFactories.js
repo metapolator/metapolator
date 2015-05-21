@@ -120,14 +120,27 @@ define([
               , children = ('children' in node)
                             ? node.children
                             : []
+              , instance
               ;
             for(;i<children.length; i++)
                 if(children[i].type in whitelist
                         || (children[i].type === '__GenericAST__'
                             && !(children[i].instance.type in astBlacklist)
                         )
-                )
-                    items.push(children[i].instance);
+                ) {
+                    instance = children[i].instance;
+                    items.push(instance);
+                    if(instance.invalid) {
+                        console.info('FIXME: Get a logger object here, to enable cleaner messaging of this:')
+                        console.warn(['adding invalid'
+                          , instance.constructor.name + ':'
+                          , '"' + instance + '"'
+                          , instance.message
+                          , instance.source
+                          , instance.lineNo].join(' ')
+                        );
+                    }
+                }
             return new ParameterDict(items, source, node.lineNo);
         }
 
