@@ -42,11 +42,11 @@ define([
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             time = timer.now();
-            drawFunc = this.drawGlyphToPointPen.bind(
+            drawFunc = glyphBasics.drawGlyphToPointPen.bind(
                 this
               , {
-                      penstroke: UFOExportController.renderPenstrokeOutline
-                    , contour: UFOExportController.renderContour
+                      penstroke: glyphBasics.renderPenstrokeOutline
+                    , contour: glyphBasics.renderContour
                 }
               , this._model, glyph);
 
@@ -77,12 +77,6 @@ define([
         );
         this._glyphSet.writeContents(false);
     };
-
-    UFOExportController.renderPenstrokeOutline = glyphBasics.renderPenstrokeOutline;
-    UFOExportController.renderContour = glyphBasics.renderContour;
-    UFOExportController.renderPenstrokeCenterline = glyphBasics.renderPenstrokeCenterline;
-    UFOExportController.drawGlyphToPointPenGenerator = glyphBasics.drawGlyphToPointPenGenerator;
-    UFOExportController.drawGlyphToPointPen = glyphBasics.drawGlyphToPointPen;
 
     return UFOExportController;
 });
