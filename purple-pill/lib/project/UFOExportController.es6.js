@@ -9,14 +9,14 @@ define([
     'metapolator/errors'
   , 'metapolator/math/hobby'
   , 'metapolator/math/Vector'
-  , 'metapolator/models/Geometry'
+  , 'metapolator/rendering/glyphBasics'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
 ], function(
     errors
   , hobby
   , Vector
-  , Geometry
+  , glyphBasics
   , MOMGlyph
   , timer
 ) {
@@ -85,9 +85,9 @@ define([
         this._glyphSet.writeContents(false);
     };
 
-    UFOExportController.renderPenstrokeOutline = Geometry.renderPenstrokeOutline;
-    UFOExportController.renderContour = Geometry.renderContour;
-    UFOExportController.renderPenstrokeCenterline = Geometry.renderPenstrokeCenterline;
+    UFOExportController.renderPenstrokeOutline = glyphBasics.renderPenstrokeOutline;
+    UFOExportController.renderContour = glyphBasics.renderContour;
+    UFOExportController.renderPenstrokeCenterline = glyphBasics.renderPenstrokeCenterline;
 
     function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
         function* generator() {

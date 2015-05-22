@@ -26808,7 +26808,7 @@ define('metapolator/project/ImportController',[
 });
 
 
-define('metapolator/models/Geometry',[
+define('metapolator/rendering/glyphBasics',[
 
 ],
 function()
@@ -27017,7 +27017,6 @@ function()
 
     return {
 		renderPenstrokeOutline: renderPenstrokeOutline
-	  ,	getControlsFromStyle: getControlsFromStyle
 	  , renderContour: renderContour
 	  ,	renderPenstrokeCenterline: renderPenstrokeCenterline
 	}
