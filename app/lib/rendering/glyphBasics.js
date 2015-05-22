@@ -207,7 +207,6 @@ function()
 
     return {
 		renderPenstrokeOutline: renderPenstrokeOutline
-	  ,	getControlsFromStyle: getControlsFromStyle
 	  , renderContour: renderContour
 	  ,	renderPenstrokeCenterline: renderPenstrokeCenterline
 	}
