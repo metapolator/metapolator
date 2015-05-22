@@ -26852,11 +26852,11 @@ define('metapolator/project/UFOExportController',[
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             time = timer.now();
-            drawFunc = this.drawGlyphToPointPen.bind(
+            drawFunc = glyphBasics.drawGlyphToPointPen.bind(
                 this
               , {
-                      penstroke: UFOExportController.renderPenstrokeOutline
-                    , contour: UFOExportController.renderContour
+                      penstroke: glyphBasics.renderPenstrokeOutline
+                    , contour: glyphBasics.renderContour
                 }
               , this._model, glyph);
 
@@ -26887,12 +26887,6 @@ define('metapolator/project/UFOExportController',[
         );
         this._glyphSet.writeContents(false);
     };
-
-    UFOExportController.renderPenstrokeOutline = glyphBasics.renderPenstrokeOutline;
-    UFOExportController.renderContour = glyphBasics.renderContour;
-    UFOExportController.renderPenstrokeCenterline = glyphBasics.renderPenstrokeCenterline;
-    UFOExportController.drawGlyphToPointPenGenerator = glyphBasics.drawGlyphToPointPenGenerator;
-    UFOExportController.drawGlyphToPointPen = glyphBasics.drawGlyphToPointPen;
 
     return UFOExportController;
 });
@@ -38306,12 +38300,12 @@ define(
 
 define('metapolator/ui/services/GlyphRendererAPI',[
     'metapolator/errors'
-  , 'metapolator/project/UFOExportController'
+  , 'metapolator/rendering/glyphBasics'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
 ], function(
     errors
-  , UFOExportController
+  , glyphBasics
   , PointToSegmentPen
   , SVGPen
 ) {
@@ -38323,10 +38317,10 @@ define('metapolator/ui/services/GlyphRendererAPI',[
       , svgns = 'http://www.w3.org/2000/svg'
       , xlinkns = 'http://www.w3.org/1999/xlink'
       , renderer =  {
-            penstroke: UFOExportController.renderPenstrokeOutline
-          , contour: UFOExportController.renderContour
+            penstroke: glyphBasics.renderPenstrokeOutline
+          , contour: glyphBasics.renderContour
         }
-      , draw = UFOExportController.drawGlyphToPointPen
+      , draw = glyphBasics.drawGlyphToPointPen
       ;
 
     function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {

@@ -237,9 +237,9 @@ function()
     }
 
     return {
-		renderPenstrokeOutline: renderPenstrokeOutline
-	  , renderContour: renderContour
-	  ,	renderPenstrokeCenterline: renderPenstrokeCenterline
+        renderPenstrokeOutline: renderPenstrokeOutline
+      , renderContour: renderContour
+      ,	renderPenstrokeCenterline: renderPenstrokeCenterline
       , drawGlyphToPointPen: drawGlyphToPointPen
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator
 	}
