@@ -472,6 +472,7 @@ define([
 function()
 {
    "use strict";
+    /*jshint esnext:true*/
 
     /**
      * Get control point vectors from (MOM Point) StyleDicts.
@@ -741,8 +742,8 @@ function()
     return {
         renderPenstrokeOutline: renderPenstrokeOutline
       , renderContour: renderContour
-      ,	renderPenstrokeCenterline: renderPenstrokeCenterline
+      , renderPenstrokeCenterline: renderPenstrokeCenterline
       , drawGlyphToPointPen: drawGlyphToPointPen
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator
-	}
+    }
 });

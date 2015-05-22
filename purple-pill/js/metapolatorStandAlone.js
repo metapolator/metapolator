@@ -26810,24 +26810,16 @@ define('metapolator/project/ImportController',[
 
 define('metapolator/project/UFOExportController',[
     'metapolator/errors'
-  , 'metapolator/math/hobby'
-  , 'metapolator/math/Vector'
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
 ], function(
     errors
-  , hobby
-  , Vector
   , glyphBasics
   , MOMGlyph
   , timer
 ) {
     "use strict";
-    /*jshint esnext:true*/
-    var KeyError = errors.Key
-      , CPSKeyError = errors.CPSKey
-    ;
 
     function UFOExportController(master, model, glyphSet, precision) {
         this._master = master;
@@ -26837,8 +26829,7 @@ define('metapolator/project/UFOExportController',[
     }
     var _p = UFOExportController.prototype;
 
-    // FIXME: "export" is a future reserved keyword
-    _p.export = function() {
+    _p.do_export = function() {
         var glyphs = this._master.children
           , glyph
           , drawFunc
@@ -26870,7 +26861,7 @@ define('metapolator/project/UFOExportController',[
                     updatedUFOData[k] = v;
                 }
                 catch( error ) {
-                    if(!(error instanceof KeyError)) {
+                    if(!(error instanceof errors.Key)) {
                         throw error;
                     }
                 }
@@ -37604,7 +37595,7 @@ define('metapolator/project/MetapolatorProject',[
         glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
         exportController = new UFOExportController(master, model, glyphSet, precision);
-        exportController.export();
+        exportController.do_export();
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
