@@ -11,6 +11,7 @@ define([
 function()
 {
    "use strict";
+    /*jshint esnext:true*/
 
     /**
      * Get control point vectors from (MOM Point) StyleDicts.

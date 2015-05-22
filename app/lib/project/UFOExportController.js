@@ -14,7 +14,6 @@ define([
   , timer
 ) {
     "use strict";
-    /*jshint esnext:true*/
     var KeyError = errors.Key
       , CPSKeyError = errors.CPSKey
     ;
