@@ -240,8 +240,8 @@ function()
     return {
         renderPenstrokeOutline: renderPenstrokeOutline
       , renderContour: renderContour
-      ,	renderPenstrokeCenterline: renderPenstrokeCenterline
+      , renderPenstrokeCenterline: renderPenstrokeCenterline
       , drawGlyphToPointPen: drawGlyphToPointPen
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator
-	}
+    }
 });
