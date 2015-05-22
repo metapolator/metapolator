@@ -1,5 +1,5 @@
 <ol>
-    <li ng-repeat="item in items track by $index" ng-switch="item.constructor.name">
+    <li ng-repeat="item in items track by ($index + ':' + item.hash)" ng-switch="item.constructor.name">
         <mtk-cps-property
             ng-switch-when="Parameter"
             cps-property-dict="cpsPropertyDict"

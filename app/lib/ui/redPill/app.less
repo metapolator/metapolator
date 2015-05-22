@@ -149,72 +149,135 @@ red-pill .children {
     }
 }
 
+mtk-cps-panel {
 
-mtk-cps-collection.root {
-    display: block;
-    overflow-y: scroll;
-    overflow-x: auto;
-    max-height: 300px;
-}
-
-mtk-cps-rule {
-    display: block;
-}
-
-mtk-cps-property-dict{
-    ol::before{
-        content: '{'
-    }
-    ol::after{
-        content: '}'
+    /* used as drag indicator */
+    indicator {
+        display: block;
+        margin-left: 50px;
+        max-width: 250px;
+        position: relative;
+        outline: 1px solid grey;
+        z-index: 10;
     }
 
-    ol {
-        display: inline;
-        list-style: none;
-        padding: 0;
-        font-family: monospace;
-        font-size: .9em;
-        li {
-            padding-left: 1em;
+    mtk-cps-collection.root {
+        display: block;
+        overflow-y: scroll;
+        overflow-x: auto;
+        max-height: 300px;
+    }
+
+    mtk-cps-rule {
+        display: block;
+    }
+
+    mtk-cps-property-dict{
+        ol::before{
+            content: '{'
+        }
+        ol::after{
+            content: '}'
+        }
+
+        ol {
+            display: inline;
+            list-style: none;
+            padding: 0;
+            font-family: monospace;
+            font-size: .9em;
+            li {
+                padding-left: 1em;
+            }
         }
     }
-}
+    @line-height: 1.2em;
+    mtk-cps-property, mtk-cps-new-property {
+        line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
+        input[type=text], textarea{
+            vertical-align: top;
+            background: lightyellow;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            resize: none;
+        }
+        input[type=text]:first-child {
+            color: green;
+        }
+        > div {
+            display: inline;
+            position: relative;
+        }
+        .invalid {
+        }
+        .invalid:after {
+            content: "\26A0  invalid property \26A0";
+            font-family: sans-serif;
+            position: absolute;
+            color: red;
+            white-space: nowrap;
+            cursor: help;
+        }
+    }
+    mtk-cps-property.dragging {
+        background: white;
+        opacity: .5;
+        mtk-cps-toolbar {
+            display: none;
+        }
+    }
 
-mtk-cps-property, mtk-cps-new-property {
-    line-height: 1.2em; /* this is also hardcoded in the template of the textarea! */
-    input[type=text], textarea{
-        vertical-align: top;
-        background: lightyellow;
-        border: none;
-        padding: 0;
-        font-family: inherit;
-        font-size: inherit;
-        resize: none;
+    mtk-cps-collection {
+        background-color: rgba(100, 155, 50, 0.05);
+        display: block;
     }
-    input[type=text]:first-child {
-        color: green;
+    mtk-cps-collection > *{
+        padding-left: 1em;
     }
-    > div {
-        display: inline;
-        position: relative;
-    }
-    .invalid {
-    }
-    .invalid:after {
-        content: "\26A0  invalid property \26A0";
-        font-family: sans-serif;
-        position: absolute;
-        color: red;
-        white-space: nowrap;
-        cursor: help;
-    }
-}
 
-mtk-cps-collection {
-    background-color: rgba(100, 155, 50, 0.05);
-    display: block;
-}
-mtk-cps-collection > *{
-    padding-left: 1em;
+    @tool-size: 1em;
+    mtk-cps-toolbar {
+        mtk-cps-toolbutton {
+            display: inline-block;
+            padding: 0;
+            margin-right: .2em;
+            border: none;
+            background:none;
+            overflow: hidden;
+
+            width: @tool-size;
+            height: @line-height;
+            vertical-align: top;
+            color: #ccc;
+            cursor: default;
+            font-family: sans-serif;
+        }
+        mtk-cps-toolbutton::before {
+            display:block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        mtk-cps-toolbutton:hover {
+            color: #000;
+        }
+
+        .tool-delete:hover {
+            color: #f00;
+        }
+
+        .tool-delete::before {
+            content: "\2717";
+        }
+
+        .tool-drag{
+            cursor: grab;
+        }
+        .tool-drag::before {
+            content: "\2B0D";
+        }
+
+    }
 }

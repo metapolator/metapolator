@@ -10,4 +10,14 @@
        cols="{{valueWidth < 2 ? 2 : valueWidth}}"
        ng-change="changeHandler()"
        ></textarea>;
+<mtk-cps-toolbar ng-if="tools" tools="tools">
+    <mtk-cps-toolbutton
+        ng-repeat="tool in tools"
+        class="tool-{{tool}}"
+        title={{tool}}
+        ng-click="clickTool(tool)"
+        draggable="{{tool == 'drag' ? 'true' : 'false'}}"
+        >{{tool}}</button>
+
+</mtk-cps-toolbar>
 </div>

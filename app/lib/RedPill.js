@@ -3,12 +3,14 @@ define([
   , 'metapolator/webAPI/window'
   , 'metapolator/webAPI/document'
   , 'metapolator/ui/services/GlyphRendererAPI'
+  , 'metapolator/ui/services/DragDataService'
   , 'codemirror/lib/codemirror'
 ], function(
     errors
   , window
   , document
   , GlyphRendererAPI
+  , DragDataService
   , _
 ) {
     "use strict";
@@ -25,6 +27,7 @@ define([
         this.glyphRendererAPI = new GlyphRendererAPI(document, this.project.controller,
             {noParentSizing: true}
         );
+        this.dragDataService = new DragDataService();
 
         this.model = {
             masters: this.project.masters
@@ -45,6 +48,8 @@ define([
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
         this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
+        this.angularApp.constant('dragDataService', this.dragDataService);
+
         this.angularApp.constant('io', io);
         this.angularApp.constant('config', {loadTextEditor: loadTextEditor});
 

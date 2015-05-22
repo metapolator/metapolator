@@ -30,7 +30,22 @@ define([
         };
         $scope.invalid = property.invalid;
         $scope.message = property.message || '';
+
+        // define some tools
+        // later these tools will probebly accessed differently=u
+        $scope.tools = ['drag', 'delete'];
+        $scope.clickTool = this._toolClickHandler.bind(this);
     };
+
+    _p._toolClickHandler = function(tool) {
+        if(tool === 'delete')
+            setTimeout(this._delete.bind(this));
+    }
+
+    _p._delete = function() {
+        var $scope = this.$scope;
+        $scope.cpsPropertyDict.splice($scope.index, 1, []);
+    }
 
     _p._setValueBoxSize = function(value) {
         var lines = value.split('\n')
