@@ -1,22 +1,15 @@
 define([
     'metapolator/errors'
-  , 'metapolator/math/hobby'
-  , 'metapolator/math/Vector'
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
 ], function(
     errors
-  , hobby
-  , Vector
   , glyphBasics
   , MOMGlyph
   , timer
 ) {
     "use strict";
-    var KeyError = errors.Key
-      , CPSKeyError = errors.CPSKey
-    ;
 
     function UFOExportController(master, model, glyphSet, precision) {
         this._master = master;
@@ -59,7 +52,7 @@ define([
                     updatedUFOData[k] = v;
                 }
                 catch( error ) {
-                    if(!(error instanceof KeyError)) {
+                    if(!(error instanceof errors.Key)) {
                         throw error;
                     }
                 }
