@@ -19,8 +19,7 @@ define([
     }
     var _p = UFOExportController.prototype;
 
-    // FIXME: "export" is a future reserved keyword
-    _p.export = function() {
+    _p.do_export = function() {
         var glyphs = this._master.children
           , glyph
           , drawFunc

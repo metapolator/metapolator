@@ -617,7 +617,7 @@ define([
         glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
         exportController = new UFOExportController(master, model, glyphSet, precision);
-        exportController.export();
+        exportController.do_export();
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
