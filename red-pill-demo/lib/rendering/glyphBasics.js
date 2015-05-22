@@ -1,3 +1,10 @@
+/**
+ * This can be distilled down to the non es6 file by running the following
+ * from the root of the git repository
+ *
+ * pushd .; cd ./dev-scripts && ./es6to5 ../app/lib/rendering/glyphBasics.es6.js; popd
+ *
+ */
 (function(
   // Reliable reference to the global object (i.e. window in browsers).
   global,
@@ -465,6 +472,7 @@ define([
 function()
 {
    "use strict";
+    /*jshint esnext:true*/
 
     /**
      * Get control point vectors from (MOM Point) StyleDicts.
@@ -732,10 +740,10 @@ function()
     }
 
     return {
-		renderPenstrokeOutline: renderPenstrokeOutline
-	  , renderContour: renderContour
-	  ,	renderPenstrokeCenterline: renderPenstrokeCenterline
+        renderPenstrokeOutline: renderPenstrokeOutline
+      , renderContour: renderContour
+      , renderPenstrokeCenterline: renderPenstrokeCenterline
       , drawGlyphToPointPen: drawGlyphToPointPen
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator
-	}
+    }
 });

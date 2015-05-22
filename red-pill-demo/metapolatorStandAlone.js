@@ -26810,24 +26810,16 @@ define('metapolator/project/ImportController',[
 
 define('metapolator/project/UFOExportController',[
     'metapolator/errors'
-  , 'metapolator/math/hobby'
-  , 'metapolator/math/Vector'
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
 ], function(
     errors
-  , hobby
-  , Vector
   , glyphBasics
   , MOMGlyph
   , timer
 ) {
     "use strict";
-    /*jshint esnext:true*/
-    var KeyError = errors.Key
-      , CPSKeyError = errors.CPSKey
-    ;
 
     function UFOExportController(master, model, glyphSet, precision) {
         this._master = master;
@@ -26837,8 +26829,7 @@ define('metapolator/project/UFOExportController',[
     }
     var _p = UFOExportController.prototype;
 
-    // FIXME: "export" is a future reserved keyword
-    _p.export = function() {
+    _p.do_export = function() {
         var glyphs = this._master.children
           , glyph
           , drawFunc
@@ -26852,11 +26843,11 @@ define('metapolator/project/UFOExportController',[
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             time = timer.now();
-            drawFunc = this.drawGlyphToPointPen.bind(
+            drawFunc = glyphBasics.drawGlyphToPointPen.bind(
                 this
               , {
-                      penstroke: UFOExportController.renderPenstrokeOutline
-                    , contour: UFOExportController.renderContour
+                      penstroke: glyphBasics.renderPenstrokeOutline
+                    , contour: glyphBasics.renderContour
                 }
               , this._model, glyph);
 
@@ -26870,7 +26861,7 @@ define('metapolator/project/UFOExportController',[
                     updatedUFOData[k] = v;
                 }
                 catch( error ) {
-                    if(!(error instanceof KeyError)) {
+                    if(!(error instanceof errors.Key)) {
                         throw error;
                     }
                 }
@@ -26887,12 +26878,6 @@ define('metapolator/project/UFOExportController',[
         );
         this._glyphSet.writeContents(false);
     };
-
-    UFOExportController.renderPenstrokeOutline = glyphBasics.renderPenstrokeOutline;
-    UFOExportController.renderContour = glyphBasics.renderContour;
-    UFOExportController.renderPenstrokeCenterline = glyphBasics.renderPenstrokeCenterline;
-    UFOExportController.drawGlyphToPointPenGenerator = glyphBasics.drawGlyphToPointPenGenerator;
-    UFOExportController.drawGlyphToPointPen = glyphBasics.drawGlyphToPointPen;
 
     return UFOExportController;
 });
@@ -37610,7 +37595,7 @@ define('metapolator/project/MetapolatorProject',[
         glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
         exportController = new UFOExportController(master, model, glyphSet, precision);
-        exportController.export();
+        exportController.do_export();
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
@@ -38306,12 +38291,12 @@ define(
 
 define('metapolator/ui/services/GlyphRendererAPI',[
     'metapolator/errors'
-  , 'metapolator/project/UFOExportController'
+  , 'metapolator/rendering/glyphBasics'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
 ], function(
     errors
-  , UFOExportController
+  , glyphBasics
   , PointToSegmentPen
   , SVGPen
 ) {
@@ -38323,10 +38308,10 @@ define('metapolator/ui/services/GlyphRendererAPI',[
       , svgns = 'http://www.w3.org/2000/svg'
       , xlinkns = 'http://www.w3.org/1999/xlink'
       , renderer =  {
-            penstroke: UFOExportController.renderPenstrokeOutline
-          , contour: UFOExportController.renderContour
+            penstroke: glyphBasics.renderPenstrokeOutline
+          , contour: glyphBasics.renderContour
         }
-      , draw = UFOExportController.drawGlyphToPointPen
+      , draw = glyphBasics.drawGlyphToPointPen
       ;
 
     function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {
