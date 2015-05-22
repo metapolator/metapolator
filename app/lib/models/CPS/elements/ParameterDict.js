@@ -317,7 +317,10 @@ define([
 
         var insertions = _insertions instanceof Array
             ? _insertions
-            : [_insertions]
+            : (_insertions === undefined
+                    ? []
+                    : [_insertions]
+              )
           , removals
           , args
           , i, l
@@ -342,6 +345,10 @@ define([
             return [null, 0, 0];
 
         for(i=0;i<removalsLength;i++)
+            // FIXME: apparently in a move action, this destroy would have the wrong semantics
+            // is this used in the StyleDict?
+            // it is important that the *immutable* Parameters don't get unusable
+            // by this!
             removals[i].destroy();
 
         // update the existing indexes: this._dict and this.__indexes
@@ -408,13 +415,14 @@ define([
             this._keys = null;
 
         this._triggerEvents(events);
-        return [startIndex, removalsLength, insertionsLength];
+        return [startIndex, removalsLength, insertionsLength, removals];
     };
 
     _p.splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
         var result = this._splice(startIndex, deleteCount, _insertions);
         if(result[1] || result[2])
             this._trigger('update');
+        return result[3];
     };
 
     /**
@@ -527,6 +535,10 @@ define([
         if(!(key in this._dict))
             throw new KeyError('Key "'+key+'" not in ParameterDict.');
         return this._getItemValue(this._dict[key]);
+    };
+
+    _p.getItem = function(index) {
+        return this._items[index];
     };
 
     /**

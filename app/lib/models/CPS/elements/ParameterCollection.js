@@ -266,7 +266,10 @@ define([
     _p.splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
         var insertions = _insertions instanceof Array
             ? _insertions
-            : [_insertions]
+            : (_insertions === undefined
+                    ? []
+                    : [_insertions]
+              )
           , deleted
           , args
           , i, l
@@ -293,6 +296,12 @@ define([
             // nothing happened
             return;
 
+        // FIXME: this last part should be a separate method, that just returns
+        // the deleted array. Check the usage of this, see how splice in
+        // ParameterDict behaves and is splitted into two methods.
+        // NOTE: metapolatorStandAlone.cpsAPITools.addNewRule ane addNewAtImport
+        // use canonicalStartIndex!
+
         // prune the cache.
         this._rules = null;
 
@@ -304,7 +313,7 @@ define([
         // NOTE: index and deletedCount must be calculated see the
         // docs for Array.prototype.slice
         this._trigger(events);
-        return [canonicalStartIndex, deleted.length, insertions.length];
+        return [canonicalStartIndex, deleted.length, insertions.length, deleted];
     };
 
     _p.getItem = function(index) {

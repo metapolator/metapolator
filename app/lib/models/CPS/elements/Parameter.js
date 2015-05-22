@@ -26,7 +26,19 @@ define([
           , 'invalid': {
                 value: parameterValue.invalid
               , enumerable: true
-            }
+          }
+        });
+
+        // Use this for cases where the Parameter should be identified
+        // this represents the value of this parameter, don't use it
+        // for representation. Note: toString is similar, but used
+        // for serialization, not for comparison. The implementation of
+        // this could change to be just a checksum.
+        // Probably only "immutable" cps-nodes will have a `hash` property.
+        // In turn only mutable cps-nodes will have a nodeID.
+        Object.defineProperty(this, 'hash', {
+            value: [this.name, ': ', this._value].join('')
+          , enumerable: true
         });
     }
     var _p = Parameter.prototype = Object.create(Parent.prototype);
