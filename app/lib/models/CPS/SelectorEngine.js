@@ -222,6 +222,10 @@ define([
           , specificity
           , i, j, length, lengthCS
           ;
+
+        // FIXME: rules should actually be clustered by their namespaces
+        // that would help to discard more rules at once and thus speed the
+        // thing up alot!
         for(i=0, length = namespacedRules.length;i<length;i++) {
             namespacedRule = namespacedRules[i];
             complexSelectors = namespacedRule[0].value;
