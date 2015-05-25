@@ -26415,7 +26415,7 @@ define('metapolator/project/ImportController',[
                                     + metadata.glyphName + "' reason:" + metadata.message );
                     // try to continue
                     return true;
-                }.bind( null, this._master )
+                }.bind( this, this._master )
             };
             this._sourceGlyphSet = this._project.getGlyphSet(
                         false, this._sourceUFODir, undefined, options);
@@ -26807,6 +26807,80 @@ define('metapolator/project/ImportController',[
     return ImportController;
 });
 
+
+define('metapolator/project/UFOExportController',[
+    'metapolator/errors'
+  , 'metapolator/rendering/glyphBasics'
+  , 'metapolator/models/MOM/Glyph'
+  , 'metapolator/timer'
+], function(
+    errors
+  , glyphBasics
+  , MOMGlyph
+  , timer
+) {
+    "use strict";
+
+    function UFOExportController(master, model, glyphSet, precision) {
+        this._master = master;
+        this._model = model;
+        this._glyphSet = glyphSet;
+        this._precision = precision;
+    }
+    var _p = UFOExportController.prototype;
+
+    _p.do_export = function() {
+        var glyphs = this._master.children
+          , glyph
+          , drawFunc
+          , updatedUFOData
+          , i, l, v, ki, kil, k, keys
+          , style
+          , time, one, total = 0
+          ;
+        console.warn('exporting ...');
+        for(i = 0,l=glyphs.length;i<l;i++) {
+            glyph = glyphs[i];
+            style = this._model.getComputedStyle(glyph);
+            time = timer.now();
+            drawFunc = glyphBasics.drawGlyphToPointPen.bind(
+                this
+              , {
+                      penstroke: glyphBasics.renderPenstrokeOutline
+                    , contour: glyphBasics.renderContour
+                }
+              , this._model, glyph);
+
+            // Allow the glyph ufo data to be updated by the CPS.
+            updatedUFOData = glyph.getUFOData();
+            keys = Object.keys(updatedUFOData);
+            for(ki=0,kil=keys.length;ki<kil;ki++) {
+                try {
+                    k = keys[ki];
+                    v = style.get(MOMGlyph.convertUFOtoCPSKey(k));
+                    updatedUFOData[k] = v;
+                }
+                catch( error ) {
+                    if(!(error instanceof errors.Key)) {
+                        throw error;
+                    }
+                }
+            }
+            this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
+                                      undefined, {precision: this._precision});
+            one = timer.now() - time;
+            total += one;
+            console.warn('exported', glyph.id, 'this took', one,'ms');
+        }
+        console.warn('finished ', i, 'glyphs in', total
+            , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
+            , (1000 * i / total)  ,' glyphs per second.'
+        );
+        this._glyphSet.writeContents(false);
+    };
+
+    return UFOExportController;
+});
 
 /*!
 
@@ -36920,7 +36994,7 @@ define('metapolator/project/MetapolatorProject',[
   , 'metapolator/models/CPS/RuleController'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
-  , './ExportController'
+  , './UFOExportController'
   , 'yaml'
   , 'io/zipUtil'
   , 'io/InMemory'
@@ -36942,7 +37016,7 @@ define('metapolator/project/MetapolatorProject',[
   , RuleController
   , GlyphSet
   , ImportController
-  , ExportController
+  , UFOExportController
   , yaml
   , zipUtil
   , InMemory
@@ -37520,8 +37594,8 @@ define('metapolator/project/MetapolatorProject',[
 
         glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
-        exportController = new ExportController(master, model, glyphSet, precision);
-        exportController.export();
+        exportController = new UFOExportController(master, model, glyphSet, precision);
+        exportController.do_export();
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
@@ -38217,12 +38291,12 @@ define(
 
 define('metapolator/ui/services/GlyphRendererAPI',[
     'metapolator/errors'
-  , 'metapolator/project/ExportController'
+  , 'metapolator/rendering/glyphBasics'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
 ], function(
     errors
-  , ExportController
+  , glyphBasics
   , PointToSegmentPen
   , SVGPen
 ) {
@@ -38234,10 +38308,10 @@ define('metapolator/ui/services/GlyphRendererAPI',[
       , svgns = 'http://www.w3.org/2000/svg'
       , xlinkns = 'http://www.w3.org/1999/xlink'
       , renderer =  {
-            penstroke: ExportController.renderPenstrokeOutline
-          , contour: ExportController.renderContour
+            penstroke: glyphBasics.renderPenstrokeOutline
+          , contour: glyphBasics.renderContour
         }
-      , draw = ExportController.drawGlyphToPointPen
+      , draw = glyphBasics.drawGlyphToPointPen
       ;
 
     function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {
@@ -40078,8 +40152,8 @@ requirejs.config({
         // the optimizer can't read es6 generators
         // NOTE: for dependency tracing the genereated es5 version is used
         // by the optimizer. The feature detection below then swaps the path
-        // used to load ExportController when the browser executes this.
-        'metapolator/project/ExportController'
+        // used to load glyphBasics when the browser executes this.
+        'metapolator/rendering/glyphBasics'
         // see the es6/Proxy module, we load this only when needed
       , 'es6/Reflect'
     ]
@@ -40110,7 +40184,7 @@ try {
     eval("(function *(){})()");
     requirejs.config({
     paths: {
-        'metapolator/project/ExportController': 'project/ExportController.es6'
+        'metapolator/rendering/glyphBasics': 'rendering/glyphBasics.es6'
     }});
 } catch(err) {
     console.info("No generators, falling back.");
