@@ -1,0 +1,32 @@
+{
+  "name": "opentype.js",
+  "version": "0.4.7",
+  "main": "dist/opentype.js",
+  "keywords": [
+    "vector",
+    "graphics",
+    "canvas",
+    "2d"
+  ],
+  "ignore": [
+    ".jshintignore",
+    ".jshintrc",
+    "build",
+    "g",
+    "src",
+    "test",
+    "*.html"
+  ],
+  "dependencies": {},
+  "homepage": "https://github.com/nodebox/opentype.js",
+  "_release": "0.4.7",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.4.7",
+    "commit": "b4c786d672f174276d582565e69ba73034c27c1b"
+  },
+  "_source": "git://github.com/nodebox/opentype.js.git",
+  "_target": "~0.4.7",
+  "_originalSource": "opentype.js",
+  "_direct": true
+}
