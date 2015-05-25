@@ -28,8 +28,8 @@ requirejs.config({
         // the optimizer can't read es6 generators
         // NOTE: for dependency tracing the genereated es5 version is used
         // by the optimizer. The feature detection below then swaps the path
-        // used to load ExportController when the browser executes this.
-        'metapolator/project/ExportController'
+        // used to load glyphBasics when the browser executes this.
+        'metapolator/rendering/glyphBasics'
         // see the es6/Proxy module, we load this only when needed
       , 'es6/Reflect'
     ]
@@ -60,7 +60,7 @@ try {
     eval("(function *(){})()");
     requirejs.config({
     paths: {
-        'metapolator/project/ExportController': 'project/ExportController.es6'
+        'metapolator/rendering/glyphBasics': 'rendering/glyphBasics.es6'
     }});
 } catch(err) {
     console.info("No generators, falling back.");

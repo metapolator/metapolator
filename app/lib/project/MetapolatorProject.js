@@ -16,7 +16,7 @@ define([
   , 'metapolator/models/CPS/RuleController'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
-  , './ExportController'
+  , './UFOExportController'
   , 'yaml'
   , 'io/zipUtil'
   , 'io/InMemory'
@@ -38,7 +38,7 @@ define([
   , RuleController
   , GlyphSet
   , ImportController
-  , ExportController
+  , UFOExportController
   , yaml
   , zipUtil
   , InMemory
@@ -616,8 +616,8 @@ define([
 
         glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
-        exportController = new ExportController(master, model, glyphSet, precision);
-        exportController.export();
+        exportController = new UFOExportController(master, model, glyphSet, precision);
+        exportController.do_export();
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){

@@ -1,11 +1,11 @@
 define([
     'metapolator/errors'
-  , 'metapolator/project/ExportController'
+  , 'metapolator/rendering/glyphBasics'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
 ], function(
     errors
-  , ExportController
+  , glyphBasics
   , PointToSegmentPen
   , SVGPen
 ) {
@@ -17,10 +17,10 @@ define([
       , svgns = 'http://www.w3.org/2000/svg'
       , xlinkns = 'http://www.w3.org/1999/xlink'
       , renderer =  {
-            penstroke: ExportController.renderPenstrokeOutline
-          , contour: ExportController.renderContour
+            penstroke: glyphBasics.renderPenstrokeOutline
+          , contour: glyphBasics.renderContour
         }
-      , draw = ExportController.drawGlyphToPointPen
+      , draw = glyphBasics.drawGlyphToPointPen
       ;
 
     function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {

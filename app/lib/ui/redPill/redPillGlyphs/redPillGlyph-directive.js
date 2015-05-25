@@ -1,13 +1,13 @@
 define([
     'metapolator/webAPI/document'
-  , 'metapolator/project/ExportController'
+  , 'metapolator/rendering/glyphBasics'
   , 'ufojs/tools/pens/PointToSegmentPen'
   , 'ufojs/tools/pens/SVGPen'
   , 'ufojs/tools/pens/TransformPen'
   , 'ufojs/main'
     ], function(
     document
-  , ExportController
+  , glyphBasics
   , PointToSegmentPen
   , SVGPen
   , TransformPen
@@ -154,7 +154,7 @@ define([
 
     _p._addJob = function(renderer, glyph, segmentPen) {
         var pen = new PointToSegmentPen(segmentPen)
-          , generator = ExportController.drawGlyphToPointPenGenerator(
+          , generator = glyphBasics.drawGlyphToPointPenGenerator(
                 renderer,
                 this._model,
                 glyph,
@@ -199,11 +199,11 @@ define([
 
         renderer.abort();
         renderer.addLayer(glyph, 'outline', {
-            penstroke: ExportController.renderPenstrokeOutline
-          , contour: ExportController.renderContour
+            penstroke: glyphBasics.renderPenstrokeOutline
+          , contour: glyphBasics.renderContour
         }, true);
         renderer.addLayer(glyph, 'centerline', {
-            penstroke: ExportController.renderPenstrokeCenterline
+            penstroke: glyphBasics.renderPenstrokeCenterline
         }, false);
         renderer.run();
     }
