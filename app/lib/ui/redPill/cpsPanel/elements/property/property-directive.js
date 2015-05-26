@@ -11,8 +11,13 @@ define([
 
     function PropertyDirective(dragDataService) {
         function link(scope, element, attrs) {
-            element.on('click', helpers.stopPropagation);
-            element.on('dblclick', helpers.stopPropagation);
+            var startEditHandler = helpers.handlerDecorator(
+                                        scope,scope.startEdit, true, true);
+            element.on('dblclick', function(event) {
+               if(event.target.classList.contains('display-name')
+                    || event.target.classList.contains('display-value'))
+                    startEditHandler(event);
+            });
 
             function dragstartHandler(event) {
                 console.log(event.type, event);
@@ -31,24 +36,6 @@ define([
             }
             element.on('dragstart', dragstartHandler);
             element.on('dragend', dragendHandler);
-
-            var input = element[0].getElementsByTagName('input')[0]
-              , textarea = element[0].getElementsByTagName('textarea')[0]
-              , timer
-              ;
-
-            // if both elements lost focus run scope.finalize
-            timer = new helpers.Timer(function(){
-                scope.finalize();
-                scope.$apply();
-            });
-
-            angular.element([input, textarea])
-                   // when an element gets focuss
-                   .on('focus', timer.cancel)
-                   // when an element loses focus
-                   .on('blur', timer.start)
-                   ;
         }
 
         return {
@@ -56,7 +43,7 @@ define([
           , controller: 'PropertyController'
           , replace: false
           , template: template
-          , scope: {cpsPropertyDict: '=', property: '=', index: '='}
+          , scope: {cpsPropertyDict: '=', property: '=', index: '=', edit: '='}
           , link: link
         };
     }

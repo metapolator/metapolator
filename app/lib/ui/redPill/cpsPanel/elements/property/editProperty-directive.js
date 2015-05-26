@@ -9,7 +9,7 @@ define([
 ) {
     "use strict";
 
-    function NewPropertyDirective() {
+    function EditPropertyDirective() {
         function link(scope, element, attrs) {
             element.on('click', helpers.stopPropagation);
             element.on('dblclick', helpers.stopPropagation);
@@ -19,8 +19,11 @@ define([
               , timer
               ;
 
-            // focus the first input element on init
-            input.focus();
+            if(scope.edit.focus === 'name')
+                // focus the first input element on init
+                input.focus();
+            else
+                textarea.focus();
 
             // if both elements lost focus run scope.finalize
             timer = new helpers.Timer(function(){
@@ -33,17 +36,16 @@ define([
                    .on('focus', timer.cancel)
                    // when an element loses focus
                    .on('blur', timer.start)
+                   ;
         }
 
         return {
             restrict: 'E' // only matches element names
-          , controller: 'NewPropertyController'
           , replace: false
           , template: template
-          , scope: {cpsPropertyDict: '='}
           , link: link
         };
     }
-    NewPropertyDirective.$inject = [];
-    return NewPropertyDirective;
+    EditPropertyDirective.$inject = [];
+    return EditPropertyDirective;
 });

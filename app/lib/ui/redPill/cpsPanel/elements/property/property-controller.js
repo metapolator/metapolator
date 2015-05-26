@@ -8,6 +8,7 @@ define([
         this.$scope = $scope;
         // when name or value change do this:
         $scope.changeHandler = this._changeHandler.bind(this);
+        $scope.startEdit = this._startEdit.bind(this);
         $scope.finalize = this._finalize.bind(this);
 
         this._initPropertyModel();
@@ -37,7 +38,8 @@ define([
         $scope.clickTool = this._toolClickHandler.bind(this);
     };
 
-    _p._toolClickHandler = function(tool) {
+    _p._toolClickHandler = function(event, tool) {
+        event.stopPropagation();
         if(tool === 'delete')
             setTimeout(this._delete.bind(this));
     }
@@ -94,6 +96,19 @@ define([
             this._updateProperty(property);
     };
 
+    _p._startEdit = function(event) {
+        var $scope = this.$scope;
+        // this is used to decide which editing field should get
+        // focus. The target element should have either 'display-name'
+        // or 'display-value' as a class, but we always fall back to
+        // focusing the value field.
+        if(event.target.classList.contains('display-name'))
+            focus = 'name';
+        else
+            focus = 'value';
+        $scope.$emit('setEditProperty', $scope.index, {focus: focus});
+    }
+
     _p._finalize = function() {
         var $scope = this.$scope;
         // On blur, if property is invalid it is be better to restore
@@ -104,6 +119,8 @@ define([
             this._initPropertyModel();
             this._setValueBoxSize($scope.propertyModel.value);
         }
+        // close editing
+        $scope.$emit('setEditProperty', null);
     };
 
     return PropertyController;

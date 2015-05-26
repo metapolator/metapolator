@@ -23,6 +23,7 @@ define([
             name: ''
           , value: ''
         };
+        $scope.edit = true;
     }
 
     // override _changeHandler of Parent

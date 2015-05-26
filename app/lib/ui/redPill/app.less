@@ -194,18 +194,37 @@ mtk-cps-panel {
     @line-height: 1.2em;
     mtk-cps-property, mtk-cps-new-property {
         line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
-        input[type=text], textarea{
+        display: block;
+        margin-bottom: 2px;
+
+        input[type=text], textarea, span.display-name, span.display-value {
             vertical-align: top;
-            background: lightyellow;
             border: none;
             padding: 0;
             font-family: inherit;
             font-size: inherit;
+            line-height: inherit;
+        }
+
+        span.display-name, span.display-value {
+            background: white;
+        }
+
+        input[type=text], textarea {
+            background: lightyellow;
             resize: none;
         }
-        input[type=text]:first-child {
+
+        input[type=text]:first-child,
+        span.display-name {
             color: green;
         }
+
+        span.display-value {
+            display: inline-block;
+            white-space: pre;
+        }
+
         > div {
             display: inline;
             position: relative;

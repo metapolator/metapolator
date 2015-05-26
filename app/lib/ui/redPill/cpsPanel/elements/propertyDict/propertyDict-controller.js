@@ -6,6 +6,9 @@ define([
   , cpsTools
 ) {
     "use strict";
+
+    var KeyError = errors.Key;
+
     function PropertyDictController($scope) {
         this.$scope = $scope;
 
@@ -14,6 +17,11 @@ define([
 
         $scope.acceptMoveProperty = this._acceptMoveProperty.bind(this);
         $scope.moveProperty = this._moveProperty.bind(this);
+
+        $scope.getPropertyHash = this._getPropertyHash.bind(this);
+        $scope.getEditingPropertyData = this._getEditingPropertyData.bind(this);
+        $scope.$on('setEditProperty', this.setEditPropertyHandler.bind(this));
+        this._editingProperty = null;
 
         // subscribe to propertyDict
         this._propertyDictSubscription = $scope.cpsPropertyDict.on(
@@ -68,6 +76,47 @@ define([
     _p._destroy = function() {
         this.$scope.cpsPropertyDict.off(this._propertyDictSubscription);
     };
+
+    _p._setEditingProperty = function(index, data) {
+        if(typeof index !== 'number')
+            this._editingProperty = null;
+        else
+            this._editingProperty = {
+                index: index
+              , oldItem: this.$scope.cpsPropertyDict.getItem(index)
+              , data: data
+            };
+        this.$scope.$apply();
+    }
+
+    _p.setEditPropertyHandler = function(event, index, data) {
+        event.stopPropagation();
+        this._setEditingProperty(index, data);
+    }
+
+    _p._isEditingProperty = function(index) {
+        return this._editingProperty && this._editingProperty.index === index;
+    }
+
+    _p._getEditingPropertyData = function(index, defaultValue) {
+        if(this._isEditingProperty(index))
+            return this._editingProperty.data;
+        else if(arguments.length >= 2)
+            return defaultValue;
+        throw new KeyError('index '+index+' is not currently editing');
+    }
+
+    _p._getPropertyHash = function(index) {
+        var item;
+        if(this._isEditingProperty(index))
+            // we wan't to create the old hash while editing, that way
+            // the html get's not reloaded by the ng-repeat directive
+            // and the input element doesn't lose focus.
+            item = this._editingProperty.oldItem;
+        else
+            item = this.$scope.cpsPropertyDict.getItem(index);
+        return (index + ':' + item.hash)
+    }
 
     return PropertyDictController;
 });
