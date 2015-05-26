@@ -1,4 +1,5 @@
-app.controller("mastersController", function($scope, sharedScope) {
+app.controller("mastersController", ['$scope', 'sharedScope', '$timeout',
+function($scope, sharedScope, $timeout) {
     'use strict';
     $scope.data = sharedScope.data;
 
@@ -84,10 +85,77 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
     };
 
-    $scope.importUfo = function() {
-        var message = "Want to load your own UFO?<br><br>Show us you want this by buying a T shirt:<br><ul><li><a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a></li><li><a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a></li>";
-        $scope.data.dialog(message, false, "close");
+    $scope.importUfo_dialog_open = function() {
+        $("#importufo_dialog").css("display", "block");
         $scope.data.localmenu.masters = false;
+    };
+
+    $scope.handleUFOimportFiles = function(element) {
+        var ufozipfile = element.files[0]
+          , reader = new FileReader()
+          ;
+        $scope.data.dialog("Importing UFO ZIP...", true);
+        reader.onload = function(e) {
+            var importedMasters = $scope.data.stateful.project.importZippedUFOMasters(e.target.result)
+              , i, l
+              ;
+
+            for (i=0, l=importedMasters.length; i<l; i++){
+                var masterName = importedMasters[i]
+                  , model = $scope.data.stateful.project.open(masterName)
+                  , master = model.query('master#' + masterName)
+                  , cpsFile = $scope.data.stateful.controller._getMasterRule(masterName)
+                  ;
+
+                $scope.data.sequences[0].masters.push({
+                    id : ++$scope.uniqueMasterId,
+                    name : masterName,
+                    displayName : "Master " + $scope.uniqueMasterId,
+                    cpsFile : cpsFile,
+                    display : false,
+                    edit : [true, true],
+                    ag : 'Ag',
+                    glyphs : master.children,
+                    parameters : [{
+                        name : "Weight",
+                        operators : [{
+                            name : "x",
+                            value : 1
+                        }]
+
+                    }, {
+                        name : "Width",
+                        operators : [{
+                            name : "x",
+                            value : 1
+                        }]
+                    }, {
+                        name : "Height",
+                        operators : [{
+                            name : "x",
+                            value : 1
+                        }]
+                    }, {
+                        name : "Spacing",
+                        unit : "",
+                        operators : [{
+                            name : "+",
+                            value : 0
+                        }]
+                    }]
+                });
+            }
+
+            $scope.importUfo_dialog_close();
+            $timeout(function(){
+                $scope.data.closeDialog();
+            }, 2000); //keep the "exporting" dialog visible for just a few more seconds...
+        };
+        reader.readAsArrayBuffer(ufozipfile);
+    };
+
+    $scope.importUfo_dialog_close = function() {
+        $("#importufo_dialog").css("display", "none");
     };
 
     $scope.duplicateMasters = function() {
@@ -382,4 +450,4 @@ app.controller("mastersController", function($scope, sharedScope) {
         }
     }
 
-});
+}]);

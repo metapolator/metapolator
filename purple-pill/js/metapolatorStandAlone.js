@@ -26386,7 +26386,8 @@ define('metapolator/project/ImportController',[
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(log, project, masterName, sourceUFODir) {
+    function ImportController(io, log, project, masterName, sourceUFODir) {
+        this._io = io;
         this._project = project;
         this._log = log;
         this._masterName = masterName;
@@ -26406,7 +26407,9 @@ define('metapolator/project/ImportController',[
      * NOTE: This performs synchronous IO via this._project.getGlyphSet
      */
     _p._getSourceGlyphSet = function() {
-        var options;
+        var options
+          , UFOversion
+          ;
         if(!this._sourceGlyphSet) {
             // tell us about errors instead of throwing it away
             options = {
@@ -26417,8 +26420,10 @@ define('metapolator/project/ImportController',[
                     return true;
                 }.bind( this, this._master )
             };
-            this._sourceGlyphSet = this._project.getGlyphSet(
-                        false, this._sourceUFODir, undefined, options);
+
+            console.log("[ImportController._getSourceGlyphSet] this._io:" + this._io);
+            UFOversion = this._project._readUFOFormatVersion(false, this._sourceUFODir, this._io);
+            this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, UFOversion, options);
         }
         return this._sourceGlyphSet;
     };
@@ -36150,7 +36155,29 @@ define('io/zipUtil',[
     var NotImplementedError = errors.NotImplemented;
 
     var unpack = function(async, zipData, io, targetPath){
-        throw new NotImplementedError('ZIP unpack method is not yet implemented');
+        if (async)
+            throw new NotImplementedError('Asynchronous ZIP unpack method is not yet implemented');
+
+        var zip = new JSZip(zipData)
+          , files = zip.files
+          , filename
+          , file
+          , absolute_path
+          , dir_abs_path
+          ;
+
+        for (filename in files){
+            file = files[filename];
+            absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
+
+            if (file.dir){
+                io.mkDir(false, absolute_path);
+            } else {
+                dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));
+                io.ensureDir(false, dir_abs_path);
+                io.writeFile(false, absolute_path, file.asBinary());
+            }
+        }
     };
 
     var encode = function(async, io, sourcePath, dataType){
@@ -37124,26 +37151,26 @@ define('metapolator/project/MetapolatorProject',[
             'path': ['ufoDir', 'fileName',
                 function(ufoDir, fileName){ return [ufoDir, fileName].join('/'); }]
           , 'data': ['contents', plistLib.readPlistFromString.bind(plistLib)]
-          , 'contents': ['path',
-                function(path){ return this._io.readFile(false, path);}]
+          , 'contents': ['path','io',
+                function(path, io){ return (io || this._io).readFile(false, path);}]
         }
       , {
-            'contents': ['path',
-                function(path){ return this._io.readFile(true, path);}]
+            'contents': ['path', 'io',
+                function(path, io){ return (io || this._io).readFile(true, path);}]
         }
-      , ['ufoDir', 'fileName']
+      , ['ufoDir', 'fileName', 'io']
       , function(obtain){ return obtain('data'); }
     );
 
     _p._readUFOFormatVersion = obtain.factory(
         {
-            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), 'io', _p._readPlist]
           , 'formatVersion': ['metainfo', function(data){return data.formatVersion;}]
         }
       , {
-            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), 'io', _p._readPlist]
         }
-      , ['ufoDir']
+      , ['ufoDir', 'io'/*optional*/]
       , function(obtain){ return obtain('formatVersion'); }
     );
 
@@ -37159,28 +37186,28 @@ define('metapolator/project/MetapolatorProject',[
      */
     _p.getGlyphSet = obtain.factory(
         {
-            'UFOVersion': [false, 'ufoDir', _p._readUFOFormatVersion]
+            'UFOVersion': [false, 'ufoDir', 'io', _p._readUFOFormatVersion]
           , 'dirName': ['ufoDir', 'layer', function(ufoDir, layer) {
                                     return [ufoDir, layer].join('/');}]
-          , 'layer': ['UFOVersion', 'ufoDir', 'layerName',
-            function(UFOVersion, ufoDir, layerName) {
+          , 'layer': ['UFOVersion', 'ufoDir', 'layerName', 'io',
+            function(UFOVersion, ufoDir, layerName, io) {
                 var layerContents;
                 if(UFOVersion < 3)
                     return 'glyphs';
-                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist');
+                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist', io);
                 return _getLayerDir(layerContents, layerName || 'public.default');
             }]
           , 'GlyphSet': [false, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
         }
       , {
-            'UFOVersion': [true, 'ufoDir', _p._readUFOFormatVersion]
-          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback',
-            function(UFOVersion, ufoDir, layerName, callback, errback) {
+            'UFOVersion': [true, 'ufoDir', 'io', _p._readUFOFormatVersion]
+          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback', 'io',
+            function(UFOVersion, ufoDir, layerName, callback, errback, io) {
                 if(UFOVersion < 3) {
                     setTimeout(callback.bind('glyphs'));
                     return;
                 }
-                this._readPlist(true, ufoDir, 'layercontents.plist')
+                this._readPlist(true, ufoDir, 'layercontents.plist', io)
                 .then(function(layerContents) {
                     callback(_getLayerDir(layerContents, layerName || 'public.default'));
                 })
@@ -37189,7 +37216,7 @@ define('metapolator/project/MetapolatorProject',[
           , 'GlyphSet': [true, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
         }
       , ['ufoDir', 'glyphNameFunc'/*optional*/, 'options'/*optional*/
-                    , 'layerName'/*optional default: 'public.default'*/]
+                    , 'layerName'/*optional default: 'public.default'*/, 'io'/*optional*/]
       , function(obtain) {return obtain('GlyphSet');}
     );
 
@@ -37487,8 +37514,69 @@ define('metapolator/project/MetapolatorProject',[
         return this._controller;
     };
 
-    _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( this._log, this,
+    /**
+     * The blob parameter must be data representing a file containing one or more
+     * UFOs encoded with the following packaging scheme:
+     *
+     * upload.zip
+     *     ├── master1.ufo.zip
+     *     │    └── master1.ufo
+     *     ├── master2.ufo.zip
+     *     │    └── master2.ufo
+     *     └── master3.ufo.zip
+     *          └── master3.ufo
+     */
+    _p.importZippedUFOMasters = function(blob) {
+        var mem_io = new InMemory()
+          , importedMasters = Array()
+          ;
+
+        zipUtil.unpack(false, blob, mem_io, "");
+
+        var dirs = mem_io.readDir(false, "/")
+          , baseDir = dirs[0]
+          , names = mem_io.readDir(false, baseDir)
+          , n, l
+          ;
+
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n]
+              , UFOZip = baseDir + name
+              , another_blob
+              ;
+
+            another_blob = mem_io.readFile(false, UFOZip);
+            zipUtil.unpack(false, another_blob, mem_io, baseDir);
+        }
+
+        names = mem_io.readDir(false, baseDir);
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n];
+            if (name[name.length-1]=='/'){
+                /* This sourceUFODir name may be wrong in some cases.
+                   We need a more robust implementation.
+                   The current implementation works only for
+                   the UFO packing scheme described above. */
+                var sourceUFODir = baseDir + name.split("/")[0]
+                  , glyphs = undefined
+                  , masterName = name.split(".ufo/")[0]
+                  ;
+
+                masterName = masterName.split(' ').join('_');
+                //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
+                //       Metapolator dislikes spaces in master names as well as anything that has a meaning
+                //       in a selector/cps. (.#>:(){}) etc.
+
+                this.import(masterName, sourceUFODir, glyphs, mem_io);
+                importedMasters.push(masterName);
+            }
+        }
+
+        return importedMasters;
+    };
+
+    _p.import = function(masterName, sourceUFODir, glyphs, io) {
+        var importer = new ImportController( io || this._io, this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
 
