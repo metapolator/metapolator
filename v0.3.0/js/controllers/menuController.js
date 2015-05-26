@@ -28,9 +28,12 @@ app.controller('menuController', function($scope, $http, sharedScope) {
     };
 
     $scope.closeDocument = function() {
-        if (confirm("Close this window?\n\nWARNING: This is a demo,\neverything will be lost")) {
-            window.close();
-        }
+        var message = "Close this window?<br><br>WARNING: This is a demo,\neverything will be lost";
+        $scope.data.confirm(message, function(result){
+            if(result) {
+                window.close();
+            }
+        });
         $scope.data.localmenu.project = false;
     };
 
@@ -60,6 +63,18 @@ app.controller('menuController', function($scope, $http, sharedScope) {
 
     /***** dialog *****/
 
+    $scope.data.confirm = function(message, callback) {
+        $scope.data.dialog(message, false, true);
+        $('#dialog-button-true').click(function() {
+            $scope.data.closeDialog();
+            callback(true);
+        });
+        $('#dialog-button-false').click(function() {
+            $scope.data.closeDialog();
+            callback(false);
+        });
+    };
+
     $scope.data.dialog = function(message, loading, buttons) {
         $("#layover").fadeIn(100);
         $("#dialog").fadeIn(300);
@@ -67,14 +82,17 @@ app.controller('menuController', function($scope, $http, sharedScope) {
         if (loading) {
             $("#dialog-loading").show();
         }
-        if (buttons == "close") {
-            $("#dialog-close").show();
+        if (buttons) {
+            $("#dialog-confirm").show();
         }
     };
 
     $scope.data.closeDialog = function() {
         $("#layover").fadeOut(300);
         $("#dialog").fadeOut(100);
+        // hide buttons
+        $("#dialog-close").hide();
+        $("#dialog-confirm").hide();
     };
 
     /***** dividers *****/

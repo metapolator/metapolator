@@ -1558,6 +1558,7 @@
     }
     
         #dialog-close {
+            display: none;
             position: absolute;
             right: 10px;
             top: 10px;
@@ -1595,16 +1596,24 @@
                 }
 
         
-        #dialog-buttons {
+        #dialog-confirm {
             margin-top: 30px;
-            text-align: center;
             display: none;
         }
         
-        #dialog-buttons button {
+        #dialog-confirm button {
             font-size: 12px;
-            padding: 10px;
+            padding: 8px;
+            background: #eee;
+            color: #515151;
+            border: 1px solid #515151;
+            margin-right: 8px;
         }
+        
+            #dialog-confirm button:hover {
+                background: #515151;
+                color: #eee;
+            }
         
     #rename-project {
         width: 260px;

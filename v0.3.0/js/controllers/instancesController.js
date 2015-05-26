@@ -260,11 +260,14 @@ app.controller('instancesController', function($scope, $http, sharedScope) {
             if (n == 1) {
                 var designspaceName = $scope.data.getDesignspaceName(designspace);
                 var message = "Delete instance? This also deletes the design space '" + designspaceName + "'.";
-                if (confirm(message)) {
-                    $scope.data.designspaces.splice($scope.data.designspaces.indexOf($scope.data.currentDesignspace), 1);
-                    $scope.data.currentDesignspace = null;
-                    deleteInstanceConfirmed();
-                }
+                $scope.data.confirm(message, function(result){
+                    if(result) {
+                        $scope.data.designspaces.splice($scope.data.designspaces.indexOf($scope.data.currentDesignspace), 1);
+                        $scope.data.currentDesignspace = null;
+                        deleteInstanceConfirmed();
+                        $scope.$apply();
+                    }
+                });
             } else {
                 deleteInstanceConfirmed();
             }

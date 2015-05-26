@@ -53,34 +53,39 @@ app.controller("mastersController", function($scope, sharedScope) {
             }
             // close menu
             $scope.data.localmenu.masters = false;
-            if (confirm(message)) {
-                angular.forEach($scope.data.sequences, function(sequence) {
-                    var notDeleted = [];
-                    angular.forEach(sequence.masters, function(master, index) {
-                        if (!master.edit[$scope.data.view.viewState]) {
-                            notDeleted.push(master);
-                        } else {
-                            thisIndex = index;
-                            if (nDesignspaces.length > 0) {
-                                $scope.data.removeMasterFromEachDesignspaces(master.name);
+            $scope.data.confirm(message, function(result){
+                if(result){
+                    angular.forEach($scope.data.sequences, function(sequence) {
+                        var notDeleted = [];
+                        angular.forEach(sequence.masters, function(master, index) {
+                            if (!master.edit[$scope.data.view.viewState]) {
+                                notDeleted.push(master);
+                            } else {
+                                thisIndex = index;
+                                if (nDesignspaces.length > 0) {
+                                    $scope.data.removeMasterFromEachDesignspaces(master.name);
+                                }
+                                if ($scope.data.pill != "blue") {
+                                    $scope.data.stateful.project.deleteMaster(master.name);
+                                    // empty cps file to prevent caching issues
+                                    $scope.data.stateful.project.ruleController.write(false, master.cpsFile, "");
+                                }
                             }
-                            if ($scope.data.pill != "blue") {
-                                $scope.data.stateful.project.deleteMaster(master.name);
-                                // empty cps file to prevent caching issues
-                                $scope.data.stateful.project.ruleController.write(false, master.cpsFile, "");
-                            }
-                        }
+                        });
+                        sequence.masters = notDeleted;
                     });
-                    sequence.masters = notDeleted;
-                });
-            }
-            // after deleting all selected masters, select a new master
-            var n = $scope.data.sequences[0].masters.length;
-            if (n <= thisIndex) {
-                $scope.data.sequences[0].masters[n - 1].edit[$scope.data.view.viewState] = true;
-            } else {
-                $scope.data.sequences[0].masters[thisIndex].edit[$scope.data.view.viewState] = true;
-            }
+                    // after deleting all selected masters, select a new master
+                    var n = $scope.data.sequences[0].masters.length;
+                    if (n > 0) {
+                        if (n <= thisIndex) {
+                            $scope.data.sequences[0].masters[n - 1].edit[$scope.data.view.viewState] = true;
+                        } else {
+                            $scope.data.sequences[0].masters[thisIndex].edit[$scope.data.view.viewState] = true;
+                        }
+                    }
+                    $scope.$apply();
+                }
+            });
         }
     };
 

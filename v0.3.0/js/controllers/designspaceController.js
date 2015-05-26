@@ -53,22 +53,25 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
         if (designspace.axes.length == 0) {
             remove();
         } else {
-            var n = $scope.data.countInstancesOnDesignspace(designspace.id);
+            var n = $scope.data.countInstancesOnDesignspace(designspace.id), message;
             if (n == 1) {
-                if (confirm("Delete this design space and its instance?")) {
-                    remove();
-                }  
+                message = "Delete this design space and its instance?";
             } else {
-                if (confirm("Delete this design space and its " + n + " instances?")) {
-                    remove();
-                }
+                message = "Delete this design space and its " + n + " instances?";
             }
+            $scope.data.confirm(message, function(result){
+                if(result) {
+                    remove();
+                    $scope.$apply();
+                }
+            });
         }
         function remove(){
             $scope.data.designspaces.splice($scope.data.designspaces.indexOf(designspace), 1);
             $scope.data.removeInstanceAfterRemovingDesignspace(designspace.id);
+            $scope.setNewCurrentDesignspace(); 
         }
-        $scope.setNewCurrentDesignspace();   
+          
         $scope.data.localmenu.designspace = false;
     };
 
@@ -118,18 +121,18 @@ app.controller('designspaceController', function($scope, $http, sharedScope) {
     $scope.removeMasterFromDesignspace = function(masterName, designspace, confirmNeeded, arrayIndex) {
         var axesSet = designspace.axes;
         if (confirmNeeded) {
-            var n = $scope.data.countInstancesWithMaster(masterName);
+            var n = $scope.data.countInstancesWithMaster(masterName), message;
             if (n == 1) {
-                if (confirm("Remove master? It will no longer be part of the instance afterwards.")) {
-                    deleteMaster();
-                    $scope.$apply();
-                }
+                message = "Remove master? It will no longer be part of the instance afterwards.";
             } else {
-                if (confirm("Remove master? It will no longer be part of the instances afterwards.")) {
+                message = "Remove master? It will no longer be part of the instances afterwards.";
+            }
+            $scope.data.confirm(message, function(result){
+                if(result) {
                     deleteMaster();
                     $scope.$apply();
                 }
-            }
+            });
         } else {
             deleteMaster();
         }
