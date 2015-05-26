@@ -1371,21 +1371,40 @@
             background: white;
         }
         
-        .instance-checkmark {
-            font-family: 'icons';
+        .instance-chechmark-container {
             height: 100%;
             width: calc(100% - 10px);
             border-bottom: 2px solid #eee;
             border-left: 2px solid #eee;
             cursor: default;
-            text-align: center;
-            font-size: 32px;
-            padding-top: 12px;
-            line-height: 20px;
             display: inline-block;
             float: left;
         }
         
+            .instance-checkmark-export {
+                font-family: 'icons';
+                height: 100%;
+                width: 50%;
+                cursor: default;
+                text-align: right;
+                font-size: 32px;
+                padding-top: 12px;
+                line-height: 20px;
+                display: inline-block;
+                float: left;
+            }
+            
+            .instance-checkmark-otf {
+                height: 100%;
+                width: 50%;
+                cursor: default;
+                text-align: left;
+                font-size: 10px;
+                padding-top: 12px;
+                line-height: 10px;
+                display: inline-block;
+                float: left;
+            }
 
            
             

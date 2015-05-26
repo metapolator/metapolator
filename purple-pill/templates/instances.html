@@ -30,10 +30,15 @@
                         </ul>
                     </span>
                     <span class="list-edit-col rename" ng-model="instance.displayName" ng-click="setCurrentInstance(instance)" ng-class="{'selected': instance.edit}" ng-style="{'width': 'calc(100% - ' + (data.fontExportWidth + 54) + 'px'}"></span>
-                    <div class="export-col" ng-click="instance.exportFont = !instance.exportFont" ng-style="{'width': (data.fontExportWidth - 4) + 'px'}">
+                    <div class="export-col" ng-style="{'width': (data.fontExportWidth - 4) + 'px'}">
                         <div class="instance-spacer">&nbsp;</div>
-                        <div class="instance-checkmark">
-                            <div ng-if="instance.exportFont">H</div>
+                        <div class="instance-chechmark-container">
+                            <div class="instance-checkmark-export" ng-click="instance.exportFont = !instance.exportFont">
+                                <div ng-if="instance.exportFont">H</div>
+                            </div>
+                            <div class="instance-checkmark-otf" ng-click="instance.openTypeFeatures = !instance.openTypeFeatures">
+                                <div ng-if="instance.openTypeFeatures">ot.fea</div>
+                            </div>
                         </div>
                     </div>
                 </li>
