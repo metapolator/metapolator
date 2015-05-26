@@ -97,66 +97,53 @@ function()
           , i,l
           ;
 
+        // Actually, all points have controls. We don't have to draw
+        // lines. We should make a CPS value if we want to draw a
+        // point as a line segment point
+        segmentType = 'curve';
+
         pen.beginPath();
         // first draw the right side
         for(i=0,l=points.length;i<l;i++) {
             point = model.getComputedStyle(points[i].right);
-            // Actually, all points have controls. We don't have to draw
-            // lines. We should make a CPS value if we want to draw a
-            // point as a line segment point
-            if(true /* always curve */) {
-                segmentType = 'curve';
-                if(i === 0) {
-                    // this reproduces the starting terminal
-                    prePoint = model.getComputedStyle(points[i].left);
-                    terminal = 'start';
-                }
-                else {
-                    terminal = false;
-                    prePoint = model.getComputedStyle(points[i-1].right);
-                }
-                ctrls = getControlsFromStyle(prePoint, point, terminal);
-                /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
-                /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
+            if(i === 0) {
+                // this reproduces the starting terminal
+                prePoint = model.getComputedStyle(points[i].left);
+                terminal = 'start';
+            } else {
+                terminal = false;
+                prePoint = model.getComputedStyle(points[i-1].right);
             }
-            else {
-                segmentType =  'line';
-                console.warn('implicit line segment, right side, this should be explicit in CPS');
-            }
+            ctrls = getControlsFromStyle(prePoint, point, terminal);
+            /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
+            /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         // draw the left side
         for(i=l-1;i>=0 ;i--) {
             point = model.getComputedStyle(points[i].left);
-            if(true/*always curve*/) {
-                segmentType = 'curve';
-                if(i === l-1) {
-                    // this reproduces the ending terminal
-                    terminal = 'end';
-                    prePoint = model.getComputedStyle(points[i].right);
-                }
-                else {
-                    terminal = false;
-                    // the left side is of the outline is drawn from the
-                    // end to the beginning. This reverses the point order
-                    // for getComputedStyle
-                    prePoint = point;
-                    point = model.getComputedStyle(points[i+1].left);
-                }
-                ctrls = getControlsFromStyle(prePoint, point, terminal);
-                if(!terminal) {
-                    // reverse on curve and of curve points, prePoint
-                    // is no longer needed.
-                    ctrls.reverse();
-                    point = prePoint;
-                }
-                /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
-                /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
+            if(i === l-1) {
+                // this reproduces the ending terminal
+                terminal = 'end';
+                prePoint = model.getComputedStyle(points[i].right);
             }
             else {
-                segmentType = 'line';
-                console.warn('implicit line segment, left side, this should be explicit in CPS');
+                terminal = false;
+                // the left side is of the outline is drawn from the
+                // end to the beginning. This reverses the point order
+                // for getComputedStyle
+                prePoint = point;
+                point = model.getComputedStyle(points[i+1].left);
             }
+            ctrls = getControlsFromStyle(prePoint, point, terminal);
+            if(!terminal) {
+                // reverse on curve and of curve points, prePoint
+                // is no longer needed.
+                ctrls.reverse();
+                point = prePoint;
+            }
+            /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
+            /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
             /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
@@ -168,18 +155,15 @@ function()
           , segmentType
           , i, l
           ;
+
+        // Actually, all points have controls. We don't have to draw
+        // lines. We should make a CPS value if we want to draw a
+        // point as a line segment point
+        segmentType = 'curve';
+
         pen.beginPath();
         for(i=0, l=points.length;i<l;i++) {
             point = model.getComputedStyle(points[i]);
-            // Actually, all points have controls. We don't have to draw
-            // lines. We should make a CPS value if we want to draw a
-            // point as a line segment point
-            if(true /* always curve */) {
-                segmentType = 'curve';
-            }
-            else {
-                segmentType =  'line';
-            }
             /* yield*/ pen.addPoint(point.get('in').valueOf(), undefined, undefined, undefined);
             /* yield*/ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
             /* yield*/ pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
@@ -204,10 +188,10 @@ function()
                 ctrls = getControlsFromStyle(prePoint, point);
                 /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
                 /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
-            }
-            else
+            } else {
                 // this contour is not closed, the first point is a move
                 segmentType = 'move';
+            }
             /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         pen.endPath();
