@@ -7,7 +7,7 @@ define([
 ) {
     "use strict";
 
-    var CPSFormula = errors.CPSFormula;
+    var CPSFormulaError = errors.CPSFormula;
 
     function SharedFormulaeFactory(TypeConstructor) {
         this.TypeConstructor = TypeConstructor;
@@ -23,7 +23,7 @@ define([
             stack = formulaEngine.parse(parameterValue.valueString);
         }
         catch(error) {
-            if(!(error instanceof CPSFormula))
+            if(!(error instanceof CPSFormulaError))
                 throw error;
             invalidParamterMessage = error.message;
         }

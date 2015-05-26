@@ -9,6 +9,10 @@ define([
 ) {
     "use strict";
 
+    var CPSFormulaError = errors.CPSFormula
+      , CPSParserError = errors.CPSParser
+      ;
+
     /**
      * Literal is a string representing a CPS selector.
      * Value is a CPS/elements/SelectorList as produced by the
@@ -23,7 +27,14 @@ define([
      */
     function SelectorToken(literal, selectorEngine) {
         Parent.call(this, literal, 0, 0);
-        this._value = parseSelectorList.fromString(this.literal, undefined, selectorEngine);
+        try {
+            this._value = parseSelectorList.fromString(this.literal, undefined, selectorEngine);
+        }
+        catch(error) {
+            if(!(error instanceof CPSParserError))
+                throw error;
+            throw new CPSFormulaError('(CPSParserError) '+error.message, error.stack);
+        }
     }
 
     var _p = SelectorToken.prototype = Object.create(Parent.prototype);
