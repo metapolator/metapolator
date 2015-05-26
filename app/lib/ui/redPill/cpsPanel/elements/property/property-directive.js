@@ -20,7 +20,6 @@ define([
             });
 
             function dragstartHandler(event) {
-                console.log(event.type, event);
                 var dragDataKey = dragDataService.set([scope.cpsPropertyDict, scope.index]);
                 event.dataTransfer.setData('cps/property', dragDataKey);
                 event.dataTransfer.addElement(element[0]);
@@ -30,7 +29,6 @@ define([
                 element.addClass('dragging');
             }
             function dragendHandler(event) {
-                console.log(event.type, event);
                 element.removeClass('dragging');
                 dragDataService.remove(event.dataTransfer.getData('cps/property'));
             }

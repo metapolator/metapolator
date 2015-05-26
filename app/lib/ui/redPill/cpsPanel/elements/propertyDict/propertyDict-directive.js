@@ -33,17 +33,6 @@ define([
 
     }
 
-    function insertBefore(newElement, referenceElement) {
-        referenceElement.parentElement.insertBefore(newElement, referenceElement);
-    }
-
-    function insertAfter(newElement, referenceElement) {
-        // there is no element.insertAfter() in the DOM
-        if(!referenceElement.nextSibling)
-            referenceElement.parent.appendChild(newElement);
-        referenceElement.parentElement.insertBefore(newElement, referenceElement.nextSibling);
-    }
-
     function getTargetIndex(event, target) {
         var targetIndex = angular.element(target).isolateScope().index
           , insertBefore = true
@@ -52,48 +41,36 @@ define([
           , tippingPointY =  elementBBox.top + elementHeight / 2
           ;
 
-
-
-        if (event.clientY > tippingPointY) {
-            targetIndex = targetIndex + 1;
+        if (event.clientY > tippingPointY)
             insertBefore = false;
-        }
         return [targetIndex, insertBefore];
     }
 
-    function hideIndicator(indicator) {
-        if(indicator.parentElement)
-            indicator.parentElement.removeChild(indicator);
-    }
-
-    function PropertyDictDirective(dragDataService) {
+    function PropertyDictDirective(dragDataService, dragIndicatorService) {
 
         function link(scope, element, attrs) {
             // there is also a dragenter and dragleave event, but they
             // are not necessary for the most simple usage
-            var theList = element[0].getElementsByTagName('ol')[0]
-              , indicator = element[0].ownerDocument.createElement('indicator')
-              ;
+            var theList = element[0].getElementsByTagName('ol')[0];
 
             // maybe we rather find this on every event then.
-            var targetIndex;
+            var targetIndex, insertPosition, indicatorId = 'cps/property';
 
-            element.on('dragover', function cancel(event) {
+            element.on('dragover', function (event) {
                 var dragDataKey = event.dataTransfer.getData('cps/property')
                   , data
                   , target
                   , targetIndexData
-                  , insertPosition
+                  , indicatorElement
                   ;
                 if(!dragDataKey) {
                     // hide the indicator if this is an identity-dragover...
-                    hideIndicator(indicator);
+                    dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
 
                 // figure out where to drop and move an indicator to there
                 target = findElement(event.target, 'mtk-cps-property', element[0]);
-
                 if(target) {
                     targetIndexData = getTargetIndex(event, target);
                     targetIndex = targetIndexData[0];
@@ -110,28 +87,27 @@ define([
 
 
                 data = dragDataService.get(dragDataKey)
-                if(!scope.acceptMoveProperty(data[0], data[1], targetIndex)) {
+                if(!scope.acceptMoveProperty(data[0], data[1], targetIndex, insertPosition)) {
                     // hide the indicator if this is an identity-dragover...
-                    hideIndicator(indicator);
+                    dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
-
                 // place the indicator:
-                if(insertPosition === 'append')
-                    theList.appendChild(indicator);
-                else if(insertPosition === 'before')
-                    insertBefore(indicator, findParentElement(target, 'li', false, theList));
-                else // insert === 'after'
-                    insertAfter(indicator, findParentElement(target, 'li', false, theList));
+                indicatorElement = (insertPosition === 'append')
+                        ? theList
+                        : findParentElement(target, 'li', false, theList)
+                        ;
+
+                // insertPosition is "before" "after" or "append"
+                dragIndicatorService.insertIndicator(indicatorId, indicatorElement, insertPosition);
+
 
                 // accepted
                 event.preventDefault();//important
                 event.dataTransfer.dropEffect = 'move';
-
-                console.log(event.type, event, 'targetIndex', targetIndex);
             });
+
             element.on('drop', function(event) {
-                console.log(event.type, event);
                 var dragDataKey = event.dataTransfer.getData('cps/property');
                 if(!dragDataKey)
                     return;
@@ -143,12 +119,12 @@ define([
                   , sourceIndex = data[1]
                   ;
                 // don't accept if this is an identity-drop...
-                if(!scope.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex))
+                if(!scope.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition))
                     return;
 
                 dragDataService.remove(dragDataKey);
                 errors.assert(targetIndex !== undefined, '"targetIndex" should be known at this point.');
-                scope.moveProperty(sourcePropertyDict, sourceIndex, targetIndex);
+                scope.moveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition);
             });
         }
 
@@ -162,6 +138,6 @@ define([
           , link: link
         };
     }
-    PropertyDictDirective.$inject = ['dragDataService'];
+    PropertyDictDirective.$inject = ['dragDataService', 'dragIndicatorService'];
     return PropertyDictDirective;
 });

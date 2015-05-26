@@ -48,21 +48,43 @@ define([
         });
     }
 
-    _p._acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex) {
+    _p._acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
         var $scope = this.$scope
           , isIdentical = (sourcePropertyDict === $scope.cpsPropertyDict
-                          && sourceIndex === targetIndex)
+                          && (   (sourceIndex === targetIndex)
+                              || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
+                              || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
+                              || (insertPosition === 'append' && targetIndex-1 === sourceIndex)
+                          ));
           ;
         return !isIdentical;
     };
 
-    _p._moveProperty = function(sourcePropertyDict, sourceIndex, targetIndex) {
+    _p._moveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
         var $scope = this.$scope;
 
         errors.assert(
             this._acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex)
           , 'moveProperty is rejected'
         );
+
+        if(insertPosition === 'after') {
+            targetIndex = targetIndex+1;
+            // now: insertPosition = 'before';
+        }
+        if(targetIndex === $scope.cpsPropertyDict.length){
+            // pass, this is an append anyways.
+            // a target index bigger than the last index will always be
+            // an append, we don't need to be more exact here
+        }
+        else if(sourcePropertyDict === $scope.cpsPropertyDict
+                && sourceIndex < targetIndex)
+            // we are in the same dict, and we will first have the
+            // item reoved. So, the target index is one less
+            // strange stuff should already be prevented by
+            // this._acceptMoveProperty
+            targetIndex = targetIndex - 1;
+
 
         cpsTools.moveProperty(sourcePropertyDict, sourceIndex
                              , $scope.cpsPropertyDict, targetIndex);
