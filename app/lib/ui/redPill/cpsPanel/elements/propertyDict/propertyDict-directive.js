@@ -48,7 +48,7 @@ define([
 
     function PropertyDictDirective(dragDataService, dragIndicatorService) {
 
-        function link(scope, element, attrs) {
+        function link(scope, element, attrs, controller) {
             // there is also a dragenter and dragleave event, but they
             // are not necessary for the most simple usage
             var theList = element[0].getElementsByTagName('ol')[0];
@@ -81,13 +81,13 @@ define([
                     // property. if that feels bad we could test if we find out
                     // if we rather should append;
                     // It's not as easy to display the indicator here!
-                    targetIndex = scope.cpsPropertyDict.length;
+                    targetIndex = controller.cpsPropertyDict.length;
                     insertPosition = 'append';
                 }
 
 
                 data = dragDataService.get(dragDataKey)
-                if(!scope.acceptMoveProperty(data[0], data[1], targetIndex, insertPosition)) {
+                if(!controller.acceptMoveProperty(data[0], data[1], targetIndex, insertPosition)) {
                     // hide the indicator if this is an identity-dragover...
                     dragIndicatorService.hideIndicator(indicatorId);
                     return;
@@ -119,12 +119,12 @@ define([
                   , sourceIndex = data[1]
                   ;
                 // don't accept if this is an identity-drop...
-                if(!scope.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition))
+                if(!controller.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition))
                     return;
 
                 dragDataService.remove(dragDataKey);
                 errors.assert(targetIndex !== undefined, '"targetIndex" should be known at this point.');
-                scope.moveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition);
+                controller.moveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition);
             });
         }
 
@@ -135,6 +135,8 @@ define([
           , replace: false
           , template: template
           , scope: { cpsPropertyDict: '=' }
+          , bindToController: true
+          , controllerAs: 'controller'
           , link: link
         };
     }

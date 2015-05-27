@@ -8,11 +8,11 @@ define([
     "use strict";
 
     function RuleDirective() {
-        function link(scope, element, attrs) {
+        function link(scope, element, attrs, controller) {
             element.bind('click', helpers.handlerDecorator(scope,
-                            scope.cancelNewPropertyHandler, true, true));
+                            controller.cancelNewPropertyHandler, true, true));
             element.bind('dblclick', helpers.handlerDecorator(scope,
-                            scope.initNewPropertyHandler, true, true));
+                            controller.initNewPropertyHandler, true, true));
         }
 
         return {
@@ -21,6 +21,8 @@ define([
           , replace: false
           , template: template
           , scope: {cpsRule: '='}
+          , bindToController: true
+          , controllerAs: 'controller'
           , link: link
         };
     }

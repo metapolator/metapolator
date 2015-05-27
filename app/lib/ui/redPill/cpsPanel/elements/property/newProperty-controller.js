@@ -29,7 +29,7 @@ define([
     // override _changeHandler of Parent
     _p._changeHandler = function () {
         var $scope = this.$scope
-          , property = property = this._getNewProperty()
+          , property = this._getNewProperty()
           ;
 
         this._setValueBoxSize($scope.propertyModel.value);

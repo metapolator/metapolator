@@ -12,19 +12,13 @@ define([
     function PropertyDictController($scope) {
         this.$scope = $scope;
 
-        //$scope.properties = _getItems($scope.cpsPropertyDict);
-        $scope.items = $scope.cpsPropertyDict.items;
+        $scope.items = this.cpsPropertyDict.items;
 
-        $scope.acceptMoveProperty = this._acceptMoveProperty.bind(this);
-        $scope.moveProperty = this._moveProperty.bind(this);
-
-        $scope.getPropertyHash = this._getPropertyHash.bind(this);
-        $scope.getEditingPropertyData = this._getEditingPropertyData.bind(this);
-        $scope.$on('setEditProperty', this.setEditPropertyHandler.bind(this));
+        $scope.$on('setEditProperty', this._setEditPropertyHandler.bind(this));
         this._editingProperty = null;
 
         // subscribe to propertyDict
-        this._propertyDictSubscription = $scope.cpsPropertyDict.on(
+        this._propertyDictSubscription = this.cpsPropertyDict.on(
                             'update', [this, '_propertyDictUpdateHandler']);
         $scope.$on('$destroy', this._destroy.bind(this));
     }
@@ -32,25 +26,8 @@ define([
     PropertyDictController.$inject = ['$scope'];
     var _p = PropertyDictController.prototype;
 
-    /**
-     * Convert cpsPropertyDict.items into something ng-repeat
-     * can track properly and that can be used by the child scopes as model.
-     */
-    function _getItems(cpsPropertyDict) {
-        return cpsPropertyDict.items.map(function(item, index) {
-                var ctor = item.constructor.name;
-                // FIXME: fails when renaming Parameter to Property
-                if(ctor === 'Parameter')
-                    // NOTE: future proof mapping, can be replaced with `ctor`
-                    // when Parameter got renamed to Property.
-                    return ['Property', index, item.name, item.value.toString()];
-                return [ctor, item];
-        });
-    }
-
-    _p._acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
-        var $scope = this.$scope
-          , isIdentical = (sourcePropertyDict === $scope.cpsPropertyDict
+    _p.acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
+        var isIdentical = (sourcePropertyDict === this.cpsPropertyDict
                           && (   (sourceIndex === targetIndex)
                               || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
                               || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
@@ -60,11 +37,9 @@ define([
         return !isIdentical;
     };
 
-    _p._moveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
-        var $scope = this.$scope;
-
+    _p.moveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
         errors.assert(
-            this._acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex)
+            this.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex)
           , 'moveProperty is rejected'
         );
 
@@ -72,31 +47,31 @@ define([
             targetIndex = targetIndex+1;
             // now: insertPosition = 'before';
         }
-        if(targetIndex === $scope.cpsPropertyDict.length){
+        if(targetIndex === this.cpsPropertyDict.length){
             // pass, this is an append anyways.
             // a target index bigger than the last index will always be
             // an append, we don't need to be more exact here
         }
-        else if(sourcePropertyDict === $scope.cpsPropertyDict
+        else if(sourcePropertyDict === this.cpsPropertyDict
                 && sourceIndex < targetIndex)
             // we are in the same dict, and we will first have the
             // item reoved. So, the target index is one less
             // strange stuff should already be prevented by
-            // this._acceptMoveProperty
+            // this.acceptMoveProperty
             targetIndex = targetIndex - 1;
 
 
         cpsTools.moveProperty(sourcePropertyDict, sourceIndex
-                             , $scope.cpsPropertyDict, targetIndex);
+                             , this.cpsPropertyDict, targetIndex);
     };
 
     _p._propertyDictUpdateHandler = function() {
-        this.$scope.items = this.$scope.cpsPropertyDict.items;
+        this.$scope.items = this.cpsPropertyDict.items;
         this.$scope.$apply();
     };
 
     _p._destroy = function() {
-        this.$scope.cpsPropertyDict.off(this._propertyDictSubscription);
+        this.cpsPropertyDict.off(this._propertyDictSubscription);
     };
 
     _p._setEditingProperty = function(index, data) {
@@ -105,22 +80,22 @@ define([
         else
             this._editingProperty = {
                 index: index
-              , oldItem: this.$scope.cpsPropertyDict.getItem(index)
+              , oldItem: this.cpsPropertyDict.getItem(index)
               , data: data
             };
-        this.$scope.$apply();
     }
 
-    _p.setEditPropertyHandler = function(event, index, data) {
+    _p._setEditPropertyHandler = function(event, index, data) {
         event.stopPropagation();
         this._setEditingProperty(index, data);
+        this.$scope.$apply();
     }
 
     _p._isEditingProperty = function(index) {
         return this._editingProperty && this._editingProperty.index === index;
     }
 
-    _p._getEditingPropertyData = function(index, defaultValue) {
+    _p.getEditingPropertyData = function(index, defaultValue) {
         if(this._isEditingProperty(index))
             return this._editingProperty.data;
         else if(arguments.length >= 2)
@@ -128,7 +103,7 @@ define([
         throw new KeyError('index '+index+' is not currently editing');
     }
 
-    _p._getPropertyHash = function(index) {
+    _p.getPropertyHash = function(index) {
         var item;
         if(this._isEditingProperty(index))
             // we wan't to create the old hash while editing, that way
@@ -136,7 +111,7 @@ define([
             // and the input element doesn't lose focus.
             item = this._editingProperty.oldItem;
         else
-            item = this.$scope.cpsPropertyDict.getItem(index);
+            item = this.cpsPropertyDict.getItem(index);
         return (index + ':' + item.hash)
     }
 
