@@ -481,7 +481,7 @@
     });
   };
 
-  function getTarget(cm) {
+  function findAndGoTo(cm, forward) {
     var from = cm.getCursor("from"), to = cm.getCursor("to");
     if (CodeMirror.cmpPos(from, to) == 0) {
       var word = wordAt(cm, from);
@@ -489,14 +489,9 @@
       from = word.from;
       to = word.to;
     }
-    return {from: from, to: to, query: cm.getRange(from, to), word: word};
-  }
 
-  function findAndGoTo(cm, forward) {
-    var target = getTarget(cm);
-    if (!target) return;
-    var query = target.query;
-    var cur = cm.getSearchCursor(query, forward ? target.to : target.from);
+    var query = cm.getRange(from, to);
+    var cur = cm.getSearchCursor(query, forward ? to : from);
 
     if (forward ? cur.findNext() : cur.findPrevious()) {
       cm.setSelection(cur.from(), cur.to());
@@ -505,25 +500,12 @@
                                               : cm.clipPos(Pos(cm.lastLine())));
       if (forward ? cur.findNext() : cur.findPrevious())
         cm.setSelection(cur.from(), cur.to());
-      else if (target.word)
-        cm.setSelection(target.from, target.to);
+      else if (word)
+        cm.setSelection(from, to);
     }
   };
   cmds[map[ctrl + "F3"] = "findUnder"] = function(cm) { findAndGoTo(cm, true); };
   cmds[map["Shift-" + ctrl + "F3"] = "findUnderPrevious"] = function(cm) { findAndGoTo(cm,false); };
-  cmds[map["Alt-F3"] = "findAllUnder"] = function(cm) {
-    var target = getTarget(cm);
-    if (!target) return;
-    var cur = cm.getSearchCursor(target.query);
-    var matches = [];
-    var primaryIndex = -1;
-    while (cur.findNext()) {
-      matches.push({anchor: cur.from(), head: cur.to()});
-      if (cur.from().line <= target.from.line && cur.from().ch <= target.from.ch)
-        primaryIndex++;
-    }
-    cm.setSelections(matches, primaryIndex);
-  };
 
   map["Shift-" + ctrl + "["] = "fold";
   map["Shift-" + ctrl + "]"] = "unfold";

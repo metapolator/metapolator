@@ -1,3 +1,73 @@
+3.3.1 / 2015-05-13
+------------------
+
+- Added `.sortKeys` dumper option, thanks to @rjmunro.
+- Fixed astral characters support, #191.
+
+
+3.3.0 / 2015-04-26
+------------------
+
+- Significantly improved long strings formatting in dumper, thanks to @isaacs.
+- Strip BOM if exists.
+
+
+3.2.7 / 2015-02-19
+------------------
+
+- Maintenance release.
+- Updated dependencies.
+- HISTORY.md -> CHANGELOG.md
+
+
+3.2.6 / 2015-02-07
+------------------
+
+- Fixed encoding of UTF-16 surrogate pairs. (e.g. "\U0001F431" CAT FACE).
+- Fixed demo dates dump (#113, thanks to @Hypercubed).
+
+
+3.2.5 / 2014-12-28
+------------------
+
+- Fixed resolving of all built-in types on empty nodes.
+- Fixed invalid warning on empty lines within quoted scalars and flow collections.
+- Fixed bug: Tag on an empty node didn't resolve in some cases.
+
+
+3.2.4 / 2014-12-19
+------------------
+
+- Fixed resolving of !!null tag on an empty node.
+
+
+3.2.3 / 2014-11-08
+------------------
+
+- Implemented dumping of objects with circular and cross references.
+- Partially fixed aliasing of constructed objects. (see issue #141 for details)
+
+
+3.2.2 / 2014-09-07
+------------------
+
+- Fixed infinite loop on unindented block scalars.
+- Rewritten base64 encode/decode in binary type, to keep code licence clear.
+
+
+3.2.1 / 2014-08-24
+------------------
+
+- Nothig new. Just fix npm publish error.
+
+
+3.2.0 / 2014-08-24
+------------------
+
+- Added input piping support to CLI.
+- Fixed typo, that could cause hand on initial indent (#139).
+
+
 3.1.0 / 2014-07-07
 ------------------
 

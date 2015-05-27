@@ -4,7 +4,7 @@
   * [set(target, name, value, receiver)](#settarget-name-value-receiver)
   * [has(target, name)](#hastarget-name)
   * [apply(target, receiver, args)](#applytarget-receiver-args)
-  * [construct(target, args)](#constructtarget-args)
+  * [construct(target, args, newTarget)](#constructtarget-args-newTarget)
   * [getOwnPropertyDescriptor(target, name)](#getownpropertydescriptortarget-name)
   * [defineProperty(target, name, desc)](#definepropertytarget-name-desc)
   * [getPrototypeOf(target)](#getprototypeoftarget)
@@ -104,7 +104,7 @@ This trap intercepts the following operations:
   * `Function.prototype.call.call(proxy, receiver, ...args)`
   * `Reflect.apply(proxy,receiver,args)`
 
-## construct(target, args)
+## construct(target, args, newTarget)
 
 Called when a proxy is treated as a constructor function to create a new instance object.
 
@@ -112,10 +112,13 @@ This trap should return an Object.
 
 This trap is "active" _only_ if `typeof target === "function"`. That is, if the target object is not callable, then calling `new` on a proxy will throw a TypeError rather than calling this trap.
 
+`newTarget` indicates the constructor whose `.prototype` property should be used
+as the parent object of the to-be-created instance object.
+
 This trap intercepts the following operations:
 
   *  `new proxy(...args)`
-  *  `Reflect.construct(proxy,args)`
+  *  `Reflect.construct(proxy,args,newTarget)`
 
 ## getOwnPropertyDescriptor(target, name)
 
@@ -291,5 +294,14 @@ In ES6, this trap can return an array of strings or _symbols_. This ES5 shim doe
 
 The proxy throws a TypeError if:
 
-  *  The `target` has a non-configurable property that is not listed in the result. Proxies cannot hide non-configurable properties.
-  *  The result contains new property names that do not appear in `target` and  `Object.isExtensible(target)` is false. If the target is non-extensible, a proxy cannot report new non-existent properties.
+  *  The `target` has a non-configurable property that is not listed in the result. Proxies cannot hide non-configurable properties, so the result array must contain the keys of all non-configurable own properties of the target object.
+  
+  *  The result contains new property names that do not appear in `target` and  `Object.isExtensible(target)` is false. If the target is non-extensible, a proxy cannot report new non-existent properties, that is, the result array must contain all the keys of the own properties of the target object and no other values. 
+
+ES6 Compatibility Note: in ES6, this trap will also be triggered for the following operations:
+  
+  * `Object.assign(target, proxy)`
+  * `Object.getOwnPropertySymbols(proxy)`
+  
+Also, in ES6, the trap can return an array of strings or symbols
+(this library does not support symbols).

@@ -11,6 +11,10 @@ var YAML_FLOAT_PATTERN = new RegExp(
   '|\\.(?:nan|NaN|NAN))$');
 
 function resolveYamlFloat(data) {
+  if (null === data) {
+    return false;
+  }
+
   var value, sign, base, digits;
 
   if (!YAML_FLOAT_PATTERN.test(data)) {
@@ -51,9 +55,8 @@ function constructYamlFloat(data) {
 
     return sign * value;
 
-  } else {
-    return sign * parseFloat(value, 10);
   }
+  return sign * parseFloat(value, 10);
 }
 
 function representYamlFloat(object, style) {
@@ -86,9 +89,8 @@ function representYamlFloat(object, style) {
     }
   } else if (common.isNegativeZero(object)) {
     return '-0.0';
-  } else {
-    return object.toString(10);
   }
+  return object.toString(10);
 }
 
 function isFloat(object) {

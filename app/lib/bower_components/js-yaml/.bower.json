@@ -26,14 +26,14 @@
     "index*",
     "package.json"
   ],
-  "version": "3.1.0",
-  "_release": "3.1.0",
+  "version": "3.3.1",
+  "_release": "3.3.1",
   "_resolution": {
     "type": "version",
-    "tag": "3.1.0",
-    "commit": "63b57eb1f96378e9403db553afd10c9bf1dfb3af"
+    "tag": "3.3.1",
+    "commit": "c50f9936bd1e99d64a54d30400e377f4fda401c5"
   },
   "_source": "git://github.com/nodeca/js-yaml.git",
-  "_target": "~3.1.0",
+  "_target": "^3.1.0",
   "_originalSource": "js-yaml"
 }

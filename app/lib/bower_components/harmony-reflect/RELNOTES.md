@@ -1,5 +1,43 @@
-v1.0.1
+v1.2.1
 ======
+
+Release date: may 20th, 2015
+
+Minor changes:
+
+  * Calling the unpatched, native `Object.getOwnPropertyNames` method on a proxy
+    now redirects to that proxy's `ownKeys` trap rather than failing with a TypeError. See issue #48.
+
+v1.2.0
+======
+
+Release date: may 11th, 2015
+
+  * `Reflect.construct` now takes third optional `newTarget` parameter, as per ES6 draft April 3, 2015.
+
+v1.1.2
+======
+
+Release date: march 13th, 2015
+
+Minor bugfix:
+
+  * `delete` now works on a proxy for a proxy (issue #46)
+
+v1.1.1
+======
+
+Release date: november 14th, 2014
+
+Minor bugfixes:
+
+  * `Reflect.enumerate(aProxy)` now works as intended (issue #43)
+  * Patched `Object.freeze(obj)` now returns `obj` rather than a boolean (issue #42)
+
+v1.1.0
+======
+
+Release date: august 29th, 2014
 
 Improved compliance with August 24, 2014 (Rev 27) ECMAScript 6th edition draft standard.
 

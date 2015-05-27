@@ -9,6 +9,6 @@
     "commit": "850d9c92541afac5d9c64506736272cdbf7a3ae5"
   },
   "_source": "git://github.com/requirejs/domReady.git",
-  "_target": "~2.0.1",
+  "_target": "^2.0.1",
   "_originalSource": "requirejs-domready"
 }

@@ -30,7 +30,6 @@
     "commit": "c52df34ee05ed9b0ffac945eb86e814c84b29b07"
   },
   "_source": "git://github.com/janl/mustache.js.git",
-  "_target": "~2.0.0",
-  "_originalSource": "mustache.js",
-  "_direct": true
+  "_target": "^2.0.0",
+  "_originalSource": "mustache.js"
 }

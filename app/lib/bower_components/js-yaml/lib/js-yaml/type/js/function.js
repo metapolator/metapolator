@@ -19,6 +19,10 @@ try {
 var Type = require('../../type');
 
 function resolveJavascriptFunction(data) {
+  if (null === data) {
+    return false;
+  }
+
   try {
     var source = '(' + data + ')',
         ast    = esprima.parse(source, { range: true }),
@@ -61,7 +65,8 @@ function constructJavascriptFunction(data) {
 
   // Esprima's ranges include the first '{' and the last '}' characters on
   // function expressions. So cut them out.
-  return new Function(params, source.slice(body[0]+1, body[1]-1));
+  /*eslint-disable no-new-func*/
+  return new Function(params, source.slice(body[0] + 1, body[1] - 1));
 }
 
 function representJavascriptFunction(object /*, style*/) {

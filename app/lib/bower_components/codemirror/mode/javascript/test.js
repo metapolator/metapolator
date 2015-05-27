@@ -128,12 +128,6 @@
      "  [keyword else]",
      "    [number 3];");
 
-  MT("indent_funarg",
-     "[variable foo]([number 10000],",
-     "    [keyword function]([def a]) {",
-     "  [keyword debugger];",
-     "};");
-
   MT("indent_below_if",
      "[keyword for] (;;)",
      "  [keyword if] ([variable foo])",

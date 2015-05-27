@@ -832,9 +832,13 @@ Validator.prototype = {
    * The getOwnPropertyNames trap was replaced by the ownKeys trap,
    * which now also returns an array (of strings or symbols) and
    * which performs the same rigorous invariant checks as getOwnPropertyNames
+   *
+   * See issue #48 on how this trap can still get invoked by external libs
+   * that don't use the patched Object.getOwnPropertyNames function.
    */
   getOwnPropertyNames: function() {
-    throw new TypeError("getOwnPropertyNames trap is deprecated");
+    console.warn("getOwnPropertyNames trap is deprecated. Use ownKeys instead");
+    return this.ownKeys();
   },
 
   /**
@@ -1129,8 +1133,8 @@ Validator.prototype = {
    *
    * The trap should return an iterator.
    *
-   * We convert the iterator to an array as current implementations expect
-   * enumerate to still return an array of strings.
+   * However, as implementations of pre-direct proxies still expect enumerate
+   * to return an array of strings, we convert the iterator into an array.
    */
   enumerate: function() {
     var trap = this.getTrap("enumerate");
@@ -1316,17 +1320,24 @@ Validator.prototype = {
    *   new proxy(...args)
    * Triggers this trap
    */
-  construct: function(target, args) {
+  construct: function(target, args, newTarget) {
     var trap = this.getTrap("construct");
     if (trap === undefined) {
-      return Reflect.construct(target, args);
+      return Reflect.construct(target, args, newTarget);
     }
 
-    if (typeof this.target === "function") {
-      return trap.call(this.handler, target, args);
-    } else {
+    if (typeof target !== "function") {
       throw new TypeError("new: "+ target + " is not a function");
     }
+
+    if (newTarget === undefined) {
+      newTarget = target;
+    } else {
+      if (typeof newTarget !== "function") {
+        throw new TypeError("new: "+ newTarget + " is not a function");
+      }      
+    }
+    return trap.call(this.handler, target, args, newTarget);
   }
 };
 
@@ -1354,10 +1365,12 @@ Object.preventExtensions = function(subject) {
   }
 };
 Object.seal = function(subject) {
-  return setIntegrityLevel(subject, "sealed");
+  setIntegrityLevel(subject, "sealed");
+  return subject;
 };
 Object.freeze = function(subject) {
-  return setIntegrityLevel(subject, "frozen");
+  setIntegrityLevel(subject, "frozen");
+  return subject;
 };
 Object.isExtensible = Object_isExtensible = function(subject) {
   var vHandler = directProxies.get(subject);
@@ -1712,7 +1725,7 @@ var Reflect = global.Reflect = {
   deleteProperty: function(target, name) {
     var handler = directProxies.get(target);
     if (handler !== undefined) {
-      return handler.deleteProperty(target, name);
+      return handler.delete(name);
     }
     
     var desc = Object.getOwnPropertyDescriptor(target, name);
@@ -1885,12 +1898,16 @@ var Reflect = global.Reflect = {
   },*/
   enumerate: function(target) {
     var handler = directProxies.get(target);
+    var result;
     if (handler !== undefined) {
-      return handler.enumerate(handler.target);
+      // handler.enumerate should return an iterator directly, but the
+      // iterator gets converted to an array for backward-compat reasons,
+      // so we must re-iterate over the array
+      result = handler.enumerate(handler.target);
+    } else {
+      result = [];
+      for (var name in target) { result.push(name); };      
     }
-
-    var result = [];
-    for (var name in target) { result.push(name); };
     var l = +result.length;
     var idx = 0;
     return {
@@ -1909,16 +1926,27 @@ var Reflect = global.Reflect = {
     // target.apply(receiver, args)
     return Function.prototype.apply.call(target, receiver, args);
   },
-  construct: function(target, args) {
+  construct: function(target, args, newTarget) {
     // return new target(...args);
 
     // if target is a proxy, invoke its "construct" trap
     var handler = directProxies.get(target);
     if (handler !== undefined) {
-      return handler.construct(handler.target, args);
+      return handler.construct(handler.target, args, newTarget);
+    }
+    
+    if (typeof target !== "function") {
+      throw new TypeError("target is not a function: " + target);
+    }
+    if (newTarget === undefined) {
+      newTarget = target;
+    } else {
+      if (typeof newTarget !== "function") {
+        throw new TypeError("newTarget is not a function: " + target);
+      }      
     }
 
-    var proto = target.prototype;
+    var proto = newTarget.prototype;
     var instance = (Object(proto) === proto) ? Object.create(proto) : {};
     var result = Function.prototype.apply.call(target, instance, args);
     return Object(result) === result ? result : instance;
@@ -1996,4 +2024,5 @@ if (typeof exports !== 'undefined') {
   });
 }
 
-}(typeof exports !== 'undefined' ? global : this)); // function-as-module pattern
+// function-as-module pattern
+}(typeof exports !== 'undefined' ? global : this));
