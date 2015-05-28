@@ -40146,6 +40146,7 @@ requirejs.config({
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
       , 'jszip': 'bower_components/jszip/dist/jszip'
       , 'filesaver': 'bower_components/file-saver.js/FileSaver'
+      , 'opentype': 'bower_components/opentype.js/dist/opentype.min'
     }
   // exclude on build
   , excludeShallow: [
