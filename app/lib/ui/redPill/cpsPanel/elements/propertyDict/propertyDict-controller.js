@@ -12,7 +12,7 @@ define([
     function PropertyDictController($scope) {
         this.$scope = $scope;
 
-        $scope.items = this.cpsPropertyDict.items;
+        this._setItems();
 
         $scope.$on('setEditProperty', this._setEditPropertyHandler.bind(this));
         this._editingProperty = null;
@@ -25,6 +25,13 @@ define([
 
     PropertyDictController.$inject = ['$scope'];
     var _p = PropertyDictController.prototype;
+
+    _p._setItems = function() {
+        function makeItem (item, index) {
+            return [this.getPropertyHash(index), item];
+        }
+        this.$scope.items = this.cpsPropertyDict.items.map(makeItem, this);
+    }
 
     _p.acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
         var isIdentical = (sourcePropertyDict === this.cpsPropertyDict
@@ -66,7 +73,7 @@ define([
     };
 
     _p._propertyDictUpdateHandler = function() {
-        this.$scope.items = this.cpsPropertyDict.items;
+        this._setItems();
         this.$scope.$apply();
     };
 
@@ -83,6 +90,7 @@ define([
               , oldItem: this.cpsPropertyDict.getItem(index)
               , data: data
             };
+        this._setItems();
     }
 
     _p._setEditPropertyHandler = function(event, index, data) {
@@ -107,7 +115,7 @@ define([
         var item;
         if(this._isEditingProperty(index))
             // we wan't to create the old hash while editing, that way
-            // the html get's not reloaded by the ng-repeat directive
+            // the html not gets reloaded by the ng-repeat directive
             // and the input element doesn't lose focus.
             item = this._editingProperty.oldItem;
         else
