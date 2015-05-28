@@ -194,7 +194,7 @@ mtk-cps-panel {
     @line-height: 1.2em;
     mtk-cps-property, mtk-cps-new-property {
         line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
-        display: block;
+        display: inline-block;
         border-bottom: 2px solid transparent;
 
         input[type=text], textarea, span.display-name, span.display-value {
@@ -243,9 +243,19 @@ mtk-cps-panel {
     mtk-cps-property.dragging {
         background: white;
         opacity: .5;
-        mtk-cps-toolbar {
+        mtk-cps-toolbutton {
             display: none;
         }
+    }
+    mtk-cps-toolbar {
+        position: relative;
+    }
+    mtk-cps-toolbar > * {
+        position: absolute;
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
     }
 
     mtk-cps-collection {
@@ -257,46 +267,48 @@ mtk-cps-panel {
     }
 
     @tool-size: 1em;
-    mtk-cps-toolbar {
-        mtk-cps-toolbutton {
-            display: inline-block;
-            padding: 0;
-            margin-right: .2em;
-            border: none;
-            background:none;
-            overflow: hidden;
+    mtk-drag-handle,
+    mtk-cps-toolbutton {
+        display: inline-block;
+        padding: 0;
+        margin-right: .2em;
+        border: none;
+        background:none;
+        overflow: hidden;
 
-            width: @tool-size;
-            height: @line-height;
-            vertical-align: top;
-            color: #ccc;
-            cursor: default;
-            font-family: sans-serif;
-        }
-        mtk-cps-toolbutton::before {
-            display:block;
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-        mtk-cps-toolbutton:hover {
-            color: #000;
-        }
+        width: @tool-size;
+        height: @line-height;
+        vertical-align: top;
+        color: #ccc;
+        cursor: default;
+        font-family: sans-serif;
+    }
 
-        .tool-delete:hover {
-            color: #f00;
-        }
 
-        .tool-delete::before {
-            content: "\2717";
-        }
+    mtk-drag-handle::before,
+    mtk-cps-toolbutton::before {
+        display:block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    mtk-drag-handle:hover,
+    mtk-cps-toolbutton:hover {
+        color: #000;
+    }
 
-        .tool-drag{
-            cursor: grab;
-        }
-        .tool-drag::before {
-            content: "\2B0D";
-        }
+    mtk-drag-handle::before {
+        content: "\2B0D";
+    }
+    mtk-drag-handle {
+        cursor: grab;
+    }
 
+    .tool-delete:hover {
+        color: #f00;
+    }
+
+    .tool-delete::before {
+        content: "\2717";
     }
 }

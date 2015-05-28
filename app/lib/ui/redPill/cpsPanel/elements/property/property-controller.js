@@ -34,7 +34,7 @@ define([
 
         // define some tools
         // later these tools will probebly accessed differently=u
-        $scope.tools = ['drag', 'delete'];
+        $scope.tools = ['delete'];
         $scope.clickTool = this._toolClickHandler.bind(this);
     };
 

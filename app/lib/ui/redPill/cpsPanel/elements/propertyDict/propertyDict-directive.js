@@ -57,14 +57,13 @@ define([
             var targetIndex, insertPosition, indicatorId = 'cps/property';
 
             element.on('dragover', function (event) {
-                var dragDataKey = event.dataTransfer.getData('cps/property')
-                  , data
+                var data = dragDataService.get('cps/property')
                   , target
                   , targetIndexData
                   , indicatorElement
                   ;
-                if(!dragDataKey) {
-                    // hide the indicator if this is an identity-dragover...
+
+                if(!data) {
                     dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
@@ -85,8 +84,6 @@ define([
                     insertPosition = 'append';
                 }
 
-
-                data = dragDataService.get(dragDataKey)
                 if(!controller.acceptMoveProperty(data[0], data[1], targetIndex, insertPosition)) {
                     // hide the indicator if this is an identity-dragover...
                     dragIndicatorService.hideIndicator(indicatorId);
@@ -108,21 +105,23 @@ define([
             });
 
             element.on('drop', function(event) {
-                var dragDataKey = event.dataTransfer.getData('cps/property');
-                if(!dragDataKey)
+                var data = dragDataService.get('cps/property')
+                  , sourcePropertyDict
+                  , sourceIndex
+                  ;
+                if(!data)
                     return;
 
                 event.preventDefault();
 
-                var data = dragDataService.get(dragDataKey)
-                  , sourcePropertyDict = data[0]
-                  , sourceIndex = data[1]
-                  ;
+                sourcePropertyDict = data[0];
+                sourceIndex = data[1];
+
                 // don't accept if this is an identity-drop...
                 if(!controller.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition))
                     return;
 
-                dragDataService.remove(dragDataKey);
+                dragDataService.remove('cps/property');
                 errors.assert(targetIndex !== undefined, '"targetIndex" should be known at this point.');
                 controller.moveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition);
             });
