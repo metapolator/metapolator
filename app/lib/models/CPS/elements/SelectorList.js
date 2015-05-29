@@ -90,7 +90,8 @@ define([
     };
 
     _p.toString = function() {
-        return this._selectors.filter(_filterValid).join(',\n') || 'invalidSelectorList';
+        return this._selectors.join(',\n');
+        //.filter(_filterValid).join(',\n') || 'invalidSelectorList';
     };
 
     _p.multiply = function(selectorList) {
