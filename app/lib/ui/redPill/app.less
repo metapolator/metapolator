@@ -192,12 +192,12 @@ mtk-cps-panel {
         }
     }
     @line-height: 1.2em;
-    mtk-cps-property, mtk-cps-new-property {
+    mtk-cps-property, mtk-cps-new-property, mtk-cps-selector-list {
         line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
         display: inline-block;
         border-bottom: 2px solid transparent;
 
-        input[type=text], textarea, span.display-name, span.display-value {
+        .input, .display {
             vertical-align: top;
             border: none;
             padding: 0;
@@ -206,21 +206,28 @@ mtk-cps-panel {
             line-height: inherit;
         }
 
-        span.display-name, span.display-value {
+        .display {
             background: white;
         }
 
-        input[type=text], textarea {
+        .input {
             background: lightyellow;
             resize: none;
         }
 
-        input[type=text]:first-child,
-        span.display-name {
-            color: green;
+        .property-name {
+            color: midnightblue;
+        }
+        .property-value {
+            color: darkgreen;
         }
 
-        span.display-value {
+        .selectorlist {
+            color: maroon;
+        }
+
+        .display.property-value,
+        .display.selectorlist {
             display: inline-block;
             white-space: pre;
         }
@@ -234,7 +241,6 @@ mtk-cps-panel {
         .invalid:after {
             content: "\26A0  invalid property \26A0";
             font-family: sans-serif;
-            position: absolute;
             color: red;
             white-space: nowrap;
             cursor: help;
@@ -242,7 +248,7 @@ mtk-cps-panel {
     }
     mtk-cps-property.dragging {
         background: white;
-        opacity: .5;
+        opacity: .5;;
         mtk-cps-toolbutton {
             display: none;
         }

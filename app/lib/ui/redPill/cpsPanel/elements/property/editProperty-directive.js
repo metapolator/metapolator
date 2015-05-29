@@ -14,16 +14,16 @@ define([
             element.on('click', helpers.stopPropagation);
             element.on('dblclick', helpers.stopPropagation);
 
-            var input = element[0].getElementsByTagName('input')[0]
-              , textarea = element[0].getElementsByTagName('textarea')[0]
+            var name = element[0].getElementsByClassName('property-name')[0]
+              , value = element[0].getElementsByClassName('property-value')[0]
               , timer
               ;
 
             if(scope.edit.focus === 'name')
                 // focus the first input element on init
-                input.focus();
+                name.focus();
             else
-                textarea.focus();
+                value.focus();
 
             // if both elements lost focus run scope.finalize
             timer = new helpers.Timer(function(){
@@ -31,7 +31,7 @@ define([
                 scope.$apply();
             });
 
-            angular.element([input, textarea])
+            angular.element([name, value])
                    // when an element gets focuss
                    .on('focus', timer.cancel)
                    // when an element loses focus

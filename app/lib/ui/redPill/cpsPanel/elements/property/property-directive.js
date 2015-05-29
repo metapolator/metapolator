@@ -14,8 +14,8 @@ define([
             var startEditHandler = helpers.handlerDecorator(
                                         scope,scope.startEdit, true, true);
             element.on('click', function(event) {
-               if(event.target.classList.contains('display-name')
-                        || event.target.classList.contains('display-value'))
+               if(event.target.classList.contains('property-name')
+                        || event.target.classList.contains('property-value'))
                     startEditHandler(event);
             });
 

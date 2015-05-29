@@ -1,7 +1,9 @@
 define([
     'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
+  , 'metapolator/ui/redPill/cpsPanel/elements/helpers'
 ], function(
     cpsTools
+  , helpers
 ) {
     "use strict";
     function PropertyController($scope) {
@@ -50,16 +52,13 @@ define([
     }
 
     _p._setValueBoxSize = function(value) {
-        var lines = value.split('\n')
-          , longestLine = 0, i, l
-          , $scope = this.$scope
+        var $scope = this.$scope
+          , sizes = helpers.calculateTextBoxSize(value)
+          , cols = sizes[0]
+          , lines = sizes[1]
           ;
-        for(i=0,l=lines.length;i<l;i++)
-            if(lines[i].length > longestLine)
-                longestLine = lines[i].length;
-
-        $scope.valueWidth = longestLine;
-        $scope.valueHeight = lines.length;
+        $scope.valueWidth = cols;
+        $scope.valueHeight = lines;
     };
 
     _p._updateProperty = function(property) {
