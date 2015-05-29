@@ -22,7 +22,7 @@ define([
     var _p = DragIndicatorService.prototype;
 
     _p._createIndicator = function(document) {
-        var events = {'drop': null, 'dragend': null}
+        var events = {'drop': null, 'dragend': null, 'dragenter': null}
           , indicator = document.createElement('indicator')
           , k
           ;
@@ -68,7 +68,12 @@ define([
         return registry[1];
     };
 
-    function removeIndicator(indicator) {
+    function removeIndicator(indicator, event) {
+        if(event && event.type === 'dragenter' && event.defaultPrevented)
+            // otherwise remove the indicator, because there is no
+            // target if !event.defaultPrevented
+            return;
+
         if(indicator.parentElement)
             indicator.parentElement.removeChild(indicator);
     }
