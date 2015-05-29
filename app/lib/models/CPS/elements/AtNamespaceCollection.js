@@ -72,12 +72,16 @@ define([
 
     _p.setSelectorList = setSelectorList;
 
+    function getSelectorList() {
+        return this._selectorList;
+    }
+
+    _p.getSelectorList = getSelectorList;
+
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
       , set: setSelectorList
-      , get: function() {
-            return this._selectorList;
-        }
+      , get: getSelectorList
     });
 
     /**
