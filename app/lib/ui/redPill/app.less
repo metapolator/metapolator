@@ -172,18 +172,21 @@ mtk-cps-panel {
         display: block;
     }
 
-    mtk-cps-property-dict{
-        ol::before{
-            content: '{'
-        }
-        ol::after{
-            content: '}'
-        }
+    mtk-cps-property-dict::before {
+        content: '{'
+    }
+    mtk-cps-property-dict::after {
+        content: '}';
+        display: block;
+    }
 
+    mtk-cps-property-dict {
+        display: inline;
         ol {
-            display: inline;
+            display: block;
             list-style: none;
             padding: 0;
+            margin: 0;
             font-family: monospace;
             font-size: .9em;
             li {
