@@ -98,10 +98,10 @@ define([
     _p._startEdit = function(event) {
         var $scope = this.$scope;
         // this is used to decide which editing field should get
-        // focus. The target element should have either 'display-name'
-        // or 'display-value' as a class, but we always fall back to
+        // focus. The target element should have either 'property-name'
+        // or 'property-value' as a class, but we always fall back to
         // focusing the value field.
-        if(event.target.classList.contains('display-name'))
+        if(event.target.classList.contains('property-name'))
             focus = 'name';
         else
             focus = 'value';
