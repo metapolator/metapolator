@@ -78,10 +78,11 @@ define([
             // are not necessary for the most simple usage
             var theList = element[0].getElementsByTagName('ol')[0]
               , indicatorId = 'cps/property'
+              , dragDataType = 'cps/property'
               ;
 
             element.on('dragover', function (event) {
-                var data = dragDataService.get('cps/property')
+                var data = dragDataService.get(dragDataType)
                   , target
                   , indicatorReference
                   ;
@@ -113,7 +114,7 @@ define([
             });
 
             element.on('drop', function(event) {
-                var data = dragDataService.get('cps/property')
+                var data = dragDataService.get(dragDataType)
                   , sourcePropertyDict
                   , sourceIndex
                   , target
@@ -131,11 +132,15 @@ define([
                 sourcePropertyDict = data[0];
                 sourceIndex = data[1];
 
+                // If the drag item is removed from the DOM by this drop
+                // (it is for moves), we don't get a dragend event. So
+                // this needs to clean up as well.
+                // Making the execution of the move async would also help.
                 dragDataService.remove('cps/property');
+
                 controller.moveProperty(sourcePropertyDict, sourceIndex, target.index, target.insertPosition);
             });
         }
-
 
         return {
             restrict: 'E' // only matches element names
