@@ -11,9 +11,10 @@ define([
 ) {
     "use strict";
 
-    function OTFExportController(master, model) {
+    function OTFExportController(master, model, masterName) {
         this._master = master;
         this._model = model;
+        this._masterName = masterName;
     }
     var _p = OTFExportController.prototype;
 
@@ -27,7 +28,7 @@ define([
           , font
           , otf_glyphs = []
           ;
-        console.warn('exporting ...');
+        console.warn('exporting OTF ...');
         for(i = 0,l=glyphs.length;i<l;i++) {
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
@@ -54,19 +55,23 @@ define([
             //in order to render to render it's path using the pen API:
             aPath.moveTo(100, 0);
             aPath.lineTo(100, 700);
+            aPath.lineTo(0, 700);
+            aPath.lineTo(100, 0);
 
-            otf_glyphs.push(new opentype.Glyph({
-                name: updatedUFOData.id,
-                unicode: 65,
-                advanceWidth: updatedUFOData['width'] || 1024,
-                path: aPath
-            }); 
+            otf_glyphs.push(
+                new opentype.Glyph({
+                    name: updatedUFOData.id,
+                    unicode: 65,
+                    advanceWidth: updatedUFOData['width'] || 1024,
+                    path: aPath
+                })
+            );
 
-         one = timer.now() - time;
+            one = timer.now() - time;
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
         }
-        font = new opentype.Font({familyName: master.displayName, styleName: 'Medium', unitsPerEm: 1000, glyphs: otf_glyphs});
+        font = new opentype.Font({familyName: this._master.displayName || this._master.name || this._masterName, styleName: 'Medium', unitsPerEm: 1000, glyphs: otf_glyphs});
 
         console.warn('finished ', i, 'glyphs in', total
             , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
