@@ -6,7 +6,7 @@ define([
     // this is a workaround because it's not possible in AngularJS to
     // define recursive directives within templates.
 
-    // FIXME: I'm not yet shure if this will need some more love
+    // FIXME: I'm not yet sure if this will need some more love
     function SubCollectionDirective($compile) {
         function link(scope, element, attrs) {
             element.append('<mtk-cps-collection cps-collection="cpsCollection"></mtk-cps-collection>');
