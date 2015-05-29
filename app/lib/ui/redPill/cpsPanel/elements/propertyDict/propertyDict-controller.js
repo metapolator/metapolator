@@ -28,18 +28,22 @@ define([
 
     _p._setItems = function() {
         function makeItem (item, index) {
+            /*jshint validthis:true*/
             return [this.getPropertyHash(index), item];
         }
         this.$scope.items = this.cpsPropertyDict.items.map(makeItem, this);
-    }
+    };
 
     _p.acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
-        var isIdentical = (sourcePropertyDict === this.cpsPropertyDict
-                          && (   (sourceIndex === targetIndex)
-                              || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
-                              || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
-                              || (insertPosition === 'append' && targetIndex-1 === sourceIndex)
-                          ));
+        var _targetIndex = insertPosition === 'append'
+                ? this.cpsPropertyDict.length
+                : targetIndex
+          , isIdentical = (sourcePropertyDict === this.cpsPropertyDict
+                          && (   (sourceIndex === _targetIndex)
+                              || (insertPosition === 'before' && _targetIndex-1 === sourceIndex)
+                              || (insertPosition === 'after'  && _targetIndex+1 === sourceIndex)
+                              || (insertPosition === 'append' && _targetIndex-1 === sourceIndex)
+                          ))
           ;
         return !isIdentical;
     };
@@ -49,27 +53,31 @@ define([
             this.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex)
           , 'moveProperty is rejected'
         );
+        var _targetIndex = insertPosition === 'append'
+                ? this.cpsPropertyDict.length
+                : targetIndex
+                ;
 
         if(insertPosition === 'after') {
-            targetIndex = targetIndex+1;
+            _targetIndex += 1;
             // now: insertPosition = 'before';
         }
-        if(targetIndex === this.cpsPropertyDict.length){
+        if(_targetIndex === this.cpsPropertyDict.length) {
             // pass, this is an append anyways.
             // a target index bigger than the last index will always be
             // an append, we don't need to be more exact here
         }
         else if(sourcePropertyDict === this.cpsPropertyDict
-                && sourceIndex < targetIndex)
+                && sourceIndex < _targetIndex)
             // we are in the same dict, and we will first have the
             // item reoved. So, the target index is one less
             // strange stuff should already be prevented by
             // this.acceptMoveProperty
-            targetIndex = targetIndex - 1;
+            _targetIndex -= 1;
 
 
         cpsTools.moveProperty(sourcePropertyDict, sourceIndex
-                             , this.cpsPropertyDict, targetIndex);
+                             , this.cpsPropertyDict, _targetIndex);
     };
 
     _p._propertyDictUpdateHandler = function() {
@@ -91,17 +99,17 @@ define([
               , data: data
             };
         this._setItems();
-    }
+    };
 
     _p._setEditPropertyHandler = function(event, index, data) {
         event.stopPropagation();
         this._setEditingProperty(index, data);
         this.$scope.$apply();
-    }
+    };
 
     _p._isEditingProperty = function(index) {
         return this._editingProperty && this._editingProperty.index === index;
-    }
+    };
 
     _p.getEditingPropertyData = function(index, defaultValue) {
         if(this._isEditingProperty(index))
@@ -109,7 +117,7 @@ define([
         else if(arguments.length >= 2)
             return defaultValue;
         throw new KeyError('index '+index+' is not currently editing');
-    }
+    };
 
     _p.getPropertyHash = function(index) {
         var item;
@@ -120,8 +128,8 @@ define([
             item = this._editingProperty.oldItem;
         else
             item = this.cpsPropertyDict.getItem(index);
-        return (index + ':' + item.hash)
-    }
+        return (index + ':' + item.hash);
+    };
 
     return PropertyDictController;
 });

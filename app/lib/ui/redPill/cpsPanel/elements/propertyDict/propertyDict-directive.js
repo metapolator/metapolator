@@ -46,21 +46,44 @@ define([
         return [targetIndex, insertBefore];
     }
 
+    function getTargetData(event, element) {
+        var target = findElement(event.target, 'mtk-cps-property', element)
+          , targetIndexData
+          , index = null
+          , insertPosition
+          ;
+        if(target) {
+            targetIndexData = getTargetIndex(event, target);
+            index = targetIndexData[0];
+            insertPosition = targetIndexData[1] ? 'before' : 'after';
+        }
+        else {
+            // If no target was found, the drag should just append the
+            // property. if that feels bad we could test if we find out
+            // if we rather should append;
+            // It's not as easy to display the indicator here!
+            insertPosition = 'append';
+        }
+        return {
+            index: index
+          , insertPosition: insertPosition
+          , element: target
+        };
+    }
+
     function PropertyDictDirective(dragDataService, dragIndicatorService) {
 
         function link(scope, element, attrs, controller) {
             // there is also a dragenter and dragleave event, but they
             // are not necessary for the most simple usage
-            var theList = element[0].getElementsByTagName('ol')[0];
-
-            // maybe we rather find this on every event then.
-            var targetIndex, insertPosition, indicatorId = 'cps/property';
+            var theList = element[0].getElementsByTagName('ol')[0]
+              , indicatorId = 'cps/property'
+              ;
 
             element.on('dragover', function (event) {
                 var data = dragDataService.get('cps/property')
                   , target
-                  , targetIndexData
-                  , indicatorElement
+                  , indicatorReference
                   ;
 
                 if(!data) {
@@ -69,35 +92,20 @@ define([
                 }
 
                 // figure out where to drop and move an indicator to there
-                target = findElement(event.target, 'mtk-cps-property', element[0]);
-                if(target) {
-                    targetIndexData = getTargetIndex(event, target);
-                    targetIndex = targetIndexData[0];
-                    insertPosition = targetIndexData[1] ? 'before' : 'after';
-                }
-                else {
-                    // If no target was found, the drag should just append the
-                    // property. if that feels bad we could test if we find out
-                    // if we rather should append;
-                    // It's not as easy to display the indicator here!
-                    targetIndex = controller.cpsPropertyDict.length;
-                    insertPosition = 'append';
-                }
+                target = getTargetData(event, element[0]);
 
-                if(!controller.acceptMoveProperty(data[0], data[1], targetIndex, insertPosition)) {
+                if(!controller.acceptMoveProperty(data[0], data[1], target.index, target.insertPosition)) {
                     // hide the indicator if this is an identity-dragover...
                     dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
                 // place the indicator:
-                indicatorElement = (insertPosition === 'append')
+                indicatorReference = (target.insertPosition === 'append')
                         ? theList
-                        : findParentElement(target, 'li', false, theList)
+                        : findParentElement(target.element, 'li', false, theList)
                         ;
-
                 // insertPosition is "before" "after" or "append"
-                dragIndicatorService.insertIndicator(indicatorId, indicatorElement, insertPosition);
-
+                dragIndicatorService.insertIndicator(indicatorId, indicatorReference, target.insertPosition);
 
                 // accepted
                 event.preventDefault();//important
@@ -108,22 +116,23 @@ define([
                 var data = dragDataService.get('cps/property')
                   , sourcePropertyDict
                   , sourceIndex
+                  , target
                   ;
                 if(!data)
                     return;
 
-                event.preventDefault();
+                target = getTargetData(event, element[0]);
 
+                // don't accept if this is an identity-drop...
+                if(!controller.acceptMoveProperty(sourcePropertyDict, sourceIndex, target.index, target.insertPosition))
+                    return;
+
+                event.preventDefault();
                 sourcePropertyDict = data[0];
                 sourceIndex = data[1];
 
-                // don't accept if this is an identity-drop...
-                if(!controller.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition))
-                    return;
-
                 dragDataService.remove('cps/property');
-                errors.assert(targetIndex !== undefined, '"targetIndex" should be known at this point.');
-                controller.moveProperty(sourcePropertyDict, sourceIndex, targetIndex, insertPosition);
+                controller.moveProperty(sourcePropertyDict, sourceIndex, target.index, target.insertPosition);
             });
         }
 
