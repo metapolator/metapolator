@@ -16,6 +16,7 @@ define([
     function SelectorListController($scope) {
         this.$scope = $scope;
         $scope.edit = false;
+        this._editInitialSlectorList = null;
 
         this._initSelectorList();
         this._setValueBoxSize($scope.selectorList);
@@ -43,7 +44,7 @@ define([
         this.$scope.valueHeight = lines;
     };
 
-    _p._getSelectorList = function() {
+    _p._getNewSelectorList = function() {
         try {
             return parseSelectorList.fromString(
                                     this.$scope.selectorList, undefined);
@@ -60,7 +61,7 @@ define([
     };
 
     _p.changeSelectorList = function() {
-        var selectorList = this._getSelectorList();
+        var selectorList = this._getNewSelectorList();
         this.$scope.invalid = selectorList.invalid;
         this.$scope.message = selectorList.invalid
             ? (selectorList.message || 'no message :-(')
@@ -85,15 +86,23 @@ define([
 
     _p.startEdit = function() {
         this.$scope.edit = true;
+        this._editInitialSlectorList = this.selectorListHost.getSelectorList();
     };
 
+    function selectorlistsEqual(a, b) {
+        return a.toString() === b.toString();
+    }
+
     _p.finalize = function() {
-        var selectorList;
-
+        // assert this.$scope.edit === true;
+        var selectorList
+          , initialSelectorlist = this._editInitialSlectorList
+          ;
         this.$scope.edit = false;
+        this._editInitialSlectorList = null;
 
-        selectorList = this._getSelectorList();
-        if(!selectorList.invalid) {
+        selectorList = this._getNewSelectorList();
+        if(!selectorList.invalid && !selectorlistsEqual(selectorList, initialSelectorlist)) {
             // FIXME:
             // valid: *:i(0) as: *:i(0)
             // BUT:
@@ -108,7 +117,6 @@ define([
         // which is valid if it was set using this method.
         this._initSelectorList();
         this._setValueBoxSize(this.$scope.selectorList);
-
     };
 
     /**
