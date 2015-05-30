@@ -36,6 +36,20 @@ define([
         return this._data;
     };
 
+    _p.getFirst = function(dataTypes) {
+        var i,l,type,data;
+        for(i=0,l=dataTypes.length;i<l;i++) {
+            type = dataTypes[i];
+            data = this.get(type);
+            if(data)
+                return {
+                    type: type
+                  , payload: data
+                };
+        }
+        return null;
+    }
+
     _p.remove = function(type) {
         if(this._type === null)
             return;

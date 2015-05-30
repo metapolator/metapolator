@@ -9,7 +9,7 @@ define([
 ) {
     "use strict";
 
-    function PropertyDirective(dragDataService) {
+    function PropertyDirective() {
         function link(scope, element, attrs) {
             var startEditHandler = helpers.handlerDecorator(
                                         scope,scope.startEdit, true, true);
@@ -28,6 +28,6 @@ define([
           , link: link
         };
     }
-    PropertyDirective.$inject = ['dragDataService'];
+    PropertyDirective.$inject = [];
     return PropertyDirective;
 });
