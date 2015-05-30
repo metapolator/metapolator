@@ -194,6 +194,24 @@ mtk-cps-panel {
             }
         }
     }
+
+    mtk-cps-comment {
+        display: inline-block;
+        font-family: monospace;
+        color: darkslategray;
+        vertical-align: top;
+        span {
+            display: inline-block;
+            white-space: pre;
+        }
+        span::before{
+            content: '/*';
+        }
+        span::after{
+            content: '*/';
+        }
+    }
+
     @line-height: 1.2em;
     mtk-cps-property, mtk-cps-new-property, mtk-cps-selector-list {
         line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
@@ -249,7 +267,7 @@ mtk-cps-panel {
             cursor: help;
         }
     }
-    mtk-cps-property.dragging {
+    *.dragging {
         background: white;
         opacity: .5;;
         mtk-cps-toolbutton {

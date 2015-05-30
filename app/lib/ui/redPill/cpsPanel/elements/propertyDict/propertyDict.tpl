@@ -3,11 +3,26 @@
         ng-switch="item[1].constructor.name">
         <mtk-cps-property
             ng-switch-when="Parameter"
+
             cps-property-dict="controller.cpsPropertyDict"
             property="item[1]"
             index="$index"
             edit="controller.getEditingPropertyData($index, false)"
+
+            mtk-drag="cps/property"
+            mtk-drag-data="[controller.cpsPropertyDict, $index]"
+
         ></mtk-cps-property>
+        <mtk-cps-comment
+            ng-switch-when="Comment"
+
+            cps-property-dict="controller.cpsPropertyDict"
+            comment="item[1]"
+            index="$index"
+
+            mtk-drag="cps/comment"
+            mtk-drag-data="[controller.cpsPropertyDict, $index]"
+        >!</mtk-cps-comment>
         <span ng-switch-default>{{item[1].constructor.name}}:: {{item[1].toString()}}</span>
     </li>
     <li ng-if="$parent.newProperty" >

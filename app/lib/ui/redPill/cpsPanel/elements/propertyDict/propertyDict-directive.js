@@ -26,11 +26,24 @@ define([
         return undefined;
     }
 
-    function findElement(element, tagName, parentLimit) {
-        // first searches upwards, because that is supposed to be shorter and less ambigous;
-        return findParentElement(element, tagName, true, parentLimit)
-                            || element.getElementsByTagName(tagName)[0];
+    function findElement(element, dropElementTags, parentLimit) {
+        // This assumes that the structure is an <li>
+        // of which the direct child is one of dropElementTags
+        // everything above li is has many possible drop targets.
+        var li = findParentElement(element, 'li', true, parentLimit)
+          , i, l, child
+          , needles = new Set(dropElementTags.map(function(s){return s.toUpperCase();}))
+          ;
+        if(!li)
+            return undefined;
 
+        // The li may contain many children, but I expect it to have just one.
+        for(i=0,l=li.children.length;i<l;i++) {
+            child = li.children[i];
+            if(needles.has(child.tagName))
+                return child;
+        }
+        return undefined;
     }
 
     function getTargetIndex(event, target) {
@@ -46,8 +59,8 @@ define([
         return [targetIndex, insertBefore];
     }
 
-    function getTargetData(event, element) {
-        var target = findElement(event.target, 'mtk-cps-property', element)
+    function getTargetData(element, event, dropElementTags) {
+        var target = findElement(event.target, dropElementTags, element) || null
           , targetIndexData
           , index = null
           , insertPosition
@@ -60,7 +73,7 @@ define([
         else {
             // If no target was found, the drag should just append the
             // property. if that feels bad we could test if we find out
-            // if we rather should append;
+            // if we rather should prepend;
             // It's not as easy to display the indicator here!
             insertPosition = 'append';
         }
@@ -77,29 +90,34 @@ define([
             // there is also a dragenter and dragleave event, but they
             // are not necessary for the most simple usage
             var theList = element[0].getElementsByTagName('ol')[0]
-              , indicatorId = 'cps/property'
-              , dragDataType = 'cps/property'
+              , indicatorId = 'cps-drop-indicator'
+              , dataTypes = ['cps/property', 'cps/comment']
+              , dropElementTags = ['mtk-cps-property', 'mtk-cps-comment']
               ;
 
             element.on('dragover', function (event) {
-                var data = dragDataService.get(dragDataType)
+                var dataEntry = dragDataService.getFirst(dataTypes)
+                  , data
                   , target
                   , indicatorReference
+                  , i, l
                   ;
-
-                if(!data) {
+                if(!dataEntry) {
                     dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
 
+                data = dataEntry.payload;
+
                 // figure out where to drop and move an indicator to there
-                target = getTargetData(event, element[0]);
+                target = getTargetData(element[0], event, dropElementTags);
 
                 if(!controller.acceptMoveProperty(data[0], data[1], target.index, target.insertPosition)) {
                     // hide the indicator if this is an identity-dragover...
                     dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
+
                 // place the indicator:
                 indicatorReference = (target.insertPosition === 'append')
                         ? theList
@@ -114,15 +132,18 @@ define([
             });
 
             element.on('drop', function(event) {
-                var data = dragDataService.get(dragDataType)
+                var dataEntry = dragDataService.getFirst(dataTypes)
+                  , data
                   , sourcePropertyDict
                   , sourceIndex
                   , target
                   ;
-                if(!data)
+                if(!dataEntry)
                     return;
 
-                target = getTargetData(event, element[0]);
+                data = dataEntry.payload;
+
+                target = getTargetData(element[0], event, dropElementTags);
 
                 // don't accept if this is an identity-drop...
                 if(!controller.acceptMoveProperty(sourcePropertyDict, sourceIndex, target.index, target.insertPosition))
@@ -136,7 +157,7 @@ define([
                 // (it is for moves), we don't get a dragend event. So
                 // this needs to clean up as well.
                 // Making the execution of the move async would also help.
-                dragDataService.remove('cps/property');
+                dragDataService.remove(dataEntry.type);
 
                 controller.moveProperty(sourcePropertyDict, sourceIndex, target.index, target.insertPosition);
             });
