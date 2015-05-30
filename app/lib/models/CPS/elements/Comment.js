@@ -10,7 +10,7 @@ define([
     function Comment(comment, source, lineNo) {
         Parent.call(this, source, lineNo);
         Object.defineProperties(this, {
-            comment: {
+            value: {
                 value: comment
               , enumerable: true
             }
@@ -25,7 +25,7 @@ define([
 
     _p.toString = function() {
         // TODO: escape */ within this.comment, or remove it if escaping doesn't work.
-        return ['/*', this.comment, '*/'].join('');
+        return ['/*', this.value, '*/'].join('');
     };
 
     return Comment;
