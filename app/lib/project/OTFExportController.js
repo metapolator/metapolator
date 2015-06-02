@@ -1,10 +1,14 @@
 define([
     'metapolator/errors'
+  , 'metapolator/rendering/glyphBasics'
+  , 'metapolator/rendering/OpenTypePen'
   , 'opentype'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
 ], function(
     errors
+  , glyphBasics
+  , OpenTypePen
   , opentype
   , MOMGlyph
   , timer
@@ -27,9 +31,16 @@ define([
           , time, one, total = 0
           , font
           , otf_glyphs = []
+          , renderer = {
+                  penstroke: glyphBasics.renderPenstrokeOutline
+                , contour: glyphBasics.renderContour
+            }
           ;
+
         console.warn('exporting OTF ...');
         for(i = 0,l=glyphs.length;i<l;i++) {
+            var pen = new OpenTypePen();
+
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             time = timer.now();
@@ -50,22 +61,14 @@ define([
                 }
             }
 
-            var aPath = new opentype.Path();
-            //TODO: here we must iterate over the glyph outline data structures
-            //in order to render to render it's path using the pen API:
-            aPath.moveTo(100, 0);
-            aPath.lineTo(100, 700);
-            aPath.lineTo(0, 700);
-            aPath.lineTo(100, 0);
+            glyphBasics.drawGlyphToPointPen ( renderer, this._model, updatedUFOData, pen );
 
-            otf_glyphs.push(
-                new opentype.Glyph({
-                    name: updatedUFOData.id,
-                    unicode: 65,
-                    advanceWidth: updatedUFOData['width'] || 1024,
-                    path: aPath
-                })
-            );
+            otf_glyphs.push(new opentype.Glyph({
+               name: glyph.id,
+               unicodes: glyph.unicodes,
+               advanceWidth: updatedUFOData['width'] || 1024,
+               path: pen.get_glyph_path()
+            }));
 
             one = timer.now() - time;
             total += one;
