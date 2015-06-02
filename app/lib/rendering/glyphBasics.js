@@ -485,7 +485,7 @@ function()
      * control points. p0 in in p1
      * for the end terminal of the stroke all controls are from the outgoing
      * control points. p0 out out p1
-     * Without terminal beeing set or having a value of "start" or "end"
+     * Without terminal being set or having a value of "start" or "end"
      * the default behavior is: p0 out in p1
      *
      * See the comment of drawPenstrokeToPointPen for more detail.
@@ -565,15 +565,15 @@ function()
 
         pen.beginPath();
         // first draw the right side
-        for(i=0,l=points.length;i<l;i++) {
+        for(i=0,l=points.length; i<l; i++) {
             point = model.getComputedStyle(points[i].right);
             if(i === 0) {
                 // this reproduces the starting terminal
-                prePoint = model.getComputedStyle(points[i].left);
+                prePoint = model.getComputedStyle(points[0].left);
                 terminal = 'start';
             } else {
-                terminal = false;
                 prePoint = model.getComputedStyle(points[i-1].right);
+                terminal = false;
             }
             ctrls = getControlsFromStyle(prePoint, point, terminal);
             /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
@@ -581,7 +581,7 @@ function()
             /* yield */ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
         }
         // draw the left side
-        for(i=l-1;i>=0 ;i--) {
+        for(i=l-1; i>=0; i--) {
             point = model.getComputedStyle(points[i].left);
             if(i === l-1) {
                 // this reproduces the ending terminal

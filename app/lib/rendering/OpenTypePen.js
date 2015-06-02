@@ -17,30 +17,25 @@ define(
     "use strict";
 
     /*constructor*/
-    function OpenTypePen (glyphs) {
-        this.glyphs = glyphs;
+    function OpenTypePen () {
         this.path = new opentype.Path();
     };
 
     /*inheritance*/
-    OpenTypePen.prototype = Object.create(BasePen.prototype);
+    var _p = OpenTypePen.prototype = Object.create(BasePen.prototype);
 
-    /*definition*/
-    enhance(OpenTypePen, {        
-        _moveTo: function(pt, kwargs/* optional, object contour attributes*/)
-        {
-            this.path.moveTo(pt[0], pt[1]);
-        },
 
-        _lineTo: function(pt)
-        {
-            this.path.lineTo(pt[0], pt[1]);
-        },
+    _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
+        this.path.moveTo(pt[0], pt[1]);
+    };
 
-        get_glyph_path: function(){
-           return this.path;
-        }        
-    });
+    _p._lineTo = function(pt) {
+        this.path.lineTo(pt[0], pt[1]);
+    };
+
+    _p.get_glyph_path = function(){
+       return this.path;
+    };
 
     return OpenTypePen;
 });

@@ -2,6 +2,7 @@ define([
     'metapolator/errors'
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/rendering/OpenTypePen'
+  , 'ufojs/tools/pens/PointToSegmentPen'
   , 'opentype'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
@@ -9,6 +10,7 @@ define([
     errors
   , glyphBasics
   , OpenTypePen
+  , PointToSegmentPen
   , opentype
   , MOMGlyph
   , timer
@@ -39,7 +41,9 @@ define([
 
         console.warn('exporting OTF ...');
         for(i = 0,l=glyphs.length;i<l;i++) {
-            var pen = new OpenTypePen();
+            var otPen = new OpenTypePen()
+              , pen = new PointToSegmentPen(otPen)
+              ;
 
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
@@ -61,7 +65,7 @@ define([
                 }
             }
 
-            glyphBasics.drawGlyphToPointPen ( renderer, this._model, updatedUFOData, pen );
+            glyphBasics.drawGlyphToPointPen ( renderer, this._model, glyph, pen );
 
             otf_glyphs.push(new opentype.Glyph({
                name: glyph.id,
