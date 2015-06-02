@@ -33,6 +33,10 @@ define(
         this.path.lineTo(pt[0], pt[1]);
     };
 
+    _p._curveToOne = function(pt1, pt2, pt3) {
+        this.path.curveTo(pt1[0], pt1[1], pt2[0], pt2[1], pt3[0], pt3[1]);
+    };
+
     _p.get_glyph_path = function(){
        return this.path;
     };

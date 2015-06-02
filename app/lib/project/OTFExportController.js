@@ -27,6 +27,7 @@ define([
     _p.do_export = function() {
         var glyphs = this._master.children
           , glyph
+          , codepoint = 65 //This is a hack to showcase the rendering of glyphs. I need to figure out how to fetch the unicode code-point value from the Metapolator Glyph object.
           , updatedUFOData
           , i, l, v, ki, kil, k, keys
           , style
@@ -69,9 +70,11 @@ define([
 
             otf_glyphs.push(new opentype.Glyph({
                name: glyph.id,
-               unicodes: glyph.unicodes,
+               unicode: codepoint++, //This is a hack to showcase the rendering of glyphs. I need to figure out how to fetch the unicode code-point value from the Metapolator Glyph object.
+               xMax: updatedUFOData['width'],
+               yMax: 1024,
                advanceWidth: updatedUFOData['width'] || 1024,
-               path: pen.get_glyph_path()
+               path: otPen.get_glyph_path()
             }));
 
             one = timer.now() - time;
