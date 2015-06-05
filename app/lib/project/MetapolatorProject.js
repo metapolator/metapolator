@@ -661,6 +661,7 @@ define([
           , master = model.query('master#' + masterName)
           , glyphSet
           , exportController
+          , done = false
           ;
 
         // create a bare ufoV2 directory
@@ -680,7 +681,9 @@ define([
         glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
 
         exportController = new UFOExportController(master, model, glyphSet, precision);
-        exportController.do_export();
+        while (!done) {
+            done = exportController.run_export_iteration();
+        }
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
