@@ -587,7 +587,7 @@ define([
                 total += one;
                 console.warn('exported', glyph.id, 'this took', one,'ms');
                 context$2$0.next = 39;
-                return [i, l];
+                return {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id};
             case 39:
                 i++;
                 context$2$0.next = 11;
@@ -609,7 +609,7 @@ define([
         if (this.gen == undefined){
             this.gen = this.exportGenerator();
         }
-        return this.gen.next().done;
+        return this.gen.next();
     };
 
     return UFOExportController;

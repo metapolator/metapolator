@@ -108,7 +108,7 @@ define([
             one = timer.now() - time;
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
-            yield [i, l];
+            yield {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id};
         }
         console.warn('finished ', i, 'glyphs in', total
             , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
@@ -121,7 +121,7 @@ define([
         if (this.gen == undefined){
             this.gen = this.exportGenerator();
         }
-        return this.gen.next().done;
+        return this.gen.next();
     };
 
     return UFOExportController;

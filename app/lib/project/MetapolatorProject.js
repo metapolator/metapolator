@@ -638,12 +638,26 @@ define([
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
+    _p.exportUFOInstance_chunk = function(masterName, precision) {
+        if (this.chunk_exportController == undefined){
+            this.chunk_io = new InMemory();
+            this.chunk_exportController = new UFOExportController(this.chunk_io, this, masterName, masterName+".ufo", precision);
+        }
+
+        var it = this.chunk_exportController.run_export_iteration();
+        if (it.done){
+            delete this.chunk_io;
+            delete this.chunk_exportController;
+        }
+        return it;
+    };
+
     function exportUFOInstance(io, project, masterName, dirName, precision) {
         var exportController = new UFOExportController(io, project, masterName, dirName, precision)
           , done = false
           ;
         while (!done) {
-            done = exportController.run_export_iteration();
+            done = exportController.run_export_iteration().done;
         }
     }
 
