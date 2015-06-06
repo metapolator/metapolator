@@ -688,7 +688,7 @@ define([
 
     _p.exportInstance = function(masterName, targetFileName, precision){
         if (targetFileName.slice(-8) === '.ufo.zip'){
-            var zipped = this.getZippedInstance(masterName, targetFileName, precision, 'nodebuffer');
+            var zipped = this.getZippedInstance(masterName, targetFileName.split(".zip")[0], precision, 'nodebuffer');
             this._io.writeFile(false, targetFileName, zipped);
         } else if (targetFileName.slice(-4) === '.otf'){
             var otf = this.getOTFInstance(masterName, this);
