@@ -3,24 +3,52 @@ define([
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
+  , 'ufojs/ufoLib/glifLib/GlyphSet'
+  , 'ufojs/plistLib/main'
+  , 'ufojs/plistLib/IntObject'
 ], function(
     errors
   , glyphBasics
   , MOMGlyph
   , timer
+  , GlyphSet
+  , plistLib
+  , IntObject
 ) {
     "use strict";
 
-    function UFOExportController(master, model, glyphSet, precision) {
-        this._master = master;
-        this._model = model;
-        this._glyphSet = glyphSet;
+    // FIXME: make this available for browsers too
+    // Specify formatVersion as an int, as required by
+    // unifiedfontobject.org, otherwise it becomes a 'real' in the plist.
+    var metainfoV3 = {
+            creator: 'org.ufojs.lib'
+          , formatVersion: new IntObject(3)
+        }
+      , metainfoV2 = {
+            creator: 'org.ufojs.lib'
+          , formatVersion: new IntObject(2)
+        }
+      , // fontforge requires a fontinfo.plist that defines unitsPerEm
+        minimalFontinfo = {
+            unitsPerEm: new IntObject(1000)
+          , ascender: new IntObject(800)
+          , descender: new IntObject(-200)
+        }
+
+    function UFOExportController(io, project, masterName, dirName, precision) {
+        this._io = io;
+        this._project = project;
+        this._masterName = masterName;
+        this._dirName = dirName;
         this._precision = precision;
     }
     var _p = UFOExportController.prototype;
 
     _p.exportGenerator = function*(){
-        var glyphs = this._master.children
+        var model = this._project.open(this._masterName)
+          , master = model.query('master#' + this._masterName)
+          , glyphs = master.children
+          , glyphSet
           , glyph
           , drawFunc
           , updatedUFOData
@@ -28,10 +56,29 @@ define([
           , style
           , time, one, total = 0
           ;
-        console.warn('exporting ...');
+
+        console.warn('setting up UFO directory structure...');
+
+        // create a bare ufoV2 directory
+        this._io.mkDir(false, this._dirName);
+
+        // create dirName/metainfo.plist
+        this._io.writeFile(false, this._dirName+'/metainfo.plist'
+                                , plistLib.createPlistString(metainfoV2));
+
+        // fontforge requires a fontinfo.plist that defines unitsPerEm
+        this._io.writeFile(false, this._dirName+'/fontinfo.plist'
+                                , plistLib.createPlistString(minimalFontinfo));
+
+        this._io.mkDir(false, this._dirName+'/glyphs');
+        this._io.writeFile(false, this._dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
+
+        glyphSet = GlyphSet.factory(false, this._io, this._dirName+'/glyphs', undefined, 2);
+
+        console.warn('exporting glyphs...');
         for(i = 0,l=glyphs.length;i<l;i++) {
             glyph = glyphs[i];
-            style = this._model.getComputedStyle(glyph);
+            style = model.getComputedStyle(glyph);
             time = timer.now();
             drawFunc = glyphBasics.drawGlyphToPointPen.bind(
                 this
@@ -39,7 +86,7 @@ define([
                       penstroke: glyphBasics.renderPenstrokeOutline
                     , contour: glyphBasics.renderContour
                 }
-              , this._model, glyph);
+              , model, glyph);
 
             // Allow the glyph ufo data to be updated by the CPS.
             updatedUFOData = glyph.getUFOData();
@@ -56,18 +103,18 @@ define([
                     }
                 }
             }
-            this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
+            glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
                                       undefined, {precision: this._precision});
             one = timer.now() - time;
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
-            yield glyph.id;
+            yield [i, l];
         }
         console.warn('finished ', i, 'glyphs in', total
             , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
             , (1000 * i / total)  ,' glyphs per second.'
         );
-        this._glyphSet.writeContents(false);
+        glyphSet.writeContents(false);
     };
 
     _p.run_export_iteration = function() {

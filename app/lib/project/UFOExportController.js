@@ -464,39 +464,83 @@ define([
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
+  , 'ufojs/ufoLib/glifLib/GlyphSet'
+  , 'ufojs/plistLib/main'
+  , 'ufojs/plistLib/IntObject'
 ], function(
     errors
   , glyphBasics
   , MOMGlyph
   , timer
+  , GlyphSet
+  , plistLib
+  , IntObject
 ) {
     "use strict";
 
-    function UFOExportController(master, model, glyphSet, precision) {
-        this._master = master;
-        this._model = model;
-        this._glyphSet = glyphSet;
+    // FIXME: make this available for browsers too
+    // Specify formatVersion as an int, as required by
+    // unifiedfontobject.org, otherwise it becomes a 'real' in the plist.
+    var metainfoV3 = {
+            creator: 'org.ufojs.lib'
+          , formatVersion: new IntObject(3)
+        }
+      , metainfoV2 = {
+            creator: 'org.ufojs.lib'
+          , formatVersion: new IntObject(2)
+        }
+      , // fontforge requires a fontinfo.plist that defines unitsPerEm
+        minimalFontinfo = {
+            unitsPerEm: new IntObject(1000)
+          , ascender: new IntObject(800)
+          , descender: new IntObject(-200)
+        }
+
+    function UFOExportController(io, project, masterName, dirName, precision) {
+        this._io = io;
+        this._project = project;
+        this._masterName = masterName;
+        this._dirName = dirName;
         this._precision = precision;
     }
     var _p = UFOExportController.prototype;
 
     _p.exportGenerator = regeneratorRuntime.mark(function callee$1$0() {
-        var glyphs, glyph, drawFunc, updatedUFOData, i, l, v, ki, kil, k, keys, style, time, one, total;
+        var model, master, glyphs, glyphSet, glyph, drawFunc, updatedUFOData, i, l, v, ki, kil, k, keys, style, time, one, total;
 
         return regeneratorRuntime.wrap(function callee$1$0$(context$2$0) {
             while (1) switch (context$2$0.prev = context$2$0.next) {
             case 0:
-                glyphs = this._master.children, total = 0;
-                console.warn('exporting ...');
+                model = this._project.open(this._masterName), master = model.query('master#' + this._masterName), glyphs = master.children, total = 0;
+
+                console.warn('setting up UFO directory structure...');
+
+                // create a bare ufoV2 directory
+                this._io.mkDir(false, this._dirName);
+
+                // create dirName/metainfo.plist
+                this._io.writeFile(false, this._dirName+'/metainfo.plist'
+                                        , plistLib.createPlistString(metainfoV2));
+
+                // fontforge requires a fontinfo.plist that defines unitsPerEm
+                this._io.writeFile(false, this._dirName+'/fontinfo.plist'
+                                        , plistLib.createPlistString(minimalFontinfo));
+
+                this._io.mkDir(false, this._dirName+'/glyphs');
+                this._io.writeFile(false, this._dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
+
+                glyphSet = GlyphSet.factory(false, this._io, this._dirName+'/glyphs', undefined, 2);
+
+                console.warn('exporting glyphs...');
                 i = 0,l=glyphs.length;
-            case 4:
+            case 11:
                 if (!(i < l)) {
-                    context$2$0.next = 35;
+                    context$2$0.next = 42;
                     break;
                 }
 
                 glyph = glyphs[i];
-                style = this._model.getComputedStyle(glyph);
+                style = model.getComputedStyle(glyph);
                 time = timer.now();
                 drawFunc = glyphBasics.drawGlyphToPointPen.bind(
                     this
@@ -504,61 +548,61 @@ define([
                           penstroke: glyphBasics.renderPenstrokeOutline
                         , contour: glyphBasics.renderContour
                     }
-                  , this._model, glyph);
+                  , model, glyph);
 
                 // Allow the glyph ufo data to be updated by the CPS.
                 updatedUFOData = glyph.getUFOData();
                 keys = Object.keys(updatedUFOData);
                 ki=0,kil=keys.length;
-            case 12:
+            case 19:
                 if (!(ki < kil)) {
-                    context$2$0.next = 26;
+                    context$2$0.next = 33;
                     break;
                 }
 
-                context$2$0.prev = 13;
+                context$2$0.prev = 20;
                 k = keys[ki];
                 v = style.get(MOMGlyph.convertUFOtoCPSKey(k));
                 updatedUFOData[k] = v;
-                context$2$0.next = 23;
+                context$2$0.next = 30;
                 break;
-            case 19:
-                context$2$0.prev = 19;
-                context$2$0.t0 = context$2$0.catch(13);
+            case 26:
+                context$2$0.prev = 26;
+                context$2$0.t0 = context$2$0.catch(20);
 
                 if (context$2$0.t0 instanceof errors.Key) {
-                    context$2$0.next = 23;
+                    context$2$0.next = 30;
                     break;
                 }
 
                 throw context$2$0.t0;
-            case 23:
+            case 30:
                 ki++;
-                context$2$0.next = 12;
+                context$2$0.next = 19;
                 break;
-            case 26:
-                this._glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
+            case 33:
+                glyphSet.writeGlyph(false, glyph.id, updatedUFOData, drawFunc,
                                           undefined, {precision: this._precision});
                 one = timer.now() - time;
                 total += one;
                 console.warn('exported', glyph.id, 'this took', one,'ms');
-                context$2$0.next = 32;
-                return glyph.id;
-            case 32:
+                context$2$0.next = 39;
+                return [i, l];
+            case 39:
                 i++;
-                context$2$0.next = 4;
+                context$2$0.next = 11;
                 break;
-            case 35:
+            case 42:
                 console.warn('finished ', i, 'glyphs in', total
                     , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
                     , (1000 * i / total)  ,' glyphs per second.'
                 );
-                this._glyphSet.writeContents(false);
-            case 37:
+                glyphSet.writeContents(false);
+            case 44:
             case "end":
                 return context$2$0.stop();
             }
-        }, callee$1$0, this, [[13, 19]]);
+        }, callee$1$0, this, [[20, 26]]);
     });
 
     _p.run_export_iteration = function() {
