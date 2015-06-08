@@ -44,7 +44,7 @@ function($scope, $http, sharedScope, $timeout) {
               , date = new Date()
               ;
             year = zero_padding(date.getFullYear());
-            month = zero_padding(date.getMonth());
+            month = zero_padding(date.getMonth() + 1); //getMonth() returns a zero-based value: 0=January, 11=December
             day = zero_padding(date.getDate());
             hours = zero_padding(date.getHours());
             minutes = zero_padding(date.getMinutes());
