@@ -74,7 +74,7 @@ define([
                xMax: updatedUFOData['width'],
                yMin: 0,
                yMax: updatedUFOData['height'],
-               advanceWidth: updatedUFOData['width'] || 1000,
+               advanceWidth: updatedUFOData['width'] || 0,
                path: otPen.get_glyph_path()
             }));
 
