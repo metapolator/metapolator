@@ -47,7 +47,11 @@ define([
 ) {
     "use strict";
 
-    var ProjectError = errors.Project
+    var metainfoV3 = {
+            creator: 'org.ufojs.lib'
+          , formatVersion: new IntObject(3)
+        }
+      , ProjectError = errors.Project
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
       ;
