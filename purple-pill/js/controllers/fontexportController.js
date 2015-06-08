@@ -98,7 +98,8 @@ function($scope, $http, sharedScope, $timeout) {
         }
 
         function exportFont_compute_glyphs(){
-            var it = $scope.data.stateful.project.exportUFOInstance_chunk(instances_for_export[current_instance].name, /* precision: */ -1)
+            var instance = instances_for_export[current_instance]
+              , it = $scope.data.stateful.project.exportUFOInstance_chunk(instance.name, instance.displayName + ".ufo", /* precision: */ -1)
               , text
               , current_glyph
               , total_glyphs
