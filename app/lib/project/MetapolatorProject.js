@@ -78,6 +78,9 @@ define([
         this._log.addHandler(new log.Handler());
 
         this._momCache = Object.create(null);
+
+        this.chunk_io = {};
+        this.chunk_exportController = {}
     }
 
     var _p = MetapolatorProject.prototype;
@@ -642,16 +645,18 @@ define([
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
-    _p.exportUFOInstance_chunk = function(masterName, precision) {
-        if (this.chunk_exportController == undefined){
-            this.chunk_io = new InMemory();
-            this.chunk_exportController = new UFOExportController(this.chunk_io, this, masterName, masterName+".ufo", precision);
+    _p.exportUFOInstance_chunk = function(masterName, dirName, precision) {
+        if (this.chunk_io[masterName] == undefined){
+            this.chunk_io[masterName] = new InMemory();
         }
 
-        var it = this.chunk_exportController.run_export_iteration();
+        if (this.chunk_exportController[masterName] == undefined){
+            this.chunk_exportController[masterName] = new UFOExportController(this.chunk_io[masterName], this, masterName, dirName, precision);
+        }
+
+        var it = this.chunk_exportController[masterName].run_export_iteration();
         if (it.done){
-            delete this.chunk_io;
-            delete this.chunk_exportController;
+            delete this.chunk_exportController[masterName];
         }
         return it;
     };
@@ -678,9 +683,18 @@ define([
     };
 
     _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
-        var mem_io = new InMemory();
-        exportUFOInstance(mem_io, this, masterName, targetDirName, precision);
-        return zipUtil.encode(false, mem_io, targetDirName, dataType);
+        var blob
+          , mem_io
+          ;
+        if (this.chunk_io[masterName] == undefined){
+            mem_io = new InMemory();
+            exportUFOInstance(mem_io, this, masterName, targetDirName, precision);
+            return zipUtil.encode(false, mem_io, targetDirName, dataType);
+        } else {
+            blob = zipUtil.encode(false, this.chunk_io[masterName], targetDirName, dataType);
+            delete this.chunk_io[masterName];
+            return blob;
+        }
     };
 
     _p.getOTFInstance = function(masterName, project) {
