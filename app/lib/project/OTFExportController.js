@@ -82,7 +82,13 @@ define([
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
         }
-        font = new opentype.Font({familyName: this._master.displayName || this._master.name || this._masterName, styleName: 'Medium', unitsPerEm: 1000, glyphs: otf_glyphs});
+        font = new opentype.Font({
+            familyName: this._master.fontinfo.familyName
+                     || this._masterName || this._master.id,
+            styleName: this._master.fontinfo.styleName,
+            unitsPerEm: this._master.fontinfo.unitsPerEm || 1000,
+            glyphs: otf_glyphs
+        });
 
         console.warn('finished ', i, 'glyphs in', total
             , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
