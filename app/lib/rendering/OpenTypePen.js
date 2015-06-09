@@ -12,7 +12,7 @@ define(
     ],
     function(
         opentype
-      , BasePen
+      , Parent
 ) {
     "use strict";
 
@@ -22,7 +22,7 @@ define(
     };
 
     /*inheritance*/
-    var _p = OpenTypePen.prototype = Object.create(BasePen.prototype);
+    var _p = OpenTypePen.prototype = Object.create(Parent.prototype);
 
 
     _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
