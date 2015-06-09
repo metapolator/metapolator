@@ -17,6 +17,32 @@ define([
 ) {
     "use strict";
 
+    var GlyphSet = (function(errors) {
+        var KeyError = errors.Key
+          , NotImplementedError = errors.NotImplemented
+          ;
+        /** a ducktyped GlyphSet for BasePen **/
+        function GlyphSet(master, drawFunc) {
+            this._master = master;
+            this._drawFunc = drawFunc;
+        }
+        var _p = GlyphSet.prototype;
+        _p.constructor = GlyphSet;
+
+        _p.get = function(name) {
+            var glyph = this._master.findGlyph(name)
+              , result
+              ;
+            if(glyph === null)
+                throw new KeyError('Glyph "'+name+'" not found');
+            // the result is also a ducktyped "glyph" which needs a draw method in BasePen
+            result = Object.create(null);
+            result.draw = this._drawFunc.bind(glyph);
+        }
+
+        return GlyphSet;
+    })(errors);
+
     function OTFExportController(master, model, masterName) {
         this._master = master;
         this._model = model;
@@ -37,14 +63,27 @@ define([
                   penstroke: glyphBasics.renderPenstrokeOutline
                 , contour: glyphBasics.renderContour
             }
+        // We need to get the name  model into the closure, because `this` will be used otherwise
+        // NOTE: I believe we could get rid of the model argument by refactoring glyphBasics a bit
+        // Would be a big deal as well ;-)
+          , model = this._model
+          , drawFunc = function(async, segmentPen) {
+                /*jshint validthis:true*/
+                // we are going to bind the MOM glyph to `this`
+                var pen;
+                if(async)
+                    throw new NotImplementedError('Asynchronous execution is not implemented');
+                pen = new PointToSegmentPen(segmentPen);
+                return glyphBasics.drawGlyphToPointPen ( renderer, model, this, pen );
+            }
+          , glyphSet = new GlyphSet(this._master, drawFunc)
           ;
 
         console.warn('exporting OTF ...');
-        for(i = 0,l=glyphs.length;i<l;i++) {
-            var otPen = new OpenTypePen()
+        for(i=0, l=glyphs.length; i<l; i++) {
+            var otPen = new OpenTypePen(glyphSet)
               , pen = new PointToSegmentPen(otPen)
               ;
-
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             time = timer.now();

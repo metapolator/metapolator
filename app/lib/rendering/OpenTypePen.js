@@ -17,13 +17,13 @@ define(
     "use strict";
 
     /*constructor*/
-    function OpenTypePen () {
+    function OpenTypePen (glyphSet) {
+        Parent.call(this, glyphSet);
         this.path = new opentype.Path();
     };
 
     /*inheritance*/
     var _p = OpenTypePen.prototype = Object.create(Parent.prototype);
-
 
     _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
         this.path.moveTo(pt[0], pt[1]);
