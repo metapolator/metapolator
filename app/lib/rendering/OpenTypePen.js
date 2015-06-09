@@ -37,7 +37,7 @@ define(
         this.path.curveTo(pt1[0], pt1[1], pt2[0], pt2[1], pt3[0], pt3[1]);
     };
 
-    _p.get_glyph_path = function(){
+    _p.getPath = function(){
        return this.path;
     };
 

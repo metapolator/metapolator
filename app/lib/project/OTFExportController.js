@@ -75,7 +75,7 @@ define([
                yMin: 0,
                yMax: updatedUFOData['height'],
                advanceWidth: updatedUFOData['width'] || 0,
-               path: otPen.get_glyph_path()
+               path: otPen.getPath()
             }));
 
             one = timer.now() - time;
