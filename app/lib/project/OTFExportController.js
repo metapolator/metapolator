@@ -3,6 +3,7 @@ define([
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/rendering/OpenTypePen'
   , 'ufojs/tools/pens/PointToSegmentPen'
+  , 'ufojs/tools/pens/BoundsPen'
   , 'opentype'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
@@ -11,6 +12,7 @@ define([
   , glyphBasics
   , OpenTypePen
   , PointToSegmentPen
+  , BoundsPen
   , opentype
   , MOMGlyph
   , timer
@@ -82,7 +84,9 @@ define([
         console.warn('exporting OTF ...');
         for(i=0, l=glyphs.length; i<l; i++) {
             var otPen = new OpenTypePen(glyphSet)
+              , bPen = new BoundsPen(glyphSet)
               , pen = new PointToSegmentPen(otPen)
+              , bboxPen = new PointToSegmentPen(bPen)
               ;
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
@@ -105,14 +109,19 @@ define([
             }
 
             glyphBasics.drawGlyphToPointPen ( renderer, this._model, glyph, pen );
+            glyphBasics.drawGlyphToPointPen ( renderer, this._model, glyph, bboxPen );
+
+            var bbox = bPen.getBounds();
+            if (bbox == undefined)
+                bbox = [0,0,0,0];
 
             otf_glyphs.push(new opentype.Glyph({
                name: glyph.id,
                unicode: glyph._ufoData.unicodes,
-               xMin: 0,
-               xMax: updatedUFOData['width'],
-               yMin: 0,
-               yMax: updatedUFOData['height'],
+               xMin: bbox[0],
+               yMin: bbox[1],
+               xMax: bbox[2],
+               yMax: bbox[3],
                advanceWidth: updatedUFOData['width'] || 0,
                path: otPen.getPath()
             }));
