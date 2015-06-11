@@ -26386,7 +26386,8 @@ define('metapolator/project/ImportController',[
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(log, project, masterName, sourceUFODir) {
+    function ImportController(io, log, project, masterName, sourceUFODir) {
+        this._io = io;
         this._project = project;
         this._log = log;
         this._masterName = masterName;
@@ -26406,7 +26407,9 @@ define('metapolator/project/ImportController',[
      * NOTE: This performs synchronous IO via this._project.getGlyphSet
      */
     _p._getSourceGlyphSet = function() {
-        var options;
+        var options
+          , UFOversion
+          ;
         if(!this._sourceGlyphSet) {
             // tell us about errors instead of throwing it away
             options = {
@@ -26417,8 +26420,9 @@ define('metapolator/project/ImportController',[
                     return true;
                 }.bind( this, this._master )
             };
-            this._sourceGlyphSet = this._project.getGlyphSet(
-                        false, this._sourceUFODir, undefined, options);
+
+            UFOversion = this._project._readUFOFormatVersion(false, this._sourceUFODir, this._io);
+            this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, UFOversion, options);
         }
         return this._sourceGlyphSet;
     };
@@ -27535,18 +27539,18 @@ define(
     ],
     function(
         opentype
-      , BasePen
+      , Parent
 ) {
     "use strict";
 
     /*constructor*/
-    function OpenTypePen () {
+    function OpenTypePen (glyphSet) {
+        Parent.call(this, glyphSet);
         this.path = new opentype.Path();
     };
 
     /*inheritance*/
-    var _p = OpenTypePen.prototype = Object.create(BasePen.prototype);
-
+    var _p = OpenTypePen.prototype = Object.create(Parent.prototype);
 
     _p._moveTo = function(pt, kwargs/* optional, object contour attributes*/) {
         this.path.moveTo(pt[0], pt[1]);
@@ -27560,11 +27564,461 @@ define(
         this.path.curveTo(pt1[0], pt1[1], pt2[0], pt2[1], pt3[0], pt3[1]);
     };
 
-    _p.get_glyph_path = function(){
+    _p.getPath = function(){
        return this.path;
     };
 
     return OpenTypePen;
+});
+
+define('ufojs/tools/misc/arrayTools',[],
+function() {
+    "use strict";
+    /**
+     * javascript port based on the original python sources from:
+     * https://github.com/behdad/fonttools/blob/b30e12ae00b30a701b6829951c254d7e44c34057/Lib/fontTools/misc/arrayTools.py
+     *
+     * The following methods are not ported, though:
+     * - calcIntBounds(array)
+     * - pointsInRect(array, rect)
+     * - vectorLength(vector)
+     * - asInt16(array)
+     * - normRect(rect)
+     * - scaleRect(rect, x, y)
+     * - offsetRect(rect, dx, dy)
+     * - insetRect(rect, dx, dy)
+     * - sectRect(rect1, rect2)
+     * - rectCenter(rect0)
+     * - intRect(rect1)
+     *
+     */
+
+    function calcBounds(points){
+        /* Returns the recangular area that contains
+         * all points in the list 'points'.
+         */
+        if(!points.length)
+            return [0, 0, 0, 0];
+        var xs = []
+          , ys = []
+          , i, l
+          ;
+        for(i=0, l=points.length; i<l; i++){
+            xs.push(points[i][0]);
+            ys.push(points[i][1]);
+        }
+        return [Math.min.apply(null, xs), Math.min.apply(null, ys)
+              , Math.max.apply(null, xs), Math.max.apply(null, ys)];
+    }
+
+    function updateBounds(bounds, pt){
+        /* Returns the recangular area that contains
+         * both the rectangle 'bounds' and point 'pt'.
+         */
+        var xMin = bounds[0]
+          , yMin = bounds[1]
+          , xMax = bounds[2]
+          , yMax = bounds[3]
+          , x = pt[0]
+          , y = pt[1]
+          ;
+        if (x < xMin) xMin = x;
+        if (x > xMax) xMax = x;
+        if (y < yMin) yMin = y;
+        if (y > yMax) yMax = y;
+        return [xMin, yMin, xMax, yMax];
+    }
+
+    function pointInRect(pt, rect){
+        /* Returns True when point 'pt' is inside rectangle 'rect'.
+         */
+        var x = pt[0]
+          , y = pt[1]
+          , xMin = rect[0]
+          , yMin = rect[1]
+          , xMax = rect[2]
+          , yMax = rect[3]
+          ;
+        return xMin <= x && x <= xMax && yMin <= y && y <= yMax;
+    }
+
+    function unionRect(r1, r2){
+        /* Returns the recangular area that contains
+         * both the rectangles 'r1' and 'r2'.
+         */
+        var xMin = Math.min( r1[0], r2[0] )
+          , yMin = Math.min( r1[1], r2[1] )
+          , xMax = Math.max( r1[2], r2[2] )
+          , yMax = Math.max( r1[3], r2[3] )
+          ;
+        return [xMin, yMin, xMax, yMax];
+    }
+
+    return {
+        calcBounds: calcBounds
+      , updateBounds: updateBounds
+      , pointInRect: pointInRect
+      , unionRect: unionRect
+    };
+});
+
+define(
+    'ufojs/tools/pens/ControlBoundsPen',[
+        'ufojs/tools/pens/BasePen'
+      , 'ufojs/tools/misc/arrayTools'
+    ],
+    function(
+        Parent
+      , arrayTools
+) {
+    "use strict";
+    var updateBounds = arrayTools.updateBounds;
+
+    /**
+     * javascript port based on the original python sources from:
+     * https://github.com/robofab-developers/robofab/blob/445e45d75567efccd51574c4aa2a14d15eb1d4db/Lib/robofab/pens/boundsPen.py
+     *
+     * but also check the boundsPen.py file in the master branch:
+     * https://github.com/robofab-developers/robofab/blob/master/Lib/robofab/pens/boundsPen.py
+     * as it seems more actively mantained even though the code in their ufo3k branch is the primary source for ufoJS.
+     *
+     * Pen to calculate the 'control bounds' of a shape. This is the
+     * bounding box of all control points __on closed paths__, so may
+     * be larger than the actual bounding box if there are curves that
+     * don't have points on their extremes.
+     *
+     * Single points, or anchors, are ignored.
+     *
+     * When the shape has been drawn, the bounds are available as the
+     * 'bounds' attribute of the pen object. It's a 4-tuple:
+     *
+     * (xMin, yMin, xMax, yMax)
+     *
+     * This replaces fontTools/pens/boundsPen (temporarily?)
+     * The fontTools bounds pen takes lose anchor points into account,
+     * this one doesn't.
+     */
+
+    /* constructor */
+    function ControlBoundsPen (glyphSet) {
+        Parent.call(this, glyphSet);
+        this.bounds = undefined;
+        this._start = undefined;
+    }
+
+    /* inheritance */
+    var _p = ControlBoundsPen.prototype = Object.create(Parent.prototype);
+
+    _p._moveTo = function (pt, kwargs/* optional, object contour attributes*/){
+	    this._start = pt;
+    };
+	
+    _p._addMoveTo = function (){
+        if (this._start == undefined)
+            return;
+        if (this.bounds){
+            this.bounds = updateBounds(this.bounds, this._start);
+        }
+        else {
+            var x = this._start[0]
+              , y = this._start[1]
+              ;
+            this.bounds = [x, y, x, y];
+        }
+        this._start = undefined;
+    };
+
+    _p._lineTo = function (pt){
+        this._addMoveTo();
+        this.bounds = updateBounds(this.bounds, pt);
+    };
+
+    _p._curveToOne = function (bcp1, bcp2, pt){
+        this._addMoveTo();
+        this.bounds = updateBounds(this.bounds, bcp1);
+        this.bounds = updateBounds(this.bounds, bcp2);
+        this.bounds = updateBounds(this.bounds, pt);
+    };
+
+    _p._qCurveToOne = function (bcp, pt){
+        this._addMoveTo();
+        this.bounds = updateBounds(this.bounds, bcp);
+        this.bounds = updateBounds(this.bounds, pt);
+    };
+
+    return ControlBoundsPen;
+});
+
+define('ufojs/tools/misc/bezierTools',[
+    './arrayTools'
+],
+function(
+    arrayTools
+){
+    "use strict";
+    /**
+     * javascript port based on the original python sources from:
+     * https://github.com/behdad/fonttools/blob/b30e12ae00b30a701b6829951c254d7e44c34057/Lib/fontTools/misc/bezierTools.py
+     *
+     * The following methods are not ported, though:
+     * - splitLine(pt1, pt2, where, isHorizontal)
+     * - splitQuadratic(pt1, pt2, pt3, where, isHorizontal)
+     * - splitCubic(pt1, pt2, pt3, pt4, where, isHorizontal)
+     * - splitQuadraticAtT(pt1, pt2, pt3, *ts)
+     * - splitCubicAtT(pt1, pt2, pt3, pt4, *ts)
+     * - _splitQuadraticAtT(a, b, c, *ts)
+     * - _splitCubicAtT(a, b, c, d, *ts)
+     * - solveCubic(a, b, c, d)
+     * - calcQuadraticPoints(a, b, c)
+     * - calcCubicPoints(a, b, c, d)
+     *
+     */
+    var epsilon = 1e-12
+      , calcBounds = arrayTools.calcBounds
+      ;
+    function solveQuadratic(a, b, c, sqroot){
+        /* Solve a quadratic equation where a, b and c are real.
+         *
+         * a*x*x + b*x + c = 0
+         *
+         * This function returns a list of roots. Note that the
+         * returned list is neither guaranteed to be sorted nor
+         * to contain unique values!
+         */
+        var sqroot = sqroot || Math.sqrt
+          , roots
+          , D2
+          , rD2
+          ;
+        if (Math.abs(a) < epsilon){
+            if (Math.abs(b) < epsilon){
+                // We have a non-equation;
+                // therefore, we have no valid solution
+                roots = [];
+            }
+            else {
+                // We have a linear equation with 1 root.
+                roots = [-c/b];
+            }
+        }
+        else {
+            // We have a true quadratic equation.
+            // Apply the quadratic formula to find two roots.
+            D2 = b*b - 4.0*a*c;
+            if (D2 >= 0.0){
+                rD2 = sqroot(D2);
+                roots = [(-b+rD2)/2.0/a, (-b-rD2)/2.0/a];
+            }
+            else {
+                // complex roots, ignore
+                roots = [];
+            }
+        }
+        return roots;
+    }
+
+    function calcQuadraticParameters(pt1, pt2, pt3){
+        var x2 = pt2[0]
+          , y2 = pt2[1]
+          , x3 = pt3[0]
+          , y3 = pt3[1]
+          , cx = pt1[0]
+          , cy = pt1[1]
+          , bx = (x2 - cx) * 2.0
+          , by = (y2 - cy) * 2.0
+          , ax = x3 - cx - bx
+          , ay = y3 - cy - by
+          ;
+        return [[ax, ay], [bx, by], [cx, cy]];
+    }
+
+    function calcCubicParameters(pt1, pt2, pt3, pt4){
+        var x2 = pt2[0]
+          , y2 = pt2[1]
+          , x3 = pt3[0]
+          , y3 = pt3[1]
+          , x4 = pt4[0]
+          , y4 = pt4[1]
+          , dx = pt1[0]
+          , dy = pt1[1]
+          , cx = (x2 - dx) * 3.0
+          , cy = (y2 - dy) * 3.0
+          , bx = (x3 - x2) * 3.0 - cx
+          , by = (y3 - y2) * 3.0 - cy
+          , ax = x4 - dx - cx - bx
+          , ay = y4 - dy - cy - by
+          ;
+        return [[ax, ay], [bx, by], [cx, cy], [dx, dy]];
+    }
+
+    function calcQuadraticBounds(pt1, pt2, pt3){
+        /* Return the bounding box for a qudratic bezier segment.
+         *
+         * pt1 and pt3 are the "anchor" points, pt2 is the "handle".
+         *
+         * >>> calcQuadraticBounds((0, 0), (50, 100), (100, 0))
+         * (0, 0, 100, 50.0)
+         * >>> calcQuadraticBounds((0, 0), (100, 0), (100, 100))
+         * (0.0, 0.0, 100, 100)
+         */
+        var params = calcQuadraticParameters(pt1, pt2, pt3)
+          , ax = params[0]
+          , ay = params[1]
+          , bx = params[2]
+          , by = params[3]
+          , cx = params[4]
+          , cy = params[5]
+          , ax2 = ax*2.0
+          , ay2 = ay*2.0
+          , points = []
+          , roots = []
+          , t
+          ;
+        if (ax2 != 0) {
+            roots.push(-bx/ax2);
+        }
+        if (ay2 != 0) {
+            roots.push(-by/ay2);
+        }
+
+        while((t = roots.pop()) !== undefined) {
+            if (0 <= t && t < 1) {
+                points.push([ax*t*t + bx*t + cx, ay*t*t + by*t + cy]);
+            }
+        }
+        points.push(pt1, pt3);
+
+        return calcBounds(points);
+    }
+
+    function calcCubicBounds(pt1, pt2, pt3, pt4){
+        /* Return the bounding rectangle for a cubic bezier segment.
+         * pt1 and pt4 are the "anchor" points, pt2 and pt3 are the "handles".
+         *
+         * >>> calcCubicBounds((0, 0), (25, 100), (75, 100), (100, 0))
+         * (0, 0, 100, 75.0)
+         * >>> calcCubicBounds((0, 0), (50, 0), (100, 50), (100, 100))
+         * (0.0, 0.0, 100, 100)
+         * >>> calcCubicBounds((50, 0), (0, 100), (100, 100), (50, 0))
+         * (35.566243270259356, 0, 64.43375672974068, 75.0)
+         */
+        var params = calcCubicParameters(pt1, pt2, pt3, pt4)
+          , ax = params[0]
+          , ay = params[1]
+          , bx = params[2]
+          , by = params[3]
+          , cx = params[4]
+          , cy = params[5]
+          , dx = params[6]
+          , dy = params[7]
+          , ax3 = ax * 3.0
+          , ay3 = ay * 3.0
+          , bx2 = bx * 2.0
+          , by2 = by * 2.0
+          , points = []
+          , roots = [] , i, l, t
+          ;
+        roots = [].concat(solveQuadratic(ax3, bx2, cx), solveQuadratic(ay3, by2, cy));
+        for (i=0, l=roots.length; i<l; i++){
+            t = roots[i];
+            if (0 <= t && t < 1){
+                points.push(cubicPoint(t));
+            }
+        }
+
+        points.push(pt1, pt4);
+        return calcBounds(points);
+    };
+	
+    return {
+        calcQuadraticBounds: calcQuadraticBounds
+      , calcCubicBounds: calcCubicBounds
+      , solveQuadratic: solveQuadratic
+    };
+});
+
+define(
+    'ufojs/tools/pens/BoundsPen',[
+        'ufojs/tools/pens/ControlBoundsPen'
+      , 'ufojs/tools/misc/arrayTools'
+      , 'ufojs/tools/misc/bezierTools'
+    ],
+    function(
+        Parent
+      , arrayTools
+      , bezierTools
+) {
+    "use strict";
+    var updateBounds = arrayTools.updateBounds
+      , pointInRect = arrayTools.pointInRect
+      , unionRect = arrayTools.unionRect
+      , calcCubicBounds = bezierTools.calcCubicBounds
+      ;
+    /**
+     * javascript port based on the original python sources from:
+     * https://github.com/robofab-developers/robofab/blob/445e45d75567efccd51574c4aa2a14d15eb1d4db/Lib/robofab/pens/boundsPen.py
+     *
+     * but also check the boundsPen.py file in the master branch:
+     * https://github.com/robofab-developers/robofab/blob/master/Lib/robofab/pens/boundsPen.py
+     * as it seems more actively mantained even though the code in their ufo3k branch is the primary source for ufoJS.
+     *
+     * Pen to calculate the bounds of a shape. It calculates the
+     * correct bounds even when the shape contains curves that don't
+     * have points on their extremes. This is somewhat slower to compute
+     * than the "control bounds".
+     *
+     * When the shape has been drawn, the bounds are available as the
+     * 'bounds' attribute of the pen object. It's a 4-tuple:
+     *
+     * (xMin, yMin, xMax, yMax)
+     */
+
+    /* constructor */
+    function BoundsPen (glyphSet) {
+        Parent.call(this, glyphSet);
+        this.bounds = undefined;
+        this._start = undefined;
+    }
+
+    /* inheritance */
+    var _p = BoundsPen.prototype = Object.create(Parent.prototype);
+
+    _p._curveToOne = function (bcp1, bcp2, pt){
+        this._addMoveTo();
+        this.bounds = updateBounds(this.bounds, pt);
+        if (!pointInRect(bcp1, this.bounds) ||
+            !pointInRect(bcp2, this.bounds)){
+            this.bounds = unionRect(this.bounds,
+                calcCubicBounds(
+				    this._getCurrentPoint()
+                  , bcp1
+                  , bcp2
+                  , pt
+                )
+            );
+        }
+    };
+
+    _p._qCurveToOne = function (bcp, pt){
+        this._addMoveTo();
+        this.bounds = updateBounds(this.bounds, pt);
+        if (! pointInRect(bcp, this.bounds)){
+            this.bounds = unionRect(
+                this.bounds
+              , calcQuadraticBounds(
+                    this._getCurrentPoint()
+                  , bcp
+                  , pt
+                )
+            );
+        }
+    };
+
+    _p.getBounds = function (){
+        return this.bounds;
+    };
+
+    return BoundsPen;
 });
 
 define('metapolator/project/OTFExportController',[
@@ -27572,6 +28026,7 @@ define('metapolator/project/OTFExportController',[
   , 'metapolator/rendering/glyphBasics'
   , 'metapolator/rendering/OpenTypePen'
   , 'ufojs/tools/pens/PointToSegmentPen'
+  , 'ufojs/tools/pens/BoundsPen'
   , 'opentype'
   , 'metapolator/models/MOM/Glyph'
   , 'metapolator/timer'
@@ -27580,11 +28035,38 @@ define('metapolator/project/OTFExportController',[
   , glyphBasics
   , OpenTypePen
   , PointToSegmentPen
+  , BoundsPen
   , opentype
   , MOMGlyph
   , timer
 ) {
     "use strict";
+
+    var GlyphSet = (function(errors) {
+        var KeyError = errors.Key
+          , NotImplementedError = errors.NotImplemented
+          ;
+        /** a ducktyped GlyphSet for BasePen **/
+        function GlyphSet(master, drawFunc) {
+            this._master = master;
+            this._drawFunc = drawFunc;
+        }
+        var _p = GlyphSet.prototype;
+        _p.constructor = GlyphSet;
+
+        _p.get = function(name) {
+            var glyph = this._master.findGlyph(name)
+              , result
+              ;
+            if(glyph === null)
+                throw new KeyError('Glyph "'+name+'" not found');
+            // the result is also a ducktyped "glyph" which needs a draw method in BasePen
+            result = Object.create(null);
+            result.draw = this._drawFunc.bind(glyph);
+        }
+
+        return GlyphSet;
+    })(errors);
 
     function OTFExportController(master, model, masterName) {
         this._master = master;
@@ -27606,14 +28088,29 @@ define('metapolator/project/OTFExportController',[
                   penstroke: glyphBasics.renderPenstrokeOutline
                 , contour: glyphBasics.renderContour
             }
+        // We need to get the name  model into the closure, because `this` will be used otherwise
+        // NOTE: I believe we could get rid of the model argument by refactoring glyphBasics a bit
+        // Would be a big deal as well ;-)
+          , model = this._model
+          , drawFunc = function(async, segmentPen) {
+                /*jshint validthis:true*/
+                // we are going to bind the MOM glyph to `this`
+                var pen;
+                if(async)
+                    throw new NotImplementedError('Asynchronous execution is not implemented');
+                pen = new PointToSegmentPen(segmentPen);
+                return glyphBasics.drawGlyphToPointPen ( renderer, model, this, pen );
+            }
+          , glyphSet = new GlyphSet(this._master, drawFunc)
           ;
 
         console.warn('exporting OTF ...');
-        for(i = 0,l=glyphs.length;i<l;i++) {
-            var otPen = new OpenTypePen()
+        for(i=0, l=glyphs.length; i<l; i++) {
+            var otPen = new OpenTypePen(glyphSet)
+              , bPen = new BoundsPen(glyphSet)
               , pen = new PointToSegmentPen(otPen)
+              , bboxPen = new PointToSegmentPen(bPen)
               ;
-
             glyph = glyphs[i];
             style = this._model.getComputedStyle(glyph);
             time = timer.now();
@@ -27635,23 +28132,34 @@ define('metapolator/project/OTFExportController',[
             }
 
             glyphBasics.drawGlyphToPointPen ( renderer, this._model, glyph, pen );
+            glyphBasics.drawGlyphToPointPen ( renderer, this._model, glyph, bboxPen );
+
+            var bbox = bPen.getBounds();
+            if (bbox == undefined)
+                bbox = [0,0,0,0];
 
             otf_glyphs.push(new opentype.Glyph({
                name: glyph.id,
                unicode: glyph._ufoData.unicodes,
-               xMin: 0,
-               xMax: updatedUFOData['width'],
-               yMin: 0,
-               yMax: updatedUFOData['height'],
-               advanceWidth: updatedUFOData['width'] || 1000,
-               path: otPen.get_glyph_path()
+               xMin: bbox[0],
+               yMin: bbox[1],
+               xMax: bbox[2],
+               yMax: bbox[3],
+               advanceWidth: updatedUFOData['width'] || 0,
+               path: otPen.getPath()
             }));
 
             one = timer.now() - time;
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
         }
-        font = new opentype.Font({familyName: this._master.displayName || this._master.name || this._masterName, styleName: 'Medium', unitsPerEm: 1000, glyphs: otf_glyphs});
+        font = new opentype.Font({
+            familyName: this._master.fontinfo.familyName
+                     || this._masterName || this._master.id,
+            styleName: this._master.fontinfo.styleName,
+            unitsPerEm: this._master.fontinfo.unitsPerEm || 1000,
+            glyphs: otf_glyphs
+        });
 
         console.warn('finished ', i, 'glyphs in', total
             , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
@@ -36931,7 +37439,29 @@ define('io/zipUtil',[
     var NotImplementedError = errors.NotImplemented;
 
     var unpack = function(async, zipData, io, targetPath){
-        throw new NotImplementedError('ZIP unpack method is not yet implemented');
+        if (async)
+            throw new NotImplementedError('Asynchronous ZIP unpack method is not yet implemented');
+
+        var zip = new JSZip(zipData)
+          , files = zip.files
+          , filename
+          , file
+          , absolute_path
+          , dir_abs_path
+          ;
+
+        for (filename in files){
+            file = files[filename];
+            absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
+
+            if (file.dir){
+                io.mkDir(false, absolute_path);
+            } else {
+                dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));
+                io.ensureDir(false, dir_abs_path);
+                io.writeFile(false, absolute_path, file.asBinary());
+            }
+        }
     };
 
     var encode = function(async, io, sourcePath, dataType){
@@ -37897,26 +38427,26 @@ define('metapolator/project/MetapolatorProject',[
             'path': ['ufoDir', 'fileName',
                 function(ufoDir, fileName){ return [ufoDir, fileName].join('/'); }]
           , 'data': ['contents', plistLib.readPlistFromString.bind(plistLib)]
-          , 'contents': ['path',
-                function(path){ return this._io.readFile(false, path);}]
+          , 'contents': ['path','io',
+                function(path, io){ return (io || this._io).readFile(false, path);}]
         }
       , {
-            'contents': ['path',
-                function(path){ return this._io.readFile(true, path);}]
+            'contents': ['path', 'io',
+                function(path, io){ return (io || this._io).readFile(true, path);}]
         }
-      , ['ufoDir', 'fileName']
+      , ['ufoDir', 'fileName', 'io']
       , function(obtain){ return obtain('data'); }
     );
 
     _p._readUFOFormatVersion = obtain.factory(
         {
-            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+            'metainfo': [false, 'ufoDir', new obtain.Argument('metainfo.plist'), 'io', _p._readPlist]
           , 'formatVersion': ['metainfo', function(data){return data.formatVersion;}]
         }
       , {
-            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), _p._readPlist]
+            'metainfo': [true, 'ufoDir', new obtain.Argument('metainfo.plist'), 'io', _p._readPlist]
         }
-      , ['ufoDir']
+      , ['ufoDir', 'io'/*optional*/]
       , function(obtain){ return obtain('formatVersion'); }
     );
 
@@ -37932,28 +38462,28 @@ define('metapolator/project/MetapolatorProject',[
      */
     _p.getGlyphSet = obtain.factory(
         {
-            'UFOVersion': [false, 'ufoDir', _p._readUFOFormatVersion]
+            'UFOVersion': [false, 'ufoDir', 'io', _p._readUFOFormatVersion]
           , 'dirName': ['ufoDir', 'layer', function(ufoDir, layer) {
                                     return [ufoDir, layer].join('/');}]
-          , 'layer': ['UFOVersion', 'ufoDir', 'layerName',
-            function(UFOVersion, ufoDir, layerName) {
+          , 'layer': ['UFOVersion', 'ufoDir', 'layerName', 'io',
+            function(UFOVersion, ufoDir, layerName, io) {
                 var layerContents;
                 if(UFOVersion < 3)
                     return 'glyphs';
-                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist');
+                layerContents = this._readPlist(false, ufoDir, 'layercontents.plist', io);
                 return _getLayerDir(layerContents, layerName || 'public.default');
             }]
           , 'GlyphSet': [false, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
         }
       , {
-            'UFOVersion': [true, 'ufoDir', _p._readUFOFormatVersion]
-          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback',
-            function(UFOVersion, ufoDir, layerName, callback, errback) {
+            'UFOVersion': [true, 'ufoDir', 'io', _p._readUFOFormatVersion]
+          , 'layer':['UFOVersion', 'ufoDir', 'layerName', '_callback', '_errback', 'io',
+            function(UFOVersion, ufoDir, layerName, callback, errback, io) {
                 if(UFOVersion < 3) {
                     setTimeout(callback.bind('glyphs'));
                     return;
                 }
-                this._readPlist(true, ufoDir, 'layercontents.plist')
+                this._readPlist(true, ufoDir, 'layercontents.plist', io)
                 .then(function(layerContents) {
                     callback(_getLayerDir(layerContents, layerName || 'public.default'));
                 })
@@ -37962,7 +38492,7 @@ define('metapolator/project/MetapolatorProject',[
           , 'GlyphSet': [true, 'dirName', 'glyphNameFunc', 'UFOVersion', 'options', _p.getNewGlyphSet]
         }
       , ['ufoDir', 'glyphNameFunc'/*optional*/, 'options'/*optional*/
-                    , 'layerName'/*optional default: 'public.default'*/]
+                    , 'layerName'/*optional default: 'public.default'*/, 'io'/*optional*/]
       , function(obtain) {return obtain('GlyphSet');}
     );
 
@@ -38260,8 +38790,69 @@ define('metapolator/project/MetapolatorProject',[
         return this._controller;
     };
 
-    _p.import = function(masterName, sourceUFODir, glyphs) {
-        var importer = new ImportController( this._log, this,
+    /**
+     * The blob parameter must be data representing a file containing one or more
+     * UFOs encoded with the following packaging scheme:
+     *
+     * upload.zip
+     *     ├── master1.ufo.zip
+     *     │    └── master1.ufo
+     *     ├── master2.ufo.zip
+     *     │    └── master2.ufo
+     *     └── master3.ufo.zip
+     *          └── master3.ufo
+     */
+    _p.importZippedUFOMasters = function(blob) {
+        var mem_io = new InMemory()
+          , importedMasters = Array()
+          ;
+
+        zipUtil.unpack(false, blob, mem_io, "");
+
+        var dirs = mem_io.readDir(false, "/")
+          , baseDir = dirs[0]
+          , names = mem_io.readDir(false, baseDir)
+          , n, l
+          ;
+
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n]
+              , UFOZip = baseDir + name
+              , another_blob
+              ;
+
+            another_blob = mem_io.readFile(false, UFOZip);
+            zipUtil.unpack(false, another_blob, mem_io, baseDir);
+        }
+
+        names = mem_io.readDir(false, baseDir);
+        for (n=0, l=names.length; n<l; n++){
+            var name = names[n];
+            if (name[name.length-1]=='/'){
+                // This sourceUFODir name may be wrong in some cases.
+                //   We need a more robust implementation.
+                //   The current implementation works only for
+                //   the UFO packing scheme described above.
+                var sourceUFODir = baseDir + name.split("/")[0]
+                  , glyphs = undefined
+                  , masterName = name.split(".ufo/")[0]
+                  ;
+
+                //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
+                //       Metapolator dislikes spaces in master names as well as anything that has a meaning
+                //       in a selector/cps. (.#>:(){}) etc.
+                masterName = masterName.split(' ').join('_');
+
+                this.import(masterName, sourceUFODir, glyphs, mem_io);
+                importedMasters.push(masterName);
+            }
+        }
+
+        return importedMasters;
+    };
+
+    _p.import = function(masterName, sourceUFODir, glyphs, io) {
+        var importer = new ImportController( io || this._io, this._log, this,
                                              masterName, sourceUFODir);
         importer.import(glyphs);
 
