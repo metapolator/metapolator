@@ -32,6 +32,7 @@
     "event-emitter.js": "~0.2.0",
     "jszip": "~2.5.0",
     "mustache.js": "~2.0.0",
-    "file-saver.js": "~1.20150304.1"
+    "file-saver.js": "~1.20150304.1",
+    "opentype.js": "~0.4.7"
   }
 }

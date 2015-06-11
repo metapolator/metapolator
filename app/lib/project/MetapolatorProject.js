@@ -17,6 +17,7 @@ define([
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
   , './UFOExportController'
+  , './OTFExportController'
   , 'yaml'
   , 'io/zipUtil'
   , 'io/InMemory'
@@ -39,6 +40,7 @@ define([
   , GlyphSet
   , ImportController
   , UFOExportController
+  , OTFExportController
   , yaml
   , zipUtil
   , InMemory
@@ -623,7 +625,10 @@ define([
     _p.exportInstance = function(masterName, targetFileName, precision){
         if (targetFileName.slice(-8) === '.ufo.zip'){
             var zipped = this.getZippedInstance(masterName, targetFileName, precision, 'nodebuffer');
-            this._io.writeFile(false, instanceName, zipped);
+            this._io.writeFile(false, targetFileName, zipped);
+        } else if (targetFileName.slice(-4) === '.otf'){
+            var otf = this.getOTFInstance(masterName, this);
+            this._io.writeFile(false, targetFileName, otf);
         } else {
             exportInstance(this._io, this, masterName, targetFileName, precision);
         }
@@ -633,6 +638,17 @@ define([
         var mem_io = new InMemory();
         exportInstance(mem_io, this, masterName, targetDirName, precision);
         return zipUtil.encode(false, mem_io, targetDirName, dataType);
+    };
+
+    _p.getOTFInstance = function(masterName, project) {
+        var model = project.open(masterName)
+          , master = model.query('master#' + masterName)
+          , font
+          , exportController
+          ;
+        exportController = new OTFExportController(master, model, masterName);
+        font = exportController.do_export();
+        return new Buffer(Int8Array(font.toBuffer()));
     };
 
     _p._getGlyphClassesReverseLookup = function() {
