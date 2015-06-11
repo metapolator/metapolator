@@ -44,7 +44,8 @@ define([
 
     var GlifLibError = ufojsErrors.GlifLib;
 
-    function ImportController(log, project, masterName, sourceUFODir) {
+    function ImportController(io, log, project, masterName, sourceUFODir) {
+        this._io = io;
         this._project = project;
         this._log = log;
         this._masterName = masterName;
@@ -64,7 +65,9 @@ define([
      * NOTE: This performs synchronous IO via this._project.getGlyphSet
      */
     _p._getSourceGlyphSet = function() {
-        var options;
+        var options
+          , UFOversion
+          ;
         if(!this._sourceGlyphSet) {
             // tell us about errors instead of throwing it away
             options = {
@@ -75,8 +78,9 @@ define([
                     return true;
                 }.bind( this, this._master )
             };
-            this._sourceGlyphSet = this._project.getGlyphSet(
-                        false, this._sourceUFODir, undefined, options);
+
+            UFOversion = this._project._readUFOFormatVersion(false, this._sourceUFODir, this._io);
+            this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, UFOversion, options);
         }
         return this._sourceGlyphSet;
     };

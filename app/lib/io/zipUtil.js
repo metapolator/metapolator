@@ -12,7 +12,29 @@ define([
     var NotImplementedError = errors.NotImplemented;
 
     var unpack = function(async, zipData, io, targetPath){
-        throw new NotImplementedError('ZIP unpack method is not yet implemented');
+        if (async)
+            throw new NotImplementedError('Asynchronous ZIP unpack method is not yet implemented');
+
+        var zip = new JSZip(zipData)
+          , files = zip.files
+          , filename
+          , file
+          , absolute_path
+          , dir_abs_path
+          ;
+
+        for (filename in files){
+            file = files[filename];
+            absolute_path = [targetPath, file.name].join(targetPath[targetPath.length-1]=='/' ? "" : "/");
+
+            if (file.dir){
+                io.mkDir(false, absolute_path);
+            } else {
+                dir_abs_path = absolute_path.substring(0, absolute_path.lastIndexOf("/"));
+                io.ensureDir(false, dir_abs_path);
+                io.writeFile(false, absolute_path, file.asBinary());
+            }
+        }
     };
 
     var encode = function(async, io, sourcePath, dataType){
