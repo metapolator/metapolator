@@ -79,7 +79,6 @@ define([
                 }.bind( null, this._master )
             };
 
-            console.log("[ImportController._getSourceGlyphSet] this._io:" + this._io);
             UFOversion = this._project._readUFOFormatVersion(false, this._sourceUFODir, this._io);
             this._sourceGlyphSet = GlyphSet.factory(false, this._io, this._sourceUFODir + "/glyphs", undefined, UFOversion, options);
         }
