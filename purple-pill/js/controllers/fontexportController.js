@@ -20,7 +20,9 @@ function($scope, $http, sharedScope, $timeout) {
         $scope.data.localmenu.fonts = false;
     };
 
-    var export_is_running = false;
+    var export_is_running = false
+      , generator
+      ;
     $scope.data.exportFonts = function() {
 
         //Do not trigger the export routine if no instance is selected for export,
@@ -68,6 +70,17 @@ function($scope, $http, sharedScope, $timeout) {
             });
         });
 
+        function getExportGenerator(index){
+            var instance = instances_for_export[index]
+              , gen = $scope.data.stateful.project.getUFOExportGenerator(
+                    instance.name,
+                    instance.displayName + ".ufo",
+                    /* precision: */ -1
+                )
+              ;
+            return gen;
+        }
+
         var current_instance = 0
           , total_instances = instances_for_export.length
           , glyphs_phase_percentage = 80 //An estimated 80% of the time is taken generating the files. The other 20% is spent zipping the results.
@@ -98,12 +111,11 @@ function($scope, $http, sharedScope, $timeout) {
         }
 
         function exportFont_compute_glyphs(){
-            var instance = instances_for_export[current_instance]
-              , it = $scope.data.stateful.project.exportUFOInstance_chunk(instance.name, instance.displayName + ".ufo", /* precision: */ -1)
-              , text
+            var text
               , current_glyph
               , total_glyphs
               , glyph_name
+              , it = generator.next()
               ;
             if (!it.done){
                 current_glyph = it.value['current_glyph'];
@@ -113,7 +125,9 @@ function($scope, $http, sharedScope, $timeout) {
                 setProgress(glyphs_phase_percentage * (current_instance + ((current_glyph+1) / total_glyphs))/total_instances, text);
                 $timeout(exportFont_compute_glyphs, UI_UPDATE_TIMESLICE);
             } else {
+                delete generator;
                 if (++current_instance < total_instances) {
+                    generator = getExportGenerator(current_instance);
                     $timeout(exportFont_compute_glyphs, UI_UPDATE_TIMESLICE);
                 } else {
                     current_instance = 0;
@@ -146,6 +160,7 @@ function($scope, $http, sharedScope, $timeout) {
             }
         }
 
+        generator = getExportGenerator(current_instance);
         $timeout(exportFont_compute_glyphs, UI_UPDATE_TIMESLICE);
     };
 
