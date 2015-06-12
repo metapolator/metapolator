@@ -117,11 +117,9 @@ define([
         glyphSet.writeContents(false);
     };
 
-    _p.run_export_iteration = function() {
-        if (this.gen == undefined){
-            this.gen = this.exportGenerator();
-        }
-        return this.gen.next();
+    _p.doExport = function() {
+        var gen = this.exportGenerator();
+        while(!(gen.next().done));
     };
 
     return UFOExportController;

@@ -78,9 +78,6 @@ define([
         this._log.addHandler(new log.Handler());
 
         this._momCache = Object.create(null);
-
-        this.chunk_io = {};
-        this.chunk_exportController = {}
     }
 
     var _p = MetapolatorProject.prototype;
@@ -645,66 +642,38 @@ define([
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
-    _p.exportUFOInstance_chunk = function(masterName, dirName, precision) {
-        if (this.chunk_io[masterName] == undefined){
-            this.chunk_io[masterName] = new InMemory();
-        }
-
-        if (this.chunk_exportController[masterName] == undefined){
-            this.chunk_exportController[masterName] = new UFOExportController(this.chunk_io[masterName], this, masterName, dirName, precision);
-        }
-
-        var it = this.chunk_exportController[masterName].run_export_iteration();
-        if (it.done){
-            delete this.chunk_exportController[masterName];
-        }
-        return it;
-    };
-
-    function exportUFOInstance(io, project, masterName, dirName, precision) {
-        var exportController = new UFOExportController(io, project, masterName, dirName, precision)
-          , done = false
+    _p.getUFOExportGenerator = function ( masterName, dirName, precision) {
+        var io = new InMemory()
+          , exportController = new UFOExportController(io, this, masterName, dirName, precision)
+          , generator = exportController.exportGenerator()
           ;
-        while (!done) {
-            done = exportController.run_export_iteration().done;
-        }
+        return generator;
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
         if (targetFileName.slice(-8) === '.ufo.zip'){
-            var zipped = this.getZippedInstance(masterName, targetFileName.split(".zip")[0], precision, 'nodebuffer');
+            var zipped = this.getZippedInstance(masterName, targetFileName.slice(0,-4), precision, 'nodebuffer');
             this._io.writeFile(false, targetFileName, zipped);
         } else if (targetFileName.slice(-4) === '.otf'){
             var otf = this.getOTFInstance(masterName, this);
             this._io.writeFile(false, targetFileName, otf);
         } else {
-            exportUFOInstance(this._io, this, masterName, targetFileName, precision);
+            new UFOExportController(this._io, this, masterName, targetFileName, precision).doExport();
         }
     };
 
     _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
-        var blob
-          , mem_io
-          ;
-        if (this.chunk_io[masterName] == undefined){
-            mem_io = new InMemory();
-            exportUFOInstance(mem_io, this, masterName, targetDirName, precision);
-            return zipUtil.encode(false, mem_io, targetDirName, dataType);
-        } else {
-            blob = zipUtil.encode(false, this.chunk_io[masterName], targetDirName, dataType);
-            delete this.chunk_io[masterName];
-            return blob;
-        }
+        var mem_io = new InMemory();
+        new UFOExportController(mem_io, this, masterName, targetDirName, precision).doExport();
+        return zipUtil.encode(false, mem_io, targetDirName, dataType);
     };
 
     _p.getOTFInstance = function(masterName, project) {
         var model = project.open(masterName)
           , master = model.query('master#' + masterName)
           , font
-          , exportController
           ;
-        exportController = new OTFExportController(master, model, masterName);
-        font = exportController.do_export();
+        font = OTFExportController(master, model, masterName).do_export();
         return new Buffer(Int8Array(font.toBuffer()));
     };
 
