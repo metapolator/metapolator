@@ -22,6 +22,7 @@ function($scope, $http, sharedScope, $timeout) {
 
     var export_is_running = false
       , generator
+      , io = {}
       ;
     $scope.data.exportFonts = function() {
 
@@ -72,12 +73,14 @@ function($scope, $http, sharedScope, $timeout) {
 
         function getExportGenerator(index){
             var instance = instances_for_export[index]
-              , gen = $scope.data.stateful.project.getUFOExportGenerator(
+              , exportObjects = $scope.data.stateful.project.getUFOExportGenerator(
                     instance.name,
                     instance.displayName + ".ufo",
                     /* precision: */ -1
                 )
+              , gen = exportObjects[0]
               ;
+            io[index] = exportObjects[1];
             return gen;
         }
 
@@ -146,9 +149,11 @@ function($scope, $http, sharedScope, $timeout) {
                   , text
                   , precision = -1 //no rounding
                   , zipped_data = $scope.data.stateful.project.getZippedInstance(
-                                   instance.name, targetDirName, precision, "uint8array")
+                                   instance.name, targetDirName, precision, "uint8array", io[current_instance])
                   ;
                 bundleFolder.file(filename, zipped_data, {binary:true});
+                //delete io[current_instance];
+                delete zipped_data;
                 if (current_instance == total_instances)
                     text = "Packing all " + total_instances + " instances into a final .zip (can take a while)";
                 setProgress(glyphs_phase_percentage + (100 - glyphs_phase_percentage) * (current_instance+1) / total_instances);
