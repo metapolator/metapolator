@@ -673,7 +673,7 @@ define([
           , master = model.query('master#' + masterName)
           , font
           ;
-        font = OTFExportController(master, model, masterName).do_export();
+        font = new OTFExportController(master, model, masterName).do_export();
         return new Buffer(Int8Array(font.toBuffer()));
     };
 
