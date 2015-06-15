@@ -647,7 +647,7 @@ define([
           , exportController = new UFOExportController(io, this, masterName, dirName, precision)
           , generator = exportController.exportGenerator()
           ;
-        return generator;
+        return [generator, io];
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
@@ -662,7 +662,10 @@ define([
         }
     };
 
-    _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
+    _p.getZippedInstance = function(masterName, targetDirName, precision, dataType, io) {
+        if (io)
+            return zipUtil.encode(false, io, targetDirName, dataType);
+
         var mem_io = new InMemory();
         new UFOExportController(mem_io, this, masterName, targetDirName, precision).doExport();
         return zipUtil.encode(false, mem_io, targetDirName, dataType);
