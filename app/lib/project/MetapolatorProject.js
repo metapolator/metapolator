@@ -662,14 +662,13 @@ define([
         }
     };
 
-    _p.getZippedInstance = function(masterName, targetDirName, precision, dataType, io) {
-        if (io)
-            return zipUtil.encode(false, io, targetDirName, dataType);
-
+    _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
         var mem_io = new InMemory();
         new UFOExportController(mem_io, this, masterName, targetDirName, precision).doExport();
         return zipUtil.encode(false, mem_io, targetDirName, dataType);
     };
+
+    _p.getZipFromIo = zipUtil.encode;
 
     _p.getOTFInstance = function(masterName, project) {
         var model = project.open(masterName)
