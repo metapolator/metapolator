@@ -20,7 +20,10 @@ function($scope, $http, sharedScope, $timeout) {
         $scope.data.localmenu.fonts = false;
     };
 
-    var export_is_running = false;
+    var export_is_running = false
+      , generator
+      , io = {}
+      ;
     $scope.data.exportFonts = function() {
 
         //Do not trigger the export routine if no instance is selected for export,
@@ -44,7 +47,7 @@ function($scope, $http, sharedScope, $timeout) {
               , date = new Date()
               ;
             year = zero_padding(date.getFullYear());
-            month = zero_padding(date.getMonth());
+            month = zero_padding(date.getMonth() + 1); //getMonth() returns a zero-based value: 0=January, 11=December
             day = zero_padding(date.getDate());
             hours = zero_padding(date.getHours());
             minutes = zero_padding(date.getMinutes());
@@ -58,68 +61,33 @@ function($scope, $http, sharedScope, $timeout) {
           , bundle_filename = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
           , bundle_data
-          ;
-
-/*
-//Implementation using generators:
-
-        function* exportFont_generator() {
-            angular.forEach($scope.data.families, function(family) {
-                angular.forEach(family.instances, function(instance) {
-                    if (instance.exportFont){
-                        var model = $scope.data.stateful.project.open(instance.name)
-                          , glyphs = model.query('master#' + instance.name).children
-                          , i, j
-                          ;
-                        for (i=0,j=glyphs.length; i<j; i++){
-                            yield [model, glyphs[i]];
-                        }
-                    }
-                });
-            });
-        }
-
-        var gen = exportFont_generator()
-          , glyph_counter = 0
-          , total_glyphs = 0
-          ;
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (instance.exportFont){
-                    var model = $scope.data.stateful.project.open(instance.name)
-                      , glyphs = model.query('master#' + instance.name).children
-                      ;
-                    total_glyphs += glyphs.length;
-                }
-            }
-        }
-*/
-
-        var glyphs_for_cache = Array()
           , instances_for_export = Array()
           ;
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont){
                     instances_for_export.push(instance);
-                    var model = $scope.data.stateful.project.open(instance.name)
-                      , glyphs = model.query('master#' + instance.name).children
-                      , i, j
-                      ;
-                    for (i=0,j=glyphs.length; i<j; i++){
-                        glyphs_for_cache.push([model, glyphs[i]]);
-                    }
                 }
             });
         });
 
-        var current_glyph = 0
-          , total_glyphs = glyphs_for_cache.length
-          , current_instance = 0
+        function getExportGenerator(index){
+            var instance = instances_for_export[index]
+              , exportObjects = $scope.data.stateful.project.getUFOExportGenerator(
+                    instance.name,
+                    instance.displayName + ".ufo",
+                    /* precision: */ -1
+                )
+              , gen = exportObjects[0]
+              ;
+            io[index] = exportObjects[1];
+            return gen;
+        }
+
+        var current_instance = 0
           , total_instances = instances_for_export.length
+          , glyphs_phase_percentage = 80 //An estimated 80% of the time is taken generating the files. The other 20% is spent zipping the results.
           , UI_UPDATE_TIMESLICE = 50 // msecs
-          , CPS_phase_percentage = 50 //The other 50% of the time is estimated to be spent packing
-                                      //the instances and the final zip file.
           ;
           
         function setProgress(width, text) {
@@ -144,23 +112,32 @@ function($scope, $http, sharedScope, $timeout) {
             $("#progresslabel").html("");
             $("#blob_download").css("display", "none").children("a").unbind("click");
         }
-          
-        function exportFont_compute_CPS_chunk(){
-            if (current_glyph < total_glyphs){
-                var value = glyphs_for_cache[current_glyph++]
-                  , model = value[0]
-                  , glyph = value[1]
-                  , text
-                  ;
-                // TODO model.getComputedStyle(glyph) basically does nothing, so @graphicore will make this actually do something
-                model.getComputedStyle(glyph);
-                text = total_glyphs + " glyphs in " + total_instances + " instances to export, calculating glyph #" + current_glyph;
-                setProgress(CPS_phase_percentage * (current_glyph+1) / total_glyphs, text);
-                $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
+
+        function exportFont_compute_glyphs(){
+            var text
+              , current_glyph
+              , total_glyphs
+              , glyph_name
+              , it = generator.next()
+              ;
+            if (!it.done){
+                current_glyph = it.value['current_glyph'];
+                total_glyphs = it.value['total_glyphs'];
+                glyph_id = it.value['glyph_id'];
+                text = total_instances + " instances to export. Calculating glyph '" + glyph_id + "' (" + (current_glyph+1) + " of " + total_glyphs + ") of instance #" + (current_instance+1);
+                setProgress(glyphs_phase_percentage * (current_instance + ((current_glyph+1) / total_glyphs))/total_instances, text);
+                $timeout(exportFont_compute_glyphs, UI_UPDATE_TIMESLICE);
             } else {
-                text = total_instances + " instances to export in .ufo.zip format, zipping instance #" + (current_instance+1) + " (can take a while)";
-                setProgress(CPS_phase_percentage, text);
-                $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
+                delete generator;
+                if (++current_instance < total_instances) {
+                    generator = getExportGenerator(current_instance);
+                    $timeout(exportFont_compute_glyphs, UI_UPDATE_TIMESLICE);
+                } else {
+                    current_instance = 0;
+                    text = total_instances + " instances to export in .ufo.zip format, zipping instance #" + (current_instance+1) + " (can take a while)";
+                    setProgress(glyphs_phase_percentage, text);
+                    $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
+                }
             }
         }
         
@@ -169,16 +146,16 @@ function($scope, $http, sharedScope, $timeout) {
                 var instance = instances_for_export[current_instance++]
                   , targetDirName = instance.displayName + ".ufo"
                   , filename = targetDirName + ".zip"
-                  ;
-                var precision = -1 //no rounding
-                  , zipped_data = $scope.data.stateful.project.getZippedInstance(
-                                   instance.name, targetDirName, precision, "uint8array")
+                  , text
+                  , precision = -1 //no rounding
+                  , zipped_data = $scope.data.stateful.project.getZipFromIo(false, io[current_instance], targetDirName, "uint8array")
                   ;
                 bundleFolder.file(filename, zipped_data, {binary:true});
-                var text;
+                //delete io[current_instance];
+                delete zipped_data;
                 if (current_instance == total_instances)
                     text = "Packing all " + total_instances + " instances into a final .zip (can take a while)";
-                setProgress(CPS_phase_percentage + (100 - CPS_phase_percentage) * (current_instance+1) / total_instances);
+                setProgress(glyphs_phase_percentage + (100 - glyphs_phase_percentage) * (current_instance+1) / total_instances);
                 $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
             } else {
                 bundle_data = bundle.generate({type:"blob"});
@@ -187,7 +164,8 @@ function($scope, $http, sharedScope, $timeout) {
             }
         }
 
-        $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
+        generator = getExportGenerator(current_instance);
+        $timeout(exportFont_compute_glyphs, UI_UPDATE_TIMESLICE);
     };
 
     $scope.data.instancesForExport = function() {
