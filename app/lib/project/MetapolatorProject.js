@@ -47,22 +47,9 @@ define([
 ) {
     "use strict";
 
-        // FIXME: make this available for browsers too
-    // Specify formatVersion as an int, as required by
-    // unifiedfontobject.org, otherwise it becomes a 'real' in the plist.
     var metainfoV3 = {
             creator: 'org.ufojs.lib'
           , formatVersion: new IntObject(3)
-        }
-      , metainfoV2 = {
-            creator: 'org.ufojs.lib'
-          , formatVersion: new IntObject(2)
-        }
-      , // fontforge requires a fontinfo.plist that defines unitsPerEm
-        minimalFontinfo = {
-            unitsPerEm: new IntObject(1000)
-          , ascender: new IntObject(800)
-          , descender: new IntObject(-200)
         }
       , ProjectError = errors.Project
       , KeyError = errors.Key
@@ -655,60 +642,40 @@ define([
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
-    function exportInstance(io, project, masterName, dirName, precision) {
-        // returns a models/Controller
-        var model = project.open(masterName)
-          , master = model.query('master#' + masterName)
-          , glyphSet
-          , exportController
+    _p.getUFOExportGenerator = function ( masterName, dirName, precision) {
+        var io = new InMemory()
+          , exportController = new UFOExportController(io, this, masterName, dirName, precision)
+          , generator = exportController.exportGenerator()
           ;
-
-        // create a bare ufoV2 directory
-        io.mkDir(false, dirName);
-
-        // create dirName/metainfo.plist
-        io.writeFile(false, dirName+'/metainfo.plist'
-                                , plistLib.createPlistString(metainfoV2));
-
-        // fontforge requires a fontinfo.plist that defines unitsPerEm
-        io.writeFile(false, dirName+'/fontinfo.plist'
-                                , plistLib.createPlistString(minimalFontinfo));
-
-        io.mkDir(false, dirName+'/glyphs');
-        io.writeFile(false, dirName+'/glyphs/contents.plist', plistLib.createPlistString({}));
-
-        glyphSet = GlyphSet.factory(false, io, dirName+'/glyphs', undefined, 2);
-
-        exportController = new UFOExportController(master, model, glyphSet, precision);
-        exportController.do_export();
+        return [generator, io];
     }
 
     _p.exportInstance = function(masterName, targetFileName, precision){
         if (targetFileName.slice(-8) === '.ufo.zip'){
-            var zipped = this.getZippedInstance(masterName, targetFileName, precision, 'nodebuffer');
+            var zipped = this.getZippedInstance(masterName, targetFileName.slice(0,-4), precision, 'nodebuffer');
             this._io.writeFile(false, targetFileName, zipped);
         } else if (targetFileName.slice(-4) === '.otf'){
             var otf = this.getOTFInstance(masterName, this);
             this._io.writeFile(false, targetFileName, otf);
         } else {
-            exportInstance(this._io, this, masterName, targetFileName, precision);
+            new UFOExportController(this._io, this, masterName, targetFileName, precision).doExport();
         }
     };
 
     _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
         var mem_io = new InMemory();
-        exportInstance(mem_io, this, masterName, targetDirName, precision);
+        new UFOExportController(mem_io, this, masterName, targetDirName, precision).doExport();
         return zipUtil.encode(false, mem_io, targetDirName, dataType);
     };
+
+    _p.getZipFromIo = zipUtil.encode;
 
     _p.getOTFInstance = function(masterName, project) {
         var model = project.open(masterName)
           , master = model.query('master#' + masterName)
           , font
-          , exportController
           ;
-        exportController = new OTFExportController(master, model, masterName);
-        font = exportController.do_export();
+        font = new OTFExportController(master, model, masterName).do_export();
         return new Buffer(Int8Array(font.toBuffer()));
     };
 
