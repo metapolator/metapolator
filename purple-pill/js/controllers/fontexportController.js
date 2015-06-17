@@ -148,7 +148,7 @@ function($scope, $http, sharedScope, $timeout) {
                   , filename = targetDirName + ".zip"
                   , text
                   , precision = -1 //no rounding
-                  , zipped_data = $scope.data.stateful.project.getZipFromIo(false, io[current_instance], targetDirName, "uint8array")
+                  , zipped_data = $scope.data.stateful.project.getZipFromIo(false, io[current_instance-1], targetDirName, "uint8array")
                   ;
                 bundleFolder.file(filename, zipped_data, {binary:true});
                 //delete io[current_instance];
