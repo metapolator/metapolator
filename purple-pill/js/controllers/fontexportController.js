@@ -9,9 +9,9 @@ function($scope, $http, sharedScope, $timeout) {
             this.instance = instance;
 
             if (this.fileFormat == "UFO"){
-                getGenerator = $scope.data.stateful.project.getUFOExportGenerator;
+                getGenerator = $scope.data.stateful.project.getUFOExportGenerator.bind($scope.data.stateful.project);
 //TODO:     } else if (this.fileFormat == "OTF"){
-//TODO:         getGenerator = $scope.data.stateful.project.getOTFExportGenerator;
+//TODO:         getGenerator = $scope.data.stateful.project.getOTFExportGenerator.bind($scope.data.stateful.project);
             }
             retval = getGenerator(
                 instance.name
@@ -115,11 +115,7 @@ function($scope, $http, sharedScope, $timeout) {
         if (exportIsRunning)
             return;
 
-            /* An estimated 95% of the time is taken generating the files.
-               The other 5% is spent zipping the results. */
-        const GLYPHS_PHASE_PERCENTAGE = 95
-            , UI_UPDATE_TIMESLICE = 50 // msecs
-            ;
+        const UI_UPDATE_TIMESLICE = 50; // msecs
 
         var bundle = new $scope.data.stateless.JSZip()
           , bundleFolderName = "metapolator-export-" + getTimestamp()
@@ -167,19 +163,12 @@ function($scope, $http, sharedScope, $timeout) {
             return msg;
         }
 
-        function zippingMessage (it, instanceIndex, totalInstances){
-            var msg;
-            msg = totalInstances + " instances to export in .ufo.zip format, ";
-            msg += "zipping instance #" + (instanceIndex+1) + " (can take a while)";
-            return msg;
-        }
-
         function calculateGlyphsProgress(it, instanceIndex, totalInstances){
             var percentage
               , currentGlyph = it.value['current_glyph']
               , totalGlyphs = it.value['total_glyphs']
               ;
-            percentage = GLYPHS_PHASE_PERCENTAGE * (instanceIndex + ((currentGlyph+1) / totalGlyphs))/totalInstances;
+            percentage = (instanceIndex + (currentGlyph / totalGlyphs)) / totalInstances;
             return percentage;
         }
 
@@ -193,17 +182,24 @@ function($scope, $http, sharedScope, $timeout) {
               , zippedData
               , it = obj.generator.next()
               ;
-            if (!it.done && it.value['glyph_id'] != 'C'){ //DO NOT COMMIT THIS LINE CHANGE! It is a hack to reduce total export time during development
+            if (!it.done){
                 text = exportingGlyphMessage(it, index);
                 percentage = calculateGlyphsProgress(it, index, totalInstances);
-                setProgress(percentage, text);
+                progress.set(percentage, text);
                 $timeout(exportFontComputeGlyphs, UI_UPDATE_TIMESLICE);
             } else {
+                index++;
                 delete obj.generator;
-                zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
-                bundleFolder.file(obj.getFileName(), zippedData, {binary:true});
-                delete obj
-                delete zippedData;
+
+                if (obj.fileFormat == "UFO"){
+                    zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
+                    bundleFolder.file(obj.getFileName()+".zip", zippedData, {binary:true});
+                    delete zippedData;
+                } else { /* obj.fileFormat == "OTF" */
+                    var plainData = obj.io.readFile(false, obj.getFileName());
+                    bundleFolder.file(obj.getFileName(), plainData, {binary:true});
+                }
+                delete obj;
 
                 if (exportObjects.length) {
                     obj = exportObjects.pop();
