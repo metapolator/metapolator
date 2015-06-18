@@ -183,57 +183,39 @@ function($scope, $http, sharedScope, $timeout) {
             return percentage;
         }
 
-        var instanceIndex = 0
+        var index = 0
           , totalInstances = exportObjects.length
-          , obj = exportObjects[0]
+          , obj = exportObjects.pop()
           ;
         function exportFontComputeGlyphs(){
             var text
               , percentage
+              , zippedData
               , it = obj.generator.next()
               ;
             if (!it.done && it.value['glyph_id'] != 'C'){ //DO NOT COMMIT THIS LINE CHANGE! It is a hack to reduce total export time during development
-                text = exportingGlyphMessage(it, instanceIndex);
-                percentage = calculateGlyphsProgress(it, instanceIndex, totalInstances);
+                text = exportingGlyphMessage(it, index);
+                percentage = calculateGlyphsProgress(it, index, totalInstances);
                 setProgress(percentage, text);
                 $timeout(exportFontComputeGlyphs, UI_UPDATE_TIMESLICE);
             } else {
-                delete generator;
-                if (++instanceIndex < totalInstances) {
-                    obj = exportObjects[instanceIndex];
+                delete obj.generator;
+                zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
+                bundleFolder.file(obj.getFileName(), zippedData, {binary:true});
+                delete obj
+                delete zippedData;
+
+                if (exportObjects.length) {
+                    obj = exportObjects.pop();
                     $timeout(exportFontComputeGlyphs, UI_UPDATE_TIMESLICE);
                 } else {
-                    instanceIndex = 0;
-                    text = zippingMessage(it, instanceIndex, totalInstances);
-                    setProgress(GLYPHS_PHASE_PERCENTAGE, text);
-                    $timeout(exportFontPackInstanceChunk, UI_UPDATE_TIMESLICE);
+                    bundleData = bundle.generate({type:"blob"});
+                    setDownloadBlobLink(bundleFileName, bundleData, bundleFileName);
+                    exportIsRunning = false;
                 }
             }
         }
         
-        function exportFontPackInstanceChunk(){
-            if (instanceIndex < totalInstances){
-                obj = exportObjects[instanceIndex++]
-                  , targetDirName = instance.displayName + ".ufo"
-                  , filename = targetDirName + ".zip"
-                  , text
-                  , zippedData = $scope.data.stateful.project.getZipFromIo(false, instance.io, instance.getFileName(), "uint8array")
-                  ;
-                bundleFolder.file(filename, zippedData, {binary:true});
-                //delete instance.io;
-                delete zippedData;
-                if (currentInstance == totalInstances)
-                    text = "Packing all " + totalInstances + " instances into a final .zip (can take a while)";
-                progress.set(GLYPHS_PHASE_PERCENTAGE + (100 - GLYPHS_PHASE_PERCENTAGE) * (currentInstance+1) / totalInstances);
-                $timeout(exportFontPackInstanceChunk, UI_UPDATE_TIMESLICE);
-            } else {
-                bundleData = bundle.generate({type:"blob"});
-                setDownloadBlobLink(bundleFileName, bundleData, bundleFileName);
-                exportIsRunning = false;
-            }
-        }
-
-        generator = getExportGenerator(currentInstance);
         $timeout(exportFontComputeGlyphs, UI_UPDATE_TIMESLICE);
     };
 
