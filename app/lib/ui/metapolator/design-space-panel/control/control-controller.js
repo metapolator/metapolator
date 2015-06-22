@@ -97,11 +97,11 @@ define([], function() {
             metapolatorModel.display.dialog.confirm(message, function(result){
                 if(result) {
                     if (n2 == 1) {
-                        metapolatorModel.instancePanel.removeInstanceOnDesignSpace(designSpace);
                         designSpace.removeAxis(master);   
+                        metapolatorModel.instancePanel.removeInstanceOnDesignSpace(designSpace);
                     } else {
-                        metapolatorModel.instancePanel.deleteMasterFromInstances(designSpace, master);
                         designSpace.removeAxis(master);
+                        metapolatorModel.instancePanel.deleteMasterFromInstances(designSpace, master);
                     }
                     $scope.$apply();
                 }

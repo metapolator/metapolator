@@ -97,6 +97,7 @@ define([
                     var index = findMaster(instance, master);
                     if (index) {
                         instance.axes.splice(index, 1);
+                        instance.reDestributeAxes(designSpace.slack);
                         instance.updateMetapolationValues();
                     }
                 }
