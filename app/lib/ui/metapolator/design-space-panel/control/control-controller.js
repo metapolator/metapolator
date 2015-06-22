@@ -6,6 +6,24 @@ define([], function() {
         $scope.instancePanel = metapolatorModel.instancePanel;
         $scope.designSpacePanel = metapolatorModel.designSpacePanel;
         
+        $scope.changeSlackMaster = function() {
+            var designSpace = $scope.model;
+            var slack = designSpace.slack;
+            // swop main master in each instance in the design space
+            for (var i = metapolatorModel.instancePanel.sequences.length - 1; i >= 0; i--) {
+                var sequence = metapolatorModel.instancePanel.sequences[i];
+                for (var j = sequence.children.length - 1; j >= 0; j--) {
+                    var instance = sequence.children[j];
+                    if (instance.designSpace == designSpace) {
+                        instance.reDestributeAxes(slack);
+                    }
+                }
+                
+            }
+            // trigger the designspace to redraw
+            designSpace.parent.currentDesignSpaceTrigger++;
+        };
+        
         $scope.removeMaster = function (master, designSpace) {
             var n = metapolatorModel.instancePanel.countInstancesWithMaster(master);
             var n2 = designSpace.axes.length;

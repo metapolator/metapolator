@@ -78,5 +78,32 @@ define([
         this.updateMetapolationValues();   
     };
     
+    _p.reDestributeAxes = function(slack) {
+        // this functin is called after a change of slack master
+        var axes = this.axes
+          , l = axes.length
+          , ratio = null
+          , max = null
+          , highest = null;
+        // 1 find highest of the others
+        for (var i = 0; i < l; i++) {
+            if (axes[i].axisValue >= max && i != slack) {
+                highest = i;
+                max = axes[i].axisValue;
+            }
+        }
+        // 2 find ratio of others compared to highest
+        ratio = 100 / (parseFloat(max) + parseFloat(axes[slack].axisValue));
+        console.log(ratio);
+        for (var i = 0; i < l; i++) {
+            axes[i].axisValue = this.formatAxisValue(ratio * axes[i].axisValue);
+        }
+    };
+    
+    _p.formatAxisValue = function(x) {
+        var rounded = Math.round(x * 10) / 10;
+        return rounded;
+    };
+    
     return InstanceModel;
 });

@@ -17,7 +17,7 @@ define([
             link : function(scope, element, attrs, ctrl) {
                 $(window).resize(function() {
                     initialBuildGraphics();
-                    //redrawFunction();
+                    redrawFunction();
                 });
                 var dragActive = false;
                 var designSpace = null;
@@ -361,6 +361,12 @@ define([
                 function responsiveGraphics() {
                     graphics.elementWidth = $(element).outerWidth();
                     graphics.axisWidth = graphics.elementWidth - 200;
+                    // set these values to the scope so .tpl file can use them
+                    // to place the input fields, etc.
+                    scope.axisWidth = graphics.axisWidth;
+                    scope.paddingTop = graphics.paddingTop;
+                    scope.axisDistance = graphics.axisDistance;
+                    scope.paddingLeft = graphics.paddingLeft;
                 }
                 
                 function buildGraphics() {
