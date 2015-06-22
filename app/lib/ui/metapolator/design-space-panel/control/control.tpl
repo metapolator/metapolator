@@ -13,5 +13,5 @@
         ng-change="changeSlackMaster()"
         ng-model="model.slack"
         ng-options="model.lastInstance.axes.indexOf(axis) as axis.master.displayName for (index, axis) in model.lastInstance.axes" 
-        ng-style="{'top': (model.slack * axisDistance + (paddingTop + 28)) + 'px', 'left': '10px'}">
+        ng-style="{'top': (model.slack * axisDistance + (paddingTop + 50)) + 'px', 'left': '10px'}">
 </select>

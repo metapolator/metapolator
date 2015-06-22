@@ -36,7 +36,7 @@ define([
                     paddingLeft : 50, 
                     paddingTop : 30, 
                     paddingLabel : 25, 
-                    axisDistance : 50, 
+                    axisDistance : 60, 
                     axisTab : 10, 
                     axisTabLeft : 60, 
                     indentRight : 20, 
