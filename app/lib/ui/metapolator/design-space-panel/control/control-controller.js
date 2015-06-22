@@ -24,6 +24,58 @@ define([], function() {
             designSpace.parent.currentDesignSpaceTrigger++;
         };
         
+        $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
+            if (keyEvent == "blur" || keyEvent.keyCode == 13) {
+                window.logCall("redrawAxesFromInput");
+                var designSpace = $scope.model
+                  , slack = designSpace.slack
+                  , instance = designSpace.lastInstance
+                  , axes = instance.axes
+                  , l = axes.length;
+                axes[inputAxis].value = format(axes[inputAxis].value);
+
+                // find the highest non-slack master
+                var max = 0;
+                for (var i = 0; i < l; i++) {
+                    if (parseFloat(axes[i].axisValue) >= max && i != slack) {
+                        max = parseFloat(axes[i].axisValue);
+                    }
+                }
+                if (inputAxis != slack) {
+                    // correct the slack behaviour
+                    axes[slack].axisValue = 100 - max;
+                } else {
+                    var newMax = 100 - axes[slack].axisValue;
+                    if (max != 0) {
+                        var ratio = newMax / max;
+                    } else {
+                        var ratio = 1;
+                    }
+                    // correct all sliders but slack proportionally
+                    for (var i = 0; i < l; i++) {
+                        if (i != slack) {
+                            var thisValue = instance.formatAxisValue(ratio * axes[i].axisValue);
+                            axes[i].axisValue = thisValue;
+                        }
+                    }
+                }
+                instance.updateMetapolationValues();
+                // trigger the design space to redraw
+                designSpace.parent.currentDesignSpaceTrigger++;
+            }
+            
+            function format(value) {
+                var output;
+                if (isNaN(value) || value == "" || value < 0) {
+                    return 0;
+                } else  if (value > 100) {
+                    return 100;
+                } else {
+                    return value;
+                }
+            }
+        };
+        
         $scope.removeMaster = function (master, designSpace) {
             var n = metapolatorModel.instancePanel.countInstancesWithMaster(master);
             var n2 = designSpace.axes.length;
