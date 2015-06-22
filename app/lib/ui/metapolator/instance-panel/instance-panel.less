@@ -1,0 +1,69 @@
+@import "instance/instance";
+
+mtk-instance-panel li.li-master {
+    border-bottom: 0;
+}
+
+mtk-instance {
+    display: block;
+    clear: both;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+
+mtk-instance.selected {
+    background: @mtk-color-1;
+}
+
+mtk-instance > div {
+    cursor: default;
+    display: inline-block;
+    float: left;
+    height: 100%;
+    position: relative;
+    white-space: nowrap;
+    border-bottom: 2px solid @mtk-color-1;
+}
+
+mtk-instance-panel .list-container {
+    border: 0;
+}
+
+mtk-instance-panel .ul-sequence {
+    padding: 2px 0 0 2px;
+    
+}
+
+.list-stretcher {
+    width: ~"calc(100% + 90px)";
+    height: 100%;
+    position: relative;
+}
+
+.fake-instance-panel {
+    width: ~"calc(100% - 88px)";
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 2px solid @mtk-color-1;
+}
+
+.fake-export-panel {
+    width: 78px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 2px solid @mtk-color-1;
+}
+
+.export-button {
+    width: 78px;
+    padding-top: 10px;
+    float: right;
+    border-right: 0;
+    background: @mtk-color-1;
+    cursor: default;
+}

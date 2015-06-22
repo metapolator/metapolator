@@ -1,0 +1,106 @@
+mtk-local-menu {
+    position: relative;
+    display: block;
+    min-height: 30px;
+}
+
+.lm-head {
+    cursor: context-menu;
+    padding: 8px;
+}
+
+.specimen-tool .lm-head {
+    padding: 0;
+}
+
+.lm-head:after {
+    content: "▼";
+    font-size: 10px;
+    margin-left: 2px;
+}
+
+.lm-head:hover, .lm-body:hover .lm-head {
+    background: @mtk-color-1;
+}
+
+.lm-body {
+    position: absolute;
+    z-index: 1000;
+    top: 35px;
+    background: #fff;
+    width: 200px;
+    padding: 10px 0;
+    box-shadow: @mtk-box-shadow;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.lm-align-left .lm-body {
+    left: 5px;
+}
+
+.lm-align-right .lm-body {
+    right: 2px;
+}
+
+.lm-content {
+    padding: 20px;
+}
+
+.lm-content a {
+    color: @mtk-color-red;
+    text-decoration: none;
+}
+
+.lm-content a:hover {
+    text-decoration: underline;
+}
+
+.lm-button {
+    padding: 6px 10px 4px 10px;
+    color: @mtk-color-2;
+    display: block;
+    width: 100%;
+    cursor: default;
+}
+
+.lm-button .lm-checkmark {
+    vertical-align: bottom;
+    display: inline-block;
+    width: 20px;
+    height: 100%;
+    line-height: 8px;
+    font-family: 'icons';
+    color: @mtk-color-2;
+}
+
+.lm-button a {
+    display: block;
+    width: 100%;
+    color: @mtk-color-2;
+    text-decoration: none;
+}
+
+.lm-button:hover, .lm-button.lm-selected {
+    background: @mtk-color-hover-grey;
+}
+
+.lm-button-hover {
+    background: @mtk-color-1;
+}
+
+.lm-divider {
+    width: 100%;
+    margin: 4px 0;
+    background: @mtk-color-1;
+    height: 1px;
+}
+
+mtk-local-menu.lm-inside .lm-head {
+    padding: 9px 0 0 4px;
+}
+
+mtk-local-menu.lm-inside .lm-head-container {
+    display: inline-block;
+    width: 100px;
+}

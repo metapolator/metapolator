@@ -1,0 +1,46 @@
+mtk-master div {
+    float: left;
+    height: 100%;
+    position: relative;
+    cursor: default;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.list-sequence {
+    width: 24px;
+    padding: 8px 7px;
+}
+
+.list-sequence svg {
+    fill: @mtk-color-2;
+}
+
+.list-view {
+    overflow: hidden;
+    padding: 6px 2px 2px;
+    text-align: center;
+    width: 32px;
+}
+
+.list-view.selected {
+    background: @mtk-color-2;
+    // temp. apply this to svg later on
+    color: @mtk-color-1;
+}
+
+.list-view ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+
+.list-view ul li {
+    display: inline;
+}
+
+.list-edit {
+    overflow: hidden;
+    padding: 10px;
+    width: ~"calc(100% - 56px)";
+}

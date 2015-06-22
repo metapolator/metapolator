@@ -1,0 +1,191 @@
+@import "control/control";
+
+#design-space-tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    height: 30px;
+}
+
+#design-space-tabs li {
+    float: left;
+    padding: 9px 10px;
+    margin-right: 4px;
+    cursor: default;
+    background: #fff;
+    color: #515151;
+    border-top: 2px solid @mtk-color-1;
+    border-left: 2px solid @mtk-color-1;
+    border-right: 2px solid @mtk-color-1;
+    height: 30px;
+}
+
+#design-space-tabs li.selected {
+    background: @mtk-color-1;
+    color: #515151;
+    padding: 0 10px 0 10px;
+}
+
+#design-space-tabs li.add-design-space {
+    background: transparent;
+    color: @mtk-color-2;
+}
+
+#design-space-tabs li div {
+    float: left;
+}
+
+
+#design-space-tabs .lm-body {
+    width: 100px;
+}
+
+.logo-bg {
+    background-image: url('img/metapolator-logo-white.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 80%; 
+}
+
+.design-space {
+    height: ~"calc(100% - 30px)";
+    background-image: url('../../img/tile.png');
+    background-repeat: repeat;
+}
+
+.drop-area {
+    border: 1px solid transparent;
+}
+
+.drop-area.drag-over {
+    border: 1px dashed @mtk-color-2;
+}
+
+
+
+
+
+
+////////
+
+
+.unconfigured {
+    background: @mtk-color-1;
+}
+
+.design-space-container {
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    color: @mtk-color-1;
+    font-style: italic;
+    text-align: center;
+}
+
+.choose-space-type {
+    width: 50%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding-top: 5%;
+}
+
+.choose-space-type-button {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.choose-space-type-button:hover {
+    color: #f85c37;
+}
+
+
+
+
+        control, explore {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: @mtk-color-1;
+        }
+        
+        control svg, explore svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            padding-top: 16px;
+        }
+
+            
+            li:first-child .slider-label-first {
+                display: none;
+            }
+            
+            li:first-child .slider-label-last {
+                left: 50%;
+            }
+            
+                .slider-label {
+                    border: none;
+                    background: transparent;
+                }
+
+            .slider-label-first {
+                left: 0;
+                top: 10px;
+            }
+            
+            .slider-label-last {
+                text-align: right;
+                right: 0;
+            }
+            
+            .slider-label-middle {
+                position: absolute;
+                text-align: center;
+                right: 0;
+                top: 10px;
+                width: 100%;
+                font-size: 16px;
+            }
+            
+    .li-explore {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #000;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    
+        .explore-name {
+            position: absolute;
+            z-index: 10;
+            color: #fff;
+            left: 6px;
+            top: 4px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .explore-name-full {
+            position: absolute;
+            z-index: 10;
+            left: 24px;
+            top: 0px;
+            background: @mtk-color-1;
+            color: #333;
+            padding: 4px 8px;
+            font-size: 12px;
+            opacity: 0;
+            transition: all 1s ease;
+        }
+        
+        .show-name-full .explore-name-full {
+            opacity: 1;
+        } 
+        
+        

@@ -1,0 +1,194 @@
+//@import (reference) "../bower_components/bootstrap/less/mixins";
+@import "parameter-panel/parameter-panel";
+@import "specimen-panel/specimen-panel";
+@import "master-panel/master-panel";
+@import "design-space-panel/design-space-panel";
+@import "instance-panel/instance-panel";
+@import "font-export-panel/font-export-panel";
+@import "metadata-panel/metadata-panel";
+
+@import "local-menu/local-menu";
+@import "glyph/glyph";
+@import "rename/rename";
+@import "menubar/menubar";
+@import "view-rubberband/view-rubberband";
+@import "dialog/dialog";
+@import "divider/horizontal-divider/horizontal-divider";
+@import "divider/vertical-divider/vertical-divider";
+
+@font-face {
+    font-family: 'icons';
+    src: url('fonts/mp_icons.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'seanSansNarrow';
+    src: url('fonts/SeanSans-NarrowBold.otf');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'seanSansNarrow';
+    src: url('fonts/SeanSans-NarrowThin.otf');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@mtk-color-1: #eee;
+@mtk-color-2: #515151;
+@mtk-color-red: #f85c37;
+@mtk-color-hover-grey: #dcdcdc;
+
+@mtk-space-1: 5px;
+
+@mtk-box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;  
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  font-family: "seanSansNarrow";
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 12px;
+  color: @mtk-color-2;
+}
+
+// used for inactive buttons
+.inactive {
+    opacity: 0.3;
+}
+
+// used for the mouseover on instances
+.dimmed {
+    opacity: 0.1;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.unselectable {                
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.selectable {
+    -webkit-touch-callout: all;
+    -webkit-user-select: all;
+    -khtml-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+} 
+
+metapolator {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: @mtk-space-1;
+}
+
+mtk-menubar {
+    display: block;
+    width: 100%;
+    height: 55px;
+}
+
+mtk-pagewrap {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: ~"calc(100% - 55px)";
+}
+
+mtk-landscape {
+    display: block;
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    top: 0;
+}
+
+.transition {
+    transition: left 700ms ease 0s; 
+}
+
+mtk-panel {
+    vertical-align: top;
+    display: inline-block;
+    float: left;
+    height: 100%;
+    padding: @mtk-space-1;
+    position: relative;
+}
+
+.panel {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 2px solid @mtk-color-1; 
+}
+
+.semi-panel {
+    height: 50%;
+    padding-top: 5px;
+}
+
+.semi-panel:first-child {
+    height: 50%;
+    padding: 0 0 5px 0;
+}
+
+.panel.without-border {
+    border: 0;
+}
+
+mtk-panel.without-body {
+    height: auto;
+}
+
+.panel.with-spacing {
+    padding: @mtk-space-1;
+}
+
+.under-construction {
+    display: block;
+    height: 100%;
+    background-image: url('img/tile.png');
+    background-repeat: repeat;
+    position: relative;
+}
+
+// svg css
+
+.standard-text-svg {
+    fill: @mtk-color-2;
+}
+
+.standard-style-svg {
+    stroke: @mtk-color-2;
+    fill: #fff;
+}
+
+.standard-line-svg {
+    stroke: @mtk-color-2;
+}

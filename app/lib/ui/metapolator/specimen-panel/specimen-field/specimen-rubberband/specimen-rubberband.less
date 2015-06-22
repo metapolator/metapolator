@@ -1,0 +1,20 @@
+.rubberband {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px dashed #000;
+    position: fixed; 
+    z-index: 10000;
+}
+
+mtk-glyph.selected {
+    border-bottom: 4px solid #00f!important;
+}
+
+// these 2 always have to overrule the selected 
+// therefor the stronger selector 'li'
+li mtk-glyph.temp-selected {
+    border-bottom: 4px solid #00f!important;
+}
+
+li mtk-glyph.temp-unselected {
+    border-bottom: 4px solid transparent!important;
+}
