@@ -173,7 +173,7 @@ function($scope, $http, sharedScope, $timeout) {
               , currentGlyph = it.value['current_glyph']
               , totalGlyphs = it.value['total_glyphs']
               ;
-            percentage = (instanceIndex + (currentGlyph / totalGlyphs)) / totalInstances;
+            percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
             return percentage;
         }
 
