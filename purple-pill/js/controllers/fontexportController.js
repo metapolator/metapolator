@@ -43,9 +43,9 @@ function($scope, $http, sharedScope, $timeout) {
     })();
 
     var ProgressBar = (function() {
-        function ProgressBar(barElementId, labelElementId, updateDelay) {
-            this.bar = $(barElementId);
-            this.label = $(labelElementId);
+        function ProgressBar(barElement, labelElement, updateDelay) {
+            this.bar = barElement;
+            this.label = labelElement;
             this.updateDelay = updateDelay;
         }
 
@@ -128,8 +128,8 @@ function($scope, $http, sharedScope, $timeout) {
           , bundleFolder = bundle.folder(bundleFolderName)
           , bundleData
           , exportObjects = Array()
-          , progress = new ProgressBar( "#progressbar"
-                                      , "#progresslabel"
+          , progress = new ProgressBar( $("#progressbar")
+                                      , $("#progresslabel")
                                       , UI_UPDATE_TIMESLICE )
           ;
         exportIsRunning = true;
