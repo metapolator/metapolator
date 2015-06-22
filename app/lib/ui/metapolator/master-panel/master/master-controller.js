@@ -68,8 +68,10 @@ define([], function() {
                     if (thisMaster == master) {
                         thisMaster.edit[0] = true;    
                     } else {
-                        thisMaster.edit[0] = false;
-                        thisMaster.deselectAllChildren();
+                        if (thisMaster.edit[0]) {
+                            thisMaster.edit[0] = false;
+                            thisMaster.deselectAllChildren();
+                        }
                     } 
                 }
             }
