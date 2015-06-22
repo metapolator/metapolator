@@ -34,6 +34,11 @@ function($scope, $http, sharedScope, $timeout) {
             }
         };
 
+        _p.pruneGenerator = function() {
+            if (this.generator)
+                delete this.generator;
+        }
+
         return ExportObject;
     })();
 
@@ -189,7 +194,7 @@ function($scope, $http, sharedScope, $timeout) {
                 $timeout(exportFontComputeGlyphs, UI_UPDATE_TIMESLICE);
             } else {
                 index++;
-                delete obj.generator;
+                obj.pruneGenerator();
 
                 if (obj.fileFormat == "UFO"){
                     zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
