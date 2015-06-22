@@ -22,6 +22,9 @@ define([
     
     _p.setCurrentInstance = function(instance) {
         this.currentInstance = instance;
+        if (instance) {
+            instance.designSpace.setLastInstance(instance);
+        }
         this.currentInstanceTrigger++;
         this.parent.specimen2.updateSelectedMasters(this.sequences);
     };

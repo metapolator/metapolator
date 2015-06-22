@@ -10,6 +10,7 @@ define([
         this.type = type;
         this.axes = axes;
         this.slack = slack;
+        this.lastInstance = null;
         
         Object.defineProperty(this, 'parent', {
             value: parent,
@@ -51,6 +52,10 @@ define([
                 }
             }
         }
+    };
+    
+    _p.setLastInstance = function(instance) {
+        this.lastInstance = instance;
     };
     
     return DesignSpaceModel;

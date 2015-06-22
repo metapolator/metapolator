@@ -7,25 +7,15 @@ define([], function() {
         $scope.selectDesignSpace = function (space) {
             $scope.model.setCurrentDesignSpace(space); 
             // after switching design space, we need to set a new current instance  
-            metapolatorModel.instancePanel.setCurrentInstance(getCurrentInstance());
-
-            function getCurrentInstance() {
-                for (var i = metapolatorModel.instancePanel.sequences.length - 1; i >= 0; i--) {
-                    var sequence = metapolatorModel.instancePanel.sequences[i];
-                    for (var j = sequence.children.length - 1; j >= 0; j--) {
-                        var instance = sequence.children[j];
-                        if (instance.designSpace == space) {
-                            // this picks the last created instance in this space (because of --)
-                            return instance;
-                        }
-                    }
-                } 
-            }
+            // the last instance used in the design space is stored as lastInstance
+            var currentInstance = space.lastInstance;
+            metapolatorModel.instancePanel.setCurrentInstance(currentInstance);
         };
         
         $scope.addDesignSpace = function() {
             $scope.model.addDesignSpace();
             metapolatorModel.instancePanel.setCurrentInstance(null);
+            $scope.model.currentDesignSpace.lastInstance = null;
         };
         
         $scope.duplicateDesignSpace = function () {
