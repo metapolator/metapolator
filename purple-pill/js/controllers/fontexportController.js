@@ -188,6 +188,7 @@ function($scope, $http, sharedScope, $timeout) {
               , index = totalInstances - exportObjects.length
               , obj = exportObjects[exportObjects.length - 1]
               , it = obj.generator.next()
+              , data, name
               ;
             if (!it.done){
                 text = exportingGlyphMessage(it, index, totalInstances);
@@ -198,12 +199,14 @@ function($scope, $http, sharedScope, $timeout) {
                 obj.pruneGenerator();
 
                 if (obj.fileFormat == "UFO"){
-                    var zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
-                    bundleFolder.file(obj.getFileName()+".zip", zippedData, {binary:true});
-                } else { /* obj.fileFormat == "OTF" */
-                    var plainData = obj.io.readFile(false, obj.getFileName());
-                    bundleFolder.file(obj.getFileName(), plainData, {binary:true});
+                    data = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
+                    name = obj.getFileName() + ".zip";
+                } else {
+                    /* obj.fileFormat == "OTF" */
+                    data = obj.io.readFile(false, obj.getFileName());
+                    name = obj.getFileName();
                 }
+                bundleFolder.file(name, data, {binary:true});
 
                 exportObjects.pop();
                 if (exportObjects.length) {
