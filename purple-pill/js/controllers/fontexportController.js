@@ -148,6 +148,20 @@ function($scope, $http, sharedScope, $timeout) {
         return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
     }
 
+    function setDownloadBlobLink(text, blob, filename, progress) {
+        var download = $("#blob_download");
+        if (progress)
+            progress.complete();
+
+        download.css("display", "block");
+        download.children("a").html(text).click(function(){
+            $scope.data.stateless.saveAs(blob, filename);
+            if (progress)
+                progress.reset();
+            download.css("display", "none").children("a").unbind("click");
+        });
+    }
+
     var exportIsRunning = false;
     function generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress) {
         var bundle = new $scope.data.stateless.JSZip()
@@ -190,25 +204,12 @@ function($scope, $http, sharedScope, $timeout) {
                    , UI_UPDATE_TIMESLICE);
         }
 
-        function setDownloadBlobLink(text, blob, filename) {
-            var download = $("#blob_download");
-            if (progress) progress.complete();
-
-            download.css("display", "block");
-            download.children("a").html(text).click(function(){
-                $scope.data.stateless.saveAs(blob, filename);
-                if (progress) progress.reset();
-                download.css("display", "none").children("a").unbind("click");
-            });
-        }
-
         // note how the first three args are bound, new Promise will call the bound function with
         // the two missing args `resolve` and `reject`
         return new Promise(
             _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress)
         ).then(function(){
-            setDownloadBlobLink(bundleFileName, bundle.generate({type:"blob"}), bundleFileName);
-            exportIsRunning = false;
+            return [bundleFileName, bundle.generate({type:"blob"})];
         });
     }
 
@@ -236,7 +237,11 @@ function($scope, $http, sharedScope, $timeout) {
         var progress = new InstanceExportProgressBar( $("#progressbar")
                                                     , $("#progresslabel")
                                                     , UI_UPDATE_TIMESLICE );
-        generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress);
+        function finalizeExport(result) {
+            setDownloadBlobLink(result[0], result[1], result[0], progress);
+            exportIsRunning = false;
+        }
+        generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress).then(finalizeExport);
     };
 
     $scope.data.instancesForExport = function() {
