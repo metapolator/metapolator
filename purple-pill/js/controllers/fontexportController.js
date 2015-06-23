@@ -185,7 +185,6 @@ function($scope, $http, sharedScope, $timeout) {
 
             var text
               , percentage
-              , zippedData
               , index = totalInstances - exportObjects.length
               , obj = exportObjects[exportObjects.length - 1]
               , it = obj.generator.next()
@@ -199,9 +198,8 @@ function($scope, $http, sharedScope, $timeout) {
                 obj.pruneGenerator();
 
                 if (obj.fileFormat == "UFO"){
-                    zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
+                    var zippedData = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
                     bundleFolder.file(obj.getFileName()+".zip", zippedData, {binary:true});
-                    delete zippedData;
                 } else { /* obj.fileFormat == "OTF" */
                     var plainData = obj.io.readFile(false, obj.getFileName());
                     bundleFolder.file(obj.getFileName(), plainData, {binary:true});
