@@ -47,6 +47,7 @@ function($scope, $http, sharedScope, $timeout) {
             this.bar = barElement;
             this.label = labelElement;
             this.updateDelay = updateDelay;
+            this.reset();
         }
 
         var _p = ProgressBar.prototype;
@@ -108,80 +109,45 @@ function($scope, $http, sharedScope, $timeout) {
         return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
     }
 
+    const UI_UPDATE_TIMESLICE = 50; // msecs
     var exportIsRunning = false;
-    $scope.data.exportFonts = function() {
 
-        //Do not trigger the export routine if no instance is selected for export,
-        //otherwise it would result in an empty ZIP file.
-        if (!$scope.data.instancesForExport())
-            return;
+    function exportingGlyphMessage (it, instanceIndex, totalInstances){
+        var msg
+          , currentGlyph = it.value['current_glyph'] + 1 //humans start counting from 1.
+          , totalGlyphs = it.value['total_glyphs']
+          , glyphId = it.value['glyph_id']
+          ;
+        msg = totalInstances + " instances to export."
+        msg += "Calculating glyph '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
+        msg += " of instance #" + (instanceIndex+1);
+        return msg;
+    }
 
-        //Also avoid triggering a new export while we're still not finished
-        if (exportIsRunning)
-            return;
+    function calculateGlyphsProgress(it, instanceIndex, totalInstances){
+        var percentage
+          , currentGlyph = it.value['current_glyph']
+          , totalGlyphs = it.value['total_glyphs']
+          ;
+        percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
+        return percentage;
+    }
 
-        const UI_UPDATE_TIMESLICE = 50; // msecs
-
+    function exportFont_compute_glyphs(exportObjects) {
         var bundle = new $scope.data.stateless.JSZip()
           , bundleFolderName = "metapolator-export-" + getTimestamp()
           , bundleFileName = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
-          , exportObjects = Array()
-          , totalInstances
+          , totalInstances = exportObjects.length
           , progress = new ProgressBar( $("#progressbar")
                                       , $("#progresslabel")
                                       , UI_UPDATE_TIMESLICE )
           ;
-        exportIsRunning = true;
-        progress.reset();
-
-        angular.forEach($scope.data.families, function(family) {
-            angular.forEach(family.instances, function(instance) {
-                if (instance.exportFont){
-                    exportObjects.push(new ExportObject(instance/*, fileFormat*/));
-                }
-            });
-        });
-
-        totalInstances = exportObjects.length;
-
-        function setDownloadBlobLink(text, blob, filename) {
-            var download = $("#blob_download");
-            progress.complete();
-
-            download.css("display", "block");
-            download.children("a").html(text).click(function(){
-                $scope.data.stateless.saveAs(blob, filename);
-                progress.reset();
-                download.css("display", "none").children("a").unbind("click");
-                delete bundleData;
-            });
-        }
-
-        function exportingGlyphMessage (it, instanceIndex, totalInstances){
-            var msg
-              , currentGlyph = it.value['current_glyph'] + 1 //humans start counting from 1.
-              , totalGlyphs = it.value['total_glyphs']
-              , glyphId = it.value['glyph_id']
-              ;
-            msg = totalInstances + " instances to export."
-            msg += "Calculating glyph '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
-            msg += " of instance #" + (instanceIndex+1);
-            return msg;
-        }
-
-        function calculateGlyphsProgress(it, instanceIndex, totalInstances){
-            var percentage
-              , currentGlyph = it.value['current_glyph']
-              , totalGlyphs = it.value['total_glyphs']
-              ;
-            percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
-            return percentage;
-        }
-
-        function exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder){
-            if (exportObjects.length==0)
+        function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, resolve, reject){
+            if (exportObjects.length==0){
+                resolve(true);
                 return;
+            }
 
             var text
               , percentage
@@ -194,8 +160,9 @@ function($scope, $http, sharedScope, $timeout) {
                 text = exportingGlyphMessage(it, index, totalInstances);
                 percentage = calculateGlyphsProgress(it, index, totalInstances);
                 progress.set(percentage, text);
-                $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder), UI_UPDATE_TIMESLICE);
+                $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, resolve, reject), UI_UPDATE_TIMESLICE);
             } else {
+                exportObjects.pop();
                 obj.pruneGenerator();
 
                 if (obj.fileFormat == "UFO"){
@@ -207,18 +174,54 @@ function($scope, $http, sharedScope, $timeout) {
                     name = obj.getFileName();
                 }
                 bundleFolder.file(name, data, {binary:true});
-
-                exportObjects.pop();
-                if (exportObjects.length) {
-                    $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder), UI_UPDATE_TIMESLICE);
-                } else {
-                    setDownloadBlobLink(bundleFileName, bundle.generate({type:"blob"}), bundleFileName);
-                    exportIsRunning = false;
-                }
             }
+            $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, resolve, reject)
+                   , UI_UPDATE_TIMESLICE);
         }
-        
-        $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder), UI_UPDATE_TIMESLICE);
+
+        function setDownloadBlobLink(text, blob, filename) {
+            var download = $("#blob_download");
+            progress.complete();
+
+            download.css("display", "block");
+            download.children("a").html(text).click(function(){
+                $scope.data.stateless.saveAs(blob, filename);
+                progress.reset();
+                download.css("display", "none").children("a").unbind("click");
+            });
+        }
+
+        // note how the first three args are bound, new Promise will call the bound function with
+        // the two missing args `resolve` and `reject`
+        return new Promise(
+            _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder)
+        ).then(function(){
+            setDownloadBlobLink(bundleFileName, bundle.generate({type:"blob"}), bundleFileName);
+            exportIsRunning = false;
+        });
+    }
+
+    $scope.data.exportFonts = function() {
+        //Do not trigger the export routine if no instance is selected for export,
+        //otherwise it would result in an empty ZIP file.
+        if (!$scope.data.instancesForExport())
+            return;
+
+        //Also avoid triggering a new export while we're still not finished
+        if (exportIsRunning)
+            return;
+
+        var exportObjects = Array();
+        angular.forEach($scope.data.families, function(family) {
+            angular.forEach(family.instances, function(instance) {
+                if (instance.exportFont){
+                    exportObjects.push(new ExportObject(instance/*, fileFormat*/));
+                }
+            });
+        });
+
+        exportIsRunning = true;
+        exportFont_compute_glyphs(exportObjects);
     };
 
     $scope.data.instancesForExport = function() {
