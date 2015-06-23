@@ -258,6 +258,11 @@
     transform-origin: 0 0; 
 }
 
+.slider-handle:hover {
+    stroke: #f85c37;
+    stroke-width: 4;
+}
+
 
 /********* MEDIA **********/
 
