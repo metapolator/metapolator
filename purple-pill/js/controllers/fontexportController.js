@@ -126,7 +126,6 @@ function($scope, $http, sharedScope, $timeout) {
           , bundleFolderName = "metapolator-export-" + getTimestamp()
           , bundleFileName = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
-          , bundleData
           , exportObjects = Array()
           , totalInstances
           , progress = new ProgressBar( $("#progressbar")
@@ -212,8 +211,7 @@ function($scope, $http, sharedScope, $timeout) {
                 if (exportObjects.length) {
                     $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances), UI_UPDATE_TIMESLICE);
                 } else {
-                    bundleData = bundle.generate({type:"blob"});
-                    setDownloadBlobLink(bundleFileName, bundleData, bundleFileName);
+                    setDownloadBlobLink(bundleFileName, bundle.generate({type:"blob"}), bundleFileName);
                     exportIsRunning = false;
                 }
             }
