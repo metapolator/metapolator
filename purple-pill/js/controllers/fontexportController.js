@@ -151,15 +151,12 @@ function($scope, $http, sharedScope, $timeout) {
     const UI_UPDATE_TIMESLICE = 50; // msecs
     var exportIsRunning = false;
 
-    function generateFontBundle(exportObjects) {
+    function generateFontBundle(exportObjects, progress) {
         var bundle = new $scope.data.stateless.JSZip()
           , bundleFolderName = "metapolator-export-" + getTimestamp()
           , bundleFileName = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
           , totalInstances = exportObjects.length
-          , progress = new InstanceExportProgressBar( $("#progressbar")
-                                                    , $("#progresslabel")
-                                                    , UI_UPDATE_TIMESLICE )
           ;
         function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, progress, resolve, reject){
             if (exportObjects.length==0){
@@ -175,7 +172,8 @@ function($scope, $http, sharedScope, $timeout) {
               , data, name
               ;
             if (!it.done){
-                progress.setData(index, totalInstances, it.value);
+                if (progress)
+                    progress.setData(index, totalInstances, it.value);
             } else {
                 exportObjects.pop();
                 obj.pruneGenerator();
@@ -196,12 +194,12 @@ function($scope, $http, sharedScope, $timeout) {
 
         function setDownloadBlobLink(text, blob, filename) {
             var download = $("#blob_download");
-            progress.complete();
+            if (progress) progress.complete();
 
             download.css("display", "block");
             download.children("a").html(text).click(function(){
                 $scope.data.stateless.saveAs(blob, filename);
-                progress.reset();
+                if (progress) progress.reset();
                 download.css("display", "none").children("a").unbind("click");
             });
         }
@@ -236,7 +234,10 @@ function($scope, $http, sharedScope, $timeout) {
         });
 
         exportIsRunning = true;
-        generateFontBundle(exportObjects);
+        var progress = new InstanceExportProgressBar( $("#progressbar")
+                                                    , $("#progresslabel")
+                                                    , UI_UPDATE_TIMESLICE );
+        generateFontBundle(exportObjects, progress);
     };
 
     $scope.data.instancesForExport = function() {
