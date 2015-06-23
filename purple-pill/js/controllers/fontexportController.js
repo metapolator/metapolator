@@ -74,6 +74,45 @@ function($scope, $http, sharedScope, $timeout) {
         return ProgressBar;
     })();
 
+    var InstanceExportProgressBar = (function(Parent) {
+        function InstanceExportProgressBar(barElement, labelElement, updateDelay) {
+            Parent.call(this, barElement, labelElement, updateDelay);
+        }
+
+        var _p = InstanceExportProgressBar.prototype = Object.create(Parent.prototype);
+        _p.constructor = InstanceExportProgressBar;
+
+        function exportingGlyphMessage (data, instanceIndex, totalInstances) {
+            var msg
+              , currentGlyph = data['current_glyph'] + 1 //humans start counting from 1.
+              , totalGlyphs = data['total_glyphs']
+              , glyphId = data['glyph_id']
+              ;
+            msg = totalInstances + " instances to export."
+            msg += "Calculating glyph '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
+            msg += " of instance #" + (instanceIndex+1);
+            return msg;
+        }
+
+        function calculateGlyphsProgress (data, instanceIndex, totalInstances) {
+            var percentage
+              , currentGlyph = data['current_glyph']
+              , totalGlyphs = data['total_glyphs']
+              ;
+            percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
+            return percentage;
+        }
+
+        _p.setData = function(index, totalInstances, data) {
+            var text = exportingGlyphMessage(data, index, totalInstances)
+              , width = calculateGlyphsProgress(data, index, totalInstances)
+              ;
+            this.set(width, text);
+        };
+
+        return InstanceExportProgressBar;
+    })(ProgressBar);
+
     $scope.checkAll = function() {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
@@ -112,36 +151,15 @@ function($scope, $http, sharedScope, $timeout) {
     const UI_UPDATE_TIMESLICE = 50; // msecs
     var exportIsRunning = false;
 
-    function exportingGlyphMessage (it, instanceIndex, totalInstances){
-        var msg
-          , currentGlyph = it.value['current_glyph'] + 1 //humans start counting from 1.
-          , totalGlyphs = it.value['total_glyphs']
-          , glyphId = it.value['glyph_id']
-          ;
-        msg = totalInstances + " instances to export."
-        msg += "Calculating glyph '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
-        msg += " of instance #" + (instanceIndex+1);
-        return msg;
-    }
-
-    function calculateGlyphsProgress(it, instanceIndex, totalInstances){
-        var percentage
-          , currentGlyph = it.value['current_glyph']
-          , totalGlyphs = it.value['total_glyphs']
-          ;
-        percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
-        return percentage;
-    }
-
     function exportFont_compute_glyphs(exportObjects) {
         var bundle = new $scope.data.stateless.JSZip()
           , bundleFolderName = "metapolator-export-" + getTimestamp()
           , bundleFileName = bundleFolderName + ".zip"
           , bundleFolder = bundle.folder(bundleFolderName)
           , totalInstances = exportObjects.length
-          , progress = new ProgressBar( $("#progressbar")
-                                      , $("#progresslabel")
-                                      , UI_UPDATE_TIMESLICE )
+          , progress = new InstanceExportProgressBar( $("#progressbar")
+                                                    , $("#progresslabel")
+                                                    , UI_UPDATE_TIMESLICE )
           ;
         function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, resolve, reject){
             if (exportObjects.length==0){
@@ -157,9 +175,7 @@ function($scope, $http, sharedScope, $timeout) {
               , data, name
               ;
             if (!it.done){
-                text = exportingGlyphMessage(it, index, totalInstances);
-                percentage = calculateGlyphsProgress(it, index, totalInstances);
-                progress.set(percentage, text);
+                progress.setData(index, totalInstances, it.value);
                 $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, resolve, reject), UI_UPDATE_TIMESLICE);
             } else {
                 exportObjects.pop();
