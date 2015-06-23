@@ -1,6 +1,6 @@
 app.controller('glyphController', ['$scope', 'instanceListService',
 function($scope, instanceListService) {
-    $scope.metapValue = 0.5;
+    $scope.metapValue = 0;
     $scope.glyphConfig = {
         name : 'glyphConfig',
         canvas : '#glyph',

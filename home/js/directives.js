@@ -348,7 +348,7 @@ function($document) {
                     }).attr('cy', function(d) {
                         return d.coordinates[1];
                     }).attr("transform", function(d, i) {
-                        return "rotate(" + ellipses[i][2] + ", " + d.coordinates[0] + ", " + d.coordinates[1] + ")"
+                        return "rotate(" + ellipses[i][2] + ", " + d.coordinates[0] + ", " + d.coordinates[1] + ")";
                     }).style("opacity", 0.3);
                 }
             }
@@ -373,16 +373,17 @@ function($document) {
             var indentLeft = 40;
 
             var data = {
-                axes : [{value: 50}],
+                axes : [{value: 0}],
                 masters : [{master : {name: "Roboto Slab Light"}}, {master : {name: "Roboto Slab Bold"}}]
             };
+            
+            
 
             // create drag events
             var drag = d3.behavior.drag().on('dragstart', function() {
                 d3.select(this).attr('stroke', '#f85c37').attr('stroke-width', '4');
             }).on('drag', function() {
                 d3.select(this).attr('cx', limitX(d3.event.x));
-                // update scope and redraw ellipses
                 var thisIndex = d3.select(this).attr('index');
                 var thisValue = (limitX(d3.event.x) - indentLeft) / (axisWidth / 100) / 100;
                 scope.setMetap(thisValue);
@@ -390,6 +391,75 @@ function($document) {
             }).on('dragend', function() {
                 d3.select(this).attr('stroke', 'none');
             });
+            
+            var animationTime = 0;
+            var animationTimer = null;
+            
+            function initAnimation() {
+                setTimeout(function(){ 
+                    d3.select(".slider-handle").attr('stroke', '#f85c37').attr('stroke-width', '4');
+                    firstAnimation();
+                }, 4000);
+            }
+            
+            function firstAnimation() {
+                var step = 0.05;
+                var interval = 20;
+                var end = 1;
+                animationTimer = setInterval(function(){ 
+                    animate(animationTime); 
+                    animationTime += step;
+                    if (animationTime > end) {
+                        clearInterval(animationTimer);
+                        animationTime = end;
+                        secondAnimation();
+                    }
+                }, interval);
+            }
+            
+            function secondAnimation() {
+                var step = 0.05;
+                var interval = 20;
+                var end = 0;
+                animationTimer = setInterval(function(){ 
+                    animate(animationTime); 
+                    animationTime -= step;
+                    if (animationTime < end) {
+                        clearInterval(animationTimer);
+                        thirdAnimation();
+                    }
+                }, interval);
+            }
+            
+            function thirdAnimation() {
+                var step = 0.02;
+                var interval = 40;
+                var end = 0.5;
+                animationTimer = setInterval(function(){ 
+                    animate(animationTime); 
+                    animationTime += step;
+                    if (animationTime > end) {
+                        clearInterval(animationTimer);
+                        finishAnimation();
+                    }
+                }, interval);
+            }
+            
+            function finishAnimation() {
+                d3.select(".slider-handle").attr('stroke', 'none');
+            }
+            
+            function animate(value) {
+                var left = setLeft(value);
+                d3.select(".slider-handle").attr("cx", left);
+                scope.setMetap(value);
+                scope.$apply();
+                function setLeft (x) {
+                    var left = x * axisWidth + indentLeft;
+                    return left;
+                }
+            }
+
 
             function limitX(x) {
                 if (x < indentLeft) {
@@ -446,12 +516,12 @@ function($document) {
             rightlabels.append('text').attr('x', '80').attr('y', '2').text("o").attr('masterid', function(d, i) {
                 return i;
             }).attr('class', 'slider-button slider-remove-master').on("click", function(d, i) {
-                scope.removeMaster(i + 1)
+                scope.removeMaster(i + 1);
             });
 
-            //scope.getMetapolationRatios(data);
+            initAnimation();
 
         }
-    }
+    };
 }]);
 
