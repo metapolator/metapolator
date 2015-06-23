@@ -151,7 +151,7 @@ function($scope, $http, sharedScope, $timeout) {
     const UI_UPDATE_TIMESLICE = 50; // msecs
     var exportIsRunning = false;
 
-    function exportFont_compute_glyphs(exportObjects) {
+    function generateFontBundle(exportObjects) {
         var bundle = new $scope.data.stateless.JSZip()
           , bundleFolderName = "metapolator-export-" + getTimestamp()
           , bundleFileName = bundleFolderName + ".zip"
@@ -161,7 +161,7 @@ function($scope, $http, sharedScope, $timeout) {
                                                     , $("#progresslabel")
                                                     , UI_UPDATE_TIMESLICE )
           ;
-        function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, resolve, reject){
+        function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, progress, resolve, reject){
             if (exportObjects.length==0){
                 resolve(true);
                 return;
@@ -176,7 +176,6 @@ function($scope, $http, sharedScope, $timeout) {
               ;
             if (!it.done){
                 progress.setData(index, totalInstances, it.value);
-                $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, resolve, reject), UI_UPDATE_TIMESLICE);
             } else {
                 exportObjects.pop();
                 obj.pruneGenerator();
@@ -191,7 +190,7 @@ function($scope, $http, sharedScope, $timeout) {
                 }
                 bundleFolder.file(name, data, {binary:true});
             }
-            $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, resolve, reject)
+            $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, progress, resolve, reject)
                    , UI_UPDATE_TIMESLICE);
         }
 
@@ -210,7 +209,7 @@ function($scope, $http, sharedScope, $timeout) {
         // note how the first three args are bound, new Promise will call the bound function with
         // the two missing args `resolve` and `reject`
         return new Promise(
-            _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder)
+            _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, progress)
         ).then(function(){
             setDownloadBlobLink(bundleFileName, bundle.generate({type:"blob"}), bundleFileName);
             exportIsRunning = false;
@@ -237,7 +236,7 @@ function($scope, $http, sharedScope, $timeout) {
         });
 
         exportIsRunning = true;
-        exportFont_compute_glyphs(exportObjects);
+        generateFontBundle(exportObjects);
     };
 
     $scope.data.instancesForExport = function() {
