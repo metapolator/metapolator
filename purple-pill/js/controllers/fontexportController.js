@@ -128,7 +128,7 @@ function($scope, $http, sharedScope, $timeout) {
           , bundleFolder = bundle.folder(bundleFolderName)
           , bundleData
           , exportObjects = Array()
-          , totalInstances = exportObjects.length
+          , totalInstances
           , progress = new ProgressBar( $("#progressbar")
                                       , $("#progresslabel")
                                       , UI_UPDATE_TIMESLICE )
@@ -143,6 +143,8 @@ function($scope, $http, sharedScope, $timeout) {
                 }
             });
         });
+
+        totalInstances = exportObjects.length;
 
         function setDownloadBlobLink(text, blob, filename) {
             var download = $("#blob_download");
@@ -179,11 +181,14 @@ function($scope, $http, sharedScope, $timeout) {
         }
 
         function exportFontComputeGlyphs(exportObjects, totalInstances){
+            if (exportObjects.length==0)
+                return;
+
             var text
               , percentage
               , zippedData
               , index = totalInstances - exportObjects.length
-              , obj = exportObjects.pop()
+              , obj = exportObjects[exportObjects.length - 1]
               , it = obj.generator.next()
               ;
             if (!it.done){
@@ -202,8 +207,8 @@ function($scope, $http, sharedScope, $timeout) {
                     var plainData = obj.io.readFile(false, obj.getFileName());
                     bundleFolder.file(obj.getFileName(), plainData, {binary:true});
                 }
-                delete obj;
 
+                exportObjects.pop();
                 if (exportObjects.length) {
                     $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances), UI_UPDATE_TIMESLICE);
                 } else {
