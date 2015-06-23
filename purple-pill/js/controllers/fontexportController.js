@@ -179,7 +179,7 @@ function($scope, $http, sharedScope, $timeout) {
             return percentage;
         }
 
-        function exportFontComputeGlyphs(exportObjects, totalInstances){
+        function exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder){
             if (exportObjects.length==0)
                 return;
 
@@ -194,7 +194,7 @@ function($scope, $http, sharedScope, $timeout) {
                 text = exportingGlyphMessage(it, index, totalInstances);
                 percentage = calculateGlyphsProgress(it, index, totalInstances);
                 progress.set(percentage, text);
-                $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances), UI_UPDATE_TIMESLICE);
+                $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder), UI_UPDATE_TIMESLICE);
             } else {
                 obj.pruneGenerator();
 
@@ -210,7 +210,7 @@ function($scope, $http, sharedScope, $timeout) {
 
                 exportObjects.pop();
                 if (exportObjects.length) {
-                    $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances), UI_UPDATE_TIMESLICE);
+                    $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder), UI_UPDATE_TIMESLICE);
                 } else {
                     setDownloadBlobLink(bundleFileName, bundle.generate({type:"blob"}), bundleFileName);
                     exportIsRunning = false;
@@ -218,7 +218,7 @@ function($scope, $http, sharedScope, $timeout) {
             }
         }
         
-        $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances), UI_UPDATE_TIMESLICE);
+        $timeout(exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder), UI_UPDATE_TIMESLICE);
     };
 
     $scope.data.instancesForExport = function() {
