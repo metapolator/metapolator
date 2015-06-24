@@ -1,4 +1,8 @@
-define([], function() {
+define([
+    'jquery'
+], function(
+    $
+) {
     "use strict";
     function MenubarController($scope) {
         this.$scope = $scope;

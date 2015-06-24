@@ -1,7 +1,9 @@
 define([
     '../_BaseModel'
+  , 'jquery'
 ], function(
     Parent
+  , $
 ){
     "use strict";
     function DialogModel() {

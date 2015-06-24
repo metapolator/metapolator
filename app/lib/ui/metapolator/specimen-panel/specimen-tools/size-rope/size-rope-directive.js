@@ -2,7 +2,11 @@ define([
     'require/text!./size-rope.tpl'
   , 'd3'
   , 'jquery'
-], function(template) {
+], function(
+    template
+  , d3
+  , $
+) {
     "use strict";
     function sizeRopeDirective() {
         return {

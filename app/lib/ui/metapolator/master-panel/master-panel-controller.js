@@ -1,4 +1,8 @@
-define([], function() {
+define([
+    'jquery'
+], function(
+    $
+) {
     "use strict";
     function MasterPanelController($scope, metapolatorModel) {
         this.$scope = $scope;

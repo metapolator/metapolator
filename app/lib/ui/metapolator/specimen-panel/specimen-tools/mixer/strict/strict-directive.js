@@ -1,6 +1,8 @@
 define([
     'd3'
-], function() {
+], function(
+    d3
+) {
     "use strict";
     function strictDirective() {
         return {

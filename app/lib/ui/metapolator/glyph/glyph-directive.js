@@ -1,6 +1,5 @@
 define([
     'require/text!./glyph.tpl'
-  , 'jquery'
 ], function(template) {
     "use strict";
     function glyphDirective() {

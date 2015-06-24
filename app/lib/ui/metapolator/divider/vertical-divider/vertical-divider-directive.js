@@ -4,7 +4,7 @@ define([
   , , 'jquery-ui'
 ], function(
     template
-  , jquery
+  , $
   , jqueryUi
 ) {
     "use strict";

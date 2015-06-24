@@ -1,8 +1,11 @@
 define([
-    'require/text!./control.tpl',
-    'jquery'
+    'require/text!./control.tpl'
+  , 'd3'  
+  , 'jquery'
 ], function(
     template
+  , d3
+  , $
 ) {
     "use strict";
     function controlDirective() {

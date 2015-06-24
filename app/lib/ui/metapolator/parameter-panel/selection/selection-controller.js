@@ -1,4 +1,8 @@
-define([], function() {
+define([
+    'jquery'
+], function(
+    $
+) {
     "use strict";
     function SelectionController($scope, metapolatorModel) {
         $scope.operatorId = 1;
