@@ -34,13 +34,13 @@
         
         <div class="list-buttons">
             <div title="Add Instance" ng-click="addInstance();" class="list-button">
-                <img src="lib/ui/metapolator/img/addInstance.png" ng-class="{'inactive': !canAddInstance()}">
+                <img src="../ui/metapolator/assets/img/addInstance.png" ng-class="{'inactive': !canAddInstance()}">
             </div>
             <div title="Duplicate Instance" ng-click="duplicateInstance(model.currentInstance);" class="list-button">
-                <img src="lib/ui/metapolator/img/duplicateInstance.png" ng-class="{'inactive': !model.currentInstance}">
+                <img src="../ui/metapolator/assets/img/duplicateInstance.png" ng-class="{'inactive': !model.currentInstance}">
             </div>
             <div title="Delete" ng-click="deleteInstance(model.currentInstance);" class="list-button">
-                <img src="lib/ui/metapolator/img/deleteInstance.png" ng-class="{'inactive': !model.currentInstance}">
+                <img src="../ui/metapolator/assets/img/deleteInstance.png" ng-class="{'inactive': !model.currentInstance}">
             </div>
             <div class="list-button export-button" ng-click="exportFonts()" ng-class="{'inactive': !instancesForExport() || export_is_running}">
                 Export…

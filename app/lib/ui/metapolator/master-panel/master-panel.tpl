@@ -28,10 +28,10 @@
     </ul>
     <div class="list-buttons">
         <div title="Import UFO" ng-click="importUfo();" class="list-button">
-            <img src="lib/ui/metapolator/img/importUfo.png">
+            <img src="../ui/metapolator/assets/img/importUfo.png">
         </div>
         <div title="Duplicate Master(s)" ng-click="duplicateMasters();" class="list-button">
-            <img src="lib/ui/metapolator/img/duplicateMaster.png" ng-class="{'inactive': !model.areChildrenSelected()}">
+            <img src="../ui/metapolator/assets/img/duplicateMaster.png" ng-class="{'inactive': !model.areChildrenSelected()}">
         </div>
     </div>
 </div>
