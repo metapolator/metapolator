@@ -1,10 +1,8 @@
 define([
-    'require/text!./horizontal-divider.tpl'
-  , 'jquery'
+    'jquery'
   , 'jquery-ui'
 ], function(
-    template
-  , $
+    $
   , jqueryUi
 ) {
     "use strict";
@@ -13,7 +11,6 @@ define([
             restrict: 'E',
             controller: 'HorizontalDividerController',
             replace: false,
-            template: template,
             link : function(scope, element, attrs, ctrl) {
                 var containmentBottom = null
                   , containmentTop = null

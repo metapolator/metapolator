@@ -1,13 +1,11 @@
 define([
-    'require/text!./glyph.tpl'
-], function(template) {
+], function() {
     "use strict";
     function glyphDirective() {
         return {
             restrict: 'E',
             controller: 'GlyphController',
             replace: false,
-            template: template,
             scope : {
                 model : '=mtkModel'
             },

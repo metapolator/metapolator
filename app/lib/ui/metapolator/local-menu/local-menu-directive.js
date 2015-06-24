@@ -1,7 +1,5 @@
 define([
-    'require/text!./local-menu.tpl'
     ], function(
-    template
 ) {
     "use strict";
     function localMenuDirective() {
@@ -11,7 +9,6 @@ define([
           , controllerAs: 'localMenuCtrl'
           , scope: true
           , replace: false
-          , template: template
         };
     }
     localMenuDirective.$inject = [];

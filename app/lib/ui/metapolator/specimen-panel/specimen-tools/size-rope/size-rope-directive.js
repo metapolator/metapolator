@@ -1,10 +1,8 @@
 define([
-    'require/text!./size-rope.tpl'
-  , 'd3'
+    'd3'
   , 'jquery'
 ], function(
-    template
-  , d3
+    d3
   , $
 ) {
     "use strict";
@@ -13,7 +11,6 @@ define([
             restrict : 'E',
             controller : 'SizeRopeController',
             replace : false,
-            template : template,
             scope : {
                 model : '=mtkModel'
             },

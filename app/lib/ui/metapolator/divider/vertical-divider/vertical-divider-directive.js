@@ -1,10 +1,8 @@
 define([
-    'require/text!./vertical-divider.tpl'
-  , 'jquery'
+    'jquery'
   , , 'jquery-ui'
 ], function(
-    template
-  , $
+    $
   , jqueryUi
 ) {
     "use strict";
@@ -13,7 +11,6 @@ define([
             restrict: 'E',
             controller: 'VerticalDividerController',
             replace: false,
-            template: template,
             scope: {
                 model: '=mtkModel'
             },
