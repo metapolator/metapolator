@@ -10,8 +10,8 @@ function($scope, $http, sharedScope, $timeout) {
 
             if (this.fileFormat == "UFO"){
                 getGenerator = $scope.data.stateful.project.getUFOExportGenerator.bind($scope.data.stateful.project);
-//TODO:     } else if (this.fileFormat == "OTF"){
-//TODO:         getGenerator = $scope.data.stateful.project.getOTFExportGenerator.bind($scope.data.stateful.project);
+            } else if (this.fileFormat == "OTF"){
+                getGenerator = $scope.data.stateful.project.getOTFExportGenerator.bind($scope.data.stateful.project);
             }
             retval = getGenerator(
                 instance.name
@@ -188,7 +188,6 @@ function($scope, $http, sharedScope, $timeout) {
                     progress.setData(index, totalInstances, it.value);
             } else {
                 exportObjects.pop();
-                obj.pruneGenerator();
 
                 if (obj.fileFormat == "UFO"){
                     data = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
@@ -227,7 +226,8 @@ function($scope, $http, sharedScope, $timeout) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont){
-                    exportObjects.push(new ExportObject(instance/*, fileFormat*/));
+                    exportObjects.push(new ExportObject(instance, "OTF"));
+                    exportObjects.push(new ExportObject(instance, "UFO"));
                 }
             });
         });
