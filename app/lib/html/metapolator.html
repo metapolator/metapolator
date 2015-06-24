@@ -25,10 +25,17 @@
                 relativeUrls : false,
             };
         </script>
+
+            
         <script src="../bower_components/less.js/dist/less-1.7.0.min.js"></script>
         <!-- end of less -->
 
-        <script src="../bower_components/requirejs/require.js" data-main="../metapolatorMain.js"></script>
+        <script src="../bower_components/requirejs/require.js"></script>
+        <script>
+        require(['../browserConfig.js'], function(){
+            require(['../metapolatorMain.js']);
+        });
+        </script>
     </head>
     <body>
         <metapolator class="unselectable"></metapolator>
