@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: 'lib'
+    baseUrl: '../'
   , paths: {
         'require/domReady': 'bower_components/requirejs-domready/domReady'
       , 'require/text': 'bower_components/requirejs-text/text'
@@ -44,7 +44,7 @@ require([
   , 'angular'
   , 'ui/metapolator/app'
   , 'Metapolator'
-  , './models/ui-models/AppModel'
+  , 'models/ui-models/AppModel'
 ], function (
     document
   , domReady
