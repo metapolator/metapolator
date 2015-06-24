@@ -1,7 +1,7 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function SpecimenSizesModel(parent) {
@@ -16,7 +16,7 @@ define([
             configurable: true
         });
     }
-    var _p = SpecimenSizesModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SpecimenSizesModel.prototype = Object.create(Parent.prototype);
     
     _p.updateLineHeight = function() {
         var lineHeight, 

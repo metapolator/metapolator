@@ -1,7 +1,7 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function GlyphModel(name, instanceName, parent) {
@@ -22,7 +22,7 @@ define([
         });
     }
     
-    var _p = GlyphModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = GlyphModel.prototype = Object.create(Parent.prototype);
     
     
     return GlyphModel;

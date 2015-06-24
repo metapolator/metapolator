@@ -2,7 +2,7 @@ define([
     '../../_BaseModel'
   , './SelectionOperatorModel'
 ], function(
-    _BaseModel
+    Parent
    , SelectionOperatorModel
 ) {
     "use strict";
@@ -22,7 +22,7 @@ define([
         this.updateEffectiveValue();
     }
 
-    var _p = SelectionParameterModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SelectionParameterModel.prototype = Object.create(Parent.prototype);
     
     _p.updateEffectiveValue = function() {
         window.logCall("updateEffectiveValue");

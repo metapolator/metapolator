@@ -2,7 +2,7 @@ define([
     '../_BaseModel'
   , './InstanceModel'
 ], function(
-    _BaseModel,
+    Parent,
     InstanceModel
 ){
     "use strict";
@@ -21,7 +21,7 @@ define([
         });
     }
         
-    var _p = SequenceModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
     _p.addInstance = function(axes, designSpace) {
         window.logCall("addInstance");

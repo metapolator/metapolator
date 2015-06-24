@@ -1,7 +1,7 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function DesignSpaceModel(id, name, type, axes, slack, parent) {
@@ -20,7 +20,7 @@ define([
         });
     }
     
-    var _p = DesignSpaceModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = DesignSpaceModel.prototype = Object.create(Parent.prototype);
    
     _p.addAxis = function(master) {
         window.logCall("addAxis");

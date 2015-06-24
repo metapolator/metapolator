@@ -2,7 +2,7 @@ define([
     '../../_BaseModel'
   , './SelectionParameterModel'
 ], function(
-    _BaseModel
+    Parent
   , SelectionParameterModel
 ){
     "use strict";
@@ -18,7 +18,7 @@ define([
         this.allElements = sequences;
     }
         
-    var _p = SelectionModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SelectionModel.prototype = Object.create(Parent.prototype);
     
     _p.updateThisSelection = function(parentEmpty) {
         window.logCall("updateThisSelection: " + this.level);

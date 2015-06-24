@@ -2,7 +2,7 @@ define([
     './_ElementModel'
   , './PointModel'
 ], function(
-    _ElementModel
+    Parent
   , PointModel
 ){
     "use strict";
@@ -30,7 +30,7 @@ define([
         this.addPoint("i:0");
     }
     
-    var _p = PenstrokeModel.prototype = Object.create(_ElementModel.prototype);
+    var _p = PenstrokeModel.prototype = Object.create(Parent.prototype);
     
     _p.addPoint = function(name) {
         this.children.push(

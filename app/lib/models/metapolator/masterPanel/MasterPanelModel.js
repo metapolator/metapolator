@@ -4,7 +4,7 @@ define([
   , './SequenceModel'
   , './selectionModel/selectionModel'
 ], function(
-    _BaseModel
+    Parent
   , Appmodel
   , SequenceModel
   , selectionModel
@@ -106,7 +106,7 @@ define([
         }];
     }
         
-    var _p = MasterPanelModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = MasterPanelModel.prototype = Object.create(Parent.prototype);
     
     _p.addStackedParameter = function(parameter) {
         if (this.stackedParameters.indexOf(parameter) == -1) {

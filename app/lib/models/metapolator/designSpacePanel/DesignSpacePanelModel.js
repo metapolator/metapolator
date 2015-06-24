@@ -2,7 +2,7 @@ define([
     '../_BaseModel'
   , './DesignSpaceModel'
 ], function(
-    _BaseModel
+    Parent
   , DesignSpaceModel
 ){
     "use strict";
@@ -14,7 +14,7 @@ define([
         this.nrOfAxesTrigger = 0;
     }
     
-    var _p = DesignSpacePanelModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = DesignSpacePanelModel.prototype = Object.create(Parent.prototype);
     
     _p.setCurrentDesignSpace = function(designSpace) {
         this.currentDesignSpace = designSpace;

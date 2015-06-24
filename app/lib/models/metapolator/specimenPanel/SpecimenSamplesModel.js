@@ -1,7 +1,7 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function SpecimenSamplesModel(glyphRange, parent) {
@@ -37,7 +37,7 @@ define([
             configurable: true
         });
     }
-    var _p = SpecimenSamplesModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SpecimenSamplesModel.prototype = Object.create(Parent.prototype);
     
     _p.addGlyphRange = function () {
         var glyphRange = [{

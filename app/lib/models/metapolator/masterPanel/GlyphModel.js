@@ -2,7 +2,7 @@ define([
     './_ElementModel'
   , './PenstrokeModel'
 ], function(
-    _ElementModel
+    Parent
   , PenstrokeModel
 ){
     "use strict";
@@ -35,7 +35,7 @@ define([
         this.addPenstroke("i:0");
     }
     
-    var _p = GlyphModel.prototype = Object.create(_ElementModel.prototype);
+    var _p = GlyphModel.prototype = Object.create(Parent.prototype);
     
     _p.addPenstroke = function(name) {
         this.children.push(

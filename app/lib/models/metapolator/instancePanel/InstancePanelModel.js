@@ -2,7 +2,7 @@ define([
     '../_BaseModel'
   , './SequenceModel'
 ], function(
-    _BaseModel
+    Parent
   , SequenceModel
 ){
     "use strict";
@@ -18,7 +18,7 @@ define([
         });
     }
     
-    var _p = InstancePanelModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = InstancePanelModel.prototype = Object.create(Parent.prototype);
     
     _p.setCurrentInstance = function(instance) {
         this.currentInstance = instance;

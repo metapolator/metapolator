@@ -3,7 +3,7 @@ define([
   , './GlyphModel'
   , './AxisModel'
 ], function(
-    _BaseModel
+    Parent
   , GlyphModel
   , AxisModel
 ){
@@ -32,7 +32,7 @@ define([
         this.addInitialGlyphs();
     }
     
-    var _p = InstanceModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = InstanceModel.prototype = Object.create(Parent.prototype);
     
     _p.addInitialGlyphs = function() {
         var glyphs = this.parent.parent.parent.glyphs;

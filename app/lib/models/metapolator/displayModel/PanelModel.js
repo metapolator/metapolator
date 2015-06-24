@@ -1,6 +1,6 @@
 define([
 '../_BaseModel'
-], function(_BaseModel) {
+], function(Parent) {
     "use strict";
     function PanelModel() {
         this.menuItems = ["Form", "Mix", "Export"];
@@ -99,7 +99,7 @@ define([
         }];
     }
 
-    var _p = PanelModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = PanelModel.prototype = Object.create(Parent.prototype);
 
     return PanelModel;
 }); 

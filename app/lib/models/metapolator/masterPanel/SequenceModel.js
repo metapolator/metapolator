@@ -2,7 +2,7 @@ define([
     './_ElementModel'
   , './MasterModel'
 ], function(
-    _ElementModel
+    Parent
   , MasterModel
 ){
     "use strict";
@@ -20,7 +20,7 @@ define([
         });
     }
         
-    var _p = SequenceModel.prototype = Object.create(_ElementModel.prototype);
+    var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
     _p.addMaster = function(name) {
         window.logCall("addMaster");

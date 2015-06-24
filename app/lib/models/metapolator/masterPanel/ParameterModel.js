@@ -2,7 +2,7 @@ define([
     '../_BaseModel'
   , './OperatorModel'
 ], function(
-    _BaseModel
+    Parent
   , OperatorModel
 ){
     "use strict";
@@ -32,7 +32,7 @@ define([
     }
     
         
-    var _p = ParameterModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = ParameterModel.prototype = Object.create(Parent.prototype);
     
     _p.setInitial = function() {
         this.initial = this.getInitial();

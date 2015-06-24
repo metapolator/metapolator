@@ -1,14 +1,14 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function DialogModel() {
 
     }
     
-    var _p = DialogModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = DialogModel.prototype = Object.create(Parent.prototype);
     
     _p.confirm = function(message, callback) {
         var self = this;

@@ -1,7 +1,7 @@
 define([
     './_ElementModel'
 ], function(
-    _ElementModel
+    Parent
 ){
     "use strict";
     function PointModel(name, baseParameters, baseOperators, parent, masterPanel) {
@@ -24,7 +24,7 @@ define([
         });
     }
     
-    var _p = PointModel.prototype = Object.create(_ElementModel.prototype);
+    var _p = PointModel.prototype = Object.create(Parent.prototype);
 
     return PointModel;
 });

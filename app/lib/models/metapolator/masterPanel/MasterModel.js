@@ -2,7 +2,7 @@ define([
     './_ElementModel'
   , './GlyphModel'
 ], function(
-    _ElementModel
+    Parent
   , GlyphModel
 ){
     "use strict";
@@ -31,7 +31,7 @@ define([
         });
     }
     
-    var _p = MasterModel.prototype = Object.create(_ElementModel.prototype);
+    var _p = MasterModel.prototype = Object.create(Parent.prototype);
     
     _p.addGlyph = function(name) {
         this.children.push(

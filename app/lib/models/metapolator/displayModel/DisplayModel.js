@@ -3,7 +3,7 @@ define([
   , './PanelModel'
   , './DialogModel'
 ], function(
-    _BaseModel
+    Parent
   , PanelModel
   , DialogModel
 ){
@@ -14,7 +14,7 @@ define([
         this.dialog = new DialogModel();
     }
     
-    var _p = DisplayModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = DisplayModel.prototype = Object.create(Parent.prototype);
     
     return DisplayModel;
 });

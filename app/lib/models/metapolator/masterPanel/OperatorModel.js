@@ -1,7 +1,7 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function OperatorModel(operator, id) {
@@ -17,7 +17,7 @@ define([
         this.effectiveLocal = operator.effectiveLocal;
     }
         
-    var _p = OperatorModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = OperatorModel.prototype = Object.create(Parent.prototype);
     
     _p.setValue = function(value) {
         this.value = value;

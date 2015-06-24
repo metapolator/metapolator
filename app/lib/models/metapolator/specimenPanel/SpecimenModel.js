@@ -3,7 +3,7 @@ define([
   , './SpecimenSizesModel'
   , './SpecimenSamplesModel'
 ], function(
-    _BaseModel
+    Parent
   , SpecimenSizesModel
   , SpecimenSamplesModel
 ){
@@ -37,7 +37,7 @@ define([
         });
     }
     
-    var _p = SpecimenModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SpecimenModel.prototype = Object.create(Parent.prototype);
     
     _p.setFontby = function(fontBy) {
         this.mixer.fontBy = fontBy; 

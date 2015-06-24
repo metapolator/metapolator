@@ -1,7 +1,7 @@
 define([
     '../../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function SelectionOperatorModel(level, name, range, low, high, standardValue, id) {
@@ -20,7 +20,7 @@ define([
         this.standardValue = standardValue;
     }
         
-    var _p = SelectionOperatorModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = SelectionOperatorModel.prototype = Object.create(Parent.prototype);
 
 
     

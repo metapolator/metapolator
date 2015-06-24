@@ -1,7 +1,7 @@
 define([
     '../_BaseModel'
 ], function(
-    _BaseModel
+    Parent
 ){
     "use strict";
     function AxisModel(master, axisValue, metapolationValue) {
@@ -10,7 +10,7 @@ define([
         this.metapolationValue = metapolationValue;
     }
     
-    var _p = AxisModel.prototype = Object.create(_BaseModel.prototype);
+    var _p = AxisModel.prototype = Object.create(Parent.prototype);
     
     return AxisModel;
 });
