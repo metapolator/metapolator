@@ -58,7 +58,10 @@ define([
         var id = this.designSpaceCounter;
         var name = "Space " + id;
         var type = "Control";
-        var axes = copy.axes;
+        var axes = [];
+        for (var i = 0, l = copy.axes.length; i < l; i++) {
+            axes.push(copy.axes[i]);
+        }
         var slack = copy.slack;
         this.designSpaces.push(
             new DesignSpaceModel(id, name, type, axes, slack)
