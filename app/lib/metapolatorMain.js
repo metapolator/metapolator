@@ -44,7 +44,7 @@ require([
   , 'angular'
   , 'ui/metapolator/app'
   , 'Metapolator'
-  , 'models/ui-models/AppModel'
+  , 'models/metapolator/AppModel'
 ], function (
     document
   , domReady
