@@ -64,7 +64,7 @@ define([
         }
         var slack = copy.slack;
         this.designSpaces.push(
-            new DesignSpaceModel(id, name, type, axes, slack)
+            new DesignSpaceModel(id, name, type, axes, slack, this)
         );      
         this.designSpaceCounter++;
         this.setCurrentDesignSpace(this.designSpaces[this.designSpaces.length - 1]);
