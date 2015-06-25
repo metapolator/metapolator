@@ -22,14 +22,21 @@ define([], function() {
             var oldDesignSpace = $scope.model.currentDesignSpace
               , panel = metapolatorModel.instancePanel;
             $scope.model.duplicateDesignSpace();
-            var designSpace = $scope.model.currentDesignSpace;
             var sequence0 = metapolatorModel.instancePanel.sequences[0];
             for (var i = metapolatorModel.instancePanel.sequences.length - 1; i >= 0; i--) {
                 var sequence = metapolatorModel.instancePanel.sequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
-                    if (instance.designSpace == oldDesignSpace) {
-                        var axes = angular.copy(instance.axes);
+                    if (instance.designSpace === oldDesignSpace) {
+                        var axes = [];
+                        for (var k = 0, l = instance.axes.length; k < l; k++) {
+                            var axis = $scope.model.currentInstance.axes[k];
+                            axes.push({
+                                axisValue: axis.axisValue,
+                                metapolationValue : axis.metapolationValue,
+                                master: axis.master
+                            });
+                        }
                         sequence0.addInstance(axes, $scope.model.currentDesignSpace);
                     }
                 }
@@ -38,15 +45,16 @@ define([], function() {
         };
         
         $scope.removeDesignSpace = function () {
-            var designSpace = $scope.model.currentDesignSpace;
-            if (designSpace.axes.length == 0) {
+            var designSpace = $scope.model.currentDesignSpace
+              , message;
+            if (designSpace.axes.length === 0) {
                 $scope.model.removeDesignSpace(designSpace);
             } else {
                 var n = metapolatorModel.instancePanel.countInstancesWithDesignSpace(designSpace);
-                if (n == 1) {
-                    var message = "Delete this design space and its instance?";
+                if (n === 1) {
+                    message = "Delete this design space and its instance?";
                 } else {
-                    var message = "Delete this design space and its " + n + " instances?";
+                    message = "Delete this design space and its " + n + " instances?";
                 }
                 metapolatorModel.display.dialog.confirm(message, function(result){
                     if (result) {
