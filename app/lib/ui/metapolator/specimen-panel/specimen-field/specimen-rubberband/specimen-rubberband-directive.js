@@ -1,7 +1,9 @@
 define([
-   'jquery'
+   'jquery',
+    'angular'
 ], function(
-    $
+    $,
+    angular
 ) {
     "use strict";
     function specimenRubberbandDirective() {
@@ -14,12 +16,12 @@ define([
             },
             link : function(scope, element, attrs, ctrl) {
                 // activate the rubberband if specimenModel.setting.rubberband is true
-                if (attrs.mtkSpecimenRubberband == "true") {
+                if (attrs.mtkSpecimenRubberband === "true") {
                     var mouse = {
                         click : false,
                         move : false,
                         startX : null,
-                        startY : null,
+                        startY : null
                     };
                     var div = {
                         x1 : null,
