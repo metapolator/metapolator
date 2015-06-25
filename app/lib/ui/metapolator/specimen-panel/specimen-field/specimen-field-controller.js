@@ -31,9 +31,9 @@ define([
         
         // in the specimen1 injecting sequences (with masters)
         // in the specimen2 injecting instances
-        if ($scope.model.settings.inject == "masters") {
+        if ($scope.model.settings.inject === "masters") {
             $scope.injections = metapolatorModel.masterPanel.sequences;
-        } else if ($scope.model.settings.inject == "instances") {
+        } else if ($scope.model.settings.inject === "instances") {
             $scope.injections = metapolatorModel.instancePanel.sequences;
         }
         // inital triggering of filter
@@ -43,7 +43,7 @@ define([
         // spaces manager
         var manageSpacesTimer;
         
-        $scope.$watch("model.sizes.fontSize", function(newVal) {
+        $scope.$watch("model.sizes.fontSize", function() {
             startTimer();
         }, true);
         
@@ -61,10 +61,8 @@ define([
             if (!startPosition) {
                 startPosition = parseInt($("mtk-specimen-field > .specimen-content").css("padding-left"));
             }
-            var spaces = $(".space-character");
-            var x = 0;
-            var prev_x = 0;
-            var prev_space = false;
+            var spaces = $(".space-character"),
+                prevSpace = false;
     
             $(spaces).css({
                 "width" : "auto",
@@ -72,7 +70,7 @@ define([
             });
             var brokenEnd = false;
             $("mtk-specimen-field li").each(function() {
-                if ($(this).position().left == startPosition) {
+                if ($(this).position().left === startPosition) {
                     // prevent space at line start
                     if ($(this).hasClass("space-character")) {
                         $(this).css({
@@ -81,14 +79,14 @@ define([
                         });
                     }
                     if (brokenEnd && !$(this).hasClass("space-character") && !$(this).hasClass("line-break") && !$(this).hasClass("paragraph-break") && !$(this).hasClass("specimen-break")) {
-                        $(prev_space).css({
+                        $(prevSpace).css({
                             "width" : "0",
                             "clear" : "both"
                         });
                     }
                 }
                 if ($(this).hasClass("space-character")) {
-                    prev_space = this;
+                    prevSpace = this;
                     brokenEnd = false;
                 } else if ($(this).hasClass("line-break") || $(this).hasClass("paragraph-break") || $(this).hasClass("specimen-break")) {
                     brokenEnd = false;
