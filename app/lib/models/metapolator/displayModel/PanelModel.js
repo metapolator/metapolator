@@ -32,7 +32,7 @@ define([
         }, {
             share : 1,
             restricted : true,
-            gitTo : [6],
+            giveTo : [6],
             min : 90,
             max : 90
         }, {
