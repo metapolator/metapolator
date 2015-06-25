@@ -32,7 +32,7 @@ define([
                         originX : null,
                         originY : null,
                         fontSize : null, 
-                        pixelOffset  : null,
+                        pixelOffset  : null
                     },
                     drag = d3.behavior.drag().on('dragstart', function() {
                         if (!state.created) {
@@ -42,7 +42,7 @@ define([
                         setInitialValues();
                         $(document.body).append(state.templayer.element);
                     }).on('drag', function() {
-                        var ropeLength, absolutePixels,
+                        var ropeLength,
                             x = d3.event.x - dS, 
                             y = d3.event.y - dS; 
                         positionDiamond(x, y);
@@ -116,11 +116,10 @@ define([
                 function getpixelOffset(fontSize) {
                     // this function handles the increase speed of the pulling
                     if (fontSize > 99) {
-                        var offset = 300 + fontSize;
+                        return 300 + fontSize;
                     } else {
-                        var offset = 500 - (11250 / (fontSize + 12.5));
+                        return 500 - (11250 / (fontSize + 12.5));
                     }
-                    return offset;
                 }
             }
         };
