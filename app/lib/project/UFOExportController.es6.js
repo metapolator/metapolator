@@ -108,7 +108,7 @@ define([
             one = timer.now() - time;
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
-            yield {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id};
+            yield {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id, 'target_name':this._dirName};
         }
         console.warn('finished ', i, 'glyphs in', total
             , 'ms\n\tthat\'s', total/i, 'per glyph\n\t   and'
