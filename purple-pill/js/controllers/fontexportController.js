@@ -84,13 +84,13 @@ function($scope, $http, sharedScope, $timeout) {
 
         function exportingGlyphMessage (data, instanceIndex, totalInstances) {
             var msg
+              , instanceName = data['target_name']
               , currentGlyph = data['current_glyph'] + 1 //humans start counting from 1.
               , totalGlyphs = data['total_glyphs']
               , glyphId = data['glyph_id']
               ;
-            msg = totalInstances + " instances to export."
-            msg += "Calculating glyph '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
-            msg += " of instance #" + (instanceIndex+1);
+            msg = "Calculating '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
+            msg += " of '" + instanceName + "' (" + (instanceIndex+1) + " of " + totalInstances + ")";
             return msg;
         }
 
