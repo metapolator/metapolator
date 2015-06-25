@@ -650,6 +650,14 @@ define([
         return [generator, io];
     }
 
+    _p.getOTFExportGenerator = function ( masterName, targetName, precision) {
+        var io = new InMemory()
+          , exportController = new OTFExportController(io, this, masterName, targetName, precision)
+          , generator = exportController.exportGenerator()
+          ;
+        return [generator, io];
+    }
+
     _p.exportInstance = function(masterName, targetFileName, precision){
         if (targetFileName.slice(-8) === '.ufo.zip'){
             var zipped = this.getZippedInstance(masterName, targetFileName.slice(0,-4), precision, 'nodebuffer');
@@ -673,10 +681,12 @@ define([
     _p.getOTFInstance = function(masterName, project) {
         var model = project.open(masterName)
           , master = model.query('master#' + masterName)
-          , font
+          , targetName = masterName + ".otf"
+          , mem_io = new InMemory()
+          , precision = -1
           ;
-        font = new OTFExportController(master, model, masterName).do_export();
-        return new Buffer(Int8Array(font.toBuffer()));
+        new OTFExportController(mem_io, project, masterName, targetName, precision).do_export();
+        return new Buffer(Int8Array(mem_io.readFile(false, targetName)));
     };
 
     _p._getGlyphClassesReverseLookup = function() {
