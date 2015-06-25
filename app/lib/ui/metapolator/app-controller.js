@@ -16,8 +16,7 @@ define([
             for (var i = 0; i < end; i++) {
                 parts += $scope.model.display.panel.panels[i].share;
             }
-            var landscapeLeft = "calc(" + (parts / -16) + " * 100%)";
-            return landscapeLeft;
+            return "calc(" + (parts / -16) + " * 100%)";
         };
         
         // every click outside a local menu head button
@@ -42,11 +41,11 @@ define([
                     }
                     if (difference) {
                         panel.share = (width - difference) / windowWidth * 16;
-                        angular.forEach(panel.giveTo, function(giveTo) {
-                            var giveToPanel = $scope.model.display.panel.panels[giveTo];
-                            var newShare = ((giveToPanel.share / 16 * windowWidth) + difference) / windowWidth * 16;
-                            giveToPanel.share = newShare; 
-                        });
+                        for (var j = 0, l = panel.giveTo.length; j < l; j++) {
+                            var giveTo = panel.giveTo[j],
+                                giveToPanel = $scope.model.display.panel.panels[giveTo];
+                            giveToPanel.share = ((giveToPanel.share / 16 * windowWidth) + difference) / windowWidth * 16;
+                        }
                     }
                 }
             }
@@ -55,9 +54,10 @@ define([
         
         $scope.getTotalParts = function() {
             var parts = 0;
-            angular.forEach($scope.model.display.panel.panels, function(panel) {
+            for (var i = 0, l = $scope.model.display.panel.panels.length; i < l; i++) {
+                var panel = $scope.model.display.panel.panels[i];
                 parts += panel.share;
-            });  
+            }
             return parts;
         };
         
