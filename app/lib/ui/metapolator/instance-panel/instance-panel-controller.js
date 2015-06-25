@@ -25,7 +25,16 @@ define([
         
         $scope.duplicateInstance = function (instance) {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
-            var axes = angular.copy($scope.model.currentInstance.axes);
+            var axes = [];
+            for (var i = 0, l = $scope.model.currentInstance.axes.length; i < l; i++) {
+                var axis = $scope.model.currentInstance.axes[i];
+                axes.push({
+                    axisValue: axis.axisValue,
+                    metapolationValue : axis.metapolationValue,
+                    // keep the reference of the master
+                    master: axis.master
+                });
+            }
             $scope.model.sequences[0].addInstance(axes, designSpace);
         };
         
