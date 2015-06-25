@@ -6,13 +6,14 @@ define([], function() {
 
         $scope.selectSet = function(set, startDisplay) {
             if (set.length > 0) {
-                angular.forEach(set, function(master) {
-                    master.display = !startDisplay; 
-                });
+                for (var i = 0, l = set.length; i < l; i++) {
+                    var master = set[i];
+                    master.display = !startDisplay;
+                }
                 // the type is set via attr and detected in the directive
-                if ($scope.type == "masters") {
+                if ($scope.type === "masters") {
                     metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterPanel.sequences);
-                } else if ($scope.type == "instances") {
+                } else if ($scope.type === "instances") {
                     metapolatorModel.specimen2.updateSelectedMasters(metapolatorModel.instancePanel.sequences);
                 }
             }
