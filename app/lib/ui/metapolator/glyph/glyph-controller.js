@@ -9,9 +9,9 @@ define([], function() {
         $scope.checkBaseMasters = function(glyph) {
             var instance = glyph.parent;
             for (var i = instance.axes.length - 1; i >= 0; i--) {
-                var axis =  instance.axes[i];
-                var master = axis.master;
-                var masterGlyph = master.findGlyphByName(glyph.name); 
+                var axis =  instance.axes[i]
+                  , master = axis.master
+                  , masterGlyph = master.findGlyphByName(glyph.name);
                 if (!masterGlyph.measured) {
                     masterGlyph.measureGlyph();
                 } 

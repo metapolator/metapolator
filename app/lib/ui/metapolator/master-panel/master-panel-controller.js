@@ -17,16 +17,18 @@ define([
         
         $scope.addMasterToDesignSpace = function (master) {
             window.logCall("addMasterToDesignSpace");
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
-            var axes = designSpace.axes, axisValue = null;
-            if (axes.length == 0) {
+            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+              , axes = designSpace.axes
+              , axisValue = null
+              , instanceAxes;
+            if (axes.length === 0) {
                 axisValue = 50;
                 designSpace.addAxis(master);
-                var axes = [{
+                instanceAxes = [{
                     master: master,
                     axisValue: axisValue
                 }];
-                $scope.instancePanel.sequences[0].addInstance(axes, designSpace);
+                $scope.instancePanel.sequences[0].addInstance(instanceAxes, designSpace);
             }  else {
                 designSpace.addAxis(master);
                 // add this axes to each instance in the design space
@@ -54,7 +56,7 @@ define([
             helper : 'clone',
             connectWith : '.drop-area',
             sort : function(e, ui) {
-                if (IsOverDropArea(ui)) {
+                if (isOverDropArea(ui)) {
                     $(".drop-area").addClass("drag-over");
                     if (!cursorHelper) {
                         createCursorHelper(e.pageX, e.pageY);
@@ -82,7 +84,7 @@ define([
                 var element = $(ui.item).find("mtk-master");
                 var master = angular.element(element).isolateScope().model;
     
-                if (IsOverDropArea(ui) && !isInDesignSpace(master)) {
+                if (isOverDropArea(ui) && !isInDesignSpace(master)) {
                     // push master to design space when dropped on drop-area
                     $scope.addMasterToDesignSpace(master);
                     $scope.$apply();
@@ -91,7 +93,7 @@ define([
             }
         };
         
-        function IsOverDropArea(master) {
+        function isOverDropArea(master) {
             var dropLeft = $(".drop-area").offset().left;
             var dropRight = $(".drop-area").offset().left + $(".drop-area").outerWidth();
             var dropTop = $(".drop-area").offset().top;
@@ -113,7 +115,7 @@ define([
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var masterInDS = designSpace.axes[i];
-                if (masterInDS == master) {
+                if (masterInDS === master) {
                     return true;
                 }   
             }
@@ -121,8 +123,8 @@ define([
         }
         
         //cursorhelper functions
-        var cursorHelper = false;
-        var templayer = $('<div class="cursor-helper"></div>')[0]; 
+        var cursorHelper = false
+          , templayer = $('<div class="cursor-helper"></div>')[0];
     
         function createCursorHelper(x, y) {
             cursorHelper = true;
@@ -147,11 +149,9 @@ define([
     
         function setColorCursorHelper(ok) {
             if (ok) {
-                $(templayer).html("+");
-                $(templayer).removeClass("cursor-not-ok");
+                $(templayer).html("+").removeClass("cursor-not-ok");
             } else {
-                $(templayer).html("×");
-                $(templayer).addClass("cursor-not-ok");  
+                $(templayer).html("×").addClass("cursor-not-ok");
             }
         }
         

@@ -8,14 +8,14 @@ define([
     "use strict";
     function renameDirective() {
         return {
-            restrict: 'A',
-            controller: 'RenameController',
-            scope : {
+            restrict: 'A'
+          , controller: 'RenameController'
+          , scope : {
                 model : '=mtkRename'
-            },
-            replace: false,
-            template: template,
-            link : function(scope, element, attrs, ctrl) {
+            }
+          , replace: false
+          , template: template
+          , link : function(scope, element, attrs, ctrl) {
                 element.bind('dblclick', function() {
                     scope.giveRenamingProperties(element[0]);
                 });

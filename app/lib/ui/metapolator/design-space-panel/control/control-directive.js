@@ -1,6 +1,6 @@
 define([
     'require/text!./control.tpl'
-  , 'd3'  
+  , 'd3'
   , 'jquery'
 ], function(
     template
@@ -30,9 +30,8 @@ define([
                 var layerSingle = svg.append('g').attr('class', 'single-layer');
                 var inactiveLayer = svg.append('g').attr('class', 'inactive-axes');
                 var activeLayer = svg.append('g').attr('class', 'active-axes');
-                
                 var singleContainer;
-    
+
                 var graphics = {
                     elementWidth : null,
                     axisWidth : null,

@@ -26,19 +26,19 @@ define([], function() {
         };
 
         $scope.positionX = function(x) {
-            var pos0 = $scope.sizes.margin, 
-                pos1 = $scope.sizes.margin + $scope.sizes.buttonW + $scope.sizes.spacing,
-                pos2 = $scope.sizes.margin + 2 * ($scope.sizes.buttonW + $scope.sizes.spacing),
-                strict;
+            var pos0 = $scope.sizes.margin
+              , pos1 = $scope.sizes.margin + $scope.sizes.buttonW + $scope.sizes.spacing
+              , pos2 = $scope.sizes.margin + 2 * ($scope.sizes.buttonW + $scope.sizes.spacing)
+              , strict;
             if (x < (pos1 - 0.5 * $scope.sizes.buttonW)) {
-                x = pos0,
-                    strict = 0;
+                x = pos0;
+                strict = 0;
             } else if (x < (pos2 - 0.5 * $scope.sizes.buttonW)) {
-                x = pos1,
-                    strict = 1;
+                x = pos1;
+                strict = 1;
             } else {
-                x = pos2,
-                    strict = 2;
+                x = pos2;
+                strict = 2;
             }
             return {
                 x : x,

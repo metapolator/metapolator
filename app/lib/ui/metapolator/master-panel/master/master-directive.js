@@ -6,13 +6,13 @@ define([
     "use strict";
     function masterDirective() {
         return {
-            restrict: 'E',
-            controller: 'MasterController',
-            scope : {
+            restrict: 'E'
+          , controller: 'MasterController'
+          , scope : {
                 model : '=mtkModel'
-            },
-            replace: false,
-            template: template
+            }
+          , replace: false
+          , template: template
         };
     }
     masterDirective.$inject = [];

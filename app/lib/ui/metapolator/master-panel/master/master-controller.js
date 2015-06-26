@@ -37,13 +37,13 @@ define([], function() {
         
         $scope.selectSet = function (master) {
             window.logCall("selectSet");
-            var otherMaster = metapolatorModel.masterPanel.lastMasterSelected;           
-            var phase = 0;
+            var otherMaster = metapolatorModel.masterPanel.lastMasterSelected
+              , phase = 0;
             for (var i = metapolatorModel.masterPanel.sequences.length - 1; i >= 0; i--) {
                 var sequence = metapolatorModel.masterPanel.sequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
-                    var thisMaster = sequence.children[j];
-                    var thisHit = false;
+                    var thisMaster = sequence.children[j]
+                      , thisHit = false;
                     if (thisMaster == master || thisMaster == otherMaster) {
                         phase++;
                         thisHit = true;   

@@ -4,11 +4,11 @@ define([
     "use strict";
     function menubarDirective() {
         return {
-            restrict: 'E',
-            controller: 'MenubarController',
-            replace: false,
-            template: template,
-            scope : {
+            restrict: 'E'
+          , controller: 'MenubarController'
+          , replace: false
+          , template: template
+          , scope : {
                 model : '=mtkModel'
             }
         };

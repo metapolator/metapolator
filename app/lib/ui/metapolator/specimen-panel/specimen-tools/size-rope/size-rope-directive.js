@@ -8,13 +8,13 @@ define([
     "use strict";
     function sizeRopeDirective() {
         return {
-            restrict : 'E',
-            controller : 'SizeRopeController',
-            replace : false,
-            scope : {
+            restrict : 'E'
+          , controller : 'SizeRopeController'
+          , replace : false
+          , scope : {
                 model : '=mtkModel'
-            },
-            link : function(scope, element, attrs, ctrl) {
+            }
+          , link : function(scope, element, attrs, ctrl) {
                 var dS = 8, 
                     state = {
                         svg : d3.select(element[0]).append('svg').attr('width', 2 * dS + 2).attr('height', 2 * dS + 2),
@@ -52,10 +52,10 @@ define([
                     }).on('dragend', function() {
                         diamondstatic.attr('class', 'size-rope-diamond');
                         $(state.templayer.element).remove();
-                    });
+                    })
 
                 // create static diamond
-                var diamond = state.svg.append('g').call(drag), 
+                  , diamond = state.svg.append('g').call(drag),
                     diamondstatic = diamond.append('polygon').attr('points', state.diamondShape).attr('class', 'size-rope-diamond');
                 
                     
@@ -91,13 +91,12 @@ define([
                 }
                 
                 function getAbsolutePixels(ropeLength, pixelOffset) {
-                    var fontSize, absolutePixels = ropeLength + pixelOffset;
+                    var absolutePixels = ropeLength + pixelOffset;
                     if (absolutePixels > 399) {
-                        fontSize = absolutePixels - 300;
+                        return absolutePixels - 300;
                     } else {
-                        fontSize = 11250 / (500 - absolutePixels) - 12.5;
+                        return 11250 / (500 - absolutePixels) - 12.5;
                     }
-                    return fontSize;
                 }
 
                 function getRopeLength(xPosition, yPosition) {

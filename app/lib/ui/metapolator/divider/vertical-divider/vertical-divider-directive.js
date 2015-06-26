@@ -1,20 +1,18 @@
 define([
     'jquery'
-  , 'jquery-ui'
 ], function(
     $
-  , jqueryUi
 ) {
     "use strict";
     function verticalDividerDirective() {
         return {
-            restrict: 'E',
-            controller: 'VerticalDividerController',
-            replace: false,
-            scope: {
+            restrict: 'E'
+          , controller: 'VerticalDividerController'
+          , replace: false
+          , scope: {
                 model: '=mtkModel'
-            },
-            link : function(scope, element, attrs, ctrl) {
+            }
+          , link : function(scope, element, attrs, ctrl) {
                 
                 var id = attrs.divider
                   , thisDivider = scope.model.dividers[id]
@@ -31,7 +29,7 @@ define([
                     setContainment();
                 });
                 
-                scope.$watch('model.dividerTrigger', function(newVal) {
+                scope.$watch('model.dividerTrigger', function() {
                     return redraw();
                 }, true);
                 
@@ -64,8 +62,7 @@ define([
                         scope.model.panels[thisDivider.add].share = addShare;
                         scope.model.panels[thisDivider.subtract].share = subtractShare;
                         if (thisDivider.mirror) {
-                            var mirrorShare = startMirror - (addShare - startAdd);
-                            scope.model.panels[thisDivider.mirror].share = mirrorShare;
+                            scope.model.panels[thisDivider.mirror].share = startMirror - (addShare - startAdd);
                         }
                         scope.model.totalPanelParts = getTotalParts();
                         scope.$apply();
@@ -110,8 +107,7 @@ define([
                 }
                 
                 function getScreenParts() {
-                    var parts = scope.model.panels[0].share + scope.model.panels[1].share + scope.model.panels[2].share;
-                    return parts;
+                    return scope.model.panels[0].share + scope.model.panels[1].share + scope.model.panels[2].share;
                 }
             }
         };

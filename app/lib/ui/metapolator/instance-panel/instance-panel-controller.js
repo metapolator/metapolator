@@ -11,8 +11,8 @@ define([
         //$scope.colWidth = metapolatorModel.display.panel.panels[5] / 
         
         $scope.addInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
-            var axes = [];
+            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+              , axes = [];
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var master = designSpace.axes[i];
                 axes.push({
@@ -23,9 +23,9 @@ define([
             $scope.model.sequences[0].addInstance(axes, designSpace);
         };
         
-        $scope.duplicateInstance = function (instance) {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
-            var axes = [];
+        $scope.duplicateInstance = function () {
+            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+              , axes = [];
             for (var i = 0, l = $scope.model.currentInstance.axes.length; i < l; i++) {
                 var axis = $scope.model.currentInstance.axes[i];
                 axes.push({
@@ -47,8 +47,8 @@ define([
             for (var i = $scope.model.sequences.length - 1; i >= 0; i--) {
                 var sequence = $scope.model.sequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
-                    var instance = sequence.children[j];
-                    if (instance.designSpace == designSpace) {
+                    var thisInstance = sequence.children[j];
+                    if (thisInstance.designSpace === designSpace) {
                         n++;
                     }
                 }
@@ -246,15 +246,15 @@ define([
         // hover functions
         $scope.mouseoverInstance = function(instance) {
             // Dim slider diamonds
-            var current = $(".design-space-diamond.instance-" + instance.name);
-            $(".design-space-diamond").not(current).each(function() {
+            var svgCurrent = $(".design-space-diamond.instance-" + instance.name);
+            $(".design-space-diamond").not(svgCurrent).each(function() {
                 $(this).css({ opacity: 0.1 });
             });
             // Dim specimen text
             if (instance.display || instance == $scope.model.currentInstance) {
                 // here is 'master' used for syncing with master reasons
-                var current = $(".specimen-field-instances ul li.master-" + instance.name);
-                $(".specimen-field-instances ul li").not(current).each(function() {
+                var textCurrent = $(".specimen-field-instances ul li.master-" + instance.name);
+                $(".specimen-field-instances ul li").not(textCurrent).each(function() {
                     $(this).addClass("dimmed");
                 });
             }

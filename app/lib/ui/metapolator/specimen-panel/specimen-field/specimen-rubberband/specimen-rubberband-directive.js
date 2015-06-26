@@ -8,13 +8,13 @@ define([
     "use strict";
     function specimenRubberbandDirective() {
         return {
-            restrict : 'A',
-            controller : 'SpecimenRubberbandController',
-            replace : false,
-            scope : {
+            restrict : 'A'
+          , controller : 'SpecimenRubberbandController'
+          , replace : false
+          , scope : {
                 model : '=mtkModel'
-            },
-            link : function(scope, element, attrs, ctrl) {
+            }
+          , link : function(scope, element, attrs, ctrl) {
                 // activate the rubberband if specimenModel.setting.rubberband is true
                 if (attrs.mtkSpecimenRubberband === "true") {
                     var mouse = {
@@ -22,14 +22,15 @@ define([
                         move : false,
                         startX : null,
                         startY : null
-                    };
-                    var div = {
+                    }
+                      , div = {
                         x1 : null,
                         x2 : null,
                         y1 : null,
                         y2 : null
-                    };
-                    var templayer = $('<div class="rubberband"></div>')[0];        
+                    }
+                      , templayer = $('<div class="rubberband"></div>')[0];
+
                     element.bind('mousedown', function(event) {
                         // condition is to exclude the rubberbanding on the scrollbar
                         if (event.pageX < $(element).offset().left + $(element).outerWidth() - 20) {

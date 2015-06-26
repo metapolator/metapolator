@@ -3,18 +3,17 @@ define([
     "use strict";
     function glyphDirective() {
         return {
-            restrict: 'E',
-            controller: 'GlyphController',
-            replace: false,
-            scope : {
+            restrict: 'E'
+          , controller: 'GlyphController'
+          , replace: false
+          , scope : {
                 model : '=mtkModel'
-            },
-            link : function(scope, element, attrs, ctrl) {
-                var masterName = scope.model.masterName;
-                var glyphName = scope.model.name;
-                
+            }
+          , link : function(scope, element, attrs, ctrl) {
+                var masterName = scope.model.masterName
+                  , glyphName = scope.model.name
                 // add css classes for breaks and spaces
-                var parentElement = element.parent();
+                  , parentElement = element.parent();
                 if (glyphName == "space") {
                     parentElement.addClass("space-character");
                 } else if (glyphName == "*n") {

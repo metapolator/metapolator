@@ -1,17 +1,15 @@
 define([
     'jquery'
-  , 'jquery-ui'
 ], function(
     $
-  , jqueryUi
 ) {
     "use strict";
     function horizontalDividerDirective() {
         return {
-            restrict: 'E',
-            controller: 'HorizontalDividerController',
-            replace: false,
-            link : function(scope, element, attrs, ctrl) {
+            restrict: 'E'
+          , controller: 'HorizontalDividerController'
+          , replace: false
+          , link : function(scope, element, attrs, ctrl) {
                 var containmentBottom = null
                   , containmentTop = null
                   , containmentMargin = 60

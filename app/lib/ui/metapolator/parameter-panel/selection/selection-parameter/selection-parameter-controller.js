@@ -7,7 +7,10 @@ define([], function() {
                   , operatorId = operator.id;
                   
                 for (var i = $scope.model.elements.length - 1; i >= 0; i--) {
-                    var element = $scope.model.elements[i];
+                    var element = $scope.model.elements[i]
+                      , effectiveLevel
+                      , effectedElements
+                      , selectionParameter;
                     // if there is a range, we have to find the value for this element within the range
                     if (operator.range) {
                         thisValue = $scope.getRangeValue(element, parameter, operator);
@@ -16,15 +19,16 @@ define([], function() {
                     }
                     // set the value of each element in the selection
                     element.setValue(parameter, operator, thisValue);
-                    var effectiveLevel = parameter.effectiveLevel;
+                    effectiveLevel = parameter.effectiveLevel;
                     // elements down in the tree are effected by this, update their effectiveValue
-                    var effectedElements = $scope.getEffectedElements(effectiveLevel, element);
-                    angular.forEach(effectedElements, function(effectedElement){
-                        var elementParameter = effectedElement.getParameterByName(parameter.name);
-                        elementParameter.updateEffectiveValue(effectedElement); 
-                    });
+                    effectedElements = $scope.getEffectedElements(effectiveLevel, element);
+                    for (var j = 0, jl = effectedElements.length; j < jl; j++) {
+                        var effectedElement = effectedElements[j]
+                          , elementParameter = effectedElement.getParameterByName(parameter.name);
+                        elementParameter.updateEffectiveValue(effectedElement);
+                    }
                     // update the selection of effective values
-                    var selectionParameter = metapolatorModel.masterPanel.selection[effectiveLevel].getParameterByName(parameter.name);
+                    selectionParameter = metapolatorModel.masterPanel.selection[effectiveLevel].getParameterByName(parameter.name);
                     // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
                     if (selectionParameter) {
                         selectionParameter.updateEffectiveValue();
@@ -43,14 +47,18 @@ define([], function() {
         $scope.getEffectedElements = function(effectiveLevel, changedElement) {
             // go down to the level where the change of this value has effect
             // and get the elements.
-            var thisLevelElements = [changedElement];
-            var tempArray = [];
+
+            var thisLevelElements = [changedElement]
+              , tempArray = [];
+
             while (thisLevelElements[0].level != effectiveLevel) {
-                angular.forEach(thisLevelElements, function(thisLevelElement){
-                    angular.forEach(thisLevelElement.children, function(childElement) {
+                for (var i = 0, il = thisLevelElements.length; i < il; i++) {
+                    var thisLevelElement = thisLevelElements[i];
+                    for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
+                        var childElement = thisLevelElement.children[j];
                         tempArray.push(childElement);
-                    });
-                });
+                    }
+                }
                 thisLevelElements = tempArray;
                 tempArray = [];
             }  
@@ -91,7 +99,9 @@ define([], function() {
         
         $scope.managedInputValue = function(value, parameter, operator, keyEvent) {
             window.logCall("managedInputValue");
-            var currentValue = value.current;
+            var currentValue = value.current
+              , step
+              , decimals;
             // Not a number: use the fallback value.
             if (isNaN(currentValue) || currentValue === "") {
                 currentValue = value.fallback;
@@ -99,8 +109,8 @@ define([], function() {
             if ( typeof (currentValue) == "string") {
                 currentValue = parseFloat(currentValue.replace(',', '.'));
             }
-            var step = parameter.step;
-            var decimals = parameter.decimals;
+            step = parameter.step;
+            decimals = parameter.decimals;
             if (keyEvent != "blur") {
                 keyEvent.preventDefault();
                 if (keyEvent.shiftKey) {

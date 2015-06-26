@@ -4,7 +4,7 @@ define([
     $
 ) {
     "use strict";
-    function SelectionController($scope, metapolatorModel) {
+    function SelectionController($scope) {
         $scope.operatorId = 1;
         // Handling the parameter add panel 
         $scope.parameterOperatorPanel = null;
@@ -48,10 +48,8 @@ define([
             $scope.parameterLevel = level;
             $scope.panelOperator = null;
             $scope.panelParameter = null;
-            var top = $(event.target).offset().top + 20;
-            var left = $(event.target).offset().left + 20;
-            $scope.parameterPanelTop = top;
-            $scope.parameterPanelLeft = left;
+            $scope.parameterPanelTop = $(event.target).offset().top + 20;
+            $scope.parameterPanelLeft = $(event.target).offset().left + 20;
             if (target != $scope.parameterOperatorPanel) {
                 $scope.parameterOperatorPanel = target;
             } else {
@@ -59,14 +57,14 @@ define([
             }
         };
         
-        
-        
         $scope.openParameterPanel = function(parameter, event, level) {
             $scope.closeParameterPanel();
-            var target = event.currentTarget;
+            var target = event.currentTarget
+              , targetLeft
+              , targetTop;
             $(target).addClass("selected-parameter");
-            var targetLeft = event.clientX;
-            var targetTop = event.clientY;
+            targetLeft = event.clientX;
+            targetTop = event.clientY;
             $scope.data.view.parameterPanel.display = true;
             $scope.data.view.parameterPanel.left = targetLeft;
             $scope.data.view.parameterPanel.top = targetTop;
@@ -85,10 +83,12 @@ define([
     
         $scope.openOperatorPanel = function(parameter, operator, event, level) {
             $scope.closeOperatorPanel();
-            var target = event.currentTarget;
+            var target = event.currentTarget
+              , targetLeft
+              , targetTop;
             $(target).addClass("selected-parameter");
-            var targetLeft = event.clientX;
-            var targetTop = event.clientY;
+            targetLeft = event.clientX;
+            targetTop = event.clientY;
             $scope.data.view.operatorPanel.display = true;
             $scope.data.view.operatorPanel.left = targetLeft;
             $scope.data.view.operatorPanel.top = targetTop;
@@ -108,7 +108,7 @@ define([
         };
     }
 
-    SelectionController.$inject = ['$scope', 'metapolatorModel'];
+    SelectionController.$inject = ['$scope'];
     var _p = SelectionController.prototype;
 
     return SelectionController;

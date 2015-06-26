@@ -6,7 +6,7 @@ define([], function() {
         
         
         $scope.getDiamondColor = function(instance) {
-            if (instance == metapolatorModel.instancePanel.currentInstance) {
+            if (instance === metapolatorModel.instancePanel.currentInstance) {
                 return instance.color;
             } else {
                 return "none";
@@ -15,7 +15,7 @@ define([], function() {
         
         $scope.selectInstance = function (instance) {
             metapolatorModel.instancePanel.setCurrentInstance(instance);
-            if (instance.designSpace != metapolatorModel.designSpacePanel.currentDesignSpace) {
+            if (instance.designSpace !== metapolatorModel.designSpacePanel.currentDesignSpace) {
                 metapolatorModel.designSpacePanel.setCurrentDesignSpace(instance.designSpace);   
             }
         };
@@ -24,7 +24,7 @@ define([], function() {
         $scope.getGlyph = function (glyphName) {
             for (var i = $scope.model.children.length - 1; i >= 0; i--) {
                 var thisGlyph = $scope.model.children[i];
-                if (thisGlyph.name == glyphName) {
+                if (thisGlyph.name === glyphName) {
                     return thisGlyph;
                 }
             }

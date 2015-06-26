@@ -8,8 +8,7 @@ define([], function() {
             $scope.model.setCurrentDesignSpace(space); 
             // after switching design space, we need to set a new current instance  
             // the last instance used in the design space is stored as lastInstance
-            var currentInstance = space.lastInstance;
-            metapolatorModel.instancePanel.setCurrentInstance(currentInstance);
+            metapolatorModel.instancePanel.setCurrentInstance(space.lastInstance);
         };
         
         $scope.addDesignSpace = function() {
@@ -30,7 +29,7 @@ define([], function() {
                     if (instance.designSpace === oldDesignSpace) {
                         var axes = [];
                         for (var k = 0, l = instance.axes.length; k < l; k++) {
-                            var axis = $scope.model.currentInstance.axes[k];
+                            var axis = instance.axes[k];
                             axes.push({
                                 axisValue: axis.axisValue,
                                 metapolationValue : axis.metapolationValue,

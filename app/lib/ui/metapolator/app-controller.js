@@ -11,8 +11,8 @@ define([
         this.$scope.model = this.model = model;
         
         $scope.getLandscapeLeft = function() {
-            var end = $scope.model.display.panel.viewState * 2;
-            var parts = 0;
+            var end = $scope.model.display.panel.viewState * 2
+              , parts = 0;
             for (var i = 0; i < end; i++) {
                 parts += $scope.model.display.panel.panels[i].share;
             }

@@ -6,13 +6,13 @@ define([
     "use strict";
     function DialogDirective() {
         return {
-            restrict: 'E',
-            controller: 'DialogController',
-            scope: {
+            restrict: 'E'
+          , controller: 'DialogController'
+          , scope: {
                 model: '=mtkModel'
-            },
-            replace: true,
-            template: template,
+            }
+          , replace: true
+          , template: template,
         };
     }
     DialogDirective.$inject = [];

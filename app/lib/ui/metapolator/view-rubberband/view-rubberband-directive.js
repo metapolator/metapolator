@@ -6,29 +6,29 @@ define([
     "use strict";
     function viewRubberbandDirective() {
         return {
-            restrict : 'A',
-            controller : 'ViewRubberbandController',
-            replace : false,
+            restrict : 'A'
+          , controller : 'ViewRubberbandController'
+          , replace : false,
             scope : {
                 model : '=mtkModel'
-            },
-            link : function(scope, element, attrs, ctrl) {
+            }
+          , link : function(scope, element, attrs, ctrl) {
                 // set the type, so we know which updateSelectedMasters we need to use (masters or instances)
                 scope.type = attrs.mtkViewRubberband;
                 var mouse = {
                     click : false,
                     move : false,
                     startX : null,
-                    startY : null,
-                };
-                var div = {
+                    startY : null
+                }
+                 , div = {
                     x1 : null,
                     x2 : null,
                     y1 : null,
                     y2 : null
-                };
-                var startDisplay = null;
-                var templayer = $('<div class="view-rubberband"></div>')[0];        
+                }
+                  , startDisplay = null
+                  , templayer = $('<div class="view-rubberband"></div>')[0];
                 element.bind('mousedown', function(event) {
                     if ($(event.target).parents('.list-view').length) {
                         // find the display setting of the first clicked master
@@ -51,7 +51,7 @@ define([
                 });
                 
                 
-                element.bind('mouseup', function(event) {
+                element.bind('mouseup', function() {
                     // remove temp hover classes
                     $(element).find(".temp-unselected").each(function() {
                         $(this).removeClass("temp-unselected");
@@ -82,8 +82,8 @@ define([
                 }
                 
                 function stretchTemplayer(event) {
-                    var x = event.pageX;
-                    var y = event.pageY;
+                    var x = event.pageX
+                      , y = event.pageY;
                     if (x < mouse.startX) {
                         div.x1 = x;
                         div.x2 = mouse.startX;
@@ -115,7 +115,7 @@ define([
                     });
                 }
                 
-                function findHoveredMasters(event) {
+                function findHoveredMasters() {
                     $(element).find(".list-view").each(function() {
                         $(this).removeClass("temp-selected temp-unselected");
                         if (isThisInBox(this)  && !startDisplay) {

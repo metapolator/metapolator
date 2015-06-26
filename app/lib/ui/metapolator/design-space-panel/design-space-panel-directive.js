@@ -6,11 +6,11 @@ define([
     "use strict";
     function designSpacePanelDirective() {
         return {
-            restrict: 'E',
-            controller: 'DesignSpacePanelController',
-            replace: false,
-            template: template,
-            scope: {
+            restrict: 'E'
+          , controller: 'DesignSpacePanelController'
+          , replace: false
+          , template: template
+          , scope: {
                 model: '=mtkModel'
             }
         };

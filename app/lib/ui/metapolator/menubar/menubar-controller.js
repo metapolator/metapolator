@@ -10,14 +10,12 @@ define([
         //$scope.projectName = metapolatorModel.projectName;
         
         $scope.renameProject = function() {
-            $("#project-name").attr("contenteditable", "true");
-            $("#project-name").addClass("renaming");
-            $("#project-name").focus();
+            $("#project-name").attr("contenteditable", "true").addClass("renaming").focus();
             selectAllText(document.getElementById("project-name"));
         };
     
         $scope.newDocument = function() {
-            myRef = window.open('' + self.location, 'New Metapolator window');
+            window.open('' + self.location, 'New Metapolator window');
         };
     
         $scope.closeDocument = function() {
@@ -30,14 +28,16 @@ define([
         };
         
         function selectAllText (element) {
-            var doc = document;
+            var doc = document
+              , range
+              , selection;
             if (doc.body.createTextRange) {
-                var range = document.body.createTextRange();
+                range = document.body.createTextRange();
                 range.moveToElementText(element);
                 range.select();
             } else if (window.getSelection) {
-                var selection = window.getSelection();
-                var range = document.createRange();
+                selection = window.getSelection();
+                range = document.createRange();
                 range.selectNodeContents(element);
                 selection.removeAllRanges();
                 selection.addRange(range);
