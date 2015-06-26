@@ -41,13 +41,13 @@ define([
    
    _p.findGlyphByName = function(glyphName) {
        window.logCall("findGlyphByName");
-       var found = null;
-       angular.forEach(this.children, function(glyph) {
+       for (var i = 0, l = this.children.length; i < l; i++) {
+           var glyph = this.children[i];
            if (glyph.name == glyphName) {
-               found = glyph;
+               return glyph;
            }
-       });
-       return found;
+       }
+       return false;
    };
     
     

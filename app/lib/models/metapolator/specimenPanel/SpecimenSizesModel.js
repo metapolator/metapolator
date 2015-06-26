@@ -19,9 +19,9 @@ define([
     var _p = SpecimenSizesModel.prototype = Object.create(Parent.prototype);
     
     _p.updateLineHeight = function() {
-        var lineHeight, 
-            lineHeightSetting = this.lineHeightSetting,
-            fontSize = this.fontSize;
+        var lineHeight
+          , lineHeightSetting = this.lineHeightSetting
+          , fontSize = this.fontSize;
         // 0 = tight, 1 = normal, 2 = loose, -1 = custom (don't touch it then')
         if (lineHeightSetting != -1) {
             if (lineHeightSetting == 1) {

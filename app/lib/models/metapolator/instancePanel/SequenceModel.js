@@ -25,8 +25,8 @@ define([
     
     _p.addInstance = function(axes, designSpace) {
         window.logCall("addInstance");
-        var id = this.instanceCounter;
-        var color = this.colors[this.colorCounter];
+        var id = this.instanceCounter
+          , color = this.colors[this.colorCounter];
         this.children.push(
             new InstanceModel(id, "instance" + id, "Instance " + id, axes, designSpace, color, this)
         );   

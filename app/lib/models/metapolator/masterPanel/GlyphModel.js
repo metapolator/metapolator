@@ -45,7 +45,6 @@ define([
     
     _p.measureGlyph = function () {
         window.logCall("measureGlyph");
-        var self = this;
         for (var i = this.baseParameters.length - 1; i >= 0; i--) {
             var baseParameter = this.baseParameters[i];
             console.log("if you see this, then the penstrokes and points are not there yet");

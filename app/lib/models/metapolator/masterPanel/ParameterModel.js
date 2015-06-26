@@ -96,7 +96,7 @@ define([
                   name: null
               }
               , newSetOperators = []
-              , newOperator;
+              , newOperator = {};
             if (self.operators.length > 0) {
                 for (var i = 0, l = this.operators.length; i < l; i++) {
                     var operator = this.operators[i];
@@ -111,7 +111,7 @@ define([
                             newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
                         }
                     } else {
-                        if (i != 0) {
+                        if (i !== 0) {
                             newSetOperators.push(newOperator);
                         }
                         newOperator = operator;
@@ -146,7 +146,7 @@ define([
                     
         while (element.level != "sequence") {
             var elementParameter = element.getParameterByName(parameterName);
-            if (levelCounter == 0) {
+            if (levelCounter === 0) {
                 // this says we are at the effective level, so the initial values should be found here
                 if (!self.initial) {
                     self.setInitial();

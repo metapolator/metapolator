@@ -7,7 +7,7 @@ define([
     Parent
   , Appmodel
   , SequenceModel
-  , selectionModel
+  , SelectionModel
 ){
     "use strict";
     function MasterPanelModel() {
@@ -128,7 +128,7 @@ define([
             if (beyond) {
                 this.selection[level].updateThisSelection(parentEmpty);
             }
-            if (parentEmpty || this.selection[level].elements.length == 0) {
+            if (parentEmpty || this.selection[level].elements.length === 0) {
                 // if this level is empty, then deeper levels are empty automatically
                 parentEmpty = true;
             }
@@ -148,7 +148,7 @@ define([
     
     _p.addSelectionLevel = function(level) {
         window.logCall("addSelectionLevel");
-        this.selection[level] = new selectionModel(
+        this.selection[level] = new SelectionModel(
             level, this.baseParameters, this.baseOperators, this.sequences, this.allLevels, this
         );
     };

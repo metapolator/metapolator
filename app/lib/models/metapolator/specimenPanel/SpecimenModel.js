@@ -84,11 +84,11 @@ define([
         var filter = this.mixer.filter
           , glyphsOut = []
           , strict = this.mixer.strict;
-        if (filter.length == 0) {
+        if (filter.length === 0) {
             // no filter? In == Out
             glyphsOut = this.glyphsIn;
         } else {
-            if (strict == 0) {
+            if (strict === 0) {
                 glyphsOut = this.strictZero();
             } else if (strict == 1) {
                 glyphsOut = this.strictOne();
@@ -107,17 +107,17 @@ define([
         var masterArray = this.selectedMasters
           , glyphsOut = this.glyphsOut
           , fontBy = this.mixer.fontBy;
-        if (masterArray.length == 0) {
+        if (masterArray.length === 0) {
             this.filteredGlyphs = [];
         } else {
-            var filtered = [];
-            var glyphId = 0;
+            var filtered = []
+              , glyphId = 0;
             for (var q = 0, ql = masterArray.length; q < ql; q++) {
                 // repeating for the number of master with display true. every glyph of this loop starts with a new master (masterId)
                 var masterId = q;
                 for (var i = 0, il = glyphsOut.length; i < il; i++) {
-                    var glyph = glyphsOut[i];
-                    var master = masterArray[masterId];
+                    var glyph = glyphsOut[i]
+                      , master = masterArray[masterId];
                     if (glyph == "*specimenbreak" || glyph == "*n" || glyph == "*p") {
                        filtered.push({
                            glyph: {
@@ -147,7 +147,7 @@ define([
                 if (q < masterArray.length - 1) {
                     filtered.push({
                         glyph: {
-                            name: "*specimenbreak",
+                            name: "*specimenbreak"
                         },
                         glyphId: "*specimenbreak-" + glyphId++
                     });
@@ -226,12 +226,12 @@ define([
             for (var i = 0, l = filterGlyphs.length; i < l; i++) {
                 for (var j = i; j < l; j++) {
                     if (i == j) {
-                        if (i == 0 || i == (filterGlyphs.length - 1)) {
+                        if (i === 0 || i == (filterGlyphs.length - 1)) {
                             glyphsOut.push(filterGlyphs[i], filterGlyphs[i]);
                         } else {
                             glyphsOut.push("space", filterGlyphs[i], filterGlyphs[i]);
                         }
-                    } else if ((j - i) % 2 == 0) {
+                    } else if ((j - i) % 2 === 0) {
                         glyphsOut.push("space", filterGlyphs[i], filterGlyphs[j], filterGlyphs[i]);
                     } else {
                         glyphsOut.push(filterGlyphs[j], filterGlyphs[i]);
@@ -243,10 +243,11 @@ define([
     };
     
     function stringToGlyphs(string, unique, includeSpaces) {
-        var glyphs = [];
+        var glyphs = []
+          , foundEnd;
         for (var i = 0, l = string.length; i < l; i++) {
-            var glyph = string[i];
-            var substitutePosition = substitute(glyph);
+            var glyph = string[i]
+              , substitutePosition = substitute(glyph);
             // detecting space, linebreak or paragraph
             if (glyph == " ") {
                 glyph = "space";
@@ -256,13 +257,13 @@ define([
             } else if (glyph == "<") {
                 // detecting foreign glyph
                 glyph = "";
-                var foundEnd = false;
+                foundEnd = false;
                 for (var q = 1; q < 10; q++) {
                     if (!foundEnd) {
                         if (string[i + q] != ">") {
                             glyph += string[i + q];
                         } else {
-                            var foundEnd = true;
+                            foundEnd = true;
                         }
                     }
                 }

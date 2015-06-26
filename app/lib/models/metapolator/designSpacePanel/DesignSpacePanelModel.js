@@ -23,11 +23,11 @@ define([
     
     _p.addDesignSpace = function() {
         window.logCall("addDesignSpace");
-        var id = this.designSpaceCounter;
-        var name = "Space " + id;
-        var type = "Control";
-        var axes = [];
-        var slack = 0;
+        var id = this.designSpaceCounter
+          , name = "Space " + id
+          , type = "Control"
+          , axes = []
+          , slack = 0;
         this.designSpaces.push(
             new DesignSpaceModel(id, name, type, axes, slack, this)
         );      
@@ -54,15 +54,15 @@ define([
     
     _p.duplicateDesignSpace = function() {
         window.logCall("duplicateDesignSpace");
-        var copy = this.currentDesignSpace;
-        var id = this.designSpaceCounter;
-        var name = "Space " + id;
-        var type = "Control";
-        var axes = [];
-        for (var i = 0, l = copy.axes.length; i < l; i++) {
-            axes.push(copy.axes[i]);
+        var duplicate = this.currentDesignSpace
+          , id = this.designSpaceCounter
+          , name = "Space " + id
+          , type = "Control"
+          , axes = []
+          , slack = duplicate.slack;
+        for (var i = 0, l = duplicate.axes.length; i < l; i++) {
+            axes.push(duplicate.axes[i]);
         }
-        var slack = copy.slack;
         this.designSpaces.push(
             new DesignSpaceModel(id, name, type, axes, slack, this)
         );      

@@ -29,26 +29,27 @@ define([
         if (this.effectiveLevel == this.level) {
             var self = this
               , low = null
-              , high = null;
+              , high = null
+              , range;
               
             for (var i = this.elements.length - 1; i >= 0; i--) {
                 var element = this.elements[i];
                 for (var j = element.parameters.length - 1; j >= 0; j--) {
                     var elementParameter = element.parameters[j];
                     if (elementParameter.name == self.name) {
-                        if (elementParameter.effectiveValue < low || low == null) {
+                        if (elementParameter.effectiveValue < low || low === null) {
                             low = elementParameter.effectiveValue;
                         }
-                        if (elementParameter.effectiveValue > high || high == null) {
+                        if (elementParameter.effectiveValue > high || high === null) {
                             high = elementParameter.effectiveValue;
                         }
                     }
                 }
             }
             if (high == low) {
-                var range = false;
+                range = false;
             } else {
-                var range = true;
+                range = true;
             }
             this.effectiveValue = {
                 low: low,
@@ -68,7 +69,8 @@ define([
               , nrOfElements = 0
               , nrOfHasOperator = 0
               , low = null
-              , high = null;
+              , high = null
+              , range;
             for (var elementIndex = 0, m = elements.length; elementIndex < m; elementIndex++) {
                 var element = elements[elementIndex];
                 nrOfElements++;
@@ -82,10 +84,10 @@ define([
                                     // an operator without id is a de-stacked operator
                                     hasOperator = true;
                                     nrOfHasOperator++;
-                                    if (elementOperator.value < low || low == null) {
+                                    if (elementOperator.value < low || low === null) {
                                         low = elementOperator.value;
                                     }
-                                    if (elementOperator.value > high || high == null) {
+                                    if (elementOperator.value > high || high === null) {
                                         high = elementOperator.value;
                                     }
                                 } else {
@@ -94,14 +96,14 @@ define([
                                     // the id will be removed after deselecting + de-stacking
                                     // range is always false, because it is added after selecting
                                     // only at index == 0, because this counts for all elements the same
-                                    if (elementIndex == 0) {
+                                    if (elementIndex === 0) {
                                         self.selectionOperators.push(
                                             new SelectionOperatorModel(self.level, baseOperator.name, false, elementOperator.value, elementOperator.value, baseOperator.standardValue, elementOperator.id)
                                         );
                                     }
                                 }
                             }
-                        };
+                        }
                     }
                 }
             }
@@ -114,9 +116,9 @@ define([
                 }
             }
             if (high == low) {
-                var range = false;
+                range = false;
             } else {
-                var range = true;
+                range = true;
             }
             if (hasOperator) {
                 self.selectionOperators.push(

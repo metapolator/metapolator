@@ -41,7 +41,7 @@ define([
             var baseParameter = this.baseParameters[i];
             if (hasThisParameter(baseParameter)) {
                 this.selectionParameters.push(
-                    new SelectionParameterModel(self.level, baseParameter, self.baseOperators, self.elements)
+                    new SelectionParameterModel(this.level, baseParameter, this.baseOperators, this.elements)
                 );
             }
         }
@@ -73,10 +73,11 @@ define([
     
     _p.findSelectedElements = function (level) { 
         window.logCall("findSelectedElements");  
-        var levelElements = this.allElements;
-        var thisLevel = "sequences";
+        var levelElements = this.allElements
+          , thisLevel = "sequences"
+          , tempArray;
         while (thisLevel != level && levelElements.length > 0) {
-            var tempArray = [];
+            tempArray = [];
             for (var i = levelElements.length - 1; i >= 0; i--) {
                 var levelElement = levelElements[i];
                 for (var j = levelElement.children.length - 1; j >= 0; j--) {

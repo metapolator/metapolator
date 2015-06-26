@@ -117,9 +117,7 @@ define([
     
     _p.removeInstanceOnDesignSpace = function (designSpace) {
         window.logCall("removeInstanceOnDesignSpace");
-        var thisIndex
-          , self = this;
-          
+        var thisIndex;
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
             var notDeleted = [];
@@ -142,7 +140,7 @@ define([
         var l = this.sequences[0].children.length;   
         if (l > index) {
             this.setCurrentInstance(this.sequences[0].children[index]);
-        } else if (l == 0) {
+        } else if (l === 0) {
             this.setCurrentInstance(null);
         } else {
             this.setCurrentInstance(this.sequences[0].children[l - 1]);

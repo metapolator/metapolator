@@ -53,9 +53,10 @@ function(
         // not yet existing parameter and/or operator
         // if it doens't exist yet, we create it.
         var parameter = this.findParameter(changedParameter)
-          , id = changedOperator.id;
+          , id = changedOperator.id
+          , operator;
         if (parameter) {
-            var operator = parameter.findOperator(changedOperator, id);
+            operator = parameter.findOperator(changedOperator, id);
             if (operator) {
                 // it has the parameter and the operator
                 operator.setValue(value);
@@ -67,9 +68,9 @@ function(
         } else {
             // it hasn't the parameter (and thus the parameter) yet
             this.addParameter(changedParameter);
-            var parameter = this.parameters[this.parameters.length - 1];
+            parameter = this.parameters[this.parameters.length - 1];
             parameter.addOperator(changedOperator, id);
-            var operator = parameter.operators[parameter.operators.length - 1];
+            operator = parameter.operators[parameter.operators.length - 1];
             operator.setValue(value);
         }
     };

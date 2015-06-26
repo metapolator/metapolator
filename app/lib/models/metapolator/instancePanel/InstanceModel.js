@@ -44,21 +44,22 @@ define([
     
     _p.updateMetapolationValues = function () {
         window.logCall("updateMetapolationValues");
-        var axes = this.axes;
-        var n = axes.length - 1;
+        var axes = this.axes
+          , n = axes.length - 1
+          , thisPiece;
         // when only 1 axis, the value is alway 1
         // this also prevents the possibility from dividing by 0, which can only appear with 1 master
-        if (n == 0) {
+        if (n === 0) {
             axes[0].metapolationValue = 1;
         } else {
             var cake = 0;
             for (var i = n; i >= 0; i--) {
-                var thisPiece = parseFloat(axes[i].axisValue);
+                thisPiece = parseFloat(axes[i].axisValue);
                 cake += thisPiece;
             }
-            for (var i = n; i >= 0; i--) {
-                var thisPiece = parseFloat(axes[i].axisValue);
-                axes[i].metapolationValue = thisPiece / cake;
+            for (var j = n; j >= 0; j--) {
+                thisPiece = parseFloat(axes[j].axisValue);
+                axes[j].metapolationValue = thisPiece / cake;
             }   
         }
     };
@@ -82,7 +83,7 @@ define([
         // this functin is called after a change of slack master
         var axes = this.axes
           , l = axes.length
-          , ratio = null
+          , ratio
           , max = null
           , highest = null;
         // 1 find highest of the others
@@ -95,14 +96,13 @@ define([
         // 2 find ratio of others compared to highest
         ratio = 100 / (parseFloat(max) + parseFloat(axes[slack].axisValue));
         console.log(ratio);
-        for (var i = 0; i < l; i++) {
-            axes[i].axisValue = this.formatAxisValue(ratio * axes[i].axisValue);
+        for (var j = 0; j < l; j++) {
+            axes[j].axisValue = this.formatAxisValue(ratio * axes[j].axisValue);
         }
     };
     
     _p.formatAxisValue = function(x) {
-        var rounded = Math.round(x * 10) / 10;
-        return rounded;
+        return Math.round(x * 10) / 10;
     };
     
     return InstanceModel;
