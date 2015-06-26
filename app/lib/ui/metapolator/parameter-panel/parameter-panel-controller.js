@@ -13,6 +13,8 @@ define([], function() {
             }
         };
         $scope.addLevels();
+        // this is the initial selection (only necessary if the loaded masters have a hard coded edit (= selected) == true)
+        $scope.model.updateSelections("master");
       
         // CPS functions
     
