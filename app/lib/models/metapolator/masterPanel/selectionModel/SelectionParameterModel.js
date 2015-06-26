@@ -27,8 +27,7 @@ define([
     _p.updateEffectiveValue = function() {
         window.logCall("updateEffectiveValue");
         if (this.effectiveLevel == this.level) {
-            var self = this
-              , low = null
+            var low = null
               , high = null
               , range;
               
@@ -36,7 +35,7 @@ define([
                 var element = this.elements[i];
                 for (var j = element.parameters.length - 1; j >= 0; j--) {
                     var elementParameter = element.parameters[j];
-                    if (elementParameter.name == self.name) {
+                    if (elementParameter.name == this.name) {
                         if (elementParameter.effectiveValue < low || low === null) {
                             low = elementParameter.effectiveValue;
                         }
@@ -61,7 +60,7 @@ define([
 
     _p.updateOperators = function(elements) {
         // based upon a (new) selection operators are attached to the selection
-        var self = this;
+        window.logCall("updateOperators");
         this.selectionOperators = [];
         for (var baseOperatorIndex = 0, l = this.baseOperators.length; baseOperatorIndex < l; baseOperatorIndex++) {
             var baseOperator = this.baseOperators[baseOperatorIndex];
@@ -76,10 +75,10 @@ define([
                 nrOfElements++;
                 for (var i = 0, n = element.parameters.length; i < n; i++) {
                     var elementParameter = element.parameters[i];
-                    if (elementParameter.name == self.name) {
+                    if (elementParameter.name === this.name) {
                         for (var j = 0, o = elementParameter.operators.length; j < o; j++) {
                             var elementOperator = elementParameter.operators[j];
-                            if (elementOperator.name == baseOperator.name) {
+                            if (elementOperator.name === baseOperator.name) {
                                 if (!elementOperator.id) {
                                     // an operator without id is a de-stacked operator
                                     hasOperator = true;
@@ -97,8 +96,8 @@ define([
                                     // range is always false, because it is added after selecting
                                     // only at index == 0, because this counts for all elements the same
                                     if (elementIndex === 0) {
-                                        self.selectionOperators.push(
-                                            new SelectionOperatorModel(self.level, baseOperator.name, false, elementOperator.value, elementOperator.value, baseOperator.standardValue, elementOperator.id)
+                                        this.selectionOperators.push(
+                                            new SelectionOperatorModel(this.level, baseOperator.name, false, elementOperator.value, elementOperator.value, baseOperator.standardValue, elementOperator.id)
                                         );
                                     }
                                 }
@@ -121,8 +120,8 @@ define([
                 range = true;
             }
             if (hasOperator) {
-                self.selectionOperators.push(
-                    new SelectionOperatorModel(self.level, baseOperator.name, range, low, high, baseOperator.standardValue, null)
+                this.selectionOperators.push(
+                    new SelectionOperatorModel(this.level, baseOperator.name, range, low, high, baseOperator.standardValue, null)
                 );
             }
         }

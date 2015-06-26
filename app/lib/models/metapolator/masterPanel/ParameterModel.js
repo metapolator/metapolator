@@ -45,11 +45,19 @@ define([
             new OperatorModel(operator, id)
         );
         // keep a registration of stacked operators, to make the destacking process of everything faster
-        this.stacked = isStacked();
-        if (this.stacked) {
-            this.masterPanel.addStackedParameter(this);
-        }
-        
+        //this.stacked = isStacked();
+        //if (this.stacked) {
+        // to prevent a bug with the system uncommented now
+        // every parameter with operators added is considered a stacked parameter
+        // and will be destacked
+        // where the previous setup only considered parameters with multiply of
+        // the same operatoras stacked (which is in itself more pure and faster)
+        // but that prevented the id to be set null for added but not stacked
+        // operators, which is necessary for the selection tool to work
+        this.stacked = true;
+        this.masterPanel.addStackedParameter(this);
+        //}
+        /*
         function isStacked() {
             var tempArray = [];
             for (var i = self.operators.length - 1; i >= 0; i--) {
@@ -62,6 +70,7 @@ define([
             }
             return false;
         }
+        */
     };
     
     _p.findOperator = function(operator, id) {
@@ -90,19 +99,18 @@ define([
     
     _p.destackOperators = function() {
         if (this.stacked) {
-            window.logCall("destackOperators");
-            var self = this
-              , lastOperator = {
+            window.logCall("destackThisOperators");
+            var lastOperator = {
                   name: null
               }
               , newSetOperators = []
               , newOperator = {};
-            if (self.operators.length > 0) {
+            if (this.operators.length > 0) {
                 for (var i = 0, l = this.operators.length; i < l; i++) {
                     var operator = this.operators[i];
                     // reset the id of the operator. So later we know that operators without id are destacked
                     operator.id = null;
-                    // to do: check if operator type is 'stack'.
+                    // todo: check if operator type is 'stack'.
                     // This matters when non-stack operators (like =) are added
                     if (operator.name == lastOperator.name) {
                         if (operator.name == "+" || operator.name == "-") {
@@ -117,11 +125,11 @@ define([
                         newOperator = operator;
                     }
                     lastOperator = operator;
-    
+
                 }
                 // push the last operator, this one isnt detected with a change
                 newSetOperators.push(newOperator);
-                self.operators = newSetOperators;
+                this.operators = newSetOperators;
             }
             this.stacked = false;
         }
@@ -141,17 +149,16 @@ define([
           , plus = []
           , multiply = []
           , levelCounter = 0
-          , initial = null
-          , self = this;
-                    
+          , initial = null;
+
         while (element.level != "sequence") {
             var elementParameter = element.getParameterByName(parameterName);
             if (levelCounter === 0) {
                 // this says we are at the effective level, so the initial values should be found here
-                if (!self.initial) {
-                    self.setInitial();
+                if (!this.initial) {
+                    this.setInitial();
                 }
-                initial = self.initial;
+                initial = this.initial;
                 
             }
             if (elementParameter) {
