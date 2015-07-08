@@ -1,0 +1,39 @@
+@import 'selection-parameter/selection-parameter';
+
+.parameter-selection-head {
+    width: 100%;
+    height: 30px;
+}
+
+.parameter-selection-title {
+    width: ~"calc(100% - 32px)";
+    height: 100%;
+    display: inline-block;
+    padding: 11px 0 0 6px;
+    vertical-align: top;
+    float: left;
+}
+        
+.parameter-selection-add-button {
+    width: 30px;
+    border-left: 2px solid @mtk-color-1;
+    height: 100%;
+    display: inline-block;
+    padding-top: 11px;
+    text-align: center;
+    cursor: default;
+    vertical-align: top;
+    float: left;
+}
+        
+.parameter-selection-body  {
+    width: 100%;
+    overflow: auto;
+    background: @mtk-color-1;
+    color: @mtk-color-2;
+    padding: 10px 0;
+}
+
+mtk-selection-parameter {
+    display: block;
+}

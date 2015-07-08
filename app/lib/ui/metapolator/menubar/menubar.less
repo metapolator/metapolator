@@ -1,0 +1,49 @@
+.view-buttons {
+   position: absolute;
+   top: 0;
+   left: ~"calc(50% - 154px)";
+   padding-top: 10px;
+}
+
+.view-buttons .menu-item {
+    float: left;
+    padding: 10px 8px;
+    background: transparent;
+    margin-right: -2px;
+    border: 2px solid rgba(0,0,0,0.06);
+    cursor: default;
+    width: 136px;
+    height: 32px;
+    text-align: center;
+}
+  
+.view-buttons .menu-item:last-child{
+    margin-right: 0;
+}
+  
+.view-buttons .menu-item:hover, .view-buttons .menu-item-current {
+    border: 2px solid @mtk-color-2;
+}
+
+#project {
+    display: inline-block;
+}
+
+#name-and-version {
+    float: right;
+    padding: 8px;
+    color: #aaa;
+ }
+  
+#help {
+    padding: 0;
+    float: right;
+}
+
+#help .lm-head {
+  cursor: help;
+}
+
+#help a, a.newtab {
+  cursor: alias;
+}

@@ -1,0 +1,90 @@
+mtk-control {
+    height: 100%;
+    background: @mtk-color-1;
+    display: block;
+}
+
+mtk-control svg {
+    width: 100%;
+    height: 100%;
+}
+
+.slider-axis {
+    stroke: #fff;
+    stroke-width: 2;
+    fill: none;
+}
+
+.slider-axis-active {
+    stroke: @mtk-color-2;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.slider-handle {
+    position: absolute;
+    top: 3px;
+    fill: transparent;
+    stroke: @mtk-color-2;
+    stroke-width: 2px;
+} 
+     
+.slider-label {
+    font-size: 12px;
+    color: @mtk-color-2;
+    cursor: default;
+}
+
+.label-right-inactive {
+    font-style: italic;
+}
+
+.remove-master-g {
+    opacity: 0;
+    -webkit-transition-delay: 0.5s;
+    transition-delay: 0s;
+    transition-duration: 0s;
+    transition-property: opacity;
+}
+
+.not-dragging .slider-label-container:hover .remove-master-g {
+    transition-delay: 0.5s;
+    opacity: 1;
+}
+
+.remove-master-bg {
+    fill: #ff2b2e; 
+}
+
+.remove-master-text {
+  cursor: pointer; 
+  fill: #fff;   
+}
+
+.slider-hover-square {
+    fill: transparent;
+}
+
+.slider-input-container {
+    position: absolute;
+    z-index: 10;
+}
+
+.slider-input-container input {
+    font-size: 9px;
+    width: 50px;
+    border: 0;
+    color:  @mtk-color-2;
+    background: transparent;
+    text-align: center;
+}
+    
+.slider-input-container input:focus {
+    background: #fff;
+}
+
+.slack-master-select {
+    font-size: 9px;
+    position: absolute;
+    z-index: 10;
+}
