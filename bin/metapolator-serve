@@ -4,7 +4,7 @@ __hash_bang_trick=/* exec /usr/bin/env node --harmony "$0" "$@"  # -*- mode: jav
 "use strict";
 
 exports.command = {
-    description: 'Open a UFO (default: current directory) in the red-pill web interface'
+    description: 'Serve a metapolator application loading a metapoltor project UFO (default: current directory).'
   , arguments: '[ufo]'
 };
 
@@ -18,6 +18,7 @@ if (require.main === module) {
     requirejs([
         'commander'
       , 'metapolator/parseArgs'
+      , 'metapolator/errors'
       , 'ufojs/tools/io/staticNodeJS'
       , 'restfs'
       , 'socket.io'
@@ -25,11 +26,25 @@ if (require.main === module) {
     ], function (
         program
       , parseArgs
+      , errors
       , io
       , restfs
       , SocketIO
       , fsEventsServer
     ) {
+        var CommandLineError = errors.CommandLine
+          , applications = {
+                'red-pill': {
+                    index: 'red-pill.html'
+                  , name: 'the Red Pill'
+                }
+              , 'metapolator': {
+                    index: 'metapolator.html'
+                  , name: 'the Blue Pill'
+                }
+            }
+          ;
+
         function mountAndMonitorRESTDirectory(location, baseDir, socketIO, app) {
             var relativeLocation = location[0] === '/'
                     ? location.slice(1)
@@ -47,6 +62,14 @@ if (require.main === module) {
             return program.port;
         }
 
+        function getApplication(key) {
+            if(key === undefined)
+                key = 'metapolator';
+            if(!(key in applications))
+                throw new CommandLineError('"'+key+'" is no known application.');
+            return applications[key];
+        }
+
         program._name = path.basename(process.argv[1]).replace('-', ' ');
         program.arguments(exports.command.arguments)
         .description(exports.command.description)
@@ -54,9 +77,10 @@ if (require.main === module) {
             // expect require.main.filename to be path/to/metapolator-code/bin/<command>
             // thus path/to/metapolator-code is the root directory
             var rootDir = path.dirname(path.dirname(require.main.filename))
+              , application = getApplication(program.application)
               , libDir = rootDir + '/app/lib'
               , htmlDir = rootDir + '/app/lib/html'
-              , index = htmlDir + '/red-pill.html'
+              , index = htmlDir + '/' + application.index
               , project = parseArgs.project(io, projectDir)
               , app = express()
               , server = app.listen(getPort(program))
@@ -80,12 +104,14 @@ if (require.main === module) {
                                                         , socketIO, app);
 
             if (server.address()) {
-                console.warn('Metapolator: Serving the red pill.');
+                console.warn('Metapolator: Serving ' + application.name + '.');
                 console.warn('Open http://localhost:'+server.address().port+' in your browser.');
                 console.warn('If you are using Chromium (or Chrome), you should run it as: chromium --js-flags="--harmony_proxies"');
             }
         })
-        .option('-p, --port <n>', 'The port to listen on (default: environment variable RED_PILL_PORT (if unset, random))', parseInt);
+        .option('-a, --application <'+(Object.keys(applications).join('|'))+'>', 'The main application to serve at index.html (default: metapolator)')
+        .option('-p, --port <n>', 'The port to listen on (default: environment variable RED_PILL_PORT (if unset, random))', parseInt)
+        ;
         program.parse(process.argv);
     }
 )}
