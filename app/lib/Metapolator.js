@@ -23,7 +23,8 @@ define([
         // from the Red Pill, but since we are going to have more models this
         // could get a more distinct name. Should be renamed in the Red Pill as
         // well, if we do so.
-        this.angularApp.constant('ModelController', this.project.controller);
+        this.angularApp.constant('modelController', this.project.controller);
+        this.angularApp.constant('project', this.project);
         this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
 
         // will be called on angular.bootstrap
