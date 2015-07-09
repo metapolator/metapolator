@@ -1,11 +1,9 @@
 define([
     '../_BaseModel'
-  , '../Appmodel'
   , './SequenceModel'
-  , './selectionModel/selectionModel'
+  , './selectionModel/SelectionModel'
 ], function(
     Parent
-  , Appmodel
   , SequenceModel
   , SelectionModel
 ){
@@ -17,7 +15,7 @@ define([
         this.stackedParameters = [];
         /*
          // until #392 is fixed, we work only with width and weight
-    
+
          this.baseParameters = [{
          name : "Weight",
          cpsKey : "WeightF",
@@ -105,15 +103,15 @@ define([
             effectiveLocal : false
         }];
     }
-        
+
     var _p = MasterPanelModel.prototype = Object.create(Parent.prototype);
-    
+
     _p.addStackedParameter = function(parameter) {
         if (this.stackedParameters.indexOf(parameter) == -1) {
             this.stackedParameters.push(parameter);
         }
     };
-    
+
     _p.updateSelections = function(updatedLevel) {
         window.logCall("updateSelections");
         this.destackOperators();
@@ -124,7 +122,7 @@ define([
             var level = this.allLevels[i];
             if (level == updatedLevel) {
                 beyond = true;
-            }   
+            }
             if (beyond) {
                 this.selection[level].updateThisSelection(parentEmpty);
             }
@@ -132,9 +130,9 @@ define([
                 // if this level is empty, then deeper levels are empty automatically
                 parentEmpty = true;
             }
-        }       
+        }
     };
-    
+
     _p.destackOperators = function() {
         window.logCall("destackOperators");
         var elements = this.stackedParameters;
@@ -145,14 +143,14 @@ define([
         // after destacking, empty the list
         this.stackedParameters = [];
     };
-    
+
     _p.addSelectionLevel = function(level) {
         window.logCall("addSelectionLevel");
         this.selection[level] = new SelectionModel(
             level, this.baseParameters, this.baseOperators, this.sequences, this.allLevels, this
         );
     };
-    
+
     _p.addSequence = function(name) {
         window.logCall("addSequence");
         this.sequences.push(
@@ -161,19 +159,19 @@ define([
             )
         );
     };
-    
+
     _p.areChildrenSelected = function () {
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
                 var master = sequence.children[j];
                 if (master.edit[0]) {
-                    return true;    
+                    return true;
                 }
             }
-        }   
+        }
         return false;
     };
-    
+
     return MasterPanelModel;
 });

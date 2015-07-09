@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: '../'
+    baseUrl: 'lib'
   , paths: {
         'require/domReady': 'bower_components/requirejs-domready/domReady'
       , 'require/text': 'bower_components/requirejs-text/text'
