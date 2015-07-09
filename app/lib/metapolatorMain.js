@@ -2,58 +2,60 @@ require([
     'webAPI/document'
   , 'require/domReady'
   , 'angular'
-  , 'ui/metapolator/app'
-  , 'Metapolator'
-  , 'models/metapolator/AppModel'
+  , 'ufojs/tools/io/staticBrowserREST'
+  , 'metapolator/io/InMemory'
+  , 'metapolator/ui/metapolator/app'
+  , 'metapolator/project/MetapolatorProject'
+  , 'metapolator/Metapolator'
 ], function (
     document
   , domReady
   , angular
+  , ioREST
+  , InMemory
   , angularApp
+  , MetapolatorProject
   , Metapolator
-  , AppModel
 ) {
     "use strict";
+
+    // TODO: get rid of this.
     var lasttime = null;
     window.logCall = function(name) {
         var thistime = Date.now();
         console.log(name + " " + (thistime - lasttime));
         lasttime = thistime;
     };
-    
-    var model = new AppModel();
-    // set initial model data
-    model.masterPanel.addSequence("Sequence 1");
-    model.instancePanel.addSequence("Family 1");
-    // creation of inital masters
-    var masters = ["Regular", "Bold", "Light", "Condensed", "Extended", "Italic"];
-    var glyphs = ["A", "B", "C", "D", "E", "F", "G", "H", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "space"];
 
-    angular.forEach(masters, function(master) {
-        model.masterPanel.sequences[0].addMaster(master);
-        angular.forEach(glyphs, function(glyph){
-            model.masterPanel.sequences[0].children[model.masterPanel.sequences[0].children.length - 1].addGlyph(glyph);
+
+    document.body.classList.add('dependencies-ready');
+    // init, loading the project from http at './project'
+    var projectPath = 'project'
+      , fsEvents
+      , io
+      , promise
+      ;
+    // InMemory is its own event emitter
+    io = fsEvents = new InMemory();
+    io.mkDir(false, 'project');
+    function main() {
+        var project, metapolator;
+        project = new MetapolatorProject(io, 'project', fsEvents);
+        project.load();
+        metapolator = new Metapolator(project, angularApp);
+        // The metapolator interface is made global here for development
+        // FIXME: this should change again!
+        window.metapolator = metapolator;
+        // this should be the last thing here, because domReady will execute
+        // immediately if dom is already ready.
+        domReady(function() {
+            angular.bootstrap(document, [angularApp.name]);
         });
-    });
-    
-    model.designSpacePanel.addDesignSpace();
-    model.designSpacePanel.currentDesignSpace = model.designSpacePanel.designSpaces[0];
-    
-    
-    
-    // The metapolator interface is made global here for development
-    // this should change again!
-    window.metapolator = new Metapolator(model, angularApp);
-    
-    // this should be the last thing here, because domReady will execute
-    // immediately if dom is already ready.
-    domReady(function() {
-        angular.bootstrap(document, [angularApp.name]);
-    });
-    
-    
-    
+    }
 
-    
-
+    // copy the project data from the server into memory
+    // then run main
+    ioREST.copyRecursive(true, projectPath, io, 'project')
+          .then(main)
+          ;
 });
