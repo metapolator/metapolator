@@ -4,7 +4,7 @@ define([
  , './masterPanel/MasterPanelModel'
  , './designSpacePanel/DesignSpacePanelModel'
  , './instancePanel/InstancePanelModel'
- , './DisplayModel/DisplayModel'
+ , './displayModel/DisplayModel'
 ], function(
     Parent
   , SpecimenModel
@@ -26,12 +26,12 @@ define([
         this.display = new DisplayModel();
      }
     var _p = AppModel.prototype = Object.create(Parent.prototype);
-    
+
     _p.addSequence = function(name) {
         this.sequences.push(
             new SequenceModel(name)
         );
     };
-    
+
     return AppModel;
 });

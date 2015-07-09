@@ -62,11 +62,10 @@ function (
     document.body.classList.add('dependencies-ready');
     function main() {
         var io = setup.io
-          , fsEvents = setup.fsEvents
-          , project = new MetapolatorProject(io, 'project')
+          , project = new MetapolatorProject(io, 'project', setup.fsEvents)
           ;
         project.load();
-        new RedPill(io, fsEvents, project, angularApp, setup.loadTextEditor);
+        new RedPill(io, project, angularApp, setup.loadTextEditor);
         // this should be the last thing here, because domReady will execute
         // immediately if the DOM is already ready.
         domReady(function() {

@@ -56,7 +56,7 @@ define([
       , IONoEntryError = ufoErrors.IONoEntry
       ;
 
-    function MetapolatorProject(io, baseDir) {
+    function MetapolatorProject(io, baseDir, fsEvents) {
         this._io = io;
         this._data = {
             masters: {}
@@ -68,6 +68,13 @@ define([
         };
 
         this.baseDir = baseDir || '.';
+        this._fsEvents = fsEvents;
+        this._updateChangedRuleHandlers = null;
+        if(this._fsEvents) {
+            this._fsEvents.on('change', this._fileChangeHandler.bind(this));
+            // setting the defaults
+            this.setUpdateChangedRuleHandlers();
+        }
 
         Object.defineProperty(this, 'ruleController', {
             value: new RuleController(io, parameterRegistry, this.cpsDir)
@@ -124,6 +131,47 @@ define([
     Object.defineProperty(_p, 'logFile', {
         get: function(){ return this.dataDir + '/log.yaml';}
     });
+
+    /**
+     * TODO: For the big refactoring:
+     * We'll need a better strategy for events like this. A classical
+     * subscription interface probably.
+     *
+     * This event is fired when a changed file triggered a call to
+     * `this.controller.updateChangedRule` see `_p._fileChangeHandler below`
+     *
+     * This function is a very simple interface, to unset handlers, call it
+     * without arguments. It is not possible to set multiple handlers.
+     *
+     */
+    _p.setUpdateChangedRuleHandlers = function(callback, errback) {
+        this._updateChangedRuleHandlers = [
+            callback || null
+          , errback || errors.unhandledPromise
+        ];
+    };
+
+    _p._fileChangeHandler = function (path) {
+        var match = path.indexOf(this.cpsDir)
+          , sourceName
+          ;
+        if(match !== 0)
+            return;
+        // +1 to remove the leading slash
+        sourceName = path.slice(this.cpsDir.length + 1);
+        try {
+            this.controller.updateChangedRule(true, sourceName)
+                .then(this._updateChangedRuleHandlers[0], this._updateChangedRuleHandlers[1]);
+        }
+        catch(error) {
+            // KeyError will be thrown by RuleController.replaceRule if
+            // sourceName is unknown, which is expected at this point,
+            // because that means that sourceName is unused.
+            // NOTE: the KeyError is always thrown synchronously before any io happens
+            if(!(error instanceof errors.Key))
+                throw error;
+        }
+    };
 
     _p.getNewGlyphSet = function(async, dirName, glyphNameFunc, UFOVersion, options) {
         return GlyphSet.factory(
@@ -648,9 +696,9 @@ define([
           , generator = exportController.exportGenerator()
           ;
         return [generator, io];
-    }
+    };
 
-    _p.exportInstance = function(masterName, targetFileName, precision){
+    _p.exportInstance = function(masterName, targetFileName, precision) {
         if (targetFileName.slice(-8) === '.ufo.zip'){
             var zipped = this.getZippedInstance(masterName, targetFileName.slice(0,-4), precision, 'nodebuffer');
             this._io.writeFile(false, targetFileName, zipped);
