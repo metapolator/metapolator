@@ -422,7 +422,7 @@ define([
         var result = this._splice(startIndex, deleteCount, _insertions);
         if(result[1] || result[2])
             this._trigger('update');
-        return result[3];
+        return result;
     };
 
     /**

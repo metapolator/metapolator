@@ -6,6 +6,7 @@ define([
     "use strict";
     function RuleController($scope) {
         this.$scope = $scope;
+        $scope.index = this.index;
         this.initNewPropertyHandler = this.initNewProperty.bind(this);
         this.cancelNewPropertyHandler = this.cancelNewProperty.bind(this);
         $scope.newProperty = false;

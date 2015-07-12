@@ -2,7 +2,7 @@ define([
     'angular'
   , './collection-controller'
   , './collection-directive'
-  , './sub-collection-directive'
+  , './collection-drop-directive'
   , 'metapolator/ui/redPill/cpsPanel/elements/rule/rule'
   , 'metapolator/ui/redPill/cpsPanel/elements/namespaceCollection/namespaceCollection'
   , 'metapolator/ui/redPill/cpsPanel/elements/comment/comment'
@@ -10,7 +10,7 @@ define([
     angular
   , Controller
   , directive
-  , subCollectionDirective
+  , collectionDropDirective
   , rule
   , namespaceCollection
   , comment
@@ -19,6 +19,6 @@ define([
     return angular.module('cps.collection', [rule.name, namespaceCollection.name, comment.name])
       .controller('CollectionController', Controller)
       .directive('mtkCpsCollection', directive)
-      .directive('mtkCpsSubCollection', subCollectionDirective)
+      .directive('mtkCollectionDrop', collectionDropDirective)
       ;
 });

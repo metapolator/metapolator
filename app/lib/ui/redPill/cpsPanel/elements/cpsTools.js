@@ -32,29 +32,31 @@ define([
         propertyDict.splice(propertyDict.length, 0, [property]);
     }
 
-    function moveProperty(sourceDict, sourceIndex, targetDict, targetIndex) {
+    function moveCPSElement(source, sourceIndex, target, targetIndex) {
         var property, items;
-        if(sourceDict === targetDict) {
-            // if sourceDict and targetDict are identical we can make
+        if(source === target) {
+            // if source and target are identical we can make
             // one atomic replace of all items, instead of two actions.
             // This is done by resetting all items in a new order.
             // This triggers less events so I guess it is cheaper.
             // I may be wrong! So if you have too much time, please measure ;-)
-            items = targetDict.items;
+            items = target.items;
             property = items.splice(sourceIndex, 1)[0];
             items.splice(targetIndex, 0, property);
             // now replace all at once
-            targetDict.splice(0, items.length, items);
+            target.splice(0, items.length, items);
             return;
         }
-        property = sourceDict.splice(sourceIndex, 1)[0];
-        targetDict.splice(targetIndex, 0, property);
+        // remove
+        property = source.splice(sourceIndex, 1)[3][0];
+        // insert
+        target.splice(targetIndex, 0, property);
     }
 
     return {
         makeProperty: makeProperty
       , appendProperty: appendProperty
       , updateProperty: updateProperty
-      , moveProperty: moveProperty
+      , moveCPSElement: moveCPSElement
     };
 });

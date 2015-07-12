@@ -2,6 +2,7 @@ define([
     'metapolator/errors'
   , './curry'
   , './selectorFactories'
+  , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/ParameterDict'
   , 'metapolator/models/CPS/elements/Parameter'
   , 'metapolator/models/CPS/elements/ParameterName'
@@ -15,6 +16,7 @@ define([
     errors
   , curry
   , selectorFactories
+  , ParameterCollection
   , ParameterDict
   , Parameter
   , ParameterName
@@ -324,6 +326,7 @@ define([
       , 'atrulers': function(node, source) {
             var items = []
               , i=0
+              , child
               ;
             if(!node.children)
                 return this['__GenericAST__'](node, source);
@@ -331,7 +334,16 @@ define([
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance);
+                child = node.children[i].instance
+                if(child instanceof ParameterCollection && !child.name)
+                    // This is to compensate the ParameterCollection created
+                    // by the deperecated @dictionary rule. A ParameterCollection
+                    // without a name is a plain ParameterCollection, it
+                    // can be flattened into the list of children.
+                    // FIXME: remove @dictionary for good and then this code.
+                    Array.prototype.push.apply(items, child.items)
+                else
+                    items.push(child);
             }
             // name, selectorList
             return new AtNamespaceCollection(undefined, undefined, items, source, node.lineNo);

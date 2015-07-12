@@ -1,28 +1,36 @@
 define([
-    'require/text!./collection.tpl'
+    'angular'
+  , 'require/text!./collection.tpl'
     ], function(
-    template
+    angular
+  , template
 ) {
     "use strict";
 
 
-    function CollectionDirective() {
-        function link(scope, element, attrs) {
+    function CollectionDirective($compile, dragDataService, dragIndicatorService) {
+        function link(scope, element, attrs, controller) {
+            element.append(template);
+            $compile(element.contents())(scope);
+
+            // TODO: make an autoscroll directive within the dragAndDrop module
             var elem = element[0]
               , change
               , scrolling
               ;
             function scroll() {
+                var window;
                 if(!scrolling) return;
                 elem.scrollTop = elem.scrollTop + change;
+                window = elem.ownerDocument.defaultView;
                 window.requestAnimationFrame(scroll);
-
             }
             function endScrolling(event) {
                 scrolling = false;
             }
 
-            if(element.hasClass('root')){
+            // autoscroll
+            if(element.hasClass('root')) {
                 // this is a root collection, implement auto scrolling when
                 // a dragover bubbles here
 
@@ -65,11 +73,13 @@ define([
             restrict: 'E' // only matches element names
           , controller: 'CollectionController'
           , replace: false
-          , template: template
+          // because of recursion problems of angularjs, the template is
+          // applied in the link function
+          , template: ''
           , scope: { cpsCollection: '=' }
           , link:link
         };
     }
-    CollectionDirective.$inject = [];
+    CollectionDirective.$inject = ['$compile', 'dragDataService', 'dragIndicatorService'];
     return CollectionDirective;
 });

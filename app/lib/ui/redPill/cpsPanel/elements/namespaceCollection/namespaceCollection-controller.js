@@ -1,11 +1,15 @@
 define([
+    'metapolator/ui/redPill/cpsPanel/elements/collection/collection-controller'
 ], function(
+    Parent
 ) {
     "use strict";
-    function NamespaceCollectionController() {}
+    function NamespaceCollectionController() {
+        Parent.apply(this, arguments);
+    }
 
-    NamespaceCollectionController.$inject = [];
-    var _p = NamespaceCollectionController.prototype;
+    var _p = NamespaceCollectionController.prototype = Object.create(Parent.prototype);
 
+    NamespaceCollectionController.$inject = Parent.$inject;
     return NamespaceCollectionController;
 });

@@ -1,8 +1,7 @@
 <div
     title="{{message}}"
     ng-class="{invalid: invalid}"
-    >
-<textarea
+><textarea
     ng-if="edit"
     type="text"
     class="input selectorlist"
@@ -12,10 +11,10 @@
     ng-trim="false"
     style="height:{{(valueHeight || 1) * 1.2}}em"
     cols="{{valueWidth < 2 ? 2 : valueWidth}}"
-></textarea>
-<span
+></textarea><!--
+--><span
     ng-if="!edit"
     class="display selectorlist"
     ng-init="initDisplay()"
-    >{{selectorList}}</span>
-</div>
+    >{{selectorList}}</span><!--
+--></div>

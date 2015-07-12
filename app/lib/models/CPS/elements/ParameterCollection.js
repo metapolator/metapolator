@@ -301,10 +301,16 @@ define([
         // ParameterDict behaves and is splitted into two methods.
         // NOTE: metapolatorStandAlone.cpsAPITools.addNewRule ane addNewAtImport
         // use canonicalStartIndex!
+        // (and I just backported parameterDict to comply with this API because
+        // it was less effort for the moment)
 
         // prune the cache.
         this._rules = null;
 
+        // FIXME: it seems that "update" (check!!!) is not taken yet as an
+        // event name. PropertyDict uses "update" in th is case. For the
+        // sake of a more unified interface, I say "update" is the new
+        // "structural-change"
         events.push('structural-change');
         // TODO: Add maybe information like three numbers:
         //      index, deletedCount, insertedCount

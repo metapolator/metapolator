@@ -154,7 +154,6 @@ mtk-cps-panel {
     /* used as drag indicator */
     indicator {
         display: block;
-        margin-left: 50px;
         max-width: 250px;
         position: relative;
         outline: 1px solid grey;
@@ -254,7 +253,7 @@ mtk-cps-panel {
         }
 
         > div {
-            display: inline;
+            display: inline-block;
             position: relative;
         }
         .invalid {
@@ -285,13 +284,29 @@ mtk-cps-panel {
         white-space: nowrap;
     }
 
-    mtk-cps-collection {
+    mtk-cps-collection-li {
         background-color: rgba(100, 155, 50, 0.05);
         display: block;
-    }
-    mtk-cps-collection > *{
         padding-left: 1em;
     }
+
+    mtk-cps-namespace-collection {
+        > mtk-cps-selector-list::before{
+            content: "@namespace (";
+        }
+        > mtk-cps-selector-list{
+            /*eliminates a pesky space between the element and the ::after*/
+            display: inline-flex;
+        }
+        > mtk-cps-selector-list::after{
+            content: ") {";
+        }
+    }
+    mtk-cps-namespace-collection::after{
+        content: "}";
+        display: block;
+    }
+
 
     @tool-size: 1em;
     mtk-drag-handle,

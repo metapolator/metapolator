@@ -34,11 +34,11 @@ define([
         this.$scope.items = this.cpsPropertyDict.items.map(makeItem, this);
     };
 
-    _p.acceptMoveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
+    _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
         var _targetIndex = insertPosition === 'append'
                 ? this.cpsPropertyDict.length
                 : targetIndex
-          , isIdentical = (sourcePropertyDict === this.cpsPropertyDict
+          , isIdentical = (source === this.cpsPropertyDict
                           && (   (sourceIndex === _targetIndex)
                               || (insertPosition === 'before' && _targetIndex-1 === sourceIndex)
                               || (insertPosition === 'after'  && _targetIndex+1 === sourceIndex)
@@ -48,10 +48,10 @@ define([
         return !isIdentical;
     };
 
-    _p.moveProperty = function(sourcePropertyDict, sourceIndex, targetIndex, insertPosition) {
+    _p.moveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
         errors.assert(
-            this.acceptMoveProperty(sourcePropertyDict, sourceIndex, targetIndex)
-          , 'moveProperty is rejected'
+            this.acceptMoveCPSElement(source, sourceIndex, targetIndex)
+          , 'move CPS-Element is rejected'
         );
         var _targetIndex = insertPosition === 'append'
                 ? this.cpsPropertyDict.length
@@ -67,16 +67,16 @@ define([
             // a target index bigger than the last index will always be
             // an append, we don't need to be more exact here
         }
-        else if(sourcePropertyDict === this.cpsPropertyDict
+        else if(source === this.cpsPropertyDict
                 && sourceIndex < _targetIndex)
             // we are in the same dict, and we will first have the
             // item reoved. So, the target index is one less
             // strange stuff should already be prevented by
-            // this.acceptMoveProperty
+            // this.acceptMoveCPSElement
             _targetIndex -= 1;
 
 
-        cpsTools.moveProperty(sourcePropertyDict, sourceIndex
+        cpsTools.moveCPSElement(source, sourceIndex
                              , this.cpsPropertyDict, _targetIndex);
     };
 

@@ -22,7 +22,8 @@
 
             mtk-drag="cps/comment"
             mtk-drag-data="[controller.cpsPropertyDict, $index]"
-        >!</mtk-cps-comment>
+
+        ></mtk-cps-comment>
         <span ng-switch-default>{{item[1].constructor.name}}:: {{item[1].toString()}}</span>
     </li>
     <li ng-if="$parent.newProperty" >
