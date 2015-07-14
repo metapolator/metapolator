@@ -78,19 +78,12 @@ define([
         var target = findElement(event.target, dropElementTags, element) || null
           , targetIndexData
           , index = null
-          , insertPosition
+          , insertPosition = null
           ;
         if(target) {
             targetIndexData = getTargetIndex(event, target);
             index = targetIndexData[0];
             insertPosition = targetIndexData[1] ? 'before' : 'after';
-        }
-        else {
-            // If no target was found, the drag should just append the
-            // property. if that feels bad we could test if we find out
-            // if we rather should prepend;
-            // It's not as easy to display the indicator here!
-            insertPosition = 'append';
         }
         return {
             index: index
@@ -115,6 +108,7 @@ define([
                   , data
                   , target
                   , indicatorReference
+                  , indicatorInsertPosition
                   , i, l
                   ;
 
@@ -131,22 +125,30 @@ define([
 
                 data = dataEntry.payload;
 
-                // figure out where to drop and move an indicator to there
-                target = getTargetData(element[0], event, dropElementTags);
+                if(!controller.empty)
+                    target = getTargetData(element[0], event, dropElementTags);
+                else
+                    target = {
+                        index: 0
+                      , insertPosition: 'before'
+                      , element: theList
+                    };
 
-                if(!controller.acceptMoveCPSElement(data[0], data[1], target.index, target.insertPosition)) {
+                if(!target.insertPosition
+                        || !controller.acceptMoveCPSElement(data[0], data[1], target.index, target.insertPosition)) {
                     // hide the indicator if this is an identity-dragover...
                     dragIndicatorService.hideIndicator(indicatorId);
                     return;
                 }
 
                 // place the indicator:
-                indicatorReference = (target.insertPosition === 'append')
-                        ? theList
-                        : findParentElement(target.element, 'li', false, theList)
-                        ;
-                // insertPosition is "before" "after" or "append"
-                dragIndicatorService.insertIndicator(indicatorId, indicatorReference, target.insertPosition);
+                indicatorReference = controller.empty
+                    ? target.element
+                    : findParentElement(target.element, 'li', false, theList)
+                    ;
+                indicatorInsertPosition = controller.empty ? 'append' : target.insertPosition
+                // insertPosition is "before" or "after" or "append"
+                dragIndicatorService.insertIndicator(indicatorId, indicatorReference, indicatorInsertPosition);
 
                 // accepted
                 event.preventDefault();//important
@@ -165,10 +167,18 @@ define([
 
                 data = dataEntry.payload;
 
-                target = getTargetData(element[0], event, dropElementTags);
+                if(!controller.empty)
+                    target = getTargetData(element[0], event, dropElementTags);
+                else
+                    target = {
+                        index: 0
+                      , insertPosition: 'before'
+                      , element: theList
 
+                    };
                 // don't accept if this is an identity-drop...
-                if(!controller.acceptMoveCPSElement(data[0], data[1], target.index, target.insertPosition))
+                if(!target.insertPosition
+                        || !controller.acceptMoveCPSElement(data[0], data[1], target.index, target.insertPosition))
                     return;
 
                 event.preventDefault();

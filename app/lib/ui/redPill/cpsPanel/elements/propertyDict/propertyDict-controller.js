@@ -34,15 +34,17 @@ define([
         this.$scope.items = this.cpsPropertyDict.items.map(makeItem, this);
     };
 
+    Object.defineProperty(_p, 'empty', {
+        get: function(){
+            return !this.cpsPropertyDict.length;
+        }
+    });
+
     _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
-        var _targetIndex = insertPosition === 'append'
-                ? this.cpsPropertyDict.length
-                : targetIndex
-          , isIdentical = (source === this.cpsPropertyDict
-                          && (   (sourceIndex === _targetIndex)
-                              || (insertPosition === 'before' && _targetIndex-1 === sourceIndex)
-                              || (insertPosition === 'after'  && _targetIndex+1 === sourceIndex)
-                              || (insertPosition === 'append' && _targetIndex-1 === sourceIndex)
+          var isIdentical = (source === this.cpsPropertyDict
+                          && (   (sourceIndex === targetIndex)
+                              || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
+                              || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
                           ))
           ;
         return !isIdentical;
@@ -53,10 +55,7 @@ define([
             this.acceptMoveCPSElement(source, sourceIndex, targetIndex)
           , 'move CPS-Element is rejected'
         );
-        var _targetIndex = insertPosition === 'append'
-                ? this.cpsPropertyDict.length
-                : targetIndex
-                ;
+        var _targetIndex = targetIndex;
 
         if(insertPosition === 'after') {
             _targetIndex += 1;
