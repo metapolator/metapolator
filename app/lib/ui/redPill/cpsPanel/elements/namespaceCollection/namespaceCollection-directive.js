@@ -12,7 +12,6 @@ define([
     var find = '<!-- collection.tpl -->'
       , _template = template.replace(find, collectionTPL)
       ;
-    console.log(_template);
 
     function NamespaceCollectionDirective($compile) {
         function link(scope, element, attrs) {
