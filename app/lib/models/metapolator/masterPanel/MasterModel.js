@@ -6,9 +6,10 @@ define([
   , GlyphModel
 ){
     "use strict";
-    function MasterModel(name, baseParameters, baseOperators, parent, masterPanel) {
+    function MasterModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
         this.level = "master";
         this.name = name;
+        this.MOMelement = MOMelement;
         this.displayName = name;
         this.display = false;
         this.edit = [true, true];
@@ -33,8 +34,8 @@ define([
     
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
     
-    _p.addGlyph = function(name) {
-        var glyph = new GlyphModel(name, this.name, this.baseParameters, this.baseOperators, this, this.masterPanel);
+    _p.addGlyph = function(name, MOMelement) {
+        var glyph = new GlyphModel(name, this.name, this.baseParameters, this.baseOperators, this, this.masterPanel, MOMelement);
         this.children.push(glyph);
         return glyph;
     };

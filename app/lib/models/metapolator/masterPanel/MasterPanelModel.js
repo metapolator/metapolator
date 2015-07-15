@@ -51,9 +51,9 @@ define([
             step : 0.005,
             decimals : 4,
             effectiveLevel : "glyph",
-            getInitial : function(element) {
+            getInitial : function(MOMelement) {
                 // temp hack untill #392 is fixed
-                //return element._advanceWidth;
+                return MOMelement._advanceWidth;
             }
         }, {
             name : "Weight",
@@ -62,8 +62,8 @@ define([
             step : 0.1,
             decimals : 2,
             effectiveLevel : "point",
-            getInitial : function(element) {
-                //return element.right.getComputedStyle().get("onLength");
+            getInitial : function(MOMelement) {
+                return MOMelement.right.getComputedStyle().get("onLength");
             }
         }];
         this.baseOperators = [{

@@ -4,9 +4,10 @@ define([
     Parent
 ){
     "use strict";
-    function PointModel(name, baseParameters, baseOperators, parent, masterPanel) {
+    function PointModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
         this.level = "point";
         this.name = name;
+        this.MOMelement = MOMelement;
         this.parameters = [];
         this.addBaseModels(baseParameters, baseOperators);
         

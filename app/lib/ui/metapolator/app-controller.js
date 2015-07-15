@@ -18,20 +18,20 @@ define([
             // skip base for the ui
             if (masterName !== "base") {
                 var MOMglyphs = MOMmaster.children
-                  , master = model.masterPanel.sequences[0].addMaster(masterName);
+                  , master = model.masterPanel.sequences[0].addMaster(masterName, MOMmaster);
                 for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
                     var MOMglyph = MOMglyphs[j]
                       , glyphName = MOMglyph.id
                       , MOMpenstrokes = MOMglyph.children
-                      , glyph = master.addGlyph(glyphName);
+                      , glyph = master.addGlyph(glyphName, MOMglyph);
                     for (var k = 0, kl = MOMpenstrokes.length; k < kl; k++) {
                           var MOMpenstroke = MOMpenstrokes[k]
                               , penstrokeName = "penstroke:i(" + k + ")"
                               , MOMpoints = MOMpenstroke.children
-                              , penstroke = glyph.addPenstroke(penstrokeName);
+                              , penstroke = glyph.addPenstroke(penstrokeName, MOMpenstroke);
                           for (var m = 0, ml = MOMpoints.length; m < ml; m++) {
                               var pointName = "point:i(" + m + ")";
-                              penstroke.addPoint(pointName);
+                              penstroke.addPoint(pointName, MOMpoints[m]);
                           }
                       }
                 }

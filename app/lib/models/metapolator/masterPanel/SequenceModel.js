@@ -22,9 +22,9 @@ define([
         
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
-    _p.addMaster = function(name) {
+    _p.addMaster = function(name, MOMelement) {
         window.logCall("addMaster");
-        var master = new MasterModel(name, this.baseParameters, this.baseOperators, this, this.parent);
+        var master = new MasterModel(name, this.baseParameters, this.baseOperators, this, this.parent, MOMelement);
         this.children.push(master);
         return master;
     };

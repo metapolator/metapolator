@@ -106,6 +106,9 @@ function(
     
     _p.findLevelOffspring = function(level) {
         window.logCall("findLevelOffspring");
+        // this function starts to walk down the tree until it reaches the argument level
+        // and returns all element of that specific level. Eg: If you ask for point level
+        // of glyph "A", it returns all points of "A".
         var levelOffspring = [this]
           , tempArray = [];
         while(levelOffspring[0].level != level) {

@@ -16,9 +16,9 @@ define([
         this.operators = [];
         // if the level corresponds with the effective level of the parameter
         // the effective value and the initial value are stored here
-        if (level == parameter.effectiveLevel) {
-            this.effectiveValue = 100;
-            this.initial = 100;
+        if (level === parameter.effectiveLevel) {
+            this.effectiveValue = null;
+            this.initial = null;
             this.getInitial = parameter.getInitial;
         }
         this.operatorCounter = 0;
@@ -34,8 +34,10 @@ define([
         
     var _p = ParameterModel.prototype = Object.create(Parent.prototype);
     
-    _p.setInitial = function() {
-        this.initial = this.getInitial();
+    _p.setInitial = function(MOMelement) {
+        var measuredValue = this.getInitial(MOMelement);
+        this.initial = measuredValue;
+        this.effectiveValue = measuredValue;
     };
     
     _p.addOperator = function(operator, id) {
