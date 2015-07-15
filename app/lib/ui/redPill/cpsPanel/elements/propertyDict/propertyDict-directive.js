@@ -41,7 +41,7 @@ define([
      * This is very specific for the structure of the directive. You change
      * the template, this breaks. This breaks, drag and drop behaves wrong.
      */
-    function findElement(element, dropElementTags, parentLimit) {
+    function findElement(dropElementTags, element, parentLimit) {
         // This assumes that the structure is an <li>
         // of which the direct child is one of dropElementTags
         // everything above li is has many possible drop targets.
@@ -61,138 +61,35 @@ define([
         return undefined;
     }
 
-    function getTargetIndex(event, target) {
-        var targetIndex = angular.element(target).isolateScope().index
-          , insertBefore = true
-          , elementBBox = target.getBoundingClientRect()
-          , elementHeight = elementBBox.bottom - elementBBox.top
-          , tippingPointY =  elementBBox.top + elementHeight / 2
-          ;
-
-        if (event.clientY > tippingPointY)
-            insertBefore = false;
-        return [targetIndex, insertBefore];
+    function getIndicatorReference(empty, element, container) {
+        return empty
+            ? container
+            : findParentElement(element, 'li', false, container)
+            ;
     }
 
-    function getTargetData(element, event, dropElementTags) {
-        var target = findElement(event.target, dropElementTags, element) || null
-          , targetIndexData
-          , index = null
-          , insertPosition = null
-          ;
-        if(target) {
-            targetIndexData = getTargetIndex(event, target);
-            index = targetIndexData[0];
-            insertPosition = targetIndexData[1] ? 'before' : 'after';
-        }
-        return {
-            index: index
-          , insertPosition: insertPosition
-          , element: target
-        };
-    }
-
-    function PropertyDictDirective(dragDataService, dragIndicatorService) {
+    function PropertyDictDirective(DropHelper) {
 
         function link(scope, element, attrs, controller) {
             // there is also a dragenter and dragleave event, but they
             // are not necessary for the most simple usage
-            var theList = element[0].getElementsByTagName('ol')[0]
+            var container = element[0].getElementsByTagName('ol')[0]
               , indicatorId = 'cps-drop-indicator'
               , dataTypes = ['cps/property', 'cps/comment']
               , dropElementTags = ['mtk-cps-property', 'mtk-cps-comment']
+              , dropHelper = new DropHelper(
+                    findElement.bind(null, dropElementTags)
+                  , getIndicatorReference
+                  , dataTypes
+                  , indicatorId
+                  , controller
+                  , element[0]
+                  , container
+                )
               ;
 
-            element.on('dragover', function (event) {
-                var dataEntry
-                  , data
-                  , target
-                  , indicatorReference
-                  , indicatorInsertPosition
-                  , i, l
-                  ;
-
-                if(event.defaultPrevented)
-                    // someone below already accepted the drag
-                    return;
-
-                dataEntry = dragDataService.getFirst(dataTypes);
-
-                if(!dataEntry) {
-                    dragIndicatorService.hideIndicator(indicatorId);
-                    return;
-                }
-
-                data = dataEntry.payload;
-
-                if(!controller.empty)
-                    target = getTargetData(element[0], event, dropElementTags);
-                else
-                    target = {
-                        index: 0
-                      , insertPosition: 'before'
-                      , element: theList
-                    };
-
-                if(!target.insertPosition
-                        || !controller.acceptMoveCPSElement(data[0], data[1], target.index, target.insertPosition)) {
-                    // hide the indicator if this is an identity-dragover...
-                    dragIndicatorService.hideIndicator(indicatorId);
-                    return;
-                }
-
-                // place the indicator:
-                indicatorReference = controller.empty
-                    ? target.element
-                    : findParentElement(target.element, 'li', false, theList)
-                    ;
-                indicatorInsertPosition = controller.empty ? 'append' : target.insertPosition
-                // insertPosition is "before" or "after" or "append"
-                dragIndicatorService.insertIndicator(indicatorId, indicatorReference, indicatorInsertPosition);
-
-                // accepted
-                event.preventDefault();//important
-                event.dataTransfer.dropEffect = 'move';
-            });
-
-            element.on('drop', function(event) {
-                var dataEntry = dragDataService.getFirst(dataTypes)
-                  , data
-                  , sourcePropertyDict
-                  , sourceIndex
-                  , target
-                  ;
-                if(!dataEntry)
-                    return;
-
-                data = dataEntry.payload;
-
-                if(!controller.empty)
-                    target = getTargetData(element[0], event, dropElementTags);
-                else
-                    target = {
-                        index: 0
-                      , insertPosition: 'before'
-                      , element: theList
-
-                    };
-                // don't accept if this is an identity-drop...
-                if(!target.insertPosition
-                        || !controller.acceptMoveCPSElement(data[0], data[1], target.index, target.insertPosition))
-                    return;
-
-                event.preventDefault();
-                sourcePropertyDict = data[0];
-                sourceIndex = data[1];
-
-                // If the drag item is removed from the DOM by this drop
-                // (it is for moves), we don't get a dragend event. So
-                // this needs to clean up as well.
-                // Making the execution of the move async would also help.
-                dragDataService.remove(dataEntry.type);
-
-                controller.moveCPSElement(sourcePropertyDict, sourceIndex, target.index, target.insertPosition);
-            });
+            element.on('dragover', dropHelper.dragoverHandler);
+            element.on('drop', dropHelper.dropHandler);
         }
 
         return {
@@ -206,6 +103,6 @@ define([
           , link: link
         };
     }
-    PropertyDictDirective.$inject = ['dragDataService', 'dragIndicatorService'];
+    PropertyDictDirective.$inject = ['DropHelper'];
     return PropertyDictDirective;
 });

@@ -52,6 +52,20 @@ define([
         }
     });
 
+
+    _p.isIdentityMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
+        // Almost not touched when copied from PropertyDictController
+        // just changed this.cpsPropertyDict to this.cpsCollection
+        // could be reduced to a helper in its core.
+        var isIdentical = (source === this.cpsCollection
+                          && (   (sourceIndex === targetIndex)
+                              || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
+                              || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
+                          ))
+          ;
+        return isIdentical;
+    }
+
     _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
         var dragItem = source.getItem(sourceIndex);
 
@@ -64,17 +78,7 @@ define([
         if(event.defaultPrevented)
             return false;
 
-
-        // Almost not touched when copied from PropertyDictController
-        // just changed this.cpsPropertyDict to this.cpsCollection
-        // could be reduced to a helper in its core.
-        var isIdentical = (source === this.cpsCollection
-                          && (   (sourceIndex === targetIndex)
-                              || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
-                              || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
-                          ))
-          ;
-        return !isIdentical;
+        return !this.isIdentityMoveCPSElement(source, sourceIndex, targetIndex, insertPosition);
     };
 
     // Almost not touched when copied from PropertyDictController

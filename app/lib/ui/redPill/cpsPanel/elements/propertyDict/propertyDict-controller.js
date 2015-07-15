@@ -40,14 +40,18 @@ define([
         }
     });
 
-    _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
-          var isIdentical = (source === this.cpsPropertyDict
+    _p.isIdentityMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
+        var isIdentical = (source === this.cpsPropertyDict
                           && (   (sourceIndex === targetIndex)
                               || (insertPosition === 'before' && targetIndex-1 === sourceIndex)
                               || (insertPosition === 'after'  && targetIndex+1 === sourceIndex)
                           ))
           ;
-        return !isIdentical;
+        return isIdentical;
+    }
+
+    _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
+        return !this.isIdentityMoveCPSElement(source, sourceIndex, targetIndex, insertPosition);
     };
 
     _p.moveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
