@@ -46,21 +46,8 @@ define([
     _p._modelFactory = function() {
         var model = new AppModel();
         // set initial model data
-        // FIXME: this stuff too much hardcoding, we need a saner way to do this things
         model.masterPanel.addSequence("Sequence 1");
         model.instancePanel.addSequence("Family 1");
-        // creation of inital masters
-        var masters = ["regular"];
-        var glyphs = ["A", "B", "C", "D", "E", "F", "G", "H", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "space"];
-        masters.forEach(function(master) {
-            // this = model.masterPanel.sequences[0]
-            this.addMaster(master);
-            glyphs.forEach(function(glyph) {
-                // this = model.masterPanel.sequences[0]
-                var masterIndex = this.children.length - 1;
-                this.children[masterIndex].addGlyph(glyph);
-            }, this);
-        }, model.masterPanel.sequences[0]);
         model.designSpacePanel.addDesignSpace();
         model.designSpacePanel.currentDesignSpace = model.designSpacePanel.designSpaces[0];
         return model;

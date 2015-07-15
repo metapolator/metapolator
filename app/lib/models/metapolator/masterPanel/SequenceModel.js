@@ -24,9 +24,9 @@ define([
     
     _p.addMaster = function(name) {
         window.logCall("addMaster");
-        this.children.push(
-            new MasterModel(name, this.baseParameters, this.baseOperators, this, this.parent)
-        );
+        var master = new MasterModel(name, this.baseParameters, this.baseOperators, this, this.parent);
+        this.children.push(master);
+        return master;
     };
     
 
