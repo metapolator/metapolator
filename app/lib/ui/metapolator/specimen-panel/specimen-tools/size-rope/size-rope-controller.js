@@ -13,6 +13,14 @@ define([], function() {
             $scope.model.updateLineHeight();
             $scope.$apply();
         };
+
+        $scope.handleSVGbox = function() {
+            var ul = document.getElementsByClassName("specimen-ul-" + $scope.type)[0];
+            var children = ul.children;
+            for (var i = 0, l = children.length; i < l; i++) {
+                children[i].firstElementChild.style.width = "auto";
+            }
+        };
     }
 
 

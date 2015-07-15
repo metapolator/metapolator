@@ -7,7 +7,8 @@ define(['require/text!./specimen-tools.tpl'], function(template) {
           , replace : false
           , template : template
           , scope : {
-                model : '=mtkModel'
+                model : '=mtkModel',
+                type : '=type',
             }
         };
     }

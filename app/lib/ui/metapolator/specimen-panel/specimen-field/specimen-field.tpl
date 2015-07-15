@@ -3,7 +3,7 @@
      class="specimen-content non-glyph-range" 
      ng-class="'specimen-field-' + model.name"
      ng-if="model.mixer.specimenSamples.currentSample.name != 'Glyph Range'">
-    <ul>
+    <ul class="specimen-ul-{{type}}">
         <li ng-repeat="glyphContainer in model.filteredGlyphs track by glyphContainer.glyphId"
             ng-class="'master-' + glyphContainer.glyph.masterName"><!--
             --><mtk-glyph mtk-model="glyphContainer.glyph" 

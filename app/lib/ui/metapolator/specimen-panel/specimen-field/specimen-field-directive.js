@@ -8,6 +8,7 @@ define(['require/text!./specimen-field.tpl'], function(template) {
           ,  template : template
           ,  scope : {
                 model : '=mtkModel'
+              , type : '=type'
             }
         };
     }

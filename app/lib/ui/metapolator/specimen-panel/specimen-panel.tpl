@@ -1,2 +1,2 @@
-<mtk-specimen-tools mtk-model="model"></mtk-specimen-tools>
-<mtk-specimen-field mtk-model="model"></mtk-specimen-field>
+<mtk-specimen-tools mtk-model="model" type="model.name"></mtk-specimen-tools>
+<mtk-specimen-field mtk-model="model" type="model.name"></mtk-specimen-field>
