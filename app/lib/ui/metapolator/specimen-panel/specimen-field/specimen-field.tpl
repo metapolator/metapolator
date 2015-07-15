@@ -9,9 +9,7 @@
             --><mtk-glyph mtk-model="glyphContainer.glyph" 
                           ng-click="glyphClick($event, glyphContainer.glyph)"
                           ng-class="{'selected' : glyphContainer.glyph.edit}" 
-                          ng-style="{'height': model.sizes.fontSize + 'px'}">
-                            {{glyphContainer.glyph.name}}
-                          </mtk-glyph><!--
+                          ng-style="{'height': model.sizes.fontSize + 'px'}"></mtk-glyph><!--
             
         --></li>
     </ul>

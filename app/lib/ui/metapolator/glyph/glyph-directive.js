@@ -13,7 +13,8 @@ define([
                 var masterName = scope.model.masterName
                   , glyphName = scope.model.name
                 // add css classes for breaks and spaces
-                  , parentElement = element.parent();
+                  , parentElement = element.parent()
+                  , svg;
                 if (glyphName == "space") {
                     parentElement.addClass("space-character");
                 } else if (glyphName == "*n") {
@@ -38,9 +39,14 @@ define([
                         }
                     } else if (scope.model.type == "instance") {
                         scope.checkBaseMasters(scope.model);
-                    }       
+                    }
+                    svg = scope.renderGlyph(masterName, glyphName);
+                    console.log(svg);
+                    element.append(svg);
+
+
                     element.bind('$destroy', function(event) {
-                        //stateful.glyphRendererAPI.revoke(masterName, glyphName);
+                        scope.revokeGlyph(masterName, glyphName);
                     });
                 }
             }

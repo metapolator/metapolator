@@ -1,6 +1,6 @@
 define([], function() {
     "use strict";
-    function GlyphController($scope) {
+    function GlyphController($scope, glyphRendererAPI) {
         this.$scope = $scope;
         this.$scope.name = 'glyph';
         
@@ -17,9 +17,17 @@ define([], function() {
                 } 
             }
         };
+
+        $scope.renderGlyph = function(masterName, glyphName) {
+            return glyphRendererAPI.get(masterName, glyphName);
+        };
+
+        $scope.revokeGlyph = function(masterName, glyphName) {
+            glyphRendererAPI.revoke(masterName, glyphName);
+        };
     }
 
-    GlyphController.$inject = ['$scope'];
+    GlyphController.$inject = ['$scope', 'glyphRendererAPI'];
     var _p = GlyphController.prototype;
 
     return GlyphController;
