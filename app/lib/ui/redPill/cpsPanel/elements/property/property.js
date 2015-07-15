@@ -5,6 +5,7 @@ define([
   , './newProperty-controller'
   , './newProperty-directive'
   , './editProperty-directive'
+  , 'metapolator/ui/redPill/cpsPanel/elementToolbar/elementToolbar'
 ], function(
     angular
   , Controller
@@ -12,9 +13,10 @@ define([
   , NewPropertyController
   , newPropertyDirective
   , editPropertyDirective
+  , elementToolbar
 ) {
     "use strict";
-    return angular.module('cps.property', [])
+    return angular.module('cps.property', [elementToolbar.name])
       .controller('PropertyController', Controller)
       .directive('mtkCpsProperty', directive)
       .controller('NewPropertyController', NewPropertyController)

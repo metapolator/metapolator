@@ -16,7 +16,7 @@ define([
     function NamespaceCollectionDirective($compile) {
         function link(scope, element, attrs) {
             element.append(_template);
-            $compile(element.contents())(scope)
+            $compile(element.contents())(scope);
         }
 
         return {
@@ -24,7 +24,7 @@ define([
           , controller: 'NamespaceCollectionController'
           , replace: false
           , template: ''
-          , scope: { cpsCollection: '=' , index: '='}
+          , scope: { cpsCollection: '=' , index: '=', mtkElementTools: '='}
           , link: link
           /*CAUTION: if
           , bindToController: true >>> then reference $scope.index=controller.index in the controller

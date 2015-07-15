@@ -1,5 +1,7 @@
 define([
+    'metapolator/ui/redPill/cpsPanel/elementToolbar/clickHandler'
 ], function(
+    clickHandler
 ) {
     "use strict";
     function CommentController($scope) {
@@ -8,7 +10,7 @@ define([
         // this: angular.element(target).isolateScope().index
         // doesn't work without help.
         this.$scope.index = this.index;
-
+        this.clickToolHandler = clickHandler.bind(this, 'toolClick');
     }
 
     CommentController.$inject = ['$scope'];

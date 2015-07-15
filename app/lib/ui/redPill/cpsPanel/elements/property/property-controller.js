@@ -1,9 +1,11 @@
 define([
     'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
   , 'metapolator/ui/redPill/cpsPanel/elements/helpers'
+  , 'metapolator/ui/redPill/cpsPanel/elementToolbar/clickHandler'
 ], function(
     cpsTools
   , helpers
+  , clickHandler
 ) {
     "use strict";
     function PropertyController($scope) {
@@ -13,8 +15,16 @@ define([
         $scope.startEdit = this._startEdit.bind(this);
         $scope.finalize = this._finalize.bind(this);
 
+        // needed for mtk-element-toolbar, creates the function this.clickTool
+        this.toolClickHandler = clickHandler.bind(this, 'toolClick');
+
+        // not needed when switching to bindToController: true
+        this.index = $scope.index;
+        $scope.controller = this;
+
         this._initPropertyModel();
         this._setValueBoxSize($scope.propertyModel.value);
+
     }
 
     PropertyController.$inject = ['$scope'];
@@ -33,23 +43,7 @@ define([
         };
         $scope.invalid = property.invalid;
         $scope.message = property.message || '';
-
-        // define some tools
-        // later these tools will probebly accessed differently=u
-        $scope.tools = ['delete'];
-        $scope.clickTool = this._toolClickHandler.bind(this);
     };
-
-    _p._toolClickHandler = function(event, tool) {
-        event.stopPropagation();
-        if(tool === 'delete')
-            setTimeout(this._delete.bind(this));
-    }
-
-    _p._delete = function() {
-        var $scope = this.$scope;
-        $scope.cpsPropertyDict.splice($scope.index, 1, []);
-    }
 
     _p._setValueBoxSize = function(value) {
         var $scope = this.$scope
@@ -68,7 +62,7 @@ define([
         //    cpsPropertyDict.on should probably better trigger async when
         //    used by ui code(?)
         setTimeout(cpsTools.updateProperty, 0, $scope.cpsPropertyDict
-                                             , $scope.index, property);
+                                             , this.index, property);
     };
 
     _p._getNewProperty = function() {
@@ -96,7 +90,9 @@ define([
     };
 
     _p._startEdit = function(event) {
-        var $scope = this.$scope;
+        var $scope = this.$scope
+          , focus
+          ;
         // this is used to decide which editing field should get
         // focus. The target element should have either 'property-name'
         // or 'property-value' as a class, but we always fall back to
@@ -105,8 +101,8 @@ define([
             focus = 'name';
         else
             focus = 'value';
-        $scope.$emit('setEditProperty', $scope.index, {focus: focus});
-    }
+        $scope.$emit('setEditProperty', this.index, {focus: focus});
+    };
 
     _p._finalize = function() {
         var $scope = this.$scope;

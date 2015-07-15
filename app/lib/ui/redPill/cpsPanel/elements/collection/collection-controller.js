@@ -8,7 +8,10 @@ define([
     "use strict";
     function CollectionController($scope) {
         this.$scope = $scope;
+
         $scope.controller = this;
+        this.index = $scope.index;
+
         this.cpsCollection = $scope.cpsCollection;
         this._setItems();
         // subscribe to the collection ...
@@ -17,6 +20,8 @@ define([
 
         $scope.$on('$destroy', this._destroy.bind(this));
         $scope.$on('checkParentCollection', this._checkParentHandler.bind(this));
+        $scope.elementTools = ['delete'];
+        $scope.$on('toolClick', this._toolCLickHandler.bind(this));
 
     }
 
@@ -64,7 +69,7 @@ define([
                           ))
           ;
         return isIdentical;
-    }
+    };
 
     _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
         var dragItem = source.getItem(sourceIndex);
@@ -111,6 +116,24 @@ define([
 
         cpsTools.moveCPSElement(source, sourceIndex
                              , this.cpsCollection, _targetIndex);
+    };
+
+    _p.deleteCPSElement = function(index) {
+        this.cpsCollection.splice(index, 1, []);
+    };
+
+    _p._toolCLickHandler = function(event, tool, index) {
+        // always stop propagation, we don't want a parent element handle
+        // tool clicks
+        event.stopPropagation();
+        switch(tool) {
+            case 'delete':
+                setTimeout(this.deleteCPSElement.bind(this, index));
+                break;
+            default:
+                console.warn('unkown tool clicked:', tool, 'index:', index);
+        }
+
     };
 
     return CollectionController;

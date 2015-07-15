@@ -24,7 +24,7 @@ define([
           , controller: 'PropertyController'
           , replace: false
           , template: template
-          , scope: {cpsPropertyDict: '=', property: '=', index: '=', edit: '='}
+          , scope: {cpsPropertyDict: '=', property: '=', index: '=', edit: '=', mtkElementTools: '='}
           , link: link
         };
     }

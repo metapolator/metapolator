@@ -9,6 +9,7 @@
             index="$index"
             edit="controller.getEditingPropertyData($index, false)"
 
+            mtk-element-tools="elementTools"
             mtk-drag="cps/property"
             mtk-drag-data="[controller.cpsPropertyDict, $index]"
 
@@ -16,10 +17,10 @@
         <mtk-cps-comment
             ng-switch-when="Comment"
 
-            cps-property-dict="controller.cpsPropertyDict"
             comment="item[1]"
             index="$index"
 
+            mtk-element-tools="elementTools"
             mtk-drag="cps/comment"
             mtk-drag-data="[controller.cpsPropertyDict, $index]"
 

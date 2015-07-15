@@ -17,6 +17,9 @@ define([
         $scope.$on('setEditProperty', this._setEditPropertyHandler.bind(this));
         this._editingProperty = null;
 
+        this.$scope.elementTools = ['delete'];
+        $scope.$on('toolClick', this._toolCLickHandler.bind(this));
+
         // subscribe to propertyDict
         this._propertyDictSubscription = this.cpsPropertyDict.on(
                             'update', [this, '_propertyDictUpdateHandler']);
@@ -48,7 +51,7 @@ define([
                           ))
           ;
         return isIdentical;
-    }
+    };
 
     _p.acceptMoveCPSElement = function(source, sourceIndex, targetIndex, insertPosition) {
         return !this.isIdentityMoveCPSElement(source, sourceIndex, targetIndex, insertPosition);
@@ -108,6 +111,24 @@ define([
         event.stopPropagation();
         this._setEditingProperty(index, data);
         this.$scope.$apply();
+    };
+
+    _p._toolCLickHandler = function(event, tool, index) {
+        // always stop propagation, we don't want a parent element handle
+        // tool clicks
+        event.stopPropagation();
+        switch(tool) {
+            case 'delete':
+                setTimeout(this.deleteCPSElement.bind(this, index));
+                break;
+            default:
+                console.warn('unkown tool clicked:', tool, 'index:', index);
+        }
+
+    };
+
+    _p.deleteCPSElement = function(index) {
+        this.cpsPropertyDict.splice(index, 1, []);
     };
 
     _p._isEditingProperty = function(index) {

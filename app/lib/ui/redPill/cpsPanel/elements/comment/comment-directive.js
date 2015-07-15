@@ -15,7 +15,7 @@ define([
           , controller: 'CommentController'
           , replace: false
           , template: template
-          , scope: {cpsPropertyDict: '=', comment: '=', index: '='}
+          , scope: {comment: '=', index: '=', mtkElementTools: '='}
           , controllerAs: 'ctrl'
           , bindToController: true
           , link: link

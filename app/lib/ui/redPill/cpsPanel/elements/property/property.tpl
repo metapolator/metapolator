@@ -2,13 +2,8 @@
 <div ng-if="!edit" title="{{message}}" ng-class="{invalid: invalid}">
     <span class="display property-name">{{propertyModel.name}}</span>:
     <span class="display property-value">{{propertyModel.value}}</span>;<!--
-    --><mtk-cps-toolbar ng-if="tools" tools="tools"><div><!--
-        --><mtk-drag-handle draggable="true"></mtk-drag-handle><!--
-        --><mtk-cps-toolbutton
-                ng-repeat="tool in tools"
-                class="tool-{{tool}}"
-                title={{tool}}
-                ng-click="clickTool($event, tool)"
-                >{{tool}}</mtk-cps-toolbutton><!--
-    --></div></mtk-cps-toolbar>
+     --><mtk-element-toolbar
+            mtk-tools="mtkElementTools"
+            mtk-click-handler="controller.toolClickHandler"
+        ></mtk-element-toolbar>
 </div>

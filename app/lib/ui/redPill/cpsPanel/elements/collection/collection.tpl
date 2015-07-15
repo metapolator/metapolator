@@ -5,6 +5,7 @@
         cps-rule="item"
         index="$index"
 
+        mtk-element-tools="elementTools"
         mtk-drag="cps/rule"
         mtk-drag-data="[cpsCollection, $index]"
 
@@ -15,6 +16,7 @@
         cps-collection="item"
         index="$index"
 
+        mtk-element-tools="elementTools"
         mtk-drag="cps/namespace-collection"
         mtk-drag-data="[cpsCollection, $index]"
 
@@ -27,6 +29,7 @@
         comment="item"
         index="$index"
 
+        mtk-element-tools="elementTools"
         mtk-drag="cps/comment"
         mtk-drag-data="[cpsCollection, $index]"
 

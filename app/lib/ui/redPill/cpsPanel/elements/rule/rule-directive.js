@@ -20,7 +20,7 @@ define([
           , controller: 'RuleController'
           , replace: false
           , template: template
-          , scope: {cpsRule: '=', index: '='}
+          , scope: {cpsRule: '=', index: '=', mtkElementTools: '='}
           , bindToController: true
           , controllerAs: 'controller'
           , link: link
