@@ -17,6 +17,7 @@ define([
         // load all masters, because right now it is very confusing
         // when some masters are missing from the MOM
         this.project.masters.forEach(this.project.open, this.project);
+        this._loadMOMmasters();
 
         this.glyphRendererAPI = new GlyphRendererAPI(document, project.controller);
         // FIXME: this is the MOM/CPS model, rename? The name is inherited
@@ -45,12 +46,41 @@ define([
     // probably this should be replaced by sth. like `new AppModel(data);`
     _p._modelFactory = function() {
         var model = new AppModel();
-        // set initial model data
-        model.masterPanel.addSequence("Sequence 1");
         model.instancePanel.addSequence("Family 1");
         model.designSpacePanel.addDesignSpace();
         model.designSpacePanel.currentDesignSpace = model.designSpacePanel.designSpaces[0];
         return model;
+    };
+
+    _p._loadMOMmasters = function() {
+        // load initial MOMmasters with MOMglyphs into model
+        var sequence = this.model.masterPanel.addSequence("Sequence 1")
+          , MOMmasters = this.project.controller.queryAll("master");
+        for (var i = 0, l = MOMmasters.length; i < l; i++) {
+            var MOMmaster = MOMmasters[i]
+                , masterName = MOMmaster.id;
+            // skip base for the ui
+            if (masterName !== "base") {
+                var MOMglyphs = MOMmaster.children
+                    , master = sequence.addMaster(masterName, MOMmaster);
+                for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
+                    var MOMglyph = MOMglyphs[j]
+                        , glyphName = MOMglyph.id
+                        , MOMpenstrokes = MOMglyph.children
+                        , glyph = master.addGlyph(glyphName, MOMglyph);
+                    for (var k = 0, kl = MOMpenstrokes.length; k < kl; k++) {
+                        var MOMpenstroke = MOMpenstrokes[k]
+                            , penstrokeName = "penstroke:i(" + k + ")"
+                            , MOMpoints = MOMpenstroke.children
+                            , penstroke = glyph.addPenstroke(penstrokeName, MOMpenstroke);
+                        for (var m = 0, ml = MOMpoints.length; m < ml; m++) {
+                            var pointName = "point:i(" + m + ")";
+                            penstroke.addPoint(pointName, MOMpoints[m]);
+                        }
+                    }
+                }
+            }
+        }
     };
 
     return Metapolator;

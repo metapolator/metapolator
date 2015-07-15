@@ -153,11 +153,9 @@ define([
 
     _p.addSequence = function(name) {
         window.logCall("addSequence");
-        this.sequences.push(
-            new SequenceModel(
-                name, this.baseParameters, this.baseOperators, this
-            )
-        );
+        var sequence = new SequenceModel(name, this.baseParameters, this.baseOperators, this);
+        this.sequences.push(sequence);
+        return sequence;
     };
 
     _p.areChildrenSelected = function () {

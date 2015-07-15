@@ -4,39 +4,12 @@ define([
     $
 ) {
     "use strict";
-    function AppController($scope, model, registerFrontend, controller) {
+    function AppController($scope, model, registerFrontend) {
         registerFrontend(this);
         this.$scope = $scope;
         this.$scope.name = 'app';
         this.$scope.model = this.model = model;
 
-        // load initial MOMmasters with MOMglyphs into model
-        var MOMmasters = controller.queryAll("master");
-        for (var i = 0, l = MOMmasters.length; i < l; i++) {
-            var MOMmaster = MOMmasters[i]
-              , masterName = MOMmaster.id;
-            // skip base for the ui
-            if (masterName !== "base") {
-                var MOMglyphs = MOMmaster.children
-                  , master = model.masterPanel.sequences[0].addMaster(masterName, MOMmaster);
-                for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
-                    var MOMglyph = MOMglyphs[j]
-                      , glyphName = MOMglyph.id
-                      , MOMpenstrokes = MOMglyph.children
-                      , glyph = master.addGlyph(glyphName, MOMglyph);
-                    for (var k = 0, kl = MOMpenstrokes.length; k < kl; k++) {
-                          var MOMpenstroke = MOMpenstrokes[k]
-                              , penstrokeName = "penstroke:i(" + k + ")"
-                              , MOMpoints = MOMpenstroke.children
-                              , penstroke = glyph.addPenstroke(penstrokeName, MOMpenstroke);
-                          for (var m = 0, ml = MOMpoints.length; m < ml; m++) {
-                              var pointName = "point:i(" + m + ")";
-                              penstroke.addPoint(pointName, MOMpoints[m]);
-                          }
-                      }
-                }
-            }
-        }
 
         $scope.getLandscapeLeft = function() {
             var end = $scope.model.display.panel.viewState * 2
@@ -92,7 +65,7 @@ define([
         $scope.reAdjustPanels();
     }
 
-    AppController.$inject = ['$scope', 'metapolatorModel', 'registerFrontend', 'modelController'];
+    AppController.$inject = ['$scope', 'metapolatorModel', 'registerFrontend'];
     var _p = AppController.prototype;
 
     _p.redraw = function() {
