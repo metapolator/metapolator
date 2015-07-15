@@ -25,9 +25,6 @@ define([
             writable: true,
             configurable: true
         });
-        
-        //add a fake point, untill engine is connected
-        this.addPoint("i:0");
     }
     
     var _p = PenstrokeModel.prototype = Object.create(Parent.prototype);

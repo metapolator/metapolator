@@ -34,9 +34,9 @@ define([
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
     
     _p.addGlyph = function(name) {
-        this.children.push(
-            new GlyphModel(name, this.name, this.baseParameters, this.baseOperators, this, this.masterPanel)
-        );
+        var glyph = new GlyphModel(name, this.name, this.baseParameters, this.baseOperators, this, this.masterPanel);
+        this.children.push(glyph);
+        return glyph;
     };
    
    _p.findGlyphByName = function(glyphName) {

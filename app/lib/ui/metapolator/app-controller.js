@@ -21,8 +21,19 @@ define([
                   , master = model.masterPanel.sequences[0].addMaster(masterName);
                 for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
                     var MOMglyph = MOMglyphs[j]
-                      , glyphName = MOMglyph.id;
-                    master.addGlyph(glyphName);
+                      , glyphName = MOMglyph.id
+                      , MOMpenstrokes = MOMglyph.children
+                      , glyph = master.addGlyph(glyphName);
+                    for (var k = 0, kl = MOMpenstrokes.length; k < kl; k++) {
+                          var MOMpenstroke = MOMpenstrokes[k]
+                              , penstrokeName = "penstroke:i(" + k + ")"
+                              , MOMpoints = MOMpenstroke.children
+                              , penstroke = glyph.addPenstroke(penstrokeName);
+                          for (var m = 0, ml = MOMpoints.length; m < ml; m++) {
+                              var pointName = "point:i(" + m + ")";
+                              penstroke.addPoint(pointName);
+                          }
+                      }
                 }
             }
         }

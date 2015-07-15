@@ -30,17 +30,14 @@ define([
             writable: true,
             configurable: true
         });
-        
-        //add a fake penstroke, untill engine is connected
-        this.addPenstroke("i:0");
     }
     
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
     
     _p.addPenstroke = function(name) {
-        this.children.push(
-            new PenstrokeModel(name, this.baseParameters, this.baseOperators, this, this.masterPanel)
-        );
+        var penstroke = new PenstrokeModel(name, this.baseParameters, this.baseOperators, this, this.masterPanel);
+        this.children.push(penstroke);
+        return penstroke;
     };
     
     _p.measureGlyph = function () {
