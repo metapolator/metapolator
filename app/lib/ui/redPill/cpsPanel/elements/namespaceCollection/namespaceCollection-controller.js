@@ -8,7 +8,7 @@ define([
     "use strict";
     function NamespaceCollectionController() {
         Parent.apply(this, arguments);
-        this.clickToolHandler = clickHandler.bind(this, 'toolClick');
+        this.clickToolHandler = clickHandler.bind(this, 'command');
     }
 
     var _p = NamespaceCollectionController.prototype = Object.create(Parent.prototype);

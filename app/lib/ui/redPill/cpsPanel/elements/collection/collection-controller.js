@@ -21,7 +21,7 @@ define([
         $scope.$on('$destroy', this._destroy.bind(this));
         $scope.$on('checkParentCollection', this._checkParentHandler.bind(this));
         $scope.elementTools = ['delete'];
-        $scope.$on('toolClick', this._toolCLickHandler.bind(this));
+        $scope.$on('command', this._commandHandler.bind(this));
 
     }
 
@@ -122,18 +122,34 @@ define([
         this.cpsCollection.splice(index, 1, []);
     };
 
-    _p._toolCLickHandler = function(event, tool, index) {
+    _p.replaceCPSElement = function(index, replacement) {
+        this.cpsCollection.splice(index, 1, [replacement]);
+    };
+
+    _p._commandHandler = function(event, command, index) {
+        var args
+          , method
+          , externalArgs = Array.prototype.slice.call(arguments, 2)
+          ;
         // always stop propagation, we don't want a parent element handle
         // tool clicks
         event.stopPropagation();
-        switch(tool) {
+        switch(command) {
             case 'delete':
-                setTimeout(this.deleteCPSElement.bind(this, index));
+                // index
+                method = this.deleteCPSElement.bind(this);
                 break;
+            case 'replace':
+                // index, replacement
+                method = this.replaceCPSElement.bind(this);
+                break
             default:
-                console.warn('unkown tool clicked:', tool, 'index:', index);
+                console.warn('unkown command:', command, 'index:', index);
+                return;
         }
-
+        args = [method, 0]
+        Array.prototype.push.apply(args, externalArgs);
+        setTimeout.apply(null, args);
     };
 
     return CollectionController;

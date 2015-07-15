@@ -18,7 +18,7 @@ define([
         this._editingProperty = null;
 
         this.$scope.elementTools = ['delete'];
-        $scope.$on('toolClick', this._toolCLickHandler.bind(this));
+        $scope.$on('command', this._commandHandler.bind(this));
 
         // subscribe to propertyDict
         this._propertyDictSubscription = this.cpsPropertyDict.on(
@@ -113,22 +113,38 @@ define([
         this.$scope.$apply();
     };
 
-    _p._toolCLickHandler = function(event, tool, index) {
+    _p.deleteCPSElement = function(index) {
+        this.cpsPropertyDict.splice(index, 1, []);
+    };
+
+    _p.replaceCPSElement = function(index, recplacement) {
+        this.cpsPropertyDict.splice(index, 1, [recplacement]);
+    };
+
+    _p._commandHandler = function(event, command, index) {
+        var args
+          , method
+          , externalArgs = Array.prototype.slice.call(arguments, 2)
+          ;
         // always stop propagation, we don't want a parent element handle
         // tool clicks
         event.stopPropagation();
-        switch(tool) {
+        switch(command) {
             case 'delete':
-                setTimeout(this.deleteCPSElement.bind(this, index));
+                // externalArgs: index
+                method = this.deleteCPSElement.bind(this);
                 break;
+            case 'replace':
+                // externalArgs: index, recplacement
+                method = this.replaceCPSElement.bind(this);
+                break
             default:
-                console.warn('unkown tool clicked:', tool, 'index:', index);
+                console.warn('unkown command:', command, 'index:', index);
+                return;
         }
-
-    };
-
-    _p.deleteCPSElement = function(index) {
-        this.cpsPropertyDict.splice(index, 1, []);
+        args = [method, 0]
+        Array.prototype.push.apply(args, externalArgs);
+        setTimeout.apply(null, args);
     };
 
     _p._isEditingProperty = function(index) {

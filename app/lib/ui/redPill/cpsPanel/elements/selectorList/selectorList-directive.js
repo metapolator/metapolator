@@ -19,7 +19,7 @@ define([
                   ;
                 input.focus();
 
-                // if both elements lost focus run scope.finalize
+                // if the element lost focus run scope.finalize
                 timer = new helpers.Timer(function() {
                     ctrl.finalize();
                     scope.$apply();

@@ -13,7 +13,7 @@ define([
         this.cancelNewPropertyHandler = this.cancelNewProperty.bind(this);
         $scope.newProperty = false;
         $scope.$on('finalizeNewProperty', this.finalizeNewProperty.bind(this));
-        this.clickToolHandler = clickHandler.bind(this, 'toolClick');
+        this.toolClickHandler = clickHandler.bind(this, 'command');
     }
 
     RuleController.$inject = ['$scope'];

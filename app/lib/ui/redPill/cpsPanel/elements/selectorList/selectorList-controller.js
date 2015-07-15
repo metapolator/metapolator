@@ -19,7 +19,6 @@ define([
         this._editInitialSlectorList = null;
 
         this._initSelectorList();
-        this._setValueBoxSize($scope.selectorList);
 
         this._subscription = this.selectorListHost.on(
              'selector-change', this._selectorListChangeHandler.bind(this));
@@ -34,6 +33,7 @@ define([
         $scope.selectorList = this.selectorListHost.getSelectorList().toString();
         $scope.invalid = $scope.selectorList.invalid;
         $scope.message = $scope.selectorList.message || '';
+        this._setValueBoxSize($scope.selectorList);
     };
 
     _p._setValueBoxSize = function(value) {
@@ -116,7 +116,6 @@ define([
         // this will set the selectorlist to the last version
         // which is valid if it was set using this method.
         this._initSelectorList();
-        this._setValueBoxSize(this.$scope.selectorList);
     };
 
     /**
@@ -124,7 +123,6 @@ define([
      */
     _p._selectorListChangeHandler = function() {
         this._initSelectorList();
-        this._setValueBoxSize(this.$scope.selectorList);
         this.$scope.$apply();
     };
 

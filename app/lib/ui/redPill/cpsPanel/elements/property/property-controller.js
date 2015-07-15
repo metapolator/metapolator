@@ -16,7 +16,7 @@ define([
         $scope.finalize = this._finalize.bind(this);
 
         // needed for mtk-element-toolbar, creates the function this.clickTool
-        this.toolClickHandler = clickHandler.bind(this, 'toolClick');
+        this.toolClickHandler = clickHandler.bind(this, 'command');
 
         // not needed when switching to bindToController: true
         this.index = $scope.index;
