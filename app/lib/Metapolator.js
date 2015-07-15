@@ -50,7 +50,7 @@ define([
         model.masterPanel.addSequence("Sequence 1");
         model.instancePanel.addSequence("Family 1");
         // creation of inital masters
-        var masters = ["Regular", "Bold", "Light", "Condensed", "Extended", "Italic"];
+        var masters = ["regular"];
         var glyphs = ["A", "B", "C", "D", "E", "F", "G", "H", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "space"];
         masters.forEach(function(master) {
             // this = model.masterPanel.sequences[0]
