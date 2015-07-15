@@ -9,7 +9,7 @@ define([
         this.glyphRange = glyphRange;
         this.samples = [[{
             name : "[Enter your own text]",
-            text : "Metapolator"
+            text : "Agg"
         }], [{
             name : "3 Pangrams",
             text : "Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog. Bright vixens jump dozy fowl quack."
