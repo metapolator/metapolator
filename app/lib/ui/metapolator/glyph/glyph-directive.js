@@ -41,9 +41,7 @@ define([
                         scope.checkBaseMasters(scope.model);
                     }
                     svg = scope.renderGlyph(masterName, glyphName);
-                    console.log(svg);
                     element.append(svg);
-
 
                     element.bind('$destroy', function(event) {
                         scope.revokeGlyph(masterName, glyphName);
