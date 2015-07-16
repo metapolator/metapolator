@@ -42,7 +42,8 @@ define([
               , container = element[0]
               , indicatorId = 'cps-drop-indicator'
               , dataTypes = ['cps/rule', 'cps/namespace-collection'
-                           , 'cps/import', 'cps/comment', 'cps/generic-collection-item']
+                            , 'cps/comment', 'cps/generic-collection-item'
+                            , 'cps/import-collection']
               , dropElementTags = ['mtk-cps-rule', 'mtk-cps-namespace-collection'
                                  /*, 'mtk-cps-import'*/, 'mtk-cps-comment']
               , dropHelper = new DropHelper(

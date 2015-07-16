@@ -59,7 +59,7 @@ define([
                 var i
                   , name
                   , loaded = 0
-                  , loading
+                  , loading = 0
                   , fullPath
                   , failed = false
                   , promise

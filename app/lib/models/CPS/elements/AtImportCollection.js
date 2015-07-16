@@ -121,6 +121,14 @@ define([
      *
      * resourceName: the resource name of the @import rule
      * in `@import "bold.cps";` "bold.cps" is the resourceName
+     *
+     * FIXME: This can causes an unhandled "too much recursion" error.
+     * For example when setting in the CPS-Panel an import to the same
+     * name as the containing file. This case bypasses the recursion
+     * detection of RuleController, because it happens after loading!
+     * Probably we should know which files are not allowed to load for
+     * a import collection, then we can besides of doing the checking
+     * also don't display these options in the interface.
      */
     _p.setResource = obtain.factory(
         {

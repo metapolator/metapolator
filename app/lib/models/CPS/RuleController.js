@@ -2,10 +2,12 @@ define([
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseRules'
   , 'obtain/obtain'
+  , 'metapolator/io/readDirRecursive'
 ], function(
     errors
   , parseRules
   , obtain
+  , readDirRecursive
 ) {
     "use strict";
     var KeyError = errors.Key
@@ -159,6 +161,43 @@ define([
           ;
         return this._io.writeFile(async, path, _content);
     };
+
+    /**
+     * Return all cps filenames within the cps directory.
+     *
+     * There may be more loadable rules when loaded with a relative sourceName.
+     * But that is not supported by this method.
+     */
+    _p.getAvailableRules = obtain.factory(
+        {
+            files: [function() {
+                return readDirRecursive(false, this._io, this._cpsDir);
+            }]
+          , trimmed: ['files', function(files) {
+                var i,l
+                  , result = []
+                  , trimLength =  this._cpsDir.length+1
+                  , file
+                  ;
+                for(i=0,l=files.length;i<l;i++) {
+                    file = files[i];
+                    if(file.slice(-4) !== '.cps')
+                        continue;
+                    result.push(file.slice(trimLength));
+                }
+                return result;
+            }]
+        }
+      , {
+            files: [function() {
+                return readDirRecursive(true, this._io, this._cpsDir);
+            }]
+        }
+      , []
+      , function job (obtain) {
+            return obtain('trimmed');
+        }
+    );
 
     return RuleController;
 });

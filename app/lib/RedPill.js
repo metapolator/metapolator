@@ -50,6 +50,7 @@ define([
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
+        this.angularApp.constant('ruleController', this.project.ruleController);
         this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
 
 
