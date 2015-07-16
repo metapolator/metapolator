@@ -34,5 +34,15 @@
         mtk-drag-data="[cpsCollection, $index]"
 
     ></mtk-cps-comment>
-    <pre ng-switch-default>{{item.constructor.name}}:: {{item.toString()}}</pre>
+    <mtk-cps-generic
+        ng-switch-default
+
+        item="item"
+        index="$index"
+
+        mtk-element-tools="elementTools"
+        mtk-drag="cps/generic-collection-item"
+        mtk-drag-data="[cpsCollection, $index]"
+
+    ></mtk-cps-generic>
 </mtk-cps-collection-li>

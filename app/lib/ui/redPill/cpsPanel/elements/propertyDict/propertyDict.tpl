@@ -25,7 +25,17 @@
             mtk-drag-data="[controller.cpsPropertyDict, $index]"
 
         ></mtk-cps-comment>
-        <span ng-switch-default>{{item[1].constructor.name}}:: {{item[1].toString()}}</span>
+        <mtk-cps-generic
+            ng-switch-default
+
+            item="item[1]"
+            index="$index"
+
+            mtk-element-tools="elementTools"
+            mtk-drag="cps/generic-rule-item"
+            mtk-drag-data="[controller.cpsPropertyDict, $index]"
+
+            ></mtk-cps-generic>
     </li>
     <li ng-if="$parent.newProperty" >
         new <mtk-cps-new-property

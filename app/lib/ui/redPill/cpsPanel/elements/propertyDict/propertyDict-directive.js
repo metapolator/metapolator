@@ -75,7 +75,7 @@ define([
             // are not necessary for the most simple usage
             var container = element[0].getElementsByTagName('ol')[0]
               , indicatorId = 'cps-drop-indicator'
-              , dataTypes = ['cps/property', 'cps/comment']
+              , dataTypes = ['cps/property', 'cps/comment', 'cps/generic-rule-item']
               , dropElementTags = ['mtk-cps-property', 'mtk-cps-comment']
               , dropHelper = new DropHelper(
                     findElement.bind(null, dropElementTags)
