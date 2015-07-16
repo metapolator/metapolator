@@ -11,8 +11,6 @@ define([
         // doesn't work without help.
         this.$scope.index = this.index;
         this.clickToolHandler = clickHandler.bind(this, 'command');
-
-        $scope.edit = false;
     }
 
     GenericController.$inject = ['$scope'];
