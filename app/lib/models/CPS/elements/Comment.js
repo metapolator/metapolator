@@ -18,6 +18,16 @@ define([
                 value: !this.isValid(comment)
               , enumerable: true
             }
+            // Use this for cases where the Comment should be identified
+            // this represents the value of this comment, don't use it
+            // for representation. Note: `value` is similar, but not used
+            // for comparison. The implementation of this could change to be just
+            // a checksum. Probably only "immutable" cps-nodes will have a `hash`
+            // property. In turn only mutable cps-nodes will have a nodeID.
+          , hash: {
+                value: comment
+              , enumerable: true
+            }
         });
     }
     var _p = Comment.prototype = Object.create(Parent.prototype);
