@@ -29,6 +29,10 @@ define([
         this.children.push(master);
         return master;
     };
+
+    _p.addToMasterId = function() {
+        return this.masterId++;
+    };
     
 
     

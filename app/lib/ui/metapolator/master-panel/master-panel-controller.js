@@ -18,26 +18,31 @@ define([
                 for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                     var master = sequence.children[j];
                     // todo: change [0] to [viewState]
-                    if (master.edit[0]) {
-                        // todo: clone the objects and arrays like 'edit', 'parameters' and 'operators' properly, so they are no longer references
+                    if (master.edit) {
                         var clone = master.clone()
-                          , copiedCPSstring;
-                        setCopyProperties(clone);
+                          , copiedCPSstring
+                          , newId = sequence.addToMasterId();
+                        setCloneProperties(clone, newId);
                         copiedCPSstring = copyCPSString(master);
                         registerMaster(clone, copiedCPSstring);
+                        console.log(clone);
+                        master.edit = false;
                         clones.push(clone);
                     }
                 }
                 for (var k = 0, kl = clones.length; k < kl; k++) {
                     sequence.add(clones[k]);
+
                 }
             }
         };
 
-        function setCopyProperties(clone) {
+        function setCloneProperties(clone, id) {
+            clone.id = id;
+            clone.master = clone;
             clone.displayName = nameCopy(clone.displayName);
             // giving it a unique name before registering
-            clone.name = "master-" + clone.id + "-" + clone.sequenceId;
+            clone.name = "master-" + clone.sequenceId + "-" + clone.id;
             clone.cpsFile = clone.name + ".cps";
         }
 
@@ -54,6 +59,7 @@ define([
         }
 
         function nameCopy (name) {
+            // todo: put some more intelligence in here
             return name + " copy";
         }
         
@@ -205,7 +211,7 @@ define([
         
         // hover masters
         $scope.mouseoverMaster = function(master) {
-            if (master.display || master.edit[0]) {
+            if (master.display || master.edit) {
                 var current = $(".specimen-field-masters ul li.master-" + master.name);
                 $(".specimen-field-masters ul li").not(current).each(function() {
                     $(this).addClass("dimmed");
