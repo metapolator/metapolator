@@ -153,7 +153,6 @@ define([
                 }
             }
             this.filteredGlyphs = filtered;
-            window.logCall("end filter");
             //startTimer();
         }
     };

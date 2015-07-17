@@ -26,8 +26,7 @@ define([], function() {
         };
         
         $scope.toggleSelect = function (master) {
-            window.logCall("toggleSelect");
-            master.edit[0] = !master.edit[0]; 
+            master.edit[0] = !master.edit[0];
             if (!master.edit[0]) {
                 master.deselectAllChildren();
             }
@@ -36,7 +35,6 @@ define([], function() {
         };
         
         $scope.selectSet = function (master) {
-            window.logCall("selectSet");
             var otherMaster = metapolatorModel.masterPanel.lastMasterSelected
               , phase = 0;
             for (var i = metapolatorModel.masterPanel.sequences.length - 1; i >= 0; i--) {
@@ -59,7 +57,6 @@ define([], function() {
         };
         
         $scope.selectThis = function (master) {
-            window.logCall("selectThis");
             metapolatorModel.masterPanel.lastMasterSelected = master;
             for (var i = metapolatorModel.masterPanel.sequences.length - 1; i >= 0; i--) {
                 var sequence = metapolatorModel.masterPanel.sequences[i];

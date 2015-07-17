@@ -70,20 +70,17 @@ define([
                 });
                             
                 function redrawFunction() {
-                    window.logCall("start svg");
                     removeAll();
                     buildData();
                     if (thisInstance) {
                         drawAll();
-                        window.logCall("end svg");
-                    }  
+                    }
                     if (inactiveInstances.length > 0) {
                         drawInactiveAxes();
                     }
                 }
                 
                 function softRedraw() {
-                    window.logCall("start softRedraw");
                     inactiveLayer.selectAll('*').remove();
                     buildData();
                     if (thisInstance) {
@@ -92,7 +89,6 @@ define([
                     if (inactiveInstances.length > 0) {
                         drawInactiveAxes();
                     }
-                    window.logCall("end softRedraw");
                 }
                 
                 function buildData() {

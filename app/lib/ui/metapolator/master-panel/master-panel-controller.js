@@ -63,7 +63,6 @@ define([
         };
         
         $scope.addMasterToDesignSpace = function (master) {
-            window.logCall("addMasterToDesignSpace");
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
               , axes = designSpace.axes
               , axisValue = null
