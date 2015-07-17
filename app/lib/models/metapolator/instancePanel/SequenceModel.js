@@ -24,12 +24,12 @@ define([
     
     _p.addInstance = function(axes, designSpace) {
         window.logCall("addInstance");
-        this.children.push(
-            new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter / this.colors.length], this)
-        );   
+        var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter / this.colors.length], this)
+        this.children.push(instance);
         this.instanceCounter++;
         //set the newly created instance as current instance
         this.parent.setCurrentInstance(this.children[this.children.length - 1]);
+        return instance;
     };
 
     

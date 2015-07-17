@@ -1,10 +1,12 @@
 define([
     'jquery'
+  , 'metapolator/project/cps-generators/metapolation'
 ], function(
     $
+  , cpsGenMetapolation
 ) {
     "use strict";
-    function InstancePanelController($scope, metapolatorModel, $timeout) {
+    function InstancePanelController($scope, metapolatorModel, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
         
@@ -12,7 +14,9 @@ define([
         
         $scope.addInstance = function () {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
-              , axes = [];
+              , axes = []
+              , instance
+              , cpsString;
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var master = designSpace.axes[i];
                 axes.push({
@@ -20,8 +24,51 @@ define([
                     axisValue: 50
                 });
             }
-            $scope.model.sequences[0].addInstance(axes, designSpace);
+            instance = $scope.model.sequences[0].addInstance(axes, designSpace);
+            registerInstance(instance);
         };
+
+        function registerInstance(instance) {
+            var cpsString = createMultiMasterCPS(instance.axes);
+            project.ruleController.write(false, instance.cpsFile, cpsString);
+            project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
+            project.open(instance.name);
+        }
+
+        function createMultiMasterCPS(axesSet) {
+            var n = axesSet.length
+              , cpsString;
+            createCommonCPSfile(n);
+            // import the common file
+            cpsString = '@import "generated/metapolation-' + n + '.cps";';
+            // add the metapolation values as last item
+            cpsString += '* { ';
+            for (var i = 0; i < n; i++) {
+                cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i].masterName + '";';
+                cpsString += 'proportion' + i + ': ' + axesSet[i].metapolationValue + ';';
+            }
+            cpsString += '}';
+            return cpsString;
+        }
+
+        function createCommonCPSfile (n) {
+            // we create a common cps file which can be reused for every instance with n masters.
+            // here we check if such exist, otherwise it is created
+            // the file is @imported in createMultiMasterCPS, and the metapolationValues are in
+            // the unique cps file of the instance itself
+            var commonCPSfile = 'generated/metapolation-' + n + '.cps'
+              , commonCPSString;
+            try {
+                project.ruleController.getRule(false, commonCPSfile);
+            } catch(error) {
+                if (error.name !== 'IONoEntry') {
+                    throw error;
+                } else {
+                    commonCPSString = cpsGenMetapolation(n);
+                    project.ruleController.write(false, commonCPSfile, commonCPSString);
+                }
+            }
+        }
         
         $scope.duplicateInstance = function () {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
@@ -268,7 +315,7 @@ define([
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel'];
+    InstancePanelController.$inject = ['$scope', 'metapolatorModel', 'project'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;

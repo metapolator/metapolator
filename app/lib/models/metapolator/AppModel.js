@@ -16,7 +16,6 @@ define([
     "use strict";
     function AppModel() {
         this.projectName = "Canola";
-        this.glyphs = ["A", "B", "C", "D", "E", "F", "G", "H", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "space"];
         this.specimen1 = new SpecimenModel(true, true, "masters", this);
         this.masterPanel = new MasterPanelModel();
         this.designSpacePanel = new DesignSpacePanelModel();

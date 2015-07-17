@@ -20,6 +20,7 @@ define([
         this.color = color;
         this.exportFont = true;
         this.openTypeFeatures = true;
+        this.cpsFile = "instance" + id + ".cps";
         this.updateMetapolationValues();
         
         Object.defineProperty(this, 'parent', {
@@ -35,11 +36,21 @@ define([
     var _p = InstanceModel.prototype = Object.create(Parent.prototype);
     
     _p.addInitialGlyphs = function() {
-        var glyphs = this.parent.parent.parent.glyphs;
-        for (var i = glyphs.length - 1; i >= 0; i--) {
-            var glyphName = glyphs[i];
-            this.addGlyph(glyphName);
+        // when we render instance glyphs, we have to know the glyphname.
+        // We copy the glyphnames in baseMaster0 to the instance.
+        // For now, the glyphs in each master and each instance will be the same set
+        var baseMaster0 = this.axes[0].master;
+        for (var i = baseMaster0.children.length - 1; i >= 0; i--) {
+            var glyphName = baseMaster0.children[i].name;
+            this._addGlyph(glyphName);
         }
+    };
+
+    _p._addGlyph = function (name) {
+        window.logCall("addGlyph");
+        this.children.push(
+            new GlyphModel(name, this.name, this)
+        );
     };
     
     _p.updateMetapolationValues = function () {
@@ -62,13 +73,6 @@ define([
                 axes[j].metapolationValue = thisPiece / cake;
             }   
         }
-    };
-    
-    _p.addGlyph = function (name) {
-        window.logCall("addGlyph");
-        this.children.push(
-            new GlyphModel(name, this.name, this)
-        );
     };
    
     _p.addAxis = function(master, axisValue, metapolationValue) {
