@@ -503,28 +503,30 @@ define([
     };
 
     _p.__parameterAddHandler = function(data, channelKey, key) {
-        var index = data
-          , parametersIndexForKey = this._propertySubscriptions[key]
+        var newRuleIndex = data
+          , currentRuleIndex = this._propertySubscriptions[key]
                     ? this._propertySubscriptions[key][2]
                     : undefined
           ;
 
-        if(parametersIndexForKey < index)
-            // the lower index overrides the higher index
+        // Note: the lower index is more specific and must be used.
+        // These are the indexes in this._rules of course. More specific
+        // indexes come first.
+        if(newRuleIndex > currentRuleIndex)
             return;
-        else if(parametersIndexForKey > index) {
+        else if(newRuleIndex < currentRuleIndex) {
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
-        else if(parametersIndexForKey === index)
+        else if(currentRuleIndex === newRuleIndex)
             // When both are identical this means we don't have an "add"
             // event by definition! Something in the programming logic went
             // terribly wrong.
             throw new AssertionError('The old index must not be identical '
-                        + 'to the new one, but it is.\n index: ' + index
+                        + 'to the new one, but it is.\n index: ' + newRuleIndex
                         + ' key: ' + key
                         + ' channel: ' + channelKey);
-        this._setDictValue(this._rules[index].parameters, key, index);
+        this._setDictValue(this._rules[newRuleIndex].parameters, key, newRuleIndex);
     };
 
     _p._setDictValue = function(parameters, key, parametersIndex) {
