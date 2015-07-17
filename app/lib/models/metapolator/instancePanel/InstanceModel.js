@@ -8,10 +8,10 @@ define([
   , AxisModel
 ){
     "use strict";
-    function InstanceModel(id, name, displayName, axes, designSpace, color, parent) {
+    function InstanceModel(id, axes, designSpace, color, parent) {
         this.id = id;
-        this.name = name;
-        this.displayName = displayName;
+        this.name = "instance" + id;
+        this.displayName = "Instance " + id;
         this.axes = axes;
         this.children = [];
         this.edit = [false, false];
