@@ -503,10 +503,10 @@ define([
                     : undefined
           ;
 
-        if(parametersIndexForKey > index)
-            // the higher index overrides the lower index
+        if(parametersIndexForKey < index)
+            // the lower index overrides the higher index
             return;
-        else if(parametersIndexForKey < index) {
+        else if(parametersIndexForKey > index) {
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
