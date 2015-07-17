@@ -22,7 +22,7 @@ define([
         this.selector = "master";
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
-        this.ruleIndex = null;
+        this.ruleIndex = 3;
 
         this.addBaseModels(baseParameters, baseOperators);
 
