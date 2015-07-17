@@ -9,9 +9,15 @@ define([
     function PenstrokeModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
         this.level = "penstroke";
         this.name = name;
-        this.MOMelement = MOMelement;
         this.children = [];
+
+        // cps properties
         this.parameters = [];
+        this.master = parent.master;
+        this.selector = "master#" + parent.masterName + " " + "glyph#" + parent.name + " > " + name;
+        this.MOMelement = MOMelement;
+        this.ruleIndex = null;
+
         this.addBaseModels(baseParameters, baseOperators);
         
         Object.defineProperty(this, 'parent', {

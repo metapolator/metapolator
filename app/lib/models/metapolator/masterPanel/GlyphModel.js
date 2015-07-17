@@ -10,13 +10,18 @@ define([
         this.level = "glyph";
         this.type = "master";
         this.masterName = masterName;
-        this.MOMelement = MOMelement;
         this.name = name;
         this.edit = false;
         this.children = [];
+
+        // cps properties
         this.parameters = [];
-        // only the initial parameter values are measured for glyphs when they appear in the view
-        this.measured = false;
+        this.measured = false; // only the initial parameter values are measured for glyphs when they appear in the view
+        this.master = parent;
+        this.selector = "master#" + masterName + " " + "glyph#" + name;
+        this.MOMelement = MOMelement;
+        this.ruleIndex = null;
+
         this.addBaseModels(baseParameters, baseOperators);
         
         Object.defineProperty(this, 'parent', {

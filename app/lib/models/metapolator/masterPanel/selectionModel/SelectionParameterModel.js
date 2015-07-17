@@ -11,6 +11,7 @@ define([
         this.name = baseParameter.name;
         this.unit = baseParameter.unit;
         this.step = baseParameter.step;
+        this.cpsKey = baseParameter.cpsKey;
         this.decimals = baseParameter.decimals;
         this.effectiveLevel = baseParameter.effectiveLevel;
         this.baseOperators = baseOperators;

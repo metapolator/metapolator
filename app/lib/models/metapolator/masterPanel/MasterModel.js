@@ -6,17 +6,25 @@ define([
   , GlyphModel
 ){
     "use strict";
-    function MasterModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
+    function MasterModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement, cpsFile) {
         this.level = "master";
         this.name = name;
-        this.MOMelement = MOMelement;
         this.displayName = name;
         this.display = false;
         this.edit = [true, true];
         this.ag = "Ag";
         this.children = [];
+
+        // cps properties
         this.parameters = [];
+        this.master = this;
+        this.selector = "master#" + this.name;
+        this.cpsFile = cpsFile;
+        this.MOMelement = MOMelement;
+        this.ruleIndex = null;
+
         this.addBaseModels(baseParameters, baseOperators);
+
         
         Object.defineProperty(this, 'parent', {
             value: parent,

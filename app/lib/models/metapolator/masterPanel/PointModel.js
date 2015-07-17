@@ -7,8 +7,14 @@ define([
     function PointModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
         this.level = "point";
         this.name = name;
-        this.MOMelement = MOMelement;
+
+        // cps properties
         this.parameters = [];
+        this.master = parent.master;
+        this.selector = "master#" + parent.parent.masterName + " " + "glyph#" + parent.parent.name + " > " + parent.name + " > " + name + " > right" ;
+        this.MOMelement = MOMelement;
+        this.ruleIndex = null;
+
         this.addBaseModels(baseParameters, baseOperators);
         
         Object.defineProperty(this, 'parent', {
