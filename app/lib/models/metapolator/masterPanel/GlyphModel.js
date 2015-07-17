@@ -17,7 +17,6 @@ define([
         this.parameters = [];
         this.measured = false; // only the initial parameter values are measured for glyphs when they appear in the view
         this.master = parent;
-        this.selector = "master#" + parent.name + " " + "glyph#" + name;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
@@ -32,6 +31,10 @@ define([
     }
     
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
+
+    _p.getSelector = function() {
+        return "master#" + this.parent.name + " " + "glyph#" + this.name;
+    };
 
     _p.getMasterName = function() {
         return this.parent.name;

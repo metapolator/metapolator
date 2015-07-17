@@ -79,7 +79,7 @@ define([
             if (!element.ruleIndex) {
                 var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
                   , l = parameterCollection.length;
-                element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.selector);
+                element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.getSelector());
             }
         }
 

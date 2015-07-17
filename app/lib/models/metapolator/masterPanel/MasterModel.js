@@ -20,7 +20,6 @@ define([
         // cps properties
         this.parameters = [];
         this.master = this;
-        this.selector = "master#" + this.name;
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
@@ -37,6 +36,10 @@ define([
     }
     
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
+
+    _p.getSelector = function() {
+        return "master#" + this.name;
+    };
     
     _p.addGlyph = function(name, MOMelement) {
         var glyph = new GlyphModel(name, this.baseParameters, this.baseOperators, this, MOMelement);

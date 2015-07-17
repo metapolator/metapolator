@@ -11,7 +11,6 @@ define([
         // cps properties
         this.parameters = [];
         this.master = parent.master;
-        this.selector = "master#" + parent.parent.masterName + " " + "glyph#" + parent.parent.name + " > " + parent.name + " > " + name + " > right" ;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
@@ -26,6 +25,12 @@ define([
     }
     
     var _p = PointModel.prototype = Object.create(Parent.prototype);
+
+    _p.getSelector = function() {
+        return "master#" + this.master.name + " " + "glyph#" + this.parent.parent.name + " > " + this.parent.name + " > " + this.name + " > right" ;
+
+
+    };
 
     return PointModel;
 });

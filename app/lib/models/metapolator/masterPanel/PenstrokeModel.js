@@ -14,7 +14,6 @@ define([
         // cps properties
         this.parameters = [];
         this.master = parent.master;
-        this.selector = "master#" + parent.masterName + " " + "glyph#" + parent.name + " > " + name;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
@@ -29,6 +28,11 @@ define([
     }
     
     var _p = PenstrokeModel.prototype = Object.create(Parent.prototype);
+
+    _p.getSelector = function() {
+        return "master#" + this.master.name + " " + "glyph#" + this.parent.name + " > " + this.name;
+
+    };
     
     _p.addPoint = function(name, MOMelement) {
         this.children.push(
