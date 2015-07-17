@@ -41,17 +41,10 @@ define([
                 // the operator is added during this selection session
                 element.addParameterOperator(parameter, operator, $scope.operatorId);
                 // add a rule for this element with this parameter
-                addCPSrule(element);
             }
             $scope.operatorId++;
             $scope.parameterOperatorPanel = null;
             $scope.model.updateParameters();
-
-            function addCPSrule(element) {
-                var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
-                  , l = parameterCollection.length;
-                element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.selector);
-            }
         };
 
         $scope.parametersWindow = function(event, target, level) {
