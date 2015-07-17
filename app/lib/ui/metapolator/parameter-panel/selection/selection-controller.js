@@ -1,10 +1,12 @@
 define([
     'jquery'
+  , 'metapolator/ui/metapolator/cpsAPITools'
 ], function(
     $
+  , cpsAPITools
 ) {
     "use strict";
-    function SelectionController($scope) {
+    function SelectionController($scope, project) {
         $scope.operatorId = 1;
         // Handling the parameter add panel 
         $scope.parameterOperatorPanel = null;
@@ -38,12 +40,20 @@ define([
                 // after destacking, the id is set to null, so we always know that when an operator has an id
                 // the operator is added during this selection session
                 element.addParameterOperator(parameter, operator, $scope.operatorId);
+                // add a rule for this element with this parameter
+                addCPSrule(element);
             }
             $scope.operatorId++;
             $scope.parameterOperatorPanel = null;
             $scope.model.updateParameters();
+
+            function addCPSrule(element) {
+                var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
+                  , l = parameterCollection.length;
+                element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.selector);
+            }
         };
-    
+
         $scope.parametersWindow = function(event, target, level) {
             $scope.parameterLevel = level;
             $scope.panelOperator = null;
@@ -108,7 +118,7 @@ define([
         };
     }
 
-    SelectionController.$inject = ['$scope'];
+    SelectionController.$inject = ['$scope', 'project'];
     var _p = SelectionController.prototype;
 
     return SelectionController;
