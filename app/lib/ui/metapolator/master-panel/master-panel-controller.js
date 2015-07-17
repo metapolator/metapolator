@@ -4,7 +4,7 @@ define([
     $
 ) {
     "use strict";
-    function MasterPanelController($scope, metapolatorModel) {
+    function MasterPanelController($scope, metapolatorModel, instanceController) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
         $scope.instancePanel = metapolatorModel.instancePanel;
@@ -13,7 +13,6 @@ define([
             var message = "Want to load your own UFO?<br><br>Show us you want this by buying a T shirt:<br><ul><li><a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a></li><li><a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a></li>";
             metapolatorModel.display.dialog.openDialogScreen(message, false, false, true);  
         };
-       
         
         $scope.addMasterToDesignSpace = function (master) {
             window.logCall("addMasterToDesignSpace");
@@ -28,7 +27,9 @@ define([
                     master: master,
                     axisValue: axisValue
                 }];
-                $scope.instancePanel.sequences[0].addInstance(instanceAxes, designSpace);
+                var newInstance = $scope.instancePanel.sequences[0].createInstance(instanceAxes, designSpace);
+                instanceController.registerInstance(newInstance);
+                $scope.instancePanel.sequences[0].addInstance(newInstance);
             }  else {
                 designSpace.addAxis(master);
                 // add this axes to each instance in the design space
@@ -170,7 +171,7 @@ define([
         };
     }
 
-    MasterPanelController.$inject = ['$scope', 'metapolatorModel'];
+    MasterPanelController.$inject = ['$scope', 'metapolatorModel', 'instanceController'];
     var _p = MasterPanelController.prototype;
 
     return MasterPanelController;

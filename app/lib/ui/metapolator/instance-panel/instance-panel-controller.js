@@ -1,12 +1,10 @@
 define([
     'jquery'
-  , 'metapolator/project/cps-generators/metapolation'
 ], function(
     $
-  , cpsGenMetapolation
 ) {
     "use strict";
-    function InstancePanelController($scope, metapolatorModel, $timeout, project) {
+    function InstancePanelController($scope, metapolatorModel, $timeout, instanceController) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
         
@@ -24,51 +22,10 @@ define([
                     axisValue: 50
                 });
             }
-            instance = $scope.model.sequences[0].addInstance(axes, designSpace);
-            registerInstance(instance);
+            instance = $scope.model.sequences[0].createInstance(axes, designSpace);
+            instanceController.registerInstance(instance);
+            $scope.model.sequences[0].addInstance(instance);
         };
-
-        function registerInstance(instance) {
-            var cpsString = createMultiMasterCPS(instance.axes);
-            project.ruleController.write(false, instance.cpsFile, cpsString);
-            project.createMaster(instance.name, instance.cpsFile, "skeleton.base");
-            project.open(instance.name);
-        }
-
-        function createMultiMasterCPS(axesSet) {
-            var n = axesSet.length
-              , cpsString;
-            createCommonCPSfile(n);
-            // import the common file
-            cpsString = '@import "generated/metapolation-' + n + '.cps";';
-            // add the metapolation values as last item
-            cpsString += '* { ';
-            for (var i = 0; i < n; i++) {
-                cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i].masterName + '";';
-                cpsString += 'proportion' + i + ': ' + axesSet[i].metapolationValue + ';';
-            }
-            cpsString += '}';
-            return cpsString;
-        }
-
-        function createCommonCPSfile (n) {
-            // we create a common cps file which can be reused for every instance with n masters.
-            // here we check if such exist, otherwise it is created
-            // the file is @imported in createMultiMasterCPS, and the metapolationValues are in
-            // the unique cps file of the instance itself
-            var commonCPSfile = 'generated/metapolation-' + n + '.cps'
-              , commonCPSString;
-            try {
-                project.ruleController.getRule(false, commonCPSfile);
-            } catch(error) {
-                if (error.name !== 'IONoEntry') {
-                    throw error;
-                } else {
-                    commonCPSString = cpsGenMetapolation(n);
-                    project.ruleController.write(false, commonCPSfile, commonCPSString);
-                }
-            }
-        }
         
         $scope.duplicateInstance = function () {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
@@ -153,6 +110,8 @@ define([
             return false;
         };
 
+        /*
+
         $scope.export_is_running = false;
         
         $scope.exportFonts = function() {
@@ -217,13 +176,13 @@ define([
               ;
               
             function setProgress(width, text) {
-                $("#progress-bar").animate({"opacity": 1, "width": width + "%"}, /*duration:*/ UI_UPDATE_TIMESLICE);
+                $("#progress-bar").animate({"opacity": 1, "width": width + "%"}, UI_UPDATE_TIMESLICE);
                 if (text)
                     $("#progress-bar-label").html(text);
             }
     
             function setDownloadBlobLink(text, blob, filename) {
-                $("#progress-bar").animate({"width": "100%", "opacity": 1}, /*duration:*/ UI_UPDATE_TIMESLICE);
+                $("#progress-bar").animate({"width": "100%", "opacity": 1},  UI_UPDATE_TIMESLICE);
                 $("#progress-bar-label").html("");
                 $("#progress-bar-blob-download").css("display", "block");
                 $("#progress-bar-blob-download").children("a").html(text).click(function(){
@@ -234,7 +193,7 @@ define([
             }
             
             function resetProgressBar() {
-                $("#progress-bar").animate({"opacity": 0, "width": 0}, /*duration:*/ 0); // (that means "do it immediately!")
+                $("#progress-bar").animate({"opacity": 0, "width": 0}, 0); // (that means "do it immediately!")
                 $("#progress-bar-label").html("");
                 $("#progress-bar-blob-download").css("display", "none").children("a").unbind("click");
             }
@@ -283,7 +242,8 @@ define([
     
             $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
         };
-      
+        */
+
         // angular-ui sortable
         $scope.sortableOptions = {
             handle : '.list-edit',
@@ -315,7 +275,7 @@ define([
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel', 'project'];
+    InstancePanelController.$inject = ['$scope', 'metapolatorModel', 'instanceController'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;
