@@ -160,7 +160,7 @@ define([
             var sequence = this.sequences[i];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
                 var master = sequence.children[j];
-                if (master.edit[0]) {
+                if (master.edit) {
                     return true;
                 }
             }

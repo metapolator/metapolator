@@ -21,7 +21,7 @@
                     ng-mouseleave="mouseleaveMaster()">
                     <mtk-master class="mtk-master"
                                 mtk-model="master"
-                                ng-class="{'selected': master.edit[0]}"></mtk-master>
+                                ng-class="{'selected': master.edit}"></mtk-master>
                 </li>
             </ul>
         </li>

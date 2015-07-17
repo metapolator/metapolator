@@ -13,7 +13,7 @@ define([
         this.name = name;
         this.displayName = name;
         this.display = false;
-        this.edit = [true, true];
+        this.edit = true;
         this.ag = "Ag";
         this.children = [];
 

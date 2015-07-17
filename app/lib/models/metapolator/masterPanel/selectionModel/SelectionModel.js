@@ -79,7 +79,7 @@ define([
                 var levelElement = levelElements[i];
                 for (var j = levelElement.children.length - 1; j >= 0; j--) {
                     var child = levelElement.children[j];
-                    if ((child.level == "master" && child.edit[0]) ||
+                    if ((child.level == "master" && child.edit) ||
                         (child.level == "glyph" && child.edit) ||
                         child.level == "penstroke"  ||
                         child.level == "point") {

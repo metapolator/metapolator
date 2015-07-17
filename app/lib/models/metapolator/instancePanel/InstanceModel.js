@@ -14,7 +14,7 @@ define([
         this.displayName = "Instance " + id;
         this.axes = axes;
         this.children = [];
-        this.edit = [false, false];
+        this.edit = false;
         this.ag = "Ag";
         this.designSpace = designSpace;
         this.color = color;

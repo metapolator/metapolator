@@ -26,8 +26,8 @@ define([], function() {
         };
         
         $scope.toggleSelect = function (master) {
-            master.edit[0] = !master.edit[0];
-            if (!master.edit[0]) {
+            master.edit = !master.edit;
+            if (!master.edit) {
                 master.deselectAllChildren();
             }
             metapolatorModel.masterPanel.updateSelections("master");
@@ -47,9 +47,9 @@ define([], function() {
                         thisHit = true;   
                     }
                     if (phase == 1 || (phase == 2 && thisHit)) {
-                        thisMaster.edit[0] = true;
+                        thisMaster.edit = true;
                     } else {
-                        thisMaster.edit[0] = false;
+                        thisMaster.edit = false;
                         thisMaster.deselectAllChildren();
                     }
                 }
@@ -63,10 +63,10 @@ define([], function() {
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var thisMaster = sequence.children[j];
                     if (thisMaster == master) {
-                        thisMaster.edit[0] = true;    
+                        thisMaster.edit = true;
                     } else {
-                        if (thisMaster.edit[0]) {
-                            thisMaster.edit[0] = false;
+                        if (thisMaster.edit) {
+                            thisMaster.edit = false;
                             thisMaster.deselectAllChildren();
                         }
                     } 

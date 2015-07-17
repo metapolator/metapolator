@@ -9,7 +9,7 @@ define([], function() {
                 var sequence = $scope.model[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var master = sequence.children[j];
-                    if (master.edit[0]) {
+                    if (master.edit) {
                         for (var k = master.children.length - 1; k >= 0; k--) {
                             var glyph = master.children[k];
                             if (isInSet(glyph)) {
@@ -47,7 +47,7 @@ define([], function() {
                 var sequence = $scope.model[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var master = sequence.children[j];
-                    if (master.edit[0]) {
+                    if (master.edit) {
                         for (var k = master.children.length - 1; k >= 0; k--) {
                             var glyph = master.children[k];
                             glyph.edit = false;
