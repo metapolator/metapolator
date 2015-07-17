@@ -20,12 +20,10 @@ define([
         };
         
         $scope.toggleGlyph = function (glyph) {
-            window.logCall("toggleGlyph");
             glyph.edit = !glyph.edit;
         };
         
         $scope.selectGlyph = function (glyph) {
-            window.logCall("selectGlyph");
             glyph.edit = true;
         };
         
