@@ -4,7 +4,7 @@ define([
     Parent
 ){
     "use strict";
-    function PointModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
+    function PointModel(name, baseParameters, baseOperators, parent, MOMelement) {
         this.level = "point";
         this.name = name;
 
@@ -19,12 +19,6 @@ define([
         
         Object.defineProperty(this, 'parent', {
             value: parent,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
-        Object.defineProperty(this, 'masterPanel', {
-            value: masterPanel,
             enumerable: false,
             writable: true,
             configurable: true

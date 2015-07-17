@@ -6,7 +6,7 @@ define([
   , OperatorModel
 ){
     "use strict";
-    function ParameterModel(parameter, level, masterPanel) {
+    function ParameterModel(parameter, level, master) {
         this.level = level;
         this.name = parameter.name;
         this.cpsKey = parameter.cspKey;
@@ -14,6 +14,7 @@ define([
         this.step = parameter.step;
         this.decimals = parameter.decimals;
         this.operators = [];
+        this.master = master;
         // if the level corresponds with the effective level of the parameter
         // the effective value and the initial value are stored here
         if (level === parameter.effectiveLevel) {
@@ -23,12 +24,6 @@ define([
         }
         this.operatorCounter = 0;
         this.stacked = false;
-        Object.defineProperty(this, 'masterPanel', {
-            value: masterPanel,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
     }
     
         
@@ -57,7 +52,7 @@ define([
         // but that prevented the id to be set null for added but not stacked
         // operators, which is necessary for the selection tool to work
         this.stacked = true;
-        this.masterPanel.addStackedParameter(this);
+        this.master.parent.parent.addStackedParameter(this);
         //}
         /*
         function isStacked() {

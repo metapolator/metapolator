@@ -6,7 +6,7 @@ define([
   , PenstrokeModel
 ){
     "use strict";
-    function GlyphModel(name, masterName, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
+    function GlyphModel(name, masterName, baseParameters, baseOperators, parent, MOMelement) {
         this.level = "glyph";
         this.type = "master";
         this.masterName = masterName;
@@ -18,7 +18,8 @@ define([
         this.parameters = [];
         this.measured = false; // only the initial parameter values are measured for glyphs when they appear in the view
         this.master = parent;
-        this.selector = "master#" + masterName + " " + "glyph#" + name;
+        //this.selector = "master#" + masterName + " " + "glyph#" + name;
+        this.selector = "glyph#" + name;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
@@ -30,18 +31,12 @@ define([
             writable: true,
             configurable: true
         });
-        Object.defineProperty(this, 'masterPanel', {
-            value: masterPanel,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
     }
     
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
     
     _p.addPenstroke = function(name, MOMelement) {
-        var penstroke = new PenstrokeModel(name, this.baseParameters, this.baseOperators, this, this.masterPanel, MOMelement);
+        var penstroke = new PenstrokeModel(name, this.baseParameters, this.baseOperators, this, MOMelement);
         this.children.push(penstroke);
         return penstroke;
     };

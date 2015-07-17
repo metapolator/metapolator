@@ -10,6 +10,16 @@ function(
     }
 
     var _p = _ElementModel.prototype;
+
+    /*
+    _p.getAncestor = function(level) {
+        var levelElement = this;
+        while (levelElement.level !== level) {
+            levelElement = levelElement.parent;
+        }
+        return levelElement;
+    };
+    */
     
     _p.deselectAllChildren = function() {
         window.logCall("deselectAllChildren");
@@ -30,7 +40,7 @@ function(
         }
     };
     
-    _p.addBaseModels = function (baseParameters, baseOperators) {
+    _p.addBaseModels = function(baseParameters, baseOperators) {
         this.baseParameters = baseParameters;
         this.baseOperators = baseOperators;
         this.setInitialParameters();
@@ -50,7 +60,7 @@ function(
     _p.addParameter = function(parameter) {
         window.logCall("addParameter");
         this.parameters.push(
-            new ParameterModel(parameter, this.level, this.masterPanel)
+            new ParameterModel(parameter, this.level, this.master)
         );
     };
     

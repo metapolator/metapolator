@@ -6,7 +6,7 @@ define([
   , GlyphModel
 ){
     "use strict";
-    function MasterModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement, cpsFile) {
+    function MasterModel(name, baseParameters, baseOperators, parent, MOMelement, cpsFile) {
         this.level = "master";
         this.name = name;
         this.displayName = name;
@@ -18,7 +18,8 @@ define([
         // cps properties
         this.parameters = [];
         this.master = this;
-        this.selector = "master#" + this.name;
+        //this.selector = "master#" + this.name;
+        this.selector = "master";
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
@@ -32,18 +33,12 @@ define([
             writable: true,
             configurable: true
         });
-        Object.defineProperty(this, 'masterPanel', {
-            value: masterPanel,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
     }
     
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
     
     _p.addGlyph = function(name, MOMelement) {
-        var glyph = new GlyphModel(name, this.name, this.baseParameters, this.baseOperators, this, this.masterPanel, MOMelement);
+        var glyph = new GlyphModel(name, this.name, this.baseParameters, this.baseOperators, this, MOMelement);
         this.children.push(glyph);
         return glyph;
     };

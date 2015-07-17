@@ -6,7 +6,7 @@ define([
   , PointModel
 ){
     "use strict";
-    function PenstrokeModel(name, baseParameters, baseOperators, parent, masterPanel, MOMelement) {
+    function PenstrokeModel(name, baseParameters, baseOperators, parent, MOMelement) {
         this.level = "penstroke";
         this.name = name;
         this.children = [];
@@ -26,19 +26,13 @@ define([
             writable: true,
             configurable: true
         });
-        Object.defineProperty(this, 'masterPanel', {
-            value: masterPanel,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
     }
     
     var _p = PenstrokeModel.prototype = Object.create(Parent.prototype);
     
     _p.addPoint = function(name, MOMelement) {
         this.children.push(
-            new PointModel(name, this.baseParameters, this.baseOperators, this, this.masterPanel, MOMelement)
+            new PointModel(name, this.baseParameters, this.baseOperators, this, MOMelement)
         );
     };
 
