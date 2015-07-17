@@ -22,7 +22,7 @@ define([
         this.master = this;
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
-        this.ruleIndex = null;
+        this.ruleIndex = 3;
 
         this.addBaseModels(baseParameters, baseOperators);
 
@@ -38,7 +38,7 @@ define([
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
 
     _p.getSelector = function() {
-        return "master#" + this.name;
+        return "master";
     };
     
     _p.addGlyph = function(name, MOMelement) {

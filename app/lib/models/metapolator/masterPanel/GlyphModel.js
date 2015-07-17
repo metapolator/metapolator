@@ -33,7 +33,7 @@ define([
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
 
     _p.getSelector = function() {
-        return "master#" + this.parent.name + " " + "glyph#" + this.name;
+        return "master glyph#" + this.name;
     };
 
     _p.getMasterName = function() {
