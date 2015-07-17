@@ -47,34 +47,6 @@ function(
         return null;
     };
     
-    _p.setValue = function(changedParameter, changedOperator, value) {
-        window.logCall("setValue");
-        // with editing in ranges, we can want to set a value of a 
-        // not yet existing parameter and/or operator
-        // if it doens't exist yet, we create it.
-        var parameter = this.findParameter(changedParameter)
-          , id = changedOperator.id
-          , operator;
-        if (parameter) {
-            operator = parameter.findOperator(changedOperator, id);
-            if (operator) {
-                // it has the parameter and the operator
-                operator.setValue(value);
-            } else {
-                // it has the parameter, but it hasn't the operator yet
-                parameter.addOperator(changedOperator, id);
-                parameter.operators[parameter.operators.length - 1].setValue(value);
-            }
-        } else {
-            // it hasn't the parameter (and thus the parameter) yet
-            this.addParameter(changedParameter);
-            parameter = this.parameters[this.parameters.length - 1];
-            parameter.addOperator(changedOperator, id);
-            operator = parameter.operators[parameter.operators.length - 1];
-            operator.setValue(value);
-        }
-    };
-    
     _p.addParameter = function(parameter) {
         window.logCall("addParameter");
         this.parameters.push(

@@ -1,6 +1,10 @@
-define([], function() {
+define([
+    'metapolator/ui/metapolator/cpsAPITools'
+], function(
+    cpsAPITools
+) {
     "use strict";
-    function SelectionParameterController($scope, metapolatorModel) {
+    function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.changeValue = function(parameter, operator, value, keyEvent) {
             if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
                 var thisValue = null
@@ -13,20 +17,39 @@ define([], function() {
                       , selectionParameter;
                     // if there is a range, we have to find the value for this element within the range
                     if (operator.range) {
-                        thisValue = $scope.getRangeValue(element, parameter, operator);
+                        thisValue = getRangeValue(element, parameter, operator);
                     } else {
-                        thisValue = $scope.managedInputValue(value, parameter, operator, keyEvent);
+                        thisValue = managedInputValue(value, parameter, operator, keyEvent);
                     }
                     // set the value of each element in the selection
-                    element.setValue(parameter, operator, thisValue);
+                    // if there is not yet a parameter, we create it + cpsRule
+                    // if there is not yet a operator, we create it
+                    checkIfHasRule(element);
+                    var thisParameter = checkIfHasParameter(element, parameter)
+                      , thisOperator = checkIfHasOperator(thisParameter, operator);
+                    thisOperator.setValue(thisValue);
+                    writeValueInCPSfile(element, thisValue, parameter);
+
+                    // Elements down in the tree are effected by this, update their effectiveValue
+                    // and handle corresponding CPS effects. This can cause new cps rules. Eg: when
+                    // the width of a master is changed with a non-effectiveLocal operator (like '+'),
+                    // all glyphs in it are affected by it, so they all need their own cps rule.
                     effectiveLevel = parameter.effectiveLevel;
-                    // elements down in the tree are effected by this, update their effectiveValue
-                    effectedElements = $scope.getEffectedElements(effectiveLevel, element);
+                    effectedElements = getEffectedElements(effectiveLevel, element);
+                    /*
                     for (var j = 0, jl = effectedElements.length; j < jl; j++) {
                         var effectedElement = effectedElements[j]
-                          , elementParameter = effectedElement.getParameterByName(parameter.name);
+                          , elementParameter = effectedElement.getParameterByName(parameter.name)
+                          , correctionValue
+                          , parentsFactor = findParentsFactor();
                         elementParameter.updateEffectiveValue(effectedElement);
+                        // update the cps values for each element
+                        checkIfHasRule(effectedElement);
+                        correctionValue = elementParameter.effectiveValue / parentsFactor / elementParameter.initial;
+                        writeValueInCPSfile(element, correctionValue, parameter);
                     }
+                    */
+
                     // update the selection of effective values
                     selectionParameter = metapolatorModel.masterPanel.selection[effectiveLevel].getParameterByName(parameter.name);
                     // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
@@ -43,8 +66,58 @@ define([], function() {
                 }
             }
         };
+
+        function findParentsFactor(element, parameter) {
+            // this function finds all the factors for this parameter in its parent or grandparents (etc)
+            // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
+            // by (effectiveValue / initial), we need to divide it also by the parents factor
+            // TODO
+
+        }
+
+        function checkIfHasRule(element) {
+            if (!element.ruleIndex) {
+                var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
+                  , l = parameterCollection.length;
+                element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.selector);
+            }
+        }
+
+        function checkIfHasParameter(element, changedParameter) {
+            // with editing in ranges, we can want to set a value of a
+            // not yet existing parameter and/or operator
+            // if it doens't exist yet, we create it.
+            var parameter = element.findParameter(changedParameter);
+            if (parameter) {
+                return parameter;
+            } else {
+                element.addParameter(changedParameter);
+                return element.parameters[element.parameters.length - 1];
+            }
+        }
+
+        function checkIfHasOperator(elementParameter, changedOperator) {
+            var id = changedOperator.id
+              , operator = elementParameter.findOperator(changedOperator, changedOperator.id);
+            if (operator) {
+                return operator;
+            } else {
+                // it has the parameter, but it hasn't the operator yet
+                elementParameter.addOperator(changedOperator, id);
+                return elementParameter.operators[elementParameter.operators.length - 1];
+            }
+        }
+
+        function writeValueInCPSfile(element, value, parameter) {
+            var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
+                , cpsRule = parameterCollection.getItem(element.ruleIndex)
+                , parameterDict = cpsRule.parameters
+                , setParameter = cpsAPITools.setParameter;
+            setParameter(parameterDict, parameter.cpsKey, value);
+            console.log(parameterCollection.toString());
+        }
         
-        $scope.getEffectedElements = function(effectiveLevel, changedElement) {
+        function getEffectedElements (effectiveLevel, changedElement) {
             // go down to the level where the change of this value has effect
             // and get the elements.
 
@@ -63,9 +136,9 @@ define([], function() {
                 tempArray = [];
             }  
             return thisLevelElements; 
-        };
+        }
         
-        $scope.getRangeValue = function(element, parameter, operator) {
+        function getRangeValue (element, parameter, operator) {
             window.logCall("getRangeValue");
             var scale = null
               , myPosition = null
@@ -95,9 +168,9 @@ define([], function() {
                 newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.decimals);
             }
             return newValue;
-        };
+        }
         
-        $scope.managedInputValue = function(value, parameter, operator, keyEvent) {
+        function managedInputValue (value, parameter, operator, keyEvent) {
             window.logCall("managedInputValue");
             var currentValue = value.current
               , step
@@ -123,7 +196,7 @@ define([], function() {
                 }
             }
             return currentValue;
-        };
+        }
         
         function round(value, decimals) {
             return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
@@ -247,7 +320,7 @@ define([], function() {
         
     }
 
-    SelectionParameterController.$inject = ['$scope', 'metapolatorModel'];
+    SelectionParameterController.$inject = ['$scope', 'metapolatorModel', 'project'];
     var _p = SelectionParameterController.prototype;
 
     return SelectionParameterController;
