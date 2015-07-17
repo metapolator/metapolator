@@ -47,7 +47,7 @@ define([
        window.logCall("findGlyphByName");
        for (var i = 0, l = this.children.length; i < l; i++) {
            var glyph = this.children[i];
-           if (glyph.name == glyphName) {
+           if (glyph.name === glyphName) {
                return glyph;
            }
        }
