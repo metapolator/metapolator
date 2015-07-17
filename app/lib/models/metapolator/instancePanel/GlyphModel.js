@@ -4,14 +4,10 @@ define([
     Parent
 ){
     "use strict";
-    function GlyphModel(name, instanceName, parent) {
+    function GlyphModel(name, parent) {
         this.level = "glyph";
         this.type = "instance";
         this.name = name;
-        // this is called masterName, to keep masters and instances in sync, 
-        // concerning passing its parent name for the drawing of the svg and for 
-        // putting the parent name on the glyph to detect a mouseover
-        this.masterName = instanceName;
         this.edit = false;
         
         Object.defineProperty(this, 'parent', {
@@ -23,6 +19,10 @@ define([
     }
     
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
+
+    _p.getMasterName = function() {
+        return this.parent.name;
+    };
     
     
     return GlyphModel;

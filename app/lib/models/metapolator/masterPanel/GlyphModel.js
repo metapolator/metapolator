@@ -6,10 +6,9 @@ define([
   , PenstrokeModel
 ){
     "use strict";
-    function GlyphModel(name, masterName, baseParameters, baseOperators, parent, MOMelement) {
+    function GlyphModel(name, baseParameters, baseOperators, parent, MOMelement) {
         this.level = "glyph";
         this.type = "master";
-        this.masterName = masterName;
         this.name = name;
         this.edit = false;
         this.children = [];
@@ -34,6 +33,10 @@ define([
     }
     
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
+
+    _p.getMasterName = function() {
+        return this.parent.name;
+    };
     
     _p.addPenstroke = function(name, MOMelement) {
         var penstroke = new PenstrokeModel(name, this.baseParameters, this.baseOperators, this, MOMelement);

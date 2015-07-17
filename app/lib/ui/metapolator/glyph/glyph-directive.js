@@ -10,7 +10,7 @@ define([
                 model : '=mtkModel'
             }
           , link : function(scope, element, attrs, ctrl) {
-                var masterName = scope.model.masterName
+                var masterName = scope.model.getMasterName()
                   , glyphName = scope.model.name
                 // add css classes for breaks and spaces
                   , parentElement = element.parent()

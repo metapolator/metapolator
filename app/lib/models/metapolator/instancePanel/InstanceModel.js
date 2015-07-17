@@ -49,7 +49,7 @@ define([
     _p._addGlyph = function (name) {
         window.logCall("addGlyph");
         this.children.push(
-            new GlyphModel(name, this.name, this)
+            new GlyphModel(name, this)
         );
     };
     
