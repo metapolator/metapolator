@@ -14,6 +14,7 @@ define([
         this.baseParameters = parameters;
         this.baseOperators = operators;
         this.elements = [];
+        this.parameterOperatorPanel = false; // this toggles the panel
         // should do this with inheritiance
         this.allElements = sequences;
     }

@@ -21,11 +21,19 @@ define([
         };
         
         // every click outside a local menu head button
-        // collapses the local menu
+        // collapses the local menu and collapses all parameter / operator adding popup windows
         $scope.releaseLocalMenu = function (event) {
-            //console.log($(event.target).parents('.lm-head').length);
             if (!($(event.target).parents('.lm-head').length || $(event.target).hasClass("lm-head"))) {
                 $scope.model.display.localMenu = null;
+            }
+            if (!($(event.target).parents('.panel-zone').length)) {
+                collapsPanels();
+            }
+
+            function collapsPanels() {
+                for(var propertyName in $scope.model.masterPanel.selection) {
+                    $scope.model.masterPanel.selection[propertyName].parameterOperatorPanel = false;
+                }
             }
         };
         

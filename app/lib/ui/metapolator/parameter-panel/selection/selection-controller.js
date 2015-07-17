@@ -9,8 +9,6 @@ define([
     function SelectionController($scope, project) {
         $scope.operatorId = 1;
         // Handling the parameter add panel 
-        $scope.parameterOperatorPanel = null;
-        $scope.parameterLevel = null;
         $scope.panelParameter = null;
         $scope.panelOperator = null;
 
@@ -43,20 +41,20 @@ define([
                 // add a rule for this element with this parameter
             }
             $scope.operatorId++;
-            $scope.parameterOperatorPanel = null;
+            $scope.model.parameterOperatorPanel = false;
             $scope.model.updateParameters();
         };
 
-        $scope.parametersWindow = function(event, target, level) {
-            $scope.parameterLevel = level;
+        $scope.togglePanel = function(event) {
             $scope.panelOperator = null;
             $scope.panelParameter = null;
-            $scope.parameterPanelTop = $(event.target).offset().top + 20;
-            $scope.parameterPanelLeft = $(event.target).offset().left + 20;
-            if (target != $scope.parameterOperatorPanel) {
-                $scope.parameterOperatorPanel = target;
+
+            if ($scope.model.parameterOperatorPanel) {
+                $scope.model.parameterOperatorPanel = false;
             } else {
-                $scope.parameterOperatorPanel = null;
+                $scope.parameterPanelTop = $(event.target).offset().top + 20;
+                $scope.parameterPanelLeft = $(event.target).offset().left + 20;
+                $scope.model.parameterOperatorPanel = true;
             }
         };
         
