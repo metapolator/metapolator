@@ -48,13 +48,23 @@ define([
             // its effecitve level at point level, so for weight the effected
             // elements are all "points" of this glyph
             var baseParameter = this.baseParameters[i]
-              , effectedElements = this.findLevelOffspring(baseParameter.effectiveLevel);
-            for (var j = 0, jl = effectedElements.length; j < jl; j++) {
-                var effectedElement = effectedElements[j]
-                  , elementParameter = effectedElement.getParameterByName(baseParameter.name)
-                  , MOMelement = effectedElement.MOMelement;
-                elementParameter.setInitial(MOMelement);
+              , effectedElements;
+            // some glyphs don't have children (like 'space'). For these glyphs
+            // we only have to set the parameters on with effectiveLevel 'glyph'
+            if (this.children.length > 0 || baseParameter.effectiveLevel === "glyph") {
+                if (baseParameter.effectiveLevel === "glyph") {
+                    effectedElements = [this];
+                } else {
+                    effectedElements = this.findLevelOffspring(baseParameter.effectiveLevel);
+                }
+                for (var j = 0, jl = effectedElements.length; j < jl; j++) {
+                    var effectedElement = effectedElements[j]
+                        , elementParameter = effectedElement.getParameterByName(baseParameter.name)
+                        , MOMelement = effectedElement.MOMelement;
+                    elementParameter.setInitial(MOMelement);
+                }
             }
+
         }
         this.measured = true;
     };    
