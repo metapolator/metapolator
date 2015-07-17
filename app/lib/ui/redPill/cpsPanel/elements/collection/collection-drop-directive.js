@@ -1,38 +1,15 @@
 define([
     'angular'
+  , './specificTargetTools'
     ], function(
     angular
+  , specificTargetTools
 ) {
     "use strict";
 
-    function findElement(dropElementTags, element, parent) {
-        var children = parent.children
-          , allowedParents = new Set()
-          , i, l, child
-          , allowedTags = new Set(dropElementTags.map(function(s){return s.toUpperCase();}))
-          , current
-          ;
-        for(i=0,l=children.length;i<l;i++) {
-            child = children[i];
-            if(child.tagName.toLowerCase() === 'mtk-cps-collection-li')
-                allowedParents.add(child);
-        }
-
-        if(allowedParents.has(element))
-            current = element.firstChild;
-        else
-            current = element;
-
-        do {
-            if(allowedTags.has(current.tagName) && allowedParents.has(current.parentElement))
-                return current;
-        } while((current = current.parentElement));
-        return undefined;
-    }
-
-    function getIndicatorReference(empty, element, container) {
-        return element;
-    }
+    var findElement = specificTargetTools.findElement
+      , getPositionReference = specificTargetTools.getPositionReference
+      ;
 
     function CollectionDropDirective(DropHelper) {
         function link(_scope, element, attrs) {
@@ -44,11 +21,9 @@ define([
               , dataTypes = ['cps/rule', 'cps/namespace-collection'
                             , 'cps/comment', 'cps/generic-collection-item'
                             , 'cps/import-collection']
-              , dropElementTags = ['mtk-cps-rule', 'mtk-cps-namespace-collection'
-                                 /*, 'mtk-cps-import'*/, 'mtk-cps-comment']
               , dropHelper = new DropHelper(
-                    findElement.bind(null, dropElementTags)
-                  , getIndicatorReference
+                    findElement
+                  , getPositionReference
                   , dataTypes
                   , indicatorId
                   , controller

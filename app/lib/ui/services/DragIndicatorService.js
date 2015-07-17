@@ -1,12 +1,9 @@
 define([
-    'errors'
+    'metapolator/ui/domStuff'
 ], function(
-    errors
+    domStuff
 ) {
     "use strict";
-
-    var ValueError = errors.Value
-      ;
 
     /**
      * The DragIndicatorService will take care that not to many drag-indicators
@@ -78,37 +75,12 @@ define([
             indicator.parentElement.removeChild(indicator);
     }
 
-    function insertBefore(newElement, referenceElement) {
-        referenceElement.parentElement.insertBefore(newElement, referenceElement);
-    }
-
-    function insertAfter(newElement, referenceElement) {
-        // there is no element.insertAfter() in the DOM
-        if(!referenceElement.nextSibling)
-            referenceElement.parent.appendChild(newElement);
-        referenceElement.parentElement.insertBefore(newElement, referenceElement.nextSibling);
-    }
-
     _p.insertIndicator = function(id, element, position) {
         var document = element.ownerDocument
           , indicator = this._getIndicator(id, document)
           ;
-        switch(position) {
-            case 'append':
-                element.appendChild(indicator);
-                break;
-            case 'prepend':
-                insertBefore(indicator, element.firstChild);
-                break;
-            case 'before':
-                insertBefore(indicator, element);
-                break;
-            case 'after':
-                insertAfter(indicator, element);
-                break;
-            default:
-                throw new ValueError('Unknown position keyword "'+position+'".');
-        }
+        domStuff.insert(element, position, indicator);
+
     };
 
     _p.hideIndicator = function(identifier) {
