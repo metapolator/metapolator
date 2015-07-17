@@ -272,7 +272,7 @@ define([
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel', 'instanceController'];
+    InstancePanelController.$inject = ['$scope', 'metapolatorModel', '$timeout', 'instanceController'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;
