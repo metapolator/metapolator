@@ -16,4 +16,4 @@
     <div class="control-panel-cancel control-panel-button push-button" ng-click="data.view.parameterOperatorPanel = 0">
         Cancel
     </div>
-</div
+</div>
