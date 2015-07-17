@@ -22,14 +22,18 @@ define([
         
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
-    _p.addInstance = function(axes, designSpace) {
+    _p.createInstance = function(axes, designSpace) {
         window.logCall("addInstance");
-        var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter / this.colors.length], this)
-        this.children.push(instance);
+        var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter / this.colors.length], this);
         this.instanceCounter++;
+        return instance;
+    };
+
+    _p.addInstance = function(instance) {
+        console.log(instance);
+        this.children.push(instance);
         //set the newly created instance as current instance
         this.parent.setCurrentInstance(this.children[this.children.length - 1]);
-        return instance;
     };
 
     
