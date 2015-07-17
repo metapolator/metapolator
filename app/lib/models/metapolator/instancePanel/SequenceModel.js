@@ -30,7 +30,6 @@ define([
     };
 
     _p.addInstance = function(instance) {
-        console.log(instance);
         this.children.push(instance);
         //set the newly created instance as current instance
         this.parent.setCurrentInstance(this.children[this.children.length - 1]);
