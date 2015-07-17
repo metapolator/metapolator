@@ -22,7 +22,6 @@ define([
     var _p = SelectionModel.prototype = Object.create(Parent.prototype);
     
     _p.updateThisSelection = function(parentEmpty) {
-        window.logCall("updateThisSelection: " + this.level);
         if (parentEmpty) {
             this.elements = [];
             this.selectionParameters = [];
@@ -35,7 +34,6 @@ define([
     };
     
     _p.updateParameters = function() {
-        window.logCall("updateParameters");
         var self = this;
         this.selectionParameters = [];
         for (var i = this.baseParameters.length - 1; i >= 0; i--) {
@@ -62,7 +60,6 @@ define([
     };
     
     _p.getParameterByName = function(parameterName) {
-        window.logCall("getParameterByName");
         for (var i = this.selectionParameters.length - 1; i >= 0; i--) {
             var thisParameter = this.selectionParameters[i];
             if(thisParameter.name == parameterName) {
@@ -73,7 +70,6 @@ define([
     };
     
     _p.findSelectedElements = function (level) { 
-        window.logCall("findSelectedElements");  
         var levelElements = this.allElements
           , thisLevel = "sequences"
           , tempArray;

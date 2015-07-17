@@ -139,7 +139,6 @@ define([
         }
         
         function getRangeValue (element, parameter, operator) {
-            window.logCall("getRangeValue");
             var scale = null
               , myPosition = null
               , newValue = null
@@ -171,7 +170,6 @@ define([
         }
         
         function managedInputValue (value, parameter, operator, keyEvent) {
-            window.logCall("managedInputValue");
             var currentValue = value.current
               , step
               , decimals;

@@ -22,7 +22,6 @@ function(
     */
     
     _p.deselectAllChildren = function() {
-        window.logCall("deselectAllChildren");
         for (var i = this.children.length -1; i >= 0; i--) {
             var child = this.children[i];
             child.edit = false;
@@ -47,7 +46,6 @@ function(
     };
     
     _p.getParameterByName = function(parameterName) {
-        window.logCall("getParameterByName");
         for (var i = this.parameters.length - 1; i >= 0; i--) {
             var thisParameter = this.parameters[i];
             if (thisParameter.name == parameterName) {
@@ -58,14 +56,12 @@ function(
     };
     
     _p.addParameter = function(parameter) {
-        window.logCall("addParameter");
         this.parameters.push(
             new ParameterModel(parameter, this.level, this.master)
         );
     };
     
     _p.addParameterOperator = function(addedParameter, operator, id) {
-        window.logCall("addParameterOperator");
         var parameter = this.findParameter(addedParameter);
         if (parameter) {
             parameter.addOperator(operator, id);
@@ -76,7 +72,6 @@ function(
     };
     
     _p.findParameter = function(parameter) {
-        window.logCall("findParameter");
         for (var i = this.parameters.length - 1; i >= 0; i--) {
             var thisParameter = this.parameters[i];
             if (thisParameter.name == parameter.name) {
@@ -87,7 +82,6 @@ function(
     };
     
     _p.findLevelOffspring = function(level) {
-        window.logCall("findLevelOffspring");
         // this function starts to walk down the tree until it reaches the argument level
         // and returns all element of that specific level. Eg: If you ask for point level
         // of glyph "A", it returns all points of "A".

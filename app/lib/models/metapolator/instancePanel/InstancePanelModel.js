@@ -48,14 +48,12 @@ define([
     */
     
     _p.addSequence = function(name) {
-        window.logCall("addSequence");
         this.sequences.push(
             new SequenceModel(name, this)
         );
     };
     
     _p.countInstancesWithMaster = function(master) {
-        window.logCall("countInstancesWithMaster");
         var n = 0;
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
@@ -73,7 +71,6 @@ define([
     };
     
     _p.countInstancesWithDesignSpace = function(designSpace) {
-        window.logCall("countInstancesWithDesignSpace");
         var n = 0;
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
@@ -88,7 +85,6 @@ define([
     };
     
     _p.deleteMasterFromInstances = function (designSpace, master) {
-        window.logCall("deleteMasterFromInstances");
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
@@ -116,7 +112,6 @@ define([
     };
     
     _p.removeInstanceOnDesignSpace = function (designSpace) {
-        window.logCall("removeInstanceOnDesignSpace");
         var thisIndex;
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
@@ -136,8 +131,7 @@ define([
     };
     
     _p.findNewCurrentInstance = function (index) {
-        window.logCall("updateMetapolationValues");
-        var l = this.sequences[0].children.length;   
+        var l = this.sequences[0].children.length;
         if (l > index) {
             this.setCurrentInstance(this.sequences[0].children[index]);
         } else if (l === 0) {

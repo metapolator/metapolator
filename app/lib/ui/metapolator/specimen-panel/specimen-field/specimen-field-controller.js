@@ -57,7 +57,6 @@ define([
         var startPosition = null;
         
         function manageSpaces() {
-            window.logCall("start space manager");
             if (!startPosition) {
                 startPosition = parseInt($("mtk-specimen-field > .specimen-content").css("padding-left"));
             }
@@ -94,7 +93,6 @@ define([
                     brokenEnd = true;
                 }
             });
-            window.logCall("end space manager");
         }
     }
 

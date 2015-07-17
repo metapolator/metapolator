@@ -26,7 +26,6 @@ define([
     var _p = SelectionParameterModel.prototype = Object.create(Parent.prototype);
     
     _p.updateEffectiveValue = function() {
-        window.logCall("updateEffectiveValue");
         if (this.effectiveLevel == this.level) {
             var low = null
               , high = null
@@ -61,7 +60,6 @@ define([
 
     _p.updateOperators = function(elements) {
         // based upon a (new) selection operators are attached to the selection
-        window.logCall("updateOperators");
         this.selectionOperators = [];
         for (var baseOperatorIndex = 0, l = this.baseOperators.length; baseOperatorIndex < l; baseOperatorIndex++) {
             var baseOperator = this.baseOperators[baseOperatorIndex];

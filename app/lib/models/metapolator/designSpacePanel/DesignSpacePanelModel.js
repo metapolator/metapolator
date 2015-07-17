@@ -22,7 +22,6 @@ define([
     };
     
     _p.addDesignSpace = function() {
-        window.logCall("addDesignSpace");
         var id = this.designSpaceCounter
           , name = "Space " + id
           , type = "Control"
@@ -36,7 +35,6 @@ define([
     };
     
     _p.removeDesignSpace = function(designSpace) {
-        window.logCall("removeDesignSpace");
         var self = this
           , index = findDesignSpace(designSpace) ;
         this.designSpaces.splice(index, 1);
@@ -53,7 +51,6 @@ define([
     };
     
     _p.duplicateDesignSpace = function() {
-        window.logCall("duplicateDesignSpace");
         var duplicate = this.currentDesignSpace
           , id = this.designSpaceCounter
           , name = "Space " + id
@@ -71,8 +68,7 @@ define([
     };
     
     _p.findNewCurrentDesignSpace = function (index) {
-        window.logCall("findNewCurrentDesignSpace");
-        var l = this.designSpaces.length;   
+        var l = this.designSpaces.length;
         if (l > index) {
             this.setCurrentDesignSpace(this.designSpaces[index]);
         } else if (l == 0) {

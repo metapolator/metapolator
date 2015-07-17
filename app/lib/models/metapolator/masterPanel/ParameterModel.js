@@ -36,8 +36,6 @@ define([
     };
     
     _p.addOperator = function(operator, id) {
-        window.logCall("addOperator");
-        var self = this;
         this.operators.push(
             new OperatorModel(operator, id)
         );
@@ -71,7 +69,6 @@ define([
     };
     
     _p.findOperator = function(operator, id) {
-        window.logCall("findOperator");
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var thisOperator = this.operators[i];
             if (thisOperator.name == operator.name && thisOperator.id == id) {
@@ -84,7 +81,6 @@ define([
     // you cannot always use this funtion, since there can be cases that there are multiple
     // operators with the same name in a parameter
     _p.getOperatorByName = function(operatorName) {
-        window.logCall("getOperatorByName");
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var thisOperator = this.operators[i];
             if(thisOperator.name == operatorName) {
@@ -96,7 +92,6 @@ define([
     
     _p.destackOperators = function() {
         if (this.stacked) {
-            window.logCall("destackThisOperators");
             var lastOperator = {
                   name: null
               }
@@ -137,7 +132,6 @@ define([
     };
     
     _p.updateEffectiveValue = function(element) {
-        window.logCall("updateEffectiveValue");
         var parameterName = this.name
           , min = null
           , max = null

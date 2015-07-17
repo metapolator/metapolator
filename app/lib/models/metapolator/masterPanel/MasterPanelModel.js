@@ -114,7 +114,6 @@ define([
     };
 
     _p.updateSelections = function(updatedLevel) {
-        window.logCall("updateSelections");
         this.destackOperators();
         var parentEmpty = false;
         // and do this for all levels beyond
@@ -135,7 +134,6 @@ define([
     };
 
     _p.destackOperators = function() {
-        window.logCall("destackOperators");
         var elements = this.stackedParameters;
         for (var i = elements.length - 1; i >= 0; i--) {
             var element = elements[i];
@@ -146,14 +144,12 @@ define([
     };
 
     _p.addSelectionLevel = function(level) {
-        window.logCall("addSelectionLevel");
         this.selection[level] = new SelectionModel(
             level, this.baseParameters, this.baseOperators, this.sequences, this.allLevels, this
         );
     };
 
     _p.addSequence = function(name) {
-        window.logCall("addSequence");
         var sequence = new SequenceModel(name, this.baseParameters, this.baseOperators, this, this.sequenceId++);
         this.sequences.push(sequence);
         return sequence;

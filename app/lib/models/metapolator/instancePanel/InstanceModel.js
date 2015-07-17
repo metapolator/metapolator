@@ -47,14 +47,12 @@ define([
     };
 
     _p._addGlyph = function (name) {
-        window.logCall("addGlyph");
         this.children.push(
             new GlyphModel(name, this)
         );
     };
     
     _p.updateMetapolationValues = function () {
-        window.logCall("updateMetapolationValues");
         var axes = this.axes
           , n = axes.length - 1
           , thisPiece;
@@ -76,7 +74,6 @@ define([
     };
    
     _p.addAxis = function(master, axisValue, metapolationValue) {
-        window.logCall("addAxis");
         this.axes.push(
             new AxisModel(master, axisValue, metapolationValue)
         ); 

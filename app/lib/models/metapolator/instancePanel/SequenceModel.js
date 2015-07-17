@@ -23,7 +23,6 @@ define([
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
     _p.createInstance = function(axes, designSpace) {
-        window.logCall("addInstance");
         var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter % this.colors.length], this);
         this.instanceCounter++;
         return instance;

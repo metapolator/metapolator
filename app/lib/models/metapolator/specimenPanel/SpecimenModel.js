@@ -63,7 +63,6 @@ define([
     };
     
     _p.updateSelectedMasters = function(sequences) {
-        window.logCall("updateSelectedMasters " + this.name);
         var selectedMasters = [];
         for (var i = 0, il = sequences.length; i < il; i++) {
             var sequence = sequences[i];

@@ -23,13 +23,11 @@ define([
     var _p = DesignSpaceModel.prototype = Object.create(Parent.prototype);
    
     _p.addAxis = function(master) {
-        window.logCall("addAxis");
-        this.axes.push(master); 
+        this.axes.push(master);
         this.parent.nrOfAxesTrigger++;     
     };
     
     _p.removeAxis = function(master) {
-        window.logCall("removeAxis");
         var self = this
           , index = findMaster(master);
         this.axes.splice(index, 1);

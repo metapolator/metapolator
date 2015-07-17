@@ -47,7 +47,6 @@ define([
     };
     
     _p.measureGlyph = function () {
-        window.logCall("measureGlyph");
         for (var i = this.baseParameters.length - 1; i >= 0; i--) {
             // get all the elements for the specific parameter. Eg: "weight" has
             // its effecitve level at point level, so for weight the effected

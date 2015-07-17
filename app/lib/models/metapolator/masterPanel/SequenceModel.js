@@ -25,7 +25,6 @@ define([
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
     _p.addMaster = function(name, MOMelement, cpsFile) {
-        window.logCall("addMaster");
         var master = new MasterModel(name, this.baseParameters, this.baseOperators, this, MOMelement, cpsFile, this.id, this.masterId++);
         this.children.push(master);
         return master;
