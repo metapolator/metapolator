@@ -17,8 +17,7 @@ define([
         this.parameters = [];
         this.measured = false; // only the initial parameter values are measured for glyphs when they appear in the view
         this.master = parent;
-        //this.selector = "master#" + masterName + " " + "glyph#" + name;
-        this.selector = "glyph#" + name;
+        this.selector = "master#" + parent.name + " " + "glyph#" + name;
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 

@@ -20,11 +20,10 @@ define([
         // cps properties
         this.parameters = [];
         this.master = this;
-        //this.selector = "master#" + this.name;
-        this.selector = "master";
+        this.selector = "master#" + this.name;
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
-        this.ruleIndex = 3;
+        this.ruleIndex = null;
 
         this.addBaseModels(baseParameters, baseOperators);
 
