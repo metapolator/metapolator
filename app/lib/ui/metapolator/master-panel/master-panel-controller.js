@@ -4,7 +4,7 @@ define([
     $
 ) {
     "use strict";
-    function MasterPanelController($scope, metapolatorModel, instanceController) {
+    function MasterPanelController($scope, metapolatorModel, instanceTools, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
         $scope.instancePanel = metapolatorModel.instancePanel;
@@ -28,7 +28,7 @@ define([
                     axisValue: axisValue
                 }];
                 var newInstance = $scope.instancePanel.sequences[0].createInstance(instanceAxes, designSpace);
-                instanceController.registerInstance(newInstance);
+                instanceTools.registerInstance(project, newInstance);
                 $scope.instancePanel.sequences[0].addInstance(newInstance);
             }  else {
                 designSpace.addAxis(master);
@@ -171,7 +171,7 @@ define([
         };
     }
 
-    MasterPanelController.$inject = ['$scope', 'metapolatorModel', 'instanceController'];
+    MasterPanelController.$inject = ['$scope', 'metapolatorModel', 'instanceTools', 'project'];
     var _p = MasterPanelController.prototype;
 
     return MasterPanelController;

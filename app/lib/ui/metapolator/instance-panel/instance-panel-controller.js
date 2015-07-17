@@ -4,7 +4,7 @@ define([
     $
 ) {
     "use strict";
-    function InstancePanelController($scope, metapolatorModel, $timeout, instanceController) {
+    function InstancePanelController($scope, metapolatorModel, $timeout, instanceTools, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
 
@@ -20,7 +20,7 @@ define([
                 });
             }
             instance = $scope.model.sequences[0].createInstance(axes, designSpace);
-            instanceController.registerInstance(instance);
+            instanceTools.registerInstance(project, instance);
             $scope.model.sequences[0].addInstance(instance);
         };
         
@@ -272,7 +272,7 @@ define([
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel', '$timeout', 'instanceController'];
+    InstancePanelController.$inject = ['$scope', 'metapolatorModel', '$timeout', 'instanceTools', 'project'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;
