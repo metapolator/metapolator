@@ -22,17 +22,17 @@ define([
                     initialBuildGraphics();
                     redrawFunction();
                 });
-                var dragActive = false;
-                var designSpace = null;
-                var thisInstance = null;
-                var inactiveInstances = [];
-                var svg = d3.select(element[0]).append('svg');
-                var layerSingle = svg.append('g').attr('class', 'single-layer');
-                var inactiveLayer = svg.append('g').attr('class', 'inactive-axes');
-                var activeLayer = svg.append('g').attr('class', 'active-axes');
-                var singleContainer;
+                var dragActive = false
+                  , designSpace = null
+                  , thisInstance = null
+                  , inactiveInstances = []
+                  , svg = d3.select(element[0]).append('svg')
+                  , layerSingle = svg.append('g').attr('class', 'single-layer')
+                  , inactiveLayer = svg.append('g').attr('class', 'inactive-axes')
+                  , activeLayer = svg.append('g').attr('class', 'active-axes')
+                  , singleContainer
 
-                var graphics = {
+                  , graphics = {
                     elementWidth : null,
                     axisWidth : null,
                     paddingLeft : 50, 
