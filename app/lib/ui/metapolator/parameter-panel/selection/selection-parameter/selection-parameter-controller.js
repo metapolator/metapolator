@@ -110,9 +110,9 @@ define([
 
         function writeValueInCPSfile(element, value, parameter) {
             var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
-                , cpsRule = parameterCollection.getItem(element.ruleIndex)
-                , parameterDict = cpsRule.parameters
-                , setParameter = cpsAPITools.setParameter;
+              , cpsRule = parameterCollection.getItem(element.ruleIndex)
+              , parameterDict = cpsRule.parameters
+              , setParameter = cpsAPITools.setParameter;
             setParameter(parameterDict, parameter.cpsKey, value);
             console.log(parameterCollection.toString());
         }
