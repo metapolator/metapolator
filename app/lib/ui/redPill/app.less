@@ -182,6 +182,10 @@ mtk-cps-panel {
     mtk-cps-property-dict {
         display: inline;
         ol {
+            /*important, that we can detect double clicks when the list is
+             empty. Double click is used to add a new-property interface.
+             */
+            min-height: .5em;
             display: block;
             list-style: none;
             padding: 0;

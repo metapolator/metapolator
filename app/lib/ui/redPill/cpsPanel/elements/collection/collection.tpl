@@ -1,5 +1,7 @@
-<mtk-cps-collection-li ng-repeat="item in items track by $index + ':' + item.nodeID" ng-switch="item.constructor.name">
-    <mtk-cps-rule
+<mtk-cps-collection-li
+    ng-repeat="item in items track by $index + ':' + item.nodeID"
+    ng-switch="item.constructor.name"
+    ><mtk-cps-rule
         ng-switch-when="Rule"
 
         cps-rule="item"
@@ -21,6 +23,7 @@
         mtk-drag-data="[cpsCollection, $index]"
 
         mtk-collection-drop
+        mtk-collection-new-item
 
     ></mtk-cps-namespace-collection>
     <mtk-cps-comment

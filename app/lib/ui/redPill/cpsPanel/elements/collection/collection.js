@@ -3,6 +3,7 @@ define([
   , './collection-controller'
   , './collection-directive'
   , './collection-drop-directive'
+  , './collection-new-item-directive'
   , 'metapolator/ui/redPill/cpsPanel/elements/rule/rule'
   , 'metapolator/ui/redPill/cpsPanel/elements/namespaceCollection/namespaceCollection'
   , 'metapolator/ui/redPill/cpsPanel/elements/comment/comment'
@@ -14,6 +15,7 @@ define([
   , Controller
   , directive
   , collectionDropDirective
+  , collectionNewItemDirective
   , rule
   , namespaceCollection
   , comment
@@ -28,5 +30,6 @@ define([
       .controller('CollectionController', Controller)
       .directive('mtkCpsCollection', directive)
       .directive('mtkCollectionDrop', collectionDropDirective)
+      .directive('mtkCollectionNewItem', collectionNewItemDirective)
       ;
 });

@@ -11,8 +11,11 @@ define([
         function link(scope, element, attrs, controller) {
             element.bind('click', helpers.handlerDecorator(scope,
                             controller.cancelNewPropertyHandler, true, true));
-            element.bind('dblclick', helpers.handlerDecorator(scope,
+
+            scope.$on('newPropertyRequest', helpers.handlerDecorator(scope,
                             controller.initNewPropertyHandler, true, true));
+
+            //element.bind('dblclick',
         }
 
         return {

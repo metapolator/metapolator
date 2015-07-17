@@ -2,10 +2,12 @@ define([
     'angular'
   , 'errors'
   , 'require/text!./propertyDict.tpl'
+  , 'metapolator/ui/redPill/cpsPanel/elements/helpers'
     ], function(
     angular
   , errors
   , template
+  , helpers
 ) {
     "use strict";
 
@@ -61,7 +63,7 @@ define([
         return undefined;
     }
 
-    function getIndicatorReference(empty, element, container) {
+    function getPositionReference(empty, element, container) {
         return empty
             ? container
             : findParentElement(element, 'li', false, container)
@@ -73,13 +75,13 @@ define([
         function link(scope, element, attrs, controller) {
             // there is also a dragenter and dragleave event, but they
             // are not necessary for the most simple usage
-            var container = element[0].getElementsByTagName('ol')[0]
+            var container = element[0].getElementsByClassName('container')[0]
               , indicatorId = 'cps-drop-indicator'
               , dataTypes = ['cps/property', 'cps/comment', 'cps/generic-rule-item']
               , dropElementTags = ['mtk-cps-property', 'mtk-cps-comment']
               , dropHelper = new DropHelper(
                     findElement.bind(null, dropElementTags)
-                  , getIndicatorReference
+                  , getPositionReference
                   , dataTypes
                   , indicatorId
                   , controller
@@ -90,6 +92,9 @@ define([
 
             element.on('dragover', dropHelper.dragoverHandler);
             element.on('drop', dropHelper.dropHandler);
+
+            angular.element(container).on('dblclick', helpers.handlerDecorator(scope,
+                            scope.$emit.bind(scope, 'newPropertyRequest'), true, false));
         }
 
         return {

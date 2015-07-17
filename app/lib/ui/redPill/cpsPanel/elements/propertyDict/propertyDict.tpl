@@ -1,4 +1,4 @@
-<ol>
+<ol class="container">
     <li ng-repeat="item in items track by item[0]"
         ng-switch="item[1].constructor.name">
         <mtk-cps-property

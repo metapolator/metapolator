@@ -6,5 +6,6 @@
 
     mtk-dragover-autoscroll
     mtk-collection-drop
+    mtk-collection-new-item
 
     ></mtk-cps-collection>
