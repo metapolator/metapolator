@@ -7,14 +7,11 @@ define([
     function InstancePanelController($scope, metapolatorModel, $timeout, instanceController) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
-        
-        //$scope.colWidth = metapolatorModel.display.panel.panels[5] / 
-        
+
         $scope.addInstance = function () {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
               , axes = []
-              , instance
-              , cpsString;
+              , instance;
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var master = designSpace.axes[i];
                 axes.push({
