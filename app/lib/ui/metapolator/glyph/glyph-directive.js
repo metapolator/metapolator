@@ -10,7 +10,7 @@ define([
                 model : '=mtkModel'
             }
           , link : function(scope, element, attrs, ctrl) {
-                var masterName = scope.model.getMasterName()
+                var masterName
                   , glyphName = scope.model.name
                 // add css classes for breaks and spaces
                   , parentElement = element.parent()
@@ -40,6 +40,7 @@ define([
                     } else if (scope.model.type === "instance") {
                         scope.checkBaseMasters(scope.model);
                     }
+                    masterName = scope.model.getMasterName()
                     svg = scope.renderGlyph(masterName, glyphName);
 
                     element.append(svg);
