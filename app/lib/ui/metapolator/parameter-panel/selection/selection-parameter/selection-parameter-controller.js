@@ -78,7 +78,7 @@ define([
         function checkIfHasRule(element) {
             if (!element.ruleIndex) {
                 var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
-                , l = parameterCollection.length;
+                  , l = parameterCollection.length;
                 element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.selector);
             }
         }
