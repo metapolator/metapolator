@@ -2,12 +2,10 @@ define([
     'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
   , 'metapolator/ui/services/GlyphRendererAPI'
-    , 'metapolator/ui/metapolator/services/instanceTools'
 ], function(
     document
   , AppModel
   , GlyphRendererAPI
-  , instanceTools
 ) {
     "use strict";
     function Metapolator(project, angularApp) {
@@ -22,7 +20,6 @@ define([
         this._loadMOMmasters();
 
         this.glyphRendererAPI = new GlyphRendererAPI(document, project.controller);
-        this.instanceTools = instanceTools;
         // FIXME: this is the MOM/CPS model, rename? The name is inherited
         // from the Red Pill, but since we are going to have more models this
         // could get a more distinct name. Should be renamed in the Red Pill as

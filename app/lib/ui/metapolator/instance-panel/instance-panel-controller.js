@@ -1,10 +1,12 @@
 define([
     'jquery'
+  , 'metapolator/ui/metapolator/services/instanceTools'
 ], function(
     $
+  , instanceTools
 ) {
     "use strict";
-    function InstancePanelController($scope, metapolatorModel, $timeout, instanceTools, project) {
+    function InstancePanelController($scope, metapolatorModel, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
 
@@ -272,7 +274,7 @@ define([
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel', '$timeout', 'instanceTools', 'project'];
+    InstancePanelController.$inject = ['$scope', 'metapolatorModel', '$timeout', 'project'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;
