@@ -10,6 +10,52 @@ define([
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
         $scope.instancePanel = metapolatorModel.instancePanel;
+
+        $scope.duplicateMasters = function() {
+            for (var i = 0, l = $scope.model.sequences.length; i < l; i++) {
+                var sequence = $scope.model.sequences[i]
+                  , clones = [];
+                for (var j = 0, jl = sequence.children.length; j < jl; j++) {
+                    var master = sequence.children[j];
+                    // todo: change [0] to [viewState]
+                    if (master.edit[0]) {
+                        // todo: clone the objects and arrays like 'edit', 'parameters' and 'operators' properly, so they are no longer references
+                        var clone = master.clone()
+                          , copiedCPSstring;
+                        setCopyProperties(clone);
+                        copiedCPSstring = copyCPSString(master);
+                        registerMaster(clone, copiedCPSstring);
+                        clones.push(clone);
+                    }
+                }
+                for (var k = 0, kl = clones.length; k < kl; k++) {
+                    sequence.add(clones[k]);
+                }
+            }
+        };
+
+        function setCopyProperties(clone) {
+            clone.displayName = nameCopy(clone.displayName);
+            // giving it a unique name before registering
+            clone.name = "master-" + clone.id + "-" + clone.sequenceId;
+            clone.cpsFile = clone.name + ".cps";
+        }
+
+        function registerMaster(master, cpsString) {
+            project.ruleController.write(false, master.cpsFile, cpsString);
+            project.createMaster(master.name, master.cpsFile, 'skeleton.base');
+            project.open(master.name);
+        }
+
+        function copyCPSString(master) {
+            // use the old name to get the cpsString
+            var sourceCollection = project.controller.getMasterCPS(false, master.name);
+            return "" + sourceCollection;
+        }
+
+        function nameCopy (name) {
+            return name + " copy";
+        }
         
         $scope.importUfo = function () {
             var message = "Want to load your own UFO?<br><br>Show us you want this by buying a T shirt:<br><ul><li><a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a></li><li><a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a></li>";

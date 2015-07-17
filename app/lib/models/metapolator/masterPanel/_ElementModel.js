@@ -106,6 +106,37 @@ function(
         }
         return levelOffspring;
     };
-    
+
+    _p.clone = function() {
+        var clone = {};
+        clone = new this.constructor();
+        this._cloneProperties(clone);
+        if(this.children) {
+            this._cloneChildren(clone);
+        }
+        return clone;
+    };
+
+    _p._cloneProperties = function(clone) {
+        for (var propertyName in this) {
+            if (propertyName !== "children" && propertyName !== "parent" && propertyName !== "$$hashKey") {
+                clone[propertyName] = this[propertyName];
+            }
+        }
+    };
+
+    _p._cloneChildren = function(clone) {
+        clone.children = [];
+        for (var i = 0, l = this.children.length; i < l; i++) {
+            clone.add(this.children[i].clone());
+        }
+    };
+
+    _p.add = function(item) {
+        this.children.push(item);
+        item.parent = this;
+    };
+
+
     return _ElementModel;
 });

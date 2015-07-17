@@ -13,6 +13,7 @@ define([
         this.lastMasterSelected = null;
         this.selection = {};
         this.stackedParameters = [];
+        this.sequenceId = 0;
         /*
          // until #392 is fixed, we work only with width and weight
 
@@ -153,7 +154,7 @@ define([
 
     _p.addSequence = function(name) {
         window.logCall("addSequence");
-        var sequence = new SequenceModel(name, this.baseParameters, this.baseOperators, this);
+        var sequence = new SequenceModel(name, this.baseParameters, this.baseOperators, this, this.sequenceId++);
         this.sequences.push(sequence);
         return sequence;
     };
