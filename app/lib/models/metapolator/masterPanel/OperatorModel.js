@@ -22,6 +22,16 @@ define([
     _p.setValue = function(value) {
         this.value = value;
     };
+
+    _p.clone = function() {
+        var clone = {};
+        for (var propertyName in this) {
+            if (propertyName !== "$$hashKey") {
+                clone[propertyName] = this[propertyName];
+            }
+        }
+        return clone;
+    };
     
     return OperatorModel;
 });

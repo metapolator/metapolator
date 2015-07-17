@@ -28,6 +28,32 @@ define([
     
         
     var _p = ParameterModel.prototype = Object.create(Parent.prototype);
+
+    _p.clone = function(master) {
+        var clone = {};
+        clone = new this.constructor();
+        this._cloneProperties(clone);
+        if(this.operators) {
+            this._cloneOperators(clone);
+        }
+        clone.master = master;
+        return clone;
+    };
+
+    _p._cloneProperties = function(clone) {
+        for (var propertyName in this) {
+            if (propertyName !== "operators" && propertyName !== "master" && propertyName !== "$$hashKey") {
+                clone[propertyName] = this[propertyName];
+            }
+        }
+    };
+
+    _p._cloneOperators = function(clone) {
+        clone.operators = [];
+        for (var i = 0, l = this.operators.length; i < l; i++) {
+            clone.operators.push(this.operators[i].clone());
+        }
+    };
     
     _p.setInitial = function(MOMelement) {
         var measuredValue = this.getInitial(MOMelement);

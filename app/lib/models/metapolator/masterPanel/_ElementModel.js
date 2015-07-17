@@ -108,12 +108,16 @@ function(
         if(this.children) {
             this._cloneChildren(clone);
         }
+        if(this.parameters) {
+            this._cloneParameters(clone);
+        }
         return clone;
     };
 
     _p._cloneProperties = function(clone) {
         for (var propertyName in this) {
-            if (propertyName !== "children" && propertyName !== "parent" && propertyName !== "$$hashKey") {
+            if (propertyName !== "children" && propertyName !== "parent" &&
+                propertyName !== "$$hashKey" && propertyName !== "parameters") {
                 clone[propertyName] = this[propertyName];
             }
         }
@@ -126,11 +130,17 @@ function(
         }
     };
 
+    _p._cloneParameters = function(clone) {
+        clone.parameters = [];
+        for (var i = 0, l = this.parameters.length; i < l; i++) {
+            clone.parameters.push(this.parameters[i].clone(this.master));
+        }
+    };
+
     _p.add = function(item) {
         this.children.push(item);
         item.parent = this;
     };
-
 
     return _ElementModel;
 });
