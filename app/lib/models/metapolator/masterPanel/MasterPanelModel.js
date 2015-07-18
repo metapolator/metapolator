@@ -102,6 +102,20 @@ define([
             type : "unique",
             usesUnit : true,
             effectiveLocal : false
+        }, {
+            order : 5,
+            name : "min",
+            standardValue : 0,
+            type : "unique",
+            usesUnit : true,
+            effectiveLocal : false
+        }, {
+            order : 6,
+            name : "max",
+            standardValue : 0,
+            type : "unique",
+            usesUnit : true,
+            effectiveLocal : false
         }];
     }
 
