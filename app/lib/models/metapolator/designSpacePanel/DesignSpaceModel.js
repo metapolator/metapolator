@@ -33,6 +33,10 @@ define([
             return false;
         }
     };
+
+    _p.remove = function() {
+        this.parent.removeDesignSpace(this);
+    };
    
     _p.addAxis = function(master) {
         this.axes.push(master);

@@ -11,7 +11,7 @@ define([
         this.$scope.name = 'masterPanel';
 
         $scope.addInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+            var designSpace = $scope.model.currentInstance.designSpace
               , axes = []
               , instance
               , n = designSpace.axes.length;
@@ -44,7 +44,7 @@ define([
         };
         
         $scope.deleteInstance = function (instance) {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+            var designSpace = instance.designSpace
               , index = $scope.model.sequences[0].children.indexOf(instance)
               , l
               , n = 0;
@@ -63,7 +63,7 @@ define([
                 metapolatorModel.display.dialog.confirm(message, function(result){
                     if (result) {
                         deleteInstance();
-                        metapolatorModel.designSpacePanel.removeDesignSpace(designSpace);
+                        designSpace.remove();
                         $scope.$apply();
                     }
                 });
