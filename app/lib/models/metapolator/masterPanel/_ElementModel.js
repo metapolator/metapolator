@@ -132,5 +132,22 @@ function(
         item.parent = this;
     };
 
+    _p.findParentsFactor = function(parameter) {
+        // this function finds all the factors for this parameter in its parent or grandparents (etc)
+        // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
+        // by (effectiveValue / initial), we need to divide it also by the parents factor
+        var levelElement = this
+          , parentsFactor = 1;
+        while(levelElement.level !== 'sequence') {
+            var levelParameter = this.findParameter(parameter)
+              , levelFactor = levelParameter.getCPSFactor();
+            if (levelFactor !== false) {
+                parentsFactor *= levelFactor;
+            }
+            levelElement = levelElement.parent;
+        }
+        return parentsFactor;
+    };
+
     return _ElementModel;
 });

@@ -8,13 +8,13 @@ define([
         $scope.changeValue = function(parameter, operator, value, keyEvent) {
             if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
                 var thisValue = null
-                  , operatorId = operator.id;
+                  , operatorId = operator.id
+                  , changedLevels = [];
                   
                 for (var i = $scope.model.elements.length - 1; i >= 0; i--) {
                     var element = $scope.model.elements[i]
                       , effectiveLevel
-                      , effectedElements
-                      , selectionParameter;
+                      , effectedElements;
                     // if there is a range, we have to find the value for this element within the range
                     if (operator.range) {
                         thisValue = getRangeValue(element, parameter, operator);
@@ -26,9 +26,16 @@ define([
                     // if there is not yet a operator, we create it
                     checkIfHasRule(element);
                     var thisParameter = checkIfHasParameter(element, parameter)
-                      , thisOperator = checkIfHasOperator(thisParameter, operator);
+                      , thisOperator = checkIfHasOperator(thisParameter, operator)
+                      , localOperatorFactor;
                     thisOperator.setValue(thisValue);
-                    writeValueInCPSfile(element, thisValue, parameter);
+                    // check if this parameter has localOperators (like multiply and divide)
+                    // the function returns the combined factor of these if it has any.
+                    // if it has only non-local operators (add, subtract, etc) it returns false
+                    localOperatorFactor = thisParameter.getCPSFactor();
+                    if (localOperatorFactor !== false) {
+                        writeValueInCPSfile(element, localOperatorFactor, parameter);
+                    }
 
                     // Elements down in the tree are effected by this, update their effectiveValue
                     // and handle corresponding CPS effects. This can cause new cps rules. Eg: when
@@ -36,26 +43,22 @@ define([
                     // all glyphs in it are affected by it, so they all need their own cps rule.
                     effectiveLevel = parameter.effectiveLevel;
                     effectedElements = getEffectedElements(effectiveLevel, element);
-                    /*
                     for (var j = 0, jl = effectedElements.length; j < jl; j++) {
                         var effectedElement = effectedElements[j]
                           , elementParameter = effectedElement.getParameterByName(parameter.name)
                           , correctionValue
-                          , parentsFactor = findParentsFactor();
+                          , parentsFactor = effectedElement.findParentsFactor(elementParameter);
                         elementParameter.updateEffectiveValue(effectedElement);
                         // update the cps values for each element
                         checkIfHasRule(effectedElement);
                         correctionValue = elementParameter.effectiveValue / parentsFactor / elementParameter.initial;
-                        writeValueInCPSfile(element, correctionValue, parameter);
+                        writeValueInCPSfile(effectedElement, correctionValue, parameter);
+                        // keep score which levels have had changed values
+                        if (changedLevels.indexOf(effectedElement.level) === -1) {
+                            changedLevels.push(effectedElement.level);
+                        }
                     }
-                    */
 
-                    // update the selection of effective values
-                    selectionParameter = metapolatorModel.masterPanel.selection[effectiveLevel].getParameterByName(parameter.name);
-                    // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
-                    if (selectionParameter) {
-                        selectionParameter.updateEffectiveValue();
-                    }
                 }
                 if (operator.range) {
                     // update the range boundaries after setting each element,
@@ -64,16 +67,17 @@ define([
                     operator.low.old = operator.low.current;
                     operator.high.old = operator.high.current;
                 }
+                // update the effectedValue selection for the changed levels
+                for (var k = 0, kl = changedLevels.length; k < kl; k++) {
+                    var changedLevel = changedLevels[k]
+                      , selectionParameter = metapolatorModel.masterPanel.selection[changedLevel].getParameterByName(parameter.name);
+                    // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
+                    if (selectionParameter) {
+                        selectionParameter.updateEffectiveValue();
+                    }
+                }
             }
         };
-
-        function findParentsFactor(element, parameter) {
-            // this function finds all the factors for this parameter in its parent or grandparents (etc)
-            // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
-            // by (effectiveValue / initial), we need to divide it also by the parents factor
-            // TODO
-
-        }
 
         function checkIfHasRule(element) {
             if (!element.ruleIndex) {
@@ -114,7 +118,7 @@ define([
               , parameterDict = cpsRule.parameters
               , setParameter = cpsAPITools.setParameter;
             setParameter(parameterDict, parameter.cpsKey, value);
-            console.log(parameterCollection.toString());
+            //console.log(parameterCollection.toString());
         }
         
         function getEffectedElements (effectiveLevel, changedElement) {

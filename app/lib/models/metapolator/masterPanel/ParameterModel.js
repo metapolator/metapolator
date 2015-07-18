@@ -93,6 +93,27 @@ define([
         }
         */
     };
+
+    _p.getCPSFactor = function() {
+        var factor = 1;
+        var hasLocalOperator = false;
+        for (var i = this.operators.length - 1; i >= 0; i--) {
+            var operator = this.operators[i];
+            if (operator.effectiveLocal) {
+                hasLocalOperator = true;
+                if (operator.name === 'x') {
+                    factor *= operator.value;
+                } else if (operator.name === '÷') {
+                    factor /= operator.value;
+                }
+            }
+        }
+        if (hasLocalOperator) {
+            return factor;
+        } else {
+            return false;
+        }
+    };
     
     _p.findOperator = function(operator, id) {
         for (var i = this.operators.length - 1; i >= 0; i--) {
