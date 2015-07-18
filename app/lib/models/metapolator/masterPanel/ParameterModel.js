@@ -118,7 +118,7 @@ define([
     _p.findOperator = function(operator, id) {
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var thisOperator = this.operators[i];
-            if (thisOperator.name == operator.name && thisOperator.id == id) {
+            if (thisOperator.name === operator.name && thisOperator.id === id) {
                 return thisOperator;
             }
         }
@@ -172,10 +172,6 @@ define([
             }
             this.stacked = false;
         }
-    };
-    
-    _p.setCPSvalue = function() {
-        //
     };
     
     _p.updateEffectiveValue = function(element) {
