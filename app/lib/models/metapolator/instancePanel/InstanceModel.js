@@ -2,10 +2,12 @@ define([
     '../_BaseModel'
   , './GlyphModel'
   , './AxisModel'
+  , 'metapolator/ui/metapolator/cpsAPITools'
 ], function(
     Parent
   , GlyphModel
   , AxisModel
+  , cpsAPITools
 ){
     "use strict";
     function InstanceModel(id, axes, designSpace, color, parent) {
@@ -21,8 +23,7 @@ define([
         this.exportFont = true;
         this.openTypeFeatures = true;
         this.cpsFile = "instance" + id + ".cps";
-        this.updateMetapolationValues();
-        
+
         Object.defineProperty(this, 'parent', {
             value: parent,
             enumerable: false,
@@ -51,8 +52,13 @@ define([
             new GlyphModel(name, this)
         );
     };
-    
-    _p.updateMetapolationValues = function () {
+
+    _p.setMetapolationValues = function(project) {
+        this._setMetapolationValuesInModel();
+        this._setMetapolationValuesInCPSfile(project);
+    };
+
+    _p._setMetapolationValuesInModel = function() {
         var axes = this.axes
           , n = axes.length - 1
           , thisPiece;
@@ -69,15 +75,27 @@ define([
             for (var j = n; j >= 0; j--) {
                 thisPiece = parseFloat(axes[j].axisValue);
                 axes[j].metapolationValue = thisPiece / cake;
-            }   
+            }
         }
     };
+
+    _p._setMetapolationValuesInCPSfile  = function(project) {
+        var parameterCollection = project.ruleController.getRule(false, this.cpsFile)
+            , l = parameterCollection.length
+            , cpsRule = parameterCollection.getItem(l - 1)
+            , parameterDict = cpsRule.parameters
+            , setParameter = cpsAPITools.setParameter;
+        for (var i = 0; i < this.axes.length; i++) {
+            setParameter(parameterDict, 'proportion' + i, this.axes[i].metapolationValue);
+        }
+        console.log(parameterDict.toString());
+    };
    
-    _p.addAxis = function(master, axisValue, metapolationValue) {
+    _p.addAxis = function(master, axisValue, metapolationValue, project) {
         this.axes.push(
             new AxisModel(master, axisValue, metapolationValue)
-        ); 
-        this.updateMetapolationValues();   
+        );
+        this._setMetapolationValuesInModel();
     };
     
     _p.reDestributeAxes = function(slack) {

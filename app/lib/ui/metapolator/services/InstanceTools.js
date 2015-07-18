@@ -5,6 +5,7 @@ define([
 ) {
     "use strict";
     var registerInstance
+      , updateCPSfile
       , _getGeneratedCPSFileName
       , _createMultiMasterCPS;
 
@@ -14,6 +15,27 @@ define([
         project.ruleController.write(false, instance.cpsFile, cpsString);
         project.createMaster(instance.name, instance.cpsFile, 'skeleton.base');
         project.open(instance.name);
+    };
+
+    updateCPSfile = function(project, instance) {
+        var generatedFileName = _getGeneratedCPSFileName(project.ruleController, instance.axes.length)
+          , cpsString = _createMultiMasterCPS(instance.axes, generatedFileName);
+        project.ruleController.write(false, instance.cpsFile, cpsString);
+    };
+
+    _createMultiMasterCPS = function(axesSet, generatedFileName) {
+        var n = axesSet.length
+            , cpsString;
+        // import the common file
+        cpsString = '@import "' + generatedFileName + '";';
+        // add the metapolation values as last item
+        cpsString += '* { ';
+        for (var i = 0; i < n; i++) {
+            cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i].master.name + '";';
+            cpsString += 'proportion' + i + ': ' + axesSet[i].metapolationValue + ';';
+        }
+        cpsString += '}';
+        return cpsString;
     };
 
     _getGeneratedCPSFileName = function(ruleController, n) {
@@ -36,23 +58,9 @@ define([
         return fileName;
     };
 
-    _createMultiMasterCPS = function(axesSet, generatedFileName) {
-        var n = axesSet.length
-            , cpsString;
-        // import the common file
-        cpsString = '@import "' + generatedFileName + '";';
-        // add the metapolation values as last item
-        cpsString += '* { ';
-        for (var i = 0; i < n; i++) {
-            cpsString += 'baseMaster' + i + ': S"master#' + axesSet[i].master.name + '";';
-            cpsString += 'proportion' + i + ': ' + axesSet[i].metapolationValue + ';';
-        }
-        cpsString += '}';
-        return cpsString;
-    };
-
 
     return {
         registerInstance: registerInstance
+      , updateCPSfile: updateCPSfile
     };
 });

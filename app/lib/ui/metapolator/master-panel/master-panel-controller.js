@@ -25,7 +25,6 @@ define([
                         setCloneProperties(clone, newId);
                         copiedCPSstring = copyCPSString(master);
                         registerMaster(clone, copiedCPSstring);
-                        console.log(clone);
                         master.edit = false;
                         clones.push(clone);
                     }
@@ -77,8 +76,9 @@ define([
                 axisValue = 50;
                 designSpace.addAxis(master);
                 instanceAxes = [{
-                    master: master,
-                    axisValue: axisValue
+                    master: master
+                  , axisValue: axisValue
+                  , metapolationValue : 1
                 }];
                 var newInstance = $scope.instancePanel.sequences[0].createInstance(instanceAxes, designSpace);
                 instanceTools.registerInstance(project, newInstance);
@@ -90,13 +90,14 @@ define([
                     var sequence = $scope.instancePanel.sequences[i];
                     for (var j = sequence.children.length - 1; j >= 0; j--) {
                         var instance = sequence.children[j];
-                        if (instance.designSpace == designSpace) {
-                            if (instance.axes.length == 1) {
+                        if (instance.designSpace === designSpace) {
+                            if (instance.axes.length === 1) {
                                 axisValue = 100 - instance.axes[0].axisValue;
                             } else {
                                 axisValue = 0;
                             }
-                            instance.addAxis(master, axisValue, null);    
+                            instance.addAxis(master, axisValue, null, project);
+                            instanceTools.updateCPSfile(project, instance);
                         } 
                     }
                 }

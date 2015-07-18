@@ -1,10 +1,18 @@
-define([], function() {
+define([
+    'metapolator/ui/metapolator/services/instanceTools'
+], function(
+    instanceTools
+) {
     "use strict";
-    function ControlController($scope, metapolatorModel) {
+    function ControlController($scope, metapolatorModel, project) {
         this.$scope = $scope;
         this.$scope.name = 'control';
         $scope.instancePanel = metapolatorModel.instancePanel;
         $scope.designSpacePanel = metapolatorModel.designSpacePanel;
+
+        $scope.setMetapolationValues = function(instance) {
+            instance.setMetapolationValues(project);
+        };
         
         $scope.changeSlackMaster = function() {
             var designSpace = $scope.model;
@@ -109,7 +117,7 @@ define([], function() {
         };
     }
 
-    ControlController.$inject = ['$scope', 'metapolatorModel'];
+    ControlController.$inject = ['$scope', 'metapolatorModel', 'project'];
     var _p = ControlController.prototype;
 
     return ControlController;

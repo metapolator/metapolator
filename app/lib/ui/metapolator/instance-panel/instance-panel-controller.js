@@ -13,12 +13,14 @@ define([
         $scope.addInstance = function () {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
               , axes = []
-              , instance;
-            for (var i = designSpace.axes.length - 1; i >= 0; i--) {
+              , instance
+              , n = designSpace.axes.length;
+            for (var i = 0; i < n; i++) {
                 var master = designSpace.axes[i];
                 axes.push({
                     master: master,
-                    axisValue: 50
+                    axisValue: 50,
+                    metapolationValue: 1 / n
                 });
             }
             instance = $scope.model.sequences[0].createInstance(axes, designSpace);
