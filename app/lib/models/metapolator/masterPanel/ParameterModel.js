@@ -5,8 +5,8 @@ define([
     Parent
   , OperatorModel
 ){
-    "use strict";
-    function ParameterModel(parameter, level, master) {
+    'use strict';
+    function ParameterModel(parameter, level, master, element) {
         this.level = level;
         this.name = parameter.name;
         this.cpsKey = parameter.cspKey;
@@ -42,7 +42,7 @@ define([
 
     _p._cloneProperties = function(clone) {
         for (var propertyName in this) {
-            if (propertyName !== "operators" && propertyName !== "master" && propertyName !== "$$hashKey") {
+            if (propertyName !== 'operators' && propertyName !== 'master' && propertyName !== '$$hashKey') {
                 clone[propertyName] = this[propertyName];
             }
         }
@@ -84,7 +84,7 @@ define([
             for (var i = self.operators.length - 1; i >= 0; i--) {
                 var thisOperator = self.operators[i].name;
                 if (tempArray.indexOf(thisOperator) > -1) {
-                    console.log("!");
+                    console.log('!');
                     return true;
                 }
                 tempArray.push(thisOperator);
@@ -131,9 +131,9 @@ define([
                     // todo: check if operator type is 'stack'.
                     // This matters when non-stack operators (like =) are added
                     if (operator.name == lastOperator.name) {
-                        if (operator.name == "+" || operator.name == "-") {
+                        if (operator.name == '+' || operator.name == '-') {
                             newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                        } else if (operator.name == "x" || operator.name == "÷") {
+                        } else if (operator.name == 'x' || operator.name == '÷') {
                             newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
                         }
                     } else {
@@ -168,12 +168,12 @@ define([
           , levelCounter = 0
           , initial = null;
 
-        while (element.level != "sequence") {
+        while (element.level !== 'sequence') {
             var elementParameter = element.getParameterByName(parameterName);
             if (levelCounter === 0) {
                 // this says we are at the effective level, so the initial values should be found here
                 if (!this.initial) {
-                    this.setInitial();
+                    this.setInitial(element.MOMelement);
                 }
                 initial = this.initial;
                 
@@ -187,20 +187,19 @@ define([
                     if (!multiply[levelCounter]) {
                         multiply[levelCounter] = [];
                     }
-                    // the deepest level applies for these operators
-                    if (operator.name == "min" && !min) {
+                    if (operator.name === 'min' && !min) { // the deepest level applies for these operators therefor the '&& !'
                         min = operator.value;
-                    } else if (operator.name == "max" && !max) {
+                    } else if (operator.name === 'max' && !max) { // idem
                         max = operator.value;
-                    } else if (operator.name == "=" && !is) {
+                    } else if (operator.name === '=' && !is) { // idem
                         is = operator.value;
-                    } else if (operator.name == "+") {
+                    } else if (operator.name === '+') {
                         plus[levelCounter].push(parseFloat(operator.value));
-                    } else if (operator.name == "-") {
+                    } else if (operator.name === '-') {
                         plus[levelCounter].push(parseFloat(-operator.value));
-                    } else if (operator.name == "x") {
+                    } else if (operator.name === 'x') {
                         multiply[levelCounter].push(parseFloat(operator.value));
-                    } else if (operator.name == "÷") {
+                    } else if (operator.name === '÷') {
                         multiply[levelCounter].push(parseFloat(1 / operator.value));
                     }
                 }
@@ -208,31 +207,35 @@ define([
             levelCounter++;
             element = element.parent;
         }
-        
         // overruling order
         if (is) {
+            // first check if there is a '=' operator, this is already the deepest '='
             effectiveValue = is;
         } else {
+            // otherwise we start calculating from the initial value
             effectiveValue = initial;
         }
-        for (var i = multiply.length - 1; i >= 0; i--) {
-            if (multiply[i]) {
-                var multiplyLevelSet = multiply[i];
-                for (var j = multiplyLevelSet.length - 1; j >= 0; j--) {
-                    var multiplier = multiplyLevelSet[j];
+        for (var j = multiply.length - 1; j >= 0; j--) {
+            // multiply that value with all found multipliers
+            if (multiply[j]) {
+                var multiplyLevelSet = multiply[j];
+                for (var k = multiplyLevelSet.length - 1; k >= 0; k--) {
+                    var multiplier = multiplyLevelSet[k];
                     effectiveValue *= multiplier;
                 }
             }
         }
-        for (var i = plus.length - 1; i >= 0; i--) {
-            if (plus[i]) {
-                var plusLevelSet = plus[i];
-                for (var j = plusLevelSet.length - 1; j >= 0; j--) {
-                    var plusser = plusLevelSet[j];
+        for (var m = plus.length - 1; m >= 0; m--) {
+            // add all 'plussers' to that value
+            if (plus[m]) {
+                var plusLevelSet = plus[m];
+                for (var n = plusLevelSet.length - 1; n >= 0; n--) {
+                    var plusser = plusLevelSet[n];
                     effectiveValue += plusser;
                 }
             }
         }
+        // check if that value crosses the deepest set max and mins
          if (max && effectiveValue > max) {
             effectiveValue = max;
         } else if (min && effectiveValue < min) {
