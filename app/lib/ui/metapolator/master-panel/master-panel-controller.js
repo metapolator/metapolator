@@ -1,9 +1,11 @@
 define([
     'jquery'
   , 'metapolator/ui/metapolator/services/instanceTools'
+  , 'metapolator/ui/metapolator/services/dialog'
 ], function(
     $
   , instanceTools
+  , dialog
 ) {
     "use strict";
     function MasterPanelController($scope, metapolatorModel, project) {
@@ -64,7 +66,7 @@ define([
         
         $scope.importUfo = function () {
             var message = "Want to load your own UFO?<br><br>Show us you want this by buying a T shirt:<br><ul><li><a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a></li><li><a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a></li>";
-            metapolatorModel.display.dialog.openDialogScreen(message, false, false, true);  
+            dialog.openDialogScreen(message, false, false, true);
         };
         
         $scope.addMasterToDesignSpace = function (master) {

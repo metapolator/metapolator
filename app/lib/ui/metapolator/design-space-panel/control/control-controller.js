@@ -1,7 +1,9 @@
 define([
     'metapolator/ui/metapolator/services/instanceTools'
+  , 'metapolator/ui/metapolator/services/dialog'
 ], function(
     instanceTools
+  , dialog
 ) {
     "use strict";
     function ControlController($scope, metapolatorModel, project) {
@@ -102,7 +104,7 @@ define([
                     message = "Remove master? It will no longer be part of the instances afterwards.";
                 }
             }
-            metapolatorModel.display.dialog.confirm(message, function(result){
+            dialog.confirm(message, function(result){
                 if(result) {
                     if (n2 == 1) {
                         designSpace.removeAxis(master);   
