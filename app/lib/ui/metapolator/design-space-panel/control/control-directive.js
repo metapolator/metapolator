@@ -443,7 +443,6 @@ define([
                     writeValueToModel(thisIndex, thisValue);
                     scope.setMetapolationValues(thisInstance);
                     scope.$apply();
-                    //scope.data.metapolate();
                     dragActive = false;
                 });
     

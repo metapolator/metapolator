@@ -106,7 +106,6 @@ define([
         var masterArray = this.selectedMasters
           , glyphsOut = this.glyphsOut
           , fontBy = this.mixer.fontBy;
-        console.log(masterArray);
         if (masterArray.length === 0) {
             this.filteredGlyphs = [];
         } else {
