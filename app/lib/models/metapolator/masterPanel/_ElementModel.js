@@ -10,16 +10,6 @@ function(
     }
 
     var _p = _ElementModel.prototype;
-
-    /*
-    _p.getAncestor = function(level) {
-        var levelElement = this;
-        while (levelElement.level !== level) {
-            levelElement = levelElement.parent;
-        }
-        return levelElement;
-    };
-    */
     
     _p.deselectAllChildren = function() {
         for (var i = this.children.length -1; i >= 0; i--) {
@@ -74,7 +64,7 @@ function(
     _p.findParameter = function(parameter) {
         for (var i = this.parameters.length - 1; i >= 0; i--) {
             var thisParameter = this.parameters[i];
-            if (thisParameter.name == parameter.name) {
+            if (thisParameter.name === parameter.name) {
                 return thisParameter;
             }
         }
@@ -84,7 +74,7 @@ function(
     _p.findLevelOffspring = function(level) {
         // this function starts to walk down the tree until it reaches the argument level
         // and returns all element of that specific level. Eg: If you ask for point level
-        // of glyph "A", it returns all points of "A".
+        // of glyph 'A', it returns all points of 'A'.
         var levelOffspring = [this]
           , tempArray = [];
         while(levelOffspring[0].level != level) {
@@ -116,8 +106,8 @@ function(
 
     _p._cloneProperties = function(clone) {
         for (var propertyName in this) {
-            if (propertyName !== "children" && propertyName !== "parent" &&
-                propertyName !== "$$hashKey" && propertyName !== "parameters") {
+            if (propertyName !== 'children' && propertyName !== 'parent' &&
+                propertyName !== '$$hashKey' && propertyName !== 'parameters') {
                 clone[propertyName] = this[propertyName];
             }
         }
