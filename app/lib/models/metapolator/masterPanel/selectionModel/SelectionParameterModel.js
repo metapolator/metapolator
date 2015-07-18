@@ -26,7 +26,7 @@ define([
     var _p = SelectionParameterModel.prototype = Object.create(Parent.prototype);
     
     _p.updateEffectiveValue = function() {
-        if (this.effectiveLevel == this.level) {
+        if (this.effectiveLevel === this.level) {
             var low = null
               , high = null
               , range;
@@ -45,7 +45,7 @@ define([
                     }
                 }
             }
-            if (high == low) {
+            if (high === low) {
                 range = false;
             } else {
                 range = true;
