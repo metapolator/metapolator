@@ -114,7 +114,8 @@ define([
     };
 
     _p.updateSelections = function(updatedLevel) {
-        this.destackOperators();
+        // updateSelections is called whenever a selection at this level is changed
+        this.destackOperators(updatedLevel);
         var parentEmpty = false;
         // and do this for all levels beyond
         var beyond = false;
@@ -133,11 +134,15 @@ define([
         }
     };
 
-    _p.destackOperators = function() {
+    _p.destackOperators = function(level) {
+        // when a selection of a certain level changes, all the operators are destacked
+        // this means also that operator id's are set to null
         var elements = this.stackedParameters;
         for (var i = elements.length - 1; i >= 0; i--) {
             var element = elements[i];
-            element.destackOperators();
+            if (element.level === level) {
+                element.destackOperators();
+            }
         }
         // after destacking, empty the list
         this.stackedParameters = [];
