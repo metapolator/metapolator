@@ -27,9 +27,6 @@
                     </li>
                 </ul>
             </li>
-            <div ng-repeat="axis in model.currentInstance.axes">
-                {{axis.master.displayName}} - {{axis.axisValue}} - {{axis.metapolationValue.toFixed(2)}}
-            </div>
         </ul>
 
         <div class="list-buttons">
