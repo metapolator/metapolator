@@ -151,10 +151,10 @@ define([
                     operator.id = null;
                     // todo: check if operator type is 'stack'.
                     // This matters when non-stack operators (like =) are added
-                    if (operator.name == lastOperator.name) {
-                        if (operator.name == '+' || operator.name == '-') {
+                    if (operator.name === lastOperator.name) {
+                        if (operator.name === '+' || operator.name === '-') {
                             newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                        } else if (operator.name == 'x' || operator.name == '÷') {
+                        } else if (operator.name === 'x' || operator.name === '÷') {
                             newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
                         }
                     } else {
