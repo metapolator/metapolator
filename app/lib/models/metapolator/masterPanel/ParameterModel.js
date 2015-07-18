@@ -241,8 +241,7 @@ define([
             if (multiply[j]) {
                 var multiplyLevelSet = multiply[j];
                 for (var k = multiplyLevelSet.length - 1; k >= 0; k--) {
-                    var multiplier = multiplyLevelSet[k];
-                    effectiveValue *= multiplier;
+                    effectiveValue *= multiplyLevelSet[k];
                 }
             }
         }
@@ -251,8 +250,7 @@ define([
             if (plus[m]) {
                 var plusLevelSet = plus[m];
                 for (var n = plusLevelSet.length - 1; n >= 0; n--) {
-                    var plusser = plusLevelSet[n];
-                    effectiveValue += plusser;
+                    effectiveValue += plusLevelSet[n];
                 }
             }
         }
