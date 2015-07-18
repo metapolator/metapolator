@@ -14,6 +14,8 @@ define([
             // the last instance used in the design space is stored as lastInstance
             if (space.lastInstance) {
                 space.lastInstance.setCurrent();
+            } else {
+                metapolatorModel.instancePanel.setCurrentInstance(null);
             }
         };
         
