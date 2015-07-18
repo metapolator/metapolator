@@ -104,10 +104,11 @@ define([
                                     thisInstance = instance;
                                 } else {
                                     for (var k = 0, kl = instance.axes.length; k < kl; k++) {
+                                        var thisSlack;
                                         if (k == designSpace.slack) {
-                                            var thisSlack = true;
+                                            thisSlack = true;
                                         } else {
-                                            var thisSlack = false;
+                                            thisSlack = false;
                                         }
                                         var thisAxis = instance.axes[k];
                                         if (!inactiveInstances[k]) {
@@ -200,14 +201,13 @@ define([
                 // drawing functions
                 function drawContainers() {
                     var data = thisInstance.axes;
-                    var axisContainer = activeLayer.selectAll('g').data(data).enter().append('g').attr('transform', function(axis, index) {
+                    return activeLayer.selectAll('g').data(data).enter().append('g').attr('transform', function(axis, index) {
                         var x = graphics.leftOffset;
                         var y = index * graphics.axisDistance + graphics.paddingTop;
                         return "translate(" + x + "," + y + ")";
                     }).attr('class', function(axis, index) {
                         return 'slider-container-' + index + ' not-dragging';
                     }); 
-                    return axisContainer;
                 }
                 
                 function drawBackLine(axisContainer) {
@@ -273,11 +273,12 @@ define([
                 }
         
                 function drawLabel(axisContainer) {
-                    var label = axisContainer.append('g').attr('transform', function(axis, index) {
+                    var x
+                      , label = axisContainer.append('g').attr('transform', function(axis, index) {
                         if (index == designSpace.slack) {
-                            var x = graphics.leftOffset - 10;
+                            x = graphics.leftOffset - 10;
                         } else {
-                            var x = graphics.rightTextLeftPoint;
+                            x = graphics.rightTextLeftPoint;
                         }
                         var y = graphics.paddingLabel;
                         return "translate(" + x + "," + y + ")";
@@ -311,8 +312,8 @@ define([
                 
                 function drawSingleExtras() {
                     var singleContainer = layerSingle.append('g').attr('transform', function(d, i) {
-                        var x = graphics.leftOffset;
-                        var y = graphics.axisDistance + graphics.paddingTop;
+                        var x = graphics.leftOffset
+                          , y = graphics.axisDistance + graphics.paddingTop;
                         return "translate(" + x + "," + y + ")";
                     }).attr('class', 'slider-container');
                     singleContainer.append('path').attr('d', function(d, i) {
@@ -322,8 +323,8 @@ define([
                 }
                 
                 function drawInactiveAxes() {
-                    var data = inactiveInstances;
-                    inactiveLayer.selectAll('g').data(data).enter().append('g').attr('transform', function(axis, index) {
+                    var x;
+                    inactiveLayer.selectAll('g').data(inactiveInstances).enter().append('g').attr('transform', function(axis, index) {
                         var y = index * graphics.axisDistance + graphics.paddingTop - 28;
                         return "translate(0, " + y + ")";
                     })
@@ -334,9 +335,9 @@ define([
                         return axis; 
                     }).enter().append('g').attr('transform', function(instance, index) {
                         if (instance.slack) {
-                            var x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * (100 - instance.value);
+                            x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * (100 - instance.value);
                         } else {
-                            var x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * instance.value;
+                            x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * instance.value;
                         }
                         return "translate(" + x + ", 0)";
                     }).attr('class', function(instance, index){
@@ -440,7 +441,7 @@ define([
                         thisValue = 100 - thisValue;
                     }
                     writeValueToModel(thisIndex, thisValue);
-                    thisInstance.updateMetapolationValues();
+                    scope.setMetapolationValues(thisInstance);
                     scope.$apply();
                     //scope.data.metapolate();
                     dragActive = false;
@@ -504,8 +505,7 @@ define([
     
                 function formatX(x) {
                     var roundedX = Math.round(x * 10) / 10;
-                    var toF = roundedX.toFixed(1);
-                    return toF;
+                    return roundedX.toFixed(1);
                 }
     
                 function isLargestSlider(instance, index, value, slack) {
