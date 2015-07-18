@@ -21,6 +21,18 @@ define([
     }
     
     var _p = DesignSpaceModel.prototype = Object.create(Parent.prototype);
+
+    _p.setCurrent = function() {
+        this.parent.setCurrentDesignSpace(this);
+    };
+
+    _p.isCurrent = function() {
+        if (this.parent.currentDesignSpace === this) {
+            return true;
+        } else {
+            return false;
+        }
+    };
    
     _p.addAxis = function(master) {
         this.axes.push(master);

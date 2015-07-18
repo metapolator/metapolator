@@ -35,6 +35,18 @@ define([
     }
     
     var _p = InstanceModel.prototype = Object.create(Parent.prototype);
+
+    _p.setCurrent = function() {
+        this.parent.parent.setCurrentInstance(this);
+    };
+
+    _p.isCurrent = function() {
+        if (this.parent.parent.currentInstance === this) {
+            return true;
+        } else {
+            return false;
+        }
+    };
     
     _p.addInitialGlyphs = function() {
         // when we render instance glyphs, we have to know the glyphname.

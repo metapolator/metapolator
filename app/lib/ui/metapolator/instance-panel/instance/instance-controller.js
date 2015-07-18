@@ -1,12 +1,12 @@
 define([], function() {
     "use strict";
-    function InstanceController($scope, metapolatorModel) {
+    function InstanceController($scope) {
         this.$scope = $scope;
         this.$scope.name = 'instance';
         
         
         $scope.getDiamondColor = function(instance) {
-            if (instance === metapolatorModel.instancePanel.currentInstance) {
+            if (instance.isCurrent()) {
                 return instance.color;
             } else {
                 return "none";
@@ -14,10 +14,8 @@ define([], function() {
         };
         
         $scope.selectInstance = function (instance) {
-            metapolatorModel.instancePanel.setCurrentInstance(instance);
-            if (instance.designSpace !== metapolatorModel.designSpacePanel.currentDesignSpace) {
-                metapolatorModel.designSpacePanel.setCurrentDesignSpace(instance.designSpace);   
-            }
+            instance.setCurrent();
+            instance.designSpace.setCurrent();
         };
 
 
@@ -31,7 +29,7 @@ define([], function() {
         };
     }
 
-    InstanceController.$inject = ['$scope', 'metapolatorModel'];
+    InstanceController.$inject = ['$scope'];
     var _p = InstanceController.prototype;
 
     return InstanceController;

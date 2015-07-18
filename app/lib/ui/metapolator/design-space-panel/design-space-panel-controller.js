@@ -8,7 +8,7 @@ define([], function() {
             $scope.model.setCurrentDesignSpace(space); 
             // after switching design space, we need to set a new current instance  
             // the last instance used in the design space is stored as lastInstance
-            metapolatorModel.instancePanel.setCurrentInstance(space.lastInstance);
+            space.lastInstance.setCurrent();
         };
         
         $scope.addDesignSpace = function() {
