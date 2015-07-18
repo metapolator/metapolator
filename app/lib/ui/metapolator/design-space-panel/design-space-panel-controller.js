@@ -1,4 +1,8 @@
-define([], function() {
+define([
+    'metapolator/ui/metapolator/services/dialog'
+], function(
+    dialog
+) {
     "use strict";
     function DesignSpacePanelController($scope, metapolatorModel) {
         this.$scope = $scope;
@@ -55,10 +59,10 @@ define([], function() {
                 } else {
                     message = "Delete this design space and its " + n + " instances?";
                 }
-                metapolatorModel.display.dialog.confirm(message, function(result){
+                dialog.confirm(message, function(result){
                     if (result) {
                         metapolatorModel.instancePanel.removeInstanceOnDesignSpace(designSpace);
-                        $scope.model.removeDesignSpace(designSpace);
+                        designSpace.remove();
                         $scope.$apply();
                     }
                 });
