@@ -68,8 +68,8 @@ define([
             var sequence = sequences[i];
             for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                 var master = sequence.children[j];
-                if ((this.name == "masters" && master.edit) ||
-                   (this.name == "instances" && master === this.parent.instancePanel.currentInstance) ||
+                if ((this.name === "masters" && master.edit) ||
+                   (this.name === "instances" && master === this.parent.currentInstance) ||
                     master.display) {
                     selectedMasters.push(master);
                 }

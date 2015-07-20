@@ -56,15 +56,15 @@ define([
                 // todo, when changing design space, automatically the current instance is changed as well
                 // this causes 2 triggers for redraw, where only the designspace redraw function should be fired
                 
-                scope.$watch('instancePanel.currentInstanceTrigger', function() {
+                scope.$watch('model.parent.currentInstanceTrigger', function() {
                     return softRedraw();
                 });
                 
-                scope.$watch('designSpacePanel.currentDesignSpaceTrigger', function() {
+                scope.$watch('model.parent.currentDesignSpaceTrigger', function() {
                     return redrawFunction();
                 });
                 
-                scope.$watch('designSpacePanel.nrOfAxesTrigger', function() {
+                scope.$watch('model.parent.nrOfAxesTrigger', function() {
                     // for now using a full redraw. We can make this more specific later on
                     return redrawFunction();
                 });
@@ -95,17 +95,17 @@ define([
                     designSpace = scope.model;
                     thisInstance = null;
                     inactiveInstances = [];
-                    for (var i = scope.instancePanel.sequences.length - 1; i >= 0; i--) {
-                        var sequence = scope.instancePanel.sequences[i];
+                    for (var i = scope.model.parent.instances.length - 1; i >= 0; i--) {
+                        var sequence = scope.model.parent.instances[i];
                         for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                             var instance = sequence.children[j];
                             if (instance.designSpace == designSpace) {
-                                if (instance == scope.instancePanel.currentInstance) {
+                                if (instance === scope.model.parent.currentInstance) {
                                     thisInstance = instance;
                                 } else {
                                     for (var k = 0, kl = instance.axes.length; k < kl; k++) {
                                         var thisSlack;
-                                        if (k == designSpace.slack) {
+                                        if (k === designSpace.slack) {
                                             thisSlack = true;
                                         } else {
                                             thisSlack = false;

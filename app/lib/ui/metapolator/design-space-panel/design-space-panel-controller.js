@@ -6,7 +6,7 @@ define([
   , instanceTools
 ) {
     "use strict";
-    function DesignSpacePanelController($scope, metapolatorModel, project) {
+    function DesignSpacePanelController($scope, project) {
         this.$scope = $scope;
         this.$scope.name = 'designSpacePanel';
         
@@ -17,22 +17,21 @@ define([
             if (space.lastInstance) {
                 space.lastInstance.setCurrent();
             } else {
-                metapolatorModel.instancePanel.currentInstance = null;
+                $scope.model.currentInstance = null;
             }
         };
         
         $scope.addDesignSpace = function() {
             $scope.model.createNewDesignSpace();
-            metapolatorModel.instancePanel.currentInstance = null;
+            $scope.model.currentInstance = null;
         };
         
         $scope.cloneDesignSpace = function () {
-            var oldDesignSpace = $scope.model.currentDesignSpace
-              , panel = metapolatorModel.instancePanel;
+            var oldDesignSpace = $scope.model.currentDesignSpace;
             oldDesignSpace.clone();
-            var sequence0 = metapolatorModel.instancePanel.sequences[0];
-            for (var i = metapolatorModel.instancePanel.sequences.length - 1; i >= 0; i--) {
-                var sequence = metapolatorModel.instancePanel.sequences[i];
+            var sequence0 = $scope.model.instances[0];
+            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instances[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.designSpace === oldDesignSpace) {
@@ -59,9 +58,9 @@ define([
             var designSpace = $scope.model.currentDesignSpace
               , message;
             if (designSpace.axes.length === 0) {
-                $scope.model.removeDesignSpace(designSpace);
+                designSpace.remove();
             } else {
-                var instancesInDesignSpace = metapolatorModel.instancePanel.getInstancesInDesignSpace(designSpace);
+                var instancesInDesignSpace = $scope.model.getInstancesInDesignSpace(designSpace);
                 var n = instancesInDesignSpace.length;
                 if (n === 1) {
                     message = "Delete this design space and its instance?";
@@ -86,7 +85,7 @@ define([
         }
     }
 
-    DesignSpacePanelController.$inject = ['$scope', 'metapolatorModel', 'project'];
+    DesignSpacePanelController.$inject = ['$scope', 'project'];
     var _p = DesignSpacePanelController.prototype;
 
     return DesignSpacePanelController;

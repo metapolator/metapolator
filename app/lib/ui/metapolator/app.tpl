@@ -22,7 +22,7 @@
         
         <mtk-panel ng-style="{'width': 'calc(' + (model.display.panel.panels[3].share / model.display.panel.totalPanelParts) + '* 100%)'}">
             <div class="semi-panel">
-                <mtk-design-space-panel class="panel without-border" mtk-model="model.designSpacePanel"></mtk-design-space-panel>
+                <mtk-design-space-panel class="panel without-border" mtk-model="model"></mtk-design-space-panel>
             </div>
             <mtk-horizontal-divider></mtk-horizontal-divider>
             <div class="semi-panel">
@@ -31,7 +31,7 @@
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (model.display.panel.panels[4].share / model.display.panel.totalPanelParts) + '* 100%)'}">
-            <mtk-instance-panel class="panel without-border" mtk-model="model.instancePanel"></mtk-instance-panel>
+            <mtk-instance-panel class="panel without-border" mtk-model="model"></mtk-instance-panel>
         </mtk-panel>
         
         <mtk-panel class="without-body" ng-style="{'width': 'calc(' + (model.display.panel.panels[5].share / model.display.panel.totalPanelParts) + '* 100%)'}">

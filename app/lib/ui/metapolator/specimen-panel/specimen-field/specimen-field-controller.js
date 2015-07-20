@@ -32,7 +32,7 @@ define([
         if ($scope.model.settings.inject === "masters") {
             $scope.injections = metapolatorModel.masterPanel.sequences;
         } else if ($scope.model.settings.inject === "instances") {
-            $scope.injections = metapolatorModel.instancePanel.sequences;
+            $scope.injections = metapolatorModel.instances;
         }
         // inital triggering of filter
         $scope.model.updateSelectedMasters($scope.injections);

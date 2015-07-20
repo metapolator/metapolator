@@ -47,9 +47,8 @@ define([
     // probably this should be replaced by sth. like `new AppModel(data);`
     _p._modelFactory = function() {
         var model = new AppModel();
-        model.instancePanel.addSequence("Family 1");
-        model.designSpacePanel.createNewDesignSpace();
-        model.designSpacePanel.currentDesignSpace = model.designSpacePanel.designSpaces[0];
+        model.addInstanceSequence("Family 1");
+        model.createNewDesignSpace();
         return model;
     };
 

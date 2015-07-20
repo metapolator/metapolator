@@ -6,10 +6,8 @@ define([
   , dialog
 ) {
     'use strict';
-    function ControlController($scope, metapolatorModel, project) {
+    function ControlController($scope, project) {
         this.$scope = $scope;
-        $scope.instancePanel = metapolatorModel.instancePanel;
-        $scope.designSpacePanel = metapolatorModel.designSpacePanel;
 
         $scope.setMetapolationValues = function(instance) {
             instance.setMetapolationValues(project);
@@ -19,8 +17,8 @@ define([
             var designSpace = $scope.model;
             var slack = designSpace.slack;
             // swop main master in each instance in the design space
-            for (var i = metapolatorModel.instancePanel.sequences.length - 1; i >= 0; i--) {
-                var sequence = metapolatorModel.instancePanel.sequences[i];
+            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instances.sequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.designSpace == designSpace) {
@@ -84,7 +82,7 @@ define([
         };
         
         $scope.removeMaster = function (master, designSpace) {
-            var axesWithMaster = metapolatorModel.instancePanel.getInstanceAxesWithMaster(master, designSpace)
+            var axesWithMaster = $scope.model.getInstanceAxesWithMaster(master, designSpace)
               , n = axesWithMaster.length
               , n2 = designSpace.axes.length
               , message = ''
@@ -132,7 +130,7 @@ define([
         }
     }
 
-    ControlController.$inject = ['$scope', 'metapolatorModel', 'project'];
+    ControlController.$inject = ['$scope', 'project'];
     var _p = ControlController.prototype;
 
     return ControlController;

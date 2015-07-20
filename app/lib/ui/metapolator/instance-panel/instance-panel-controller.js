@@ -1,12 +1,14 @@
 define([
     'jquery'
   , 'metapolator/ui/metapolator/services/instanceTools'
+  , 'metapolator/ui/metapolator/services/dialog'
 ], function(
     $
   , instanceTools
+  , dialog
 ) {
     "use strict";
-    function InstancePanelController($scope, metapolatorModel, $timeout, project) {
+    function InstancePanelController($scope, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
 
@@ -23,13 +25,13 @@ define([
                     metapolationValue: 1 / n
                 });
             }
-            instance = $scope.model.sequences[0].createNewInstance(axes, designSpace, project);
+            instance = $scope.model.instances[0].createNewInstance(axes, designSpace, project);
             instanceTools.registerInstance(project, instance);
-            $scope.model.sequences[0].addInstance(instance);
+            $scope.model.instances[0].addInstance(instance);
         };
         
         $scope.cloneInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+            var designSpace = $scope.model.currentDesignSpace
               , axes = []
               , clone;
             for (var i = 0, l = $scope.model.currentInstance.axes.length; i < l; i++) {
@@ -41,19 +43,19 @@ define([
                     master: axis.master
                 });
             }
-            clone = $scope.model.sequences[0].createNewInstance(axes, designSpace, project);
+            clone = $scope.model.instances[0].createNewInstance(axes, designSpace, project);
             instanceTools.registerInstance(project, clone);
-            $scope.model.sequences[0].addInstance(clone);
+            $scope.model.instances[0].addInstance(clone);
         };
         
         $scope.removeInstance = function (instance) {
             var designSpace = instance.designSpace
-              , index = $scope.model.sequences[0].children.indexOf(instance)
+              , index = $scope.model.instances[0].children.indexOf(instance)
               , l
               , n = 0;
             // check if it is the last instance on the design space
-            for (var i = $scope.model.sequences.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.sequences[i];
+            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instances[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var thisInstance = sequence.children[j];
                     if (thisInstance.designSpace === designSpace) {
@@ -63,7 +65,7 @@ define([
             } 
             if (n == 1) {
                 var message = "Delete instance? This also deletes the design space '" + designSpace.name + "'.";
-                metapolatorModel.display.dialog.confirm(message, function(result){
+                dialog.confirm(message, function(result){
                     if (result) {
                         instance.remove();
                         designSpace.remove();
@@ -77,7 +79,7 @@ define([
         };
         
         $scope.canAddInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
+            var designSpace = $scope.model.currentDesignSpace;
             if (designSpace && designSpace.axes.length > 0) {
                 return true;
             } else {
@@ -88,8 +90,8 @@ define([
         //export fonts
         
         $scope.instancesForExport = function () {
-            for (var i = $scope.model.sequences.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.sequences[i];
+            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instances[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.exportFont) {
@@ -248,7 +250,7 @@ define([
                 $(this).css({ opacity: 0.1 });
             });
             // Dim specimen text
-            if (instance.display || instance == $scope.model.currentInstance) {
+            if (instance.display || instance === $scope.model.currentInstance) {
                 // here is 'master' used for syncing with master reasons
                 var textCurrent = $(".specimen-field-instances ul li.master-" + instance.name);
                 $(".specimen-field-instances ul li").not(textCurrent).each(function() {
@@ -265,7 +267,7 @@ define([
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel', '$timeout', 'project'];
+    InstancePanelController.$inject = ['$scope', '$timeout', 'project'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;

@@ -11,7 +11,6 @@ define([
     function MasterPanelController($scope, metapolatorModel, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
-        $scope.instancePanel = metapolatorModel.instancePanel;
 
         $scope.duplicateMasters = function() {
             for (var i = 0, l = $scope.model.sequences.length; i < l; i++) {
@@ -70,7 +69,7 @@ define([
         };
         
         $scope.addMasterToDesignSpace = function (master) {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
+            var designSpace = metapolatorModel.currentDesignSpace
               , axes = designSpace.axes
               , axisValue = null
               , instanceAxes;
@@ -82,14 +81,14 @@ define([
                   , axisValue: axisValue
                   , metapolationValue : 1
                 }];
-                var newInstance = $scope.instancePanel.sequences[0].createNewInstance(instanceAxes, designSpace, project);
+                var newInstance = metapolatorModel.instances[0].createNewInstance(instanceAxes, designSpace, project);
                 instanceTools.registerInstance(project, newInstance);
-                $scope.instancePanel.sequences[0].addInstance(newInstance);
+                metapolatorModel.instances[0].addInstance(newInstance);
             }  else {
                 designSpace.addAxis(master);
                 // add this axes to each instance in the design space
-                for (var i = $scope.instancePanel.sequences.length - 1; i >= 0; i--) {
-                    var sequence = $scope.instancePanel.sequences[i];
+                for (var i = metapolatorModel.instances.length - 1; i >= 0; i--) {
+                    var sequence = metapolatorModel.instances[i];
                     for (var j = sequence.children.length - 1; j >= 0; j--) {
                         var instance = sequence.children[j];
                         if (instance.designSpace === designSpace) {
@@ -151,25 +150,29 @@ define([
         };
         
         function isOverDropArea(master) {
-            var dropLeft = $(".drop-area").offset().left;
-            var dropRight = $(".drop-area").offset().left + $(".drop-area").outerWidth();
-            var dropTop = $(".drop-area").offset().top;
-            var dropBottom = $(".drop-area").offset().top + $(".drop-area").outerHeight();
-            var thisLeft = master.offset.left;
-            var thisRight = master.offset.left + master.item.outerWidth();
-            var thisTop = master.offset.top;
-            var thisBottom = master.offset.top + master.item.outerHeight();
-            var marginHor = master.item.outerWidth() / 2;
-            var marginVer = master.item.outerHeight() / 2;
-            if (dropLeft < (thisLeft + marginHor) && dropRight > (thisRight - marginHor) && dropTop < (thisTop + marginVer) && dropBottom > (thisBottom - marginVer)) {
-                return true;
+            if (metapolatorModel.currentDesignSpace) {
+                var dropLeft = $(".drop-area").offset().left;
+                var dropRight = $(".drop-area").offset().left + $(".drop-area").outerWidth();
+                var dropTop = $(".drop-area").offset().top;
+                var dropBottom = $(".drop-area").offset().top + $(".drop-area").outerHeight();
+                var thisLeft = master.offset.left;
+                var thisRight = master.offset.left + master.item.outerWidth();
+                var thisTop = master.offset.top;
+                var thisBottom = master.offset.top + master.item.outerHeight();
+                var marginHor = master.item.outerWidth() / 2;
+                var marginVer = master.item.outerHeight() / 2;
+                if (dropLeft < (thisLeft + marginHor) && dropRight > (thisRight - marginHor) && dropTop < (thisTop + marginVer) && dropBottom > (thisBottom - marginVer)) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
         }
         
         function isInDesignSpace(master) {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
+            var designSpace = metapolatorModel.currentDesignSpace;
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var masterInDS = designSpace.axes[i];
                 if (masterInDS === master) {

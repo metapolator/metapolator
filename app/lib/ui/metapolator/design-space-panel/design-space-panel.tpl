@@ -1,6 +1,6 @@
 <ul id="design-space-tabs">
-    <li ng-repeat="space in model.designSpaces track by space.id" ng-class="{'selected' : space == model.currentDesignSpace}" ng-click="selectDesignSpace(space)">
-        <mtk-local-menu class="localmenu lm-inside lm-align-right" ng-if="space == model.currentDesignSpace">
+    <li ng-repeat="space in model.designSpaces track by space.id" ng-class="{'selected' : space === model.currentDesignSpace}" ng-click="selectDesignSpace(space)">
+        <mtk-local-menu class="localmenu lm-inside lm-align-right" ng-if="space === model.currentDesignSpace">
             <div class="lm-head" ng-mousedown="localMenuCtrl.toggleMenu('designSpace')">
                 <div class="lm-head-container">
                     <div mtk-rename="space.name"></div>&nbsp;
