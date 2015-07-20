@@ -8,7 +8,7 @@
             </div>
             <div class="lm-body" ng-if="display.localMenu == 'designSpace'">
                 <div class="lm-button" ng-mouseup="addDesignSpace(); localMenuCtrl.closeMenu()">New</div>
-                <div class="lm-button" ng-mouseup="duplicateDesignSpace(); localMenuCtrl.closeMenu()">Duplicate</div>
+                <div class="lm-button" ng-mouseup="cloneDesignSpace(); localMenuCtrl.closeMenu()">Duplicate</div>
                 <div class="lm-divider"></div>
                 <div class="lm-button" ng-mouseup="removeDesignSpace(); localMenuCtrl.closeMenu()">Delete…</div>
             </div>

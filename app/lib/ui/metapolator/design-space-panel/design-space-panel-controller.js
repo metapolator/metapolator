@@ -1,15 +1,17 @@
 define([
     'metapolator/ui/metapolator/services/dialog'
+  , 'metapolator/ui/metapolator/services/instanceTools'
 ], function(
     dialog
+  , instanceTools
 ) {
     "use strict";
-    function DesignSpacePanelController($scope, metapolatorModel) {
+    function DesignSpacePanelController($scope, metapolatorModel, project) {
         this.$scope = $scope;
         this.$scope.name = 'designSpacePanel';
         
         $scope.selectDesignSpace = function (space) {
-            $scope.model.setCurrentDesignSpace(space); 
+            space.setCurrent();
             // after switching design space, we need to set a new current instance  
             // the last instance used in the design space is stored as lastInstance
             if (space.lastInstance) {
@@ -20,22 +22,23 @@ define([
         };
         
         $scope.addDesignSpace = function() {
-            $scope.model.addDesignSpace();
+            $scope.model.createNewDesignSpace();
             metapolatorModel.instancePanel.setCurrentInstance(null);
-            $scope.model.currentDesignSpace.lastInstance = null;
         };
         
-        $scope.duplicateDesignSpace = function () {
+        $scope.cloneDesignSpace = function () {
             var oldDesignSpace = $scope.model.currentDesignSpace
               , panel = metapolatorModel.instancePanel;
-            $scope.model.duplicateDesignSpace();
+            oldDesignSpace.clone();
             var sequence0 = metapolatorModel.instancePanel.sequences[0];
             for (var i = metapolatorModel.instancePanel.sequences.length - 1; i >= 0; i--) {
                 var sequence = metapolatorModel.instancePanel.sequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.designSpace === oldDesignSpace) {
-                        var axes = [];
+                        // clone the instance as well
+                        var axes = []
+                          , clone;
                         for (var k = 0, l = instance.axes.length; k < l; k++) {
                             var axis = instance.axes[k];
                             axes.push({
@@ -44,11 +47,12 @@ define([
                                 master: axis.master
                             });
                         }
-                        sequence0.addInstance(axes, $scope.model.currentDesignSpace);
+                        clone = sequence0.createNewInstance(axes, $scope.model.currentDesignSpace);
+                        instanceTools.registerInstance(project, clone);
+                        sequence0.addInstance(clone);
                     }
                 }
             } 
-            panel.setCurrentInstance(panel.sequences[0].children[panel.sequences[0].children.length - 1]);
         };
         
         $scope.removeDesignSpace = function () {
@@ -74,7 +78,7 @@ define([
         };
     }
 
-    DesignSpacePanelController.$inject = ['$scope', 'metapolatorModel'];
+    DesignSpacePanelController.$inject = ['$scope', 'metapolatorModel', 'project'];
     var _p = DesignSpacePanelController.prototype;
 
     return DesignSpacePanelController;

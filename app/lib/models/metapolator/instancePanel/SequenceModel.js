@@ -22,9 +22,10 @@ define([
         
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
-    _p.createInstance = function(axes, designSpace) {
+    _p.createNewInstance = function(axes, designSpace) {
         var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter % this.colors.length], this);
         this.instanceCounter++;
+        // the instance can not be added inmediately. It has to be registered (by the instance tools) first and then it should be added
         return instance;
     };
 

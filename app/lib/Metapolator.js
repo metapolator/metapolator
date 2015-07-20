@@ -48,7 +48,7 @@ define([
     _p._modelFactory = function() {
         var model = new AppModel();
         model.instancePanel.addSequence("Family 1");
-        model.designSpacePanel.addDesignSpace();
+        model.designSpacePanel.createNewDesignSpace();
         model.designSpacePanel.currentDesignSpace = model.designSpacePanel.designSpaces[0];
         return model;
     };
