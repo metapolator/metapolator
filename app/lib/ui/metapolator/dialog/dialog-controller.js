@@ -1,8 +1,15 @@
-define([], function() {
+define([
+    'metapolator/ui/metapolator/services/dialog'
+], function(
+    dialog
+) {
     "use strict";
     function DialogController($scope) {
         this.$scope = $scope;
-        this.$scope.name = 'dialog';
+
+        $scope.closeDialogScreen = function() {
+            dialog.closeDialogScreen();
+        };
     }
 
     DialogController.$inject = ['$scope'];

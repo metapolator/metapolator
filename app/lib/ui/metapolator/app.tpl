@@ -46,4 +46,4 @@
 
 <mtk-vertical-divider mtk-model="model.display.panel" ng-repeat="divider in model.display.panel.dividers" divider="{{$index}}" ng-if="divider.view == model.display.panel.viewState"></mtk-vertical-divider>
 
-<mtk-dialog mtk-model="model.display.dialog"></mtk-dialog>
+<mtk-dialog></mtk-dialog>

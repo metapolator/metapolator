@@ -1,6 +1,6 @@
 <div id="layover">
     <div id="dialog">
-        <div id="dialog-close" ng-click="model.closeDialogScreen()">×</div>
+        <div id="dialog-close" ng-click="closeDialogScreen()">×</div>
         <div id="dialog-loading"><img src="lib/ui/metapolator/assets/img/loading.gif"></div>
         <div id="dialog-content"></div>
         <div id="dialog-confirm">
