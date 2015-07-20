@@ -82,7 +82,7 @@ define([
         };
         
         $scope.removeMaster = function (master, designSpace) {
-            var axesWithMaster = $scope.model.getInstanceAxesWithMaster(master, designSpace)
+            var axesWithMaster = $scope.model.parent.getInstanceAxesWithMaster(master, designSpace)
               , n = axesWithMaster.length
               , n2 = designSpace.axes.length
               , message = ''
