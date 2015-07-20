@@ -28,25 +28,7 @@ define([
         this.currentInstanceTrigger++;
         this.parent.specimen2.updateSelectedMasters(this.sequences);
     };
-    
-    /*
-    _p.updateSelectedMasters = function() {
-        window.logCall("updateSelectedMasters");
-        var selectedMasters = [];
-        for (var i = 0, il = this.sequences.length; i < il; i++) {
-            var sequence = this.sequences[i];
-            for (var j = 0, jl = sequence.children.length; j < jl; j++) {
-                var instance = sequence.children[j];
-                console.log(instance);
-                if (instance == this.currentInstance || instance.display) {
-                    selectedMasters.push(instance);
-                }
-            }
-        }
-        this.selectedMasters = selectedMasters;
-    };
-    */
-    
+
     _p.addSequence = function(name) {
         this.sequences.push(
             new SequenceModel(name, this)
