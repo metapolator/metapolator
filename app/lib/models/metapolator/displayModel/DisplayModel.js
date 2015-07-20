@@ -7,7 +7,6 @@ define([
 ){
     "use strict";
     function DisplayModel() {
-        this.localMenu = null;
         this.panel = new PanelModel();
     }
     

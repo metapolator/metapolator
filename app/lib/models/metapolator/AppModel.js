@@ -31,6 +31,7 @@ define([
         this.currentInstanceTrigger = 0;
         //
         this.display = new DisplayModel();
+        this.localMenu = null;
      }
     var _p = AppModel.prototype = Object.create(Parent.prototype);
 
