@@ -6,9 +6,9 @@ define([
     "use strict";
     function MenubarController($scope) {
         this.$scope = $scope;
-        this.$scope.name = 'panel';
-        //$scope.projectName = metapolatorModel.projectName;
-        
+
+        $scope.menuItems = ["Form", "Mix", "Export"];
+
         $scope.renameProject = function() {
             $("#project-name").attr("contenteditable", "true").addClass("renaming").focus();
             selectAllText(document.getElementById("project-name"));

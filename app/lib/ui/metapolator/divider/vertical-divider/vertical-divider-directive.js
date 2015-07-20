@@ -3,19 +3,20 @@ define([
 ], function(
     $
 ) {
-    "use strict";
+    'use strict';
     function verticalDividerDirective() {
         return {
             restrict: 'E'
           , controller: 'VerticalDividerController'
           , replace: false
           , scope: {
-                model: '=mtkModel'
+                dividers: '=mtkDividers'
+              , panels: '=mtkPanels'
+              , totalParts: '=mtkTotalParts'
             }
           , link : function(scope, element, attrs, ctrl) {
-                
                 var id = attrs.divider
-                  , thisDivider = scope.model.dividers[id]
+                  , thisDivider = scope.dividers[id]
                   , screenWidth = 0
                   , screenParts = 0
                   , thisPosition = 0
@@ -37,43 +38,43 @@ define([
                 setContainment();
                 
                 $(element).draggable({
-                    axis : "x",
+                    axis : 'x',
                     containment : [containmentLeft, 0, containmentRight, 0],
                     start : function() {
-                        $("mtk-landscape").removeClass("transition");
-                        if (thisDivider.side == "left") {
+                        $('mtk-landscape').removeClass('transition');
+                        if (thisDivider.side === 'left') {
                             thisPosition = $(this).offset().left;
                         } else {
                             thisPosition = screenWidth - $(this).offset().left;
                         }
                         startAdd = thisPosition / screenWidth * screenParts;
                         if (thisDivider.mirror) {
-                            startMirror = scope.model.panels[thisDivider.mirror].share;
+                            startMirror = scope.panels[thisDivider.mirror].share;
                         }
                     },
                     drag : function() {
-                        if (thisDivider.side == "left") {
+                        if (thisDivider.side === 'left') {
                             thisPosition = $(this).offset().left;
                         } else {
                             thisPosition = screenWidth - $(this).offset().left;
                         }
                         var addShare = thisPosition / screenWidth * screenParts;
-                        var subtractShare = screenParts - scope.model.panels[thisDivider.dead].share - addShare;
-                        scope.model.panels[thisDivider.add].share = addShare;
-                        scope.model.panels[thisDivider.subtract].share = subtractShare;
+                        var subtractShare = screenParts - scope.panels[thisDivider.dead].share - addShare;
+                        scope.panels[thisDivider.add].share = addShare;
+                        scope.panels[thisDivider.subtract].share = subtractShare;
                         if (thisDivider.mirror) {
-                            scope.model.panels[thisDivider.mirror].share = startMirror - (addShare - startAdd);
+                            scope.panels[thisDivider.mirror].share = startMirror - (addShare - startAdd);
                         }
-                        scope.model.totalPanelParts = getTotalParts();
+                        scope.totalPanelParts = getTotalParts();
                         scope.$apply();
                     },
                     stop : function() {
-                        $("mtk-landscape").addClass("transition");
+                        $('mtk-landscape').addClass('transition');
                     }
                 });
                 
                 function setContainment () {
-                    if (thisDivider.contain == "left") {
+                    if (thisDivider.contain === 'left') {
                         containmentLeft = thisDivider.limitMin;
                         containmentRight = thisDivider.limitMax;
                     } else {
@@ -92,22 +93,22 @@ define([
                     var x = 0;
                     for (var i = thisDivider.position.length - 1; i >= 0; i--) {
                         var panelId = thisDivider.position[i];
-                        x += scope.model.panels[panelId].share / screenParts * screenWidth;
+                        x += scope.panels[panelId].share / screenParts * screenWidth;
                     }
                     return x;
                 }
                 
                 function getTotalParts() {
                     var parts = 0;
-                    for (var i = scope.model.panels.length - 1; i >= 0; i--) {
-                        var panel = scope.model.panels[i];
+                    for (var i = scope.panels.length - 1; i >= 0; i--) {
+                        var panel = scope.panels[i];
                         parts += panel.share;
                     }
                     return parts;
                 }
                 
                 function getScreenParts() {
-                    return scope.model.panels[0].share + scope.model.panels[1].share + scope.model.panels[2].share;
+                    return scope.panels[0].share + scope.panels[1].share + scope.panels[2].share;
                 }
             }
         };

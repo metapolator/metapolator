@@ -4,21 +4,20 @@ define([
  , './masterPanel/MasterPanelModel'
  , './designSpaces/DesignSpaceModel'
  , './instances/InstanceSequenceModel'
- , './displayModel/DisplayModel'
 ], function(
     Parent
   , SpecimenModel
   , MasterPanelModel
   , DesignSpaceModel
   , InstanceSequenceModel
-  , DisplayModel
 ){
-    "use strict";
+    'use strict';
     function AppModel() {
-        this.projectName = "Canola";
-        this.specimen1 = new SpecimenModel(true, true, "masters", this);
+        this.projectName = 'Canola';
+        //
+        this.specimen1 = new SpecimenModel(true, true, 'masters', this);
         this.masterPanel = new MasterPanelModel();
-        this.specimen2 = new SpecimenModel(false, false, "instances", this);
+        this.specimen2 = new SpecimenModel(false, false, 'instances', this);
         //
         this.designSpaces = [];
         this.designSpaceCounter = 0;
@@ -30,16 +29,16 @@ define([
         this.currentInstance = null;
         this.currentInstanceTrigger = 0;
         //
-        this.display = new DisplayModel();
         this.localMenu = null;
+        this.viewState = 0;
      }
     var _p = AppModel.prototype = Object.create(Parent.prototype);
 
     // design spaces
     _p.createNewDesignSpace = function() {
         var id = this.designSpaceCounter
-            , name = "Space " + id
-            , type = "Control"
+            , name = 'Space ' + id
+            , type = 'Control'
             , axes = []
             , slack = 0
             , designSpace;
