@@ -62,7 +62,7 @@ define([
     };
 
     _p.removeAxis = function(master) {
-        var index = _findMaster(master);
+        var index = this._findMasterIndex(master);
         this.axes.splice(index, 1);
         // setting the new slack if needed
         if (index < this.slack) {
@@ -96,7 +96,7 @@ define([
         }
     };
 
-    _p._findMaster = function(master) {
+    _p._findMasterIndex = function(master) {
         for (var i = this.axes.length - 1; i >= 0; i--) {
             var thisMaster = this.axes[i];
             if (thisMaster === master) {
