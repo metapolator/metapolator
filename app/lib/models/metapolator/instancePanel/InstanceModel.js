@@ -9,20 +9,20 @@ define([
   , AxisModel
   , cpsAPITools
 ){
-    "use strict";
+    'use strict';
     function InstanceModel(id, axes, designSpace, color, parent) {
         this.id = id;
-        this.name = "instance" + id;
-        this.displayName = "Instance " + id;
+        this.name = 'instance' + id;
+        this.displayName = 'Instance ' + id;
         this.axes = axes;
         this.children = [];
         this.edit = false;
-        this.ag = "Ag";
+        this.ag = 'Ag';
         this.designSpace = designSpace;
         this.color = color;
         this.exportFont = true;
         this.openTypeFeatures = true;
-        this.cpsFile = "instance" + id + ".cps";
+        this.cpsFile = 'instance' + id + '.cps';
 
         Object.defineProperty(this, 'parent', {
             value: parent,
