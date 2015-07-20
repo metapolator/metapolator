@@ -53,7 +53,7 @@ define([
         // We copy the glyphnames in baseMaster0 to the instance.
         // For now, the glyphs in each master and each instance will be the same set
         var baseMaster0 = this.axes[0].master;
-        for (var i = baseMaster0.children.length - 1; i >= 0; i--) {
+        for (var i = 0, l = baseMaster0.children.length; i < l; i++) {
             var glyphName = baseMaster0.children[i].name;
             this._addGlyph(glyphName);
         }
