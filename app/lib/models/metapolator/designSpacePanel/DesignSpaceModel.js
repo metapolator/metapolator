@@ -38,7 +38,7 @@ define([
     };
 
     _p.remove = function() {
-        var index = _getIndex() ;
+        var index = this._getIndex() ;
         this.parent.designSpaces.splice(index, 1);
         this._findNewCurrentDesignSpace(index);
     };

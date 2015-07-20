@@ -5,10 +5,9 @@ define([
     instanceTools
   , dialog
 ) {
-    "use strict";
+    'use strict';
     function ControlController($scope, metapolatorModel, project) {
         this.$scope = $scope;
-        this.$scope.name = 'control';
         $scope.instancePanel = metapolatorModel.instancePanel;
         $scope.designSpacePanel = metapolatorModel.designSpacePanel;
 
@@ -35,8 +34,7 @@ define([
         };
         
         $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
-            if (keyEvent == "blur" || keyEvent.keyCode == 13) {
-                window.logCall("redrawAxesFromInput");
+            if (keyEvent === 'blur' || keyEvent.keyCode === 13) {
                 var designSpace = $scope.model
                   , slack = designSpace.slack
                   , instance = designSpace.lastInstance
@@ -55,17 +53,17 @@ define([
                     // correct the slack behaviour
                     axes[slack].axisValue = 100 - max;
                 } else {
-                    var newMax = 100 - axes[slack].axisValue;
-                    if (max != 0) {
-                        var ratio = newMax / max;
+                    var newMax = 100 - axes[slack].axisValue
+                      , ratio;
+                    if (max !== 0) {
+                        ratio = newMax / max;
                     } else {
-                        var ratio = 1;
+                        ratio = 1;
                     }
                     // correct all sliders but slack proportionally
-                    for (var i = 0; i < l; i++) {
+                    for (var j = 0; j < l; j++) {
                         if (i != slack) {
-                            var thisValue = instance.formatAxisValue(ratio * axes[i].axisValue);
-                            axes[i].axisValue = thisValue;
+                            axes[j].axisValue = instance.formatAxisValue(ratio * axes[j].axisValue);
                         }
                     }
                 }
@@ -75,8 +73,7 @@ define([
             }
             
             function format(value) {
-                var output;
-                if (isNaN(value) || value == "" || value < 0) {
+                if (isNaN(value) || value === '' || value < 0) {
                     return 0;
                 } else  if (value > 100) {
                     return 100;
@@ -87,36 +84,52 @@ define([
         };
         
         $scope.removeMaster = function (master, designSpace) {
-            var n = metapolatorModel.instancePanel.countInstancesWithMaster(master);
-            var n2 = designSpace.axes.length;
-            var message = "";
-            if (n2 == 1) {
-                if (n == 1) {
-                    message = "Remove master? This will remove an instance as well.";
+            var axesWithMaster = metapolatorModel.instancePanel.getInstanceAxesWithMaster(master, designSpace)
+              , n = axesWithMaster.length
+              , n2 = designSpace.axes.length
+              , message = ''
+              , slack;
+            if (n2 === 1) {
+                if (n === 1) {
+                    message = 'Remove master? This will remove an instance as well.';
                 } else {
-                    message = "Remove master? This will remove instances as well.";
+                    message = 'Remove master? This will remove instances as well.';
                 }
             }
             else {   
-                if (n == 1) {
-                    message = "Remove master? It will no longer be part of the instance afterwards.";
+                if (n === 1) {
+                    message = 'Remove master? It will no longer be part of the instance afterwards.';
                 } else {
-                    message = "Remove master? It will no longer be part of the instances afterwards.";
+                    message = 'Remove master? It will no longer be part of the instances afterwards.';
                 }
             }
             dialog.confirm(message, function(result){
                 if(result) {
-                    if (n2 == 1) {
-                        designSpace.removeAxis(master);   
-                        metapolatorModel.instancePanel.removeInstanceOnDesignSpace(designSpace);
+                    if (n2 === 1) {
+                        designSpace.removeAxis(master);
+                        removeInstances(axesWithMaster);
                     } else {
                         designSpace.removeAxis(master);
-                        metapolatorModel.instancePanel.deleteMasterFromInstances(designSpace, master);
+                        removeMasterFromInstances(axesWithMaster, slack);
                     }
                     $scope.$apply();
                 }
             });
         };
+
+        function removeInstances(axesWithMaster) {
+            for (var i = axesWithMaster.length - 1; i >= 0; i--) {
+                var instance = axesWithMaster[i].parent;
+                instance.remove();
+            }
+        }
+
+        function removeMasterFromInstances(axesWithMaster) {
+            for (var i = axesWithMaster.length - 1; i >= 0; i--) {
+                var axis = axesWithMaster[i];
+                axis.remove();
+            }
+        }
     }
 
     ControlController.$inject = ['$scope', 'metapolatorModel', 'project'];

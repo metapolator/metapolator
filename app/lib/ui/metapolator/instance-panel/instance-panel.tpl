@@ -4,9 +4,9 @@
     </div>
     <div class="lm-body" ng-if="display.localMenu == 'instances'">
         <div class="lm-button" ng-class="{'inactive': !canAddInstance()}" ng-mouseup="addInstance()">New</div>
-        <div class="lm-button" ng-class="{'inactive': !model.currentInstance}" ng-mouseup="duplicateInstance(model.currentInstance)">Duplicate</div>
+        <div class="lm-button" ng-class="{'inactive': !model.currentInstance}" ng-mouseup="cloneInstance(model.currentInstance)">Duplicate</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-class="{'inactive': !model.currentInstance}" ng-mouseup="deleteInstance(model.currentInstance)">Delete</div>
+        <div class="lm-button" ng-class="{'inactive': !model.currentInstance}" ng-mouseup="removeInstance(model.currentInstance)">Delete</div>
     </div>
 </mtk-local-menu>
 
@@ -33,10 +33,10 @@
             <div title="Add Instance" ng-click="addInstance();" class="list-button">
                 <img src="lib/ui/metapolator/assets/img/addInstance.png" ng-class="{'inactive': !canAddInstance()}">
             </div>
-            <div title="Duplicate Instance" ng-click="duplicateInstance(model.currentInstance);" class="list-button">
+            <div title="Duplicate Instance" ng-click="cloneInstance(model.currentInstance);" class="list-button">
                 <img src="lib/ui/metapolator/assets/img/duplicateInstance.png" ng-class="{'inactive': !model.currentInstance}">
             </div>
-            <div title="Delete" ng-click="deleteInstance(model.currentInstance);" class="list-button">
+            <div title="Delete" ng-click="removeInstance(model.currentInstance);" class="list-button">
                 <img src="lib/ui/metapolator/assets/img/deleteInstance.png" ng-class="{'inactive': !model.currentInstance}">
             </div>
             <div class="list-button export-button" ng-click="exportFonts()" ng-class="{'inactive': !instancesForExport() || export_is_running}">

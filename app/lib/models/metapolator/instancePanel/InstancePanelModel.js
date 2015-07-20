@@ -20,107 +20,43 @@ define([
     
     var _p = InstancePanelModel.prototype = Object.create(Parent.prototype);
     
-    _p.setCurrentInstance = function(instance) {
-        this.currentInstance = instance;
-        if (instance) {
-            instance.designSpace.setLastInstance(instance);
-        }
-        this.currentInstanceTrigger++;
-        this.parent.specimen2.updateSelectedMasters(this.sequences);
-    };
-
     _p.addSequence = function(name) {
         this.sequences.push(
             new SequenceModel(name, this)
         );
     };
-    
-    _p.countInstancesWithMaster = function(master) {
-        var n = 0;
+
+    _p.getInstanceAxesWithMaster = function(master, designSpace) {
+        var axes = [];
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
                 var instance = sequence.children[j];
-                for (var k = instance.axes.length - 1; k >= 0; k--) {
-                    var axis = instance.axes[k];
-                    if (axis.master == master) {
-                        n++;
-                    } 
-                }
-            }
-        }
-        return n;
-    };
-    
-    _p.countInstancesWithDesignSpace = function(designSpace) {
-        var n = 0;
-        for (var i = this.sequences.length - 1; i >= 0; i--) {
-            var sequence = this.sequences[i];
-            for (var j = sequence.children.length - 1; j >= 0; j--) {
-                var instance = sequence.children[j];
-                if (instance.designSpace == designSpace) {
-                    n++;
-                }  
-            }
-        }
-        return n;
-    };
-    
-    _p.deleteMasterFromInstances = function (designSpace, master) {
-        for (var i = this.sequences.length - 1; i >= 0; i--) {
-            var sequence = this.sequences[i];
-            for (var j = sequence.children.length - 1; j >= 0; j--) {
-                var instance = sequence.children[j];
-                if (instance.designSpace == designSpace) {
-                    var index = findMaster(instance, master);
-                    if (index) {
-                        instance.axes.splice(index, 1);
-                        instance.reDestributeAxes(designSpace.slack);
-                        instance.updateMetapolationValues();
+                if (instance.designSpace === designSpace) {
+                    for (var k = instance.axes.length - 1; k >= 0; k--) {
+                        var axis = instance.axes[k];
+                        if (axis.master === master) {
+                            axes.push(axis);
+                        }
                     }
                 }
             }
         }
-        
-        function findMaster(instance, master) {
-            for (var i = instance.axes.length - 1; i >= 0; i--) {
-                var axis = instance.axes[i];
-                if (axis.master == master) {
-                    return i;
-                }  
-            }
-            return false;
-        }
+        return axes;
     };
-    
-    _p.removeInstanceOnDesignSpace = function (designSpace) {
-        var thisIndex;
+
+    _p.getInstancesInDesignSpace= function(designSpace) {
+        var instances = [];
         for (var i = this.sequences.length - 1; i >= 0; i--) {
             var sequence = this.sequences[i];
-            var notDeleted = [];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
                 var instance = sequence.children[j];
-                if (instance.designSpace != designSpace) {
-                    notDeleted.push(instance);
-                }
-                if (instance == this.currentInstance) {
-                    thisIndex = j;
+                if (instance.designSpace === designSpace) {
+                    instances.push(instance);
                 }
             }
-            sequence.children = notDeleted;
         }
-        this.findNewCurrentInstance(thisIndex);
-    };
-    
-    _p.findNewCurrentInstance = function (index) {
-        var l = this.sequences[0].children.length;
-        if (l > index) {
-            this.setCurrentInstance(this.sequences[0].children[index]);
-        } else if (l === 0) {
-            this.setCurrentInstance(null);
-        } else {
-            this.setCurrentInstance(this.sequences[0].children[l - 1]);
-        }
+        return instances;
     };
     
     

@@ -3,18 +3,20 @@ define([
   , './GlyphModel'
   , './AxisModel'
   , 'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/ui/metapolator/services/instanceTools'
 ], function(
     Parent
   , GlyphModel
   , AxisModel
   , cpsAPITools
+  , instanceTools
 ){
     'use strict';
-    function InstanceModel(id, axes, designSpace, color, parent) {
+    function InstanceModel(id, axes, designSpace, color, parent, project) {
         this.id = id;
         this.name = 'instance' + id;
         this.displayName = 'Instance ' + id;
-        this.axes = axes;
+        this.axes = [];
         this.children = [];
         this.edit = false;
         this.ag = 'Ag';
@@ -23,6 +25,7 @@ define([
         this.exportFont = true;
         this.openTypeFeatures = true;
         this.cpsFile = 'instance' + id + '.cps';
+        this._project = project;
 
         Object.defineProperty(this, 'parent', {
             value: parent,
@@ -30,14 +33,35 @@ define([
             writable: true,
             configurable: true
         });
-        
+
+        this.addInitialAxis(axes);
         this.addInitialGlyphs();
     }
     
     var _p = InstanceModel.prototype = Object.create(Parent.prototype);
 
+    _p.remove = function() {
+        var index = this._getIndex() ;
+        this.parent.children.splice(index, 1);
+        this._findNewCurrentInstance(index);
+    };
+
+    _p.addInitialAxis = function(axes) {
+        for (var i = 0, l = axes.length; i < l; i++) {
+            var axis = axes[i];
+            this.addAxis(axis.master, axis.axisValue, axis.metapolationValue);
+        }
+    };
+
     _p.setCurrent = function() {
-        this.parent.parent.setCurrentInstance(this);
+        this.parent.parent.currentInstance = this;
+        this.designSpace.setLastInstance(this);
+        // todo: get rid of these 2.
+        // the first by refactoring the design space
+        // the second by refactoring the specimen
+        this.parent.parent.currentInstanceTrigger++;
+        this.parent.parent.parent.specimen2.updateSelectedMasters(this.parent.parent.sequences);
+
     };
 
     _p.isCurrent = function() {
@@ -65,9 +89,13 @@ define([
         );
     };
 
-    _p.setMetapolationValues = function(project) {
+    _p.setMetapolationValues = function() {
         this._setMetapolationValuesInModel();
-        this._setMetapolationValuesInCPSfile(project);
+        this._setMetapolationValuesInCPSfile();
+    };
+
+    _p.updateCPSFile = function() {
+        instanceTools.updateCPSfile(this._project, this);
     };
 
     _p._setMetapolationValuesInModel = function() {
@@ -91,49 +119,71 @@ define([
         }
     };
 
-    _p._setMetapolationValuesInCPSfile  = function(project) {
-        var parameterCollection = project.ruleController.getRule(false, this.cpsFile)
-            , l = parameterCollection.length
-            , cpsRule = parameterCollection.getItem(l - 1)
-            , parameterDict = cpsRule.parameters
-            , setParameter = cpsAPITools.setParameter;
+    _p._setMetapolationValuesInCPSfile  = function() {
+        var parameterCollection = this._project.ruleController.getRule(false, this.cpsFile)
+          , l = parameterCollection.length
+          , cpsRule = parameterCollection.getItem(l - 1)
+          , parameterDict = cpsRule.parameters
+          , setParameter = cpsAPITools.setParameter;
         for (var i = 0; i < this.axes.length; i++) {
             setParameter(parameterDict, 'proportion' + i, this.axes[i].metapolationValue);
         }
-        console.log(parameterDict.toString());
     };
    
-    _p.addAxis = function(master, axisValue, metapolationValue, project) {
+    _p.addAxis = function(master, axisValue, metapolationValue) {
         this.axes.push(
-            new AxisModel(master, axisValue, metapolationValue)
+            new AxisModel(master, axisValue, metapolationValue, this)
         );
         this._setMetapolationValuesInModel();
     };
     
-    _p.reDestributeAxes = function(slack) {
+    _p.reDestributeAxes = function() {
         // this functin is called after a change of slack master
-        var axes = this.axes
+        // or when a axis is removed from the design space
+        var slack = this.designSpace.slack
+          , axes = this.axes
           , l = axes.length
           , ratio
           , max = null
           , highest = null;
-        // 1 find highest of the others
-        for (var i = 0; i < l; i++) {
-            if (axes[i].axisValue >= max && i != slack) {
-                highest = i;
-                max = axes[i].axisValue;
+        if (axes.length > 1) {
+            // 1 find highest of the others
+            for (var i = 0; i < l; i++) {
+                if (axes[i].axisValue >= max && i !== slack) {
+                    highest = i;
+                    max = axes[i].axisValue;
+                }
             }
-        }
-        // 2 find ratio of others compared to highest
-        ratio = 100 / (parseFloat(max) + parseFloat(axes[slack].axisValue));
-        console.log(ratio);
-        for (var j = 0; j < l; j++) {
-            axes[j].axisValue = this._formatAxisValue(ratio * axes[j].axisValue);
+            // 2 find ratio of others compared to highest
+            ratio = 100 / (parseFloat(max) + parseFloat(axes[slack].axisValue));
+            for (var j = 0; j < l; j++) {
+                axes[j].axisValue = this._formatAxisValue(ratio * axes[j].axisValue);
+            }
         }
     };
     
     _p._formatAxisValue = function(x) {
         return Math.round(x * 10) / 10;
+    };
+
+    _p._getIndex = function() {
+        for (var i = this.parent.children.length - 1; i >= 0; i--) {
+            var instance = this.parent.children[i];
+            if (instance === this) {
+                return i;
+            }
+        }
+    };
+
+    _p._findNewCurrentInstance = function(index) {
+        var l = this.parent.children.length;
+        if (l > index) {
+            this.parent.children[index].setCurrent();
+        } else if (l === 0) {
+            this.parent.currentInstance = null;
+        } else {
+            this.parent.children[l - 1].setCurrent();
+        }
     };
     
     return InstanceModel;

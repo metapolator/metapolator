@@ -17,13 +17,13 @@ define([
             if (space.lastInstance) {
                 space.lastInstance.setCurrent();
             } else {
-                metapolatorModel.instancePanel.setCurrentInstance(null);
+                metapolatorModel.instancePanel.currentInstance = null;
             }
         };
         
         $scope.addDesignSpace = function() {
             $scope.model.createNewDesignSpace();
-            metapolatorModel.instancePanel.setCurrentInstance(null);
+            metapolatorModel.instancePanel.currentInstance = null;
         };
         
         $scope.cloneDesignSpace = function () {
@@ -61,7 +61,8 @@ define([
             if (designSpace.axes.length === 0) {
                 $scope.model.removeDesignSpace(designSpace);
             } else {
-                var n = metapolatorModel.instancePanel.countInstancesWithDesignSpace(designSpace);
+                var instancesInDesignSpace = metapolatorModel.instancePanel.getInstancesInDesignSpace(designSpace);
+                var n = instancesInDesignSpace.length;
                 if (n === 1) {
                     message = "Delete this design space and its instance?";
                 } else {
@@ -69,13 +70,20 @@ define([
                 }
                 dialog.confirm(message, function(result){
                     if (result) {
-                        metapolatorModel.instancePanel.removeInstanceOnDesignSpace(designSpace);
+                        removeInstancesInDesignSpace(instancesInDesignSpace);
                         designSpace.remove();
                         $scope.$apply();
                     }
                 });
             }
         };
+
+        function removeInstancesInDesignSpace(instances) {
+            for (var i = 0, l = instances.length; i < l; i++) {
+                var instance = instances[i];
+                instance.remove();
+            }
+        }
     }
 
     DesignSpacePanelController.$inject = ['$scope', 'metapolatorModel', 'project'];

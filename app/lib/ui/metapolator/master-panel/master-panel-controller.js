@@ -82,7 +82,7 @@ define([
                   , axisValue: axisValue
                   , metapolationValue : 1
                 }];
-                var newInstance = $scope.instancePanel.sequences[0].createNewInstance(instanceAxes, designSpace);
+                var newInstance = $scope.instancePanel.sequences[0].createNewInstance(instanceAxes, designSpace, project);
                 instanceTools.registerInstance(project, newInstance);
                 $scope.instancePanel.sequences[0].addInstance(newInstance);
             }  else {

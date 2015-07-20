@@ -22,8 +22,8 @@ define([
         
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
-    _p.createNewInstance = function(axes, designSpace) {
-        var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter % this.colors.length], this);
+    _p.createNewInstance = function(axes, designSpace, project) {
+        var instance = new InstanceModel(this.instanceCounter, axes, designSpace, this.colors[this.instanceCounter % this.colors.length], this, project);
         this.instanceCounter++;
         // the instance can not be added inmediately. It has to be registered (by the instance tools) first and then it should be added
         return instance;
@@ -31,8 +31,7 @@ define([
 
     _p.addInstance = function(instance) {
         this.children.push(instance);
-        //set the newly created instance as current instance
-        this.parent.setCurrentInstance(this.children[this.children.length - 1]);
+        instance.setCurrent();
     };
 
     

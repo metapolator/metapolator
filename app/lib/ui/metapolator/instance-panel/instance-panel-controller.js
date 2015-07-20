@@ -23,14 +23,15 @@ define([
                     metapolationValue: 1 / n
                 });
             }
-            instance = $scope.model.sequences[0].createInstance(axes, designSpace);
+            instance = $scope.model.sequences[0].createNewInstance(axes, designSpace, project);
             instanceTools.registerInstance(project, instance);
             $scope.model.sequences[0].addInstance(instance);
         };
         
-        $scope.duplicateInstance = function () {
+        $scope.cloneInstance = function () {
             var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
-              , axes = [];
+              , axes = []
+              , clone;
             for (var i = 0, l = $scope.model.currentInstance.axes.length; i < l; i++) {
                 var axis = $scope.model.currentInstance.axes[i];
                 axes.push({
@@ -40,10 +41,12 @@ define([
                     master: axis.master
                 });
             }
-            $scope.model.sequences[0].addInstance(axes, designSpace);
+            clone = $scope.model.sequences[0].createNewInstance(axes, designSpace, project);
+            instanceTools.registerInstance(project, clone);
+            $scope.model.sequences[0].addInstance(clone);
         };
         
-        $scope.deleteInstance = function (instance) {
+        $scope.removeInstance = function (instance) {
             var designSpace = instance.designSpace
               , index = $scope.model.sequences[0].children.indexOf(instance)
               , l
@@ -62,29 +65,15 @@ define([
                 var message = "Delete instance? This also deletes the design space '" + designSpace.name + "'.";
                 metapolatorModel.display.dialog.confirm(message, function(result){
                     if (result) {
-                        deleteInstance();
+                        instance.remove();
                         designSpace.remove();
                         $scope.$apply();
                     }
                 });
             } else {
-                deleteInstance();
+                instance.remove();
             }
-            
-            function deleteInstance() {
-                $scope.model.sequences[0].children.splice($scope.model.sequences[0].children.indexOf(instance), 1);
-                l = $scope.model.sequences[0].children.length;
-                if (l > 0) {
-                    // when the deleted instance was the last in array
-                    if (index >= l) {
-                        index = l - 1;
-                    }
-                    // select the instance with same index as deleted one
-                    $scope.model.setCurrentInstance($scope.model.sequences[0].children[index]);
-                } else {
-                    $scope.model.setCurrentInstance(null);
-                }            
-            }
+
         };
         
         $scope.canAddInstance = function () {
