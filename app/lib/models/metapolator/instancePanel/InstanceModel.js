@@ -128,11 +128,11 @@ define([
         ratio = 100 / (parseFloat(max) + parseFloat(axes[slack].axisValue));
         console.log(ratio);
         for (var j = 0; j < l; j++) {
-            axes[j].axisValue = this.formatAxisValue(ratio * axes[j].axisValue);
+            axes[j].axisValue = this._formatAxisValue(ratio * axes[j].axisValue);
         }
     };
     
-    _p.formatAxisValue = function(x) {
+    _p._formatAxisValue = function(x) {
         return Math.round(x * 10) / 10;
     };
     
