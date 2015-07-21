@@ -3,7 +3,7 @@
     <div class="parameter-selection-add-button panel-zone" ng-click="togglePanel($event)">+</div>
 </div>
 <div class="parameter-selection-body">
-    <mtk-selection-parameter ng-repeat="parameter in model.selectionParameters" mtk-model="parameter"></mtk-selection-parameter>
+    <mtk-selection-parameter ng-repeat="parameter in model.parameters" mtk-model="parameter"></mtk-selection-parameter>
 </div>
 
 <div class="parameters-control-panel panel-zone" ng-if="model.parameterOperatorPanel" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">

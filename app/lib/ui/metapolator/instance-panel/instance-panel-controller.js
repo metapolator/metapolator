@@ -25,9 +25,9 @@ define([
                     metapolationValue: 1 / n
                 });
             }
-            instance = $scope.model.instances[0].createNewInstance(axes, designSpace, project);
+            instance = $scope.model.instanceSequences[0].createNewInstance(axes, designSpace, project);
             instanceTools.registerInstance(project, instance);
-            $scope.model.instances[0].addInstance(instance);
+            $scope.model.instanceSequences[0].addInstance(instance);
         };
         
         $scope.cloneInstance = function () {
@@ -43,19 +43,19 @@ define([
                     master: axis.master
                 });
             }
-            clone = $scope.model.instances[0].createNewInstance(axes, designSpace, project);
+            clone = $scope.model.instanceSequences[0].createNewInstance(axes, designSpace, project);
             instanceTools.registerInstance(project, clone);
-            $scope.model.instances[0].addInstance(clone);
+            $scope.model.instanceSequences[0].addInstance(clone);
         };
         
         $scope.removeInstance = function (instance) {
             var designSpace = instance.designSpace
-              , index = $scope.model.instances[0].children.indexOf(instance)
+              , index = $scope.model.instanceSequences[0].children.indexOf(instance)
               , l
               , n = 0;
             // check if it is the last instance on the design space
-            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.instances[i];
+            for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instanceSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var thisInstance = sequence.children[j];
                     if (thisInstance.designSpace === designSpace) {
@@ -90,8 +90,8 @@ define([
         //export fonts
         
         $scope.instancesForExport = function () {
-            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.instances[i];
+            for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instanceSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.exportFont) {

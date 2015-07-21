@@ -6,7 +6,7 @@ define([
   , GlyphModel
 ){
     "use strict";
-    function MasterModel(name, baseParameters, baseOperators, parent, MOMelement, cpsFile, sequenceId, masterId) {
+    function MasterModel(name, parent, MOMelement, cpsFile, sequenceId, masterId) {
         this.level = "master";
         this.id = masterId;
         this.sequenceId = sequenceId;
@@ -23,9 +23,6 @@ define([
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
         this.ruleIndex = 3;
-
-        this.addBaseModels(baseParameters, baseOperators);
-
         
         Object.defineProperty(this, 'parent', {
             value: parent,
@@ -33,6 +30,7 @@ define([
             writable: true,
             configurable: true
         });
+        this.setInitialParameters();
     }
     
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
@@ -42,7 +40,7 @@ define([
     };
     
     _p.addGlyph = function(name, MOMelement) {
-        var glyph = new GlyphModel(name, this.baseParameters, this.baseOperators, this, MOMelement);
+        var glyph = new GlyphModel(name, this, MOMelement);
         this.children.push(glyph);
         return glyph;
     };

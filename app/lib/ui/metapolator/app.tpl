@@ -4,7 +4,7 @@
     <mtk-landscape class="transition" ng-style="{'width': 'calc(' + (totalPanelParts / 16) + '* 100%)', 'left': getLandscapeLeft()}">
         <mtk-panel ng-style="{'width': 'calc(' + (panels[0].share / totalPanelParts) + '* 100%)'}">
             <div class="semi-panel">
-                <mtk-parameter-panel class="panel" mtk-model="model.masterPanel"></mtk-parameter-panel>
+                <mtk-parameter-panel class="panel"></mtk-parameter-panel>
             </div>
             <mtk-horizontal-divider></mtk-horizontal-divider>
             <div class="semi-panel without-border">
@@ -17,7 +17,7 @@
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[2].share / totalPanelParts) + '* 100%)'}">
-            <mtk-master-panel class="panel without-border" mtk-model="model.masterPanel"></mtk-master-panel>
+            <mtk-master-panel class="panel without-border" mtk-model="model"></mtk-master-panel>
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[3].share / totalPanelParts) + '* 100%)'}">

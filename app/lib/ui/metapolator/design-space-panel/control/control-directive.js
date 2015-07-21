@@ -95,8 +95,8 @@ define([
                     designSpace = scope.model;
                     thisInstance = null;
                     inactiveInstances = [];
-                    for (var i = scope.model.parent.instances.length - 1; i >= 0; i--) {
-                        var sequence = scope.model.parent.instances[i];
+                    for (var i = scope.model.parent.instanceSequences.length - 1; i >= 0; i--) {
+                        var sequence = scope.model.parent.instanceSequences[i];
                         for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                             var instance = sequence.children[j];
                             if (instance.designSpace === designSpace) {

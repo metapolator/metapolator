@@ -4,17 +4,12 @@ define([
     Parent
 ){
     "use strict";
-    function OperatorModel(operator, id) {
-        this.order = operator.order;
+    function OperatorModel(baseOperator, id) {
+        this.base = baseOperator;
         // the operator id connects the operator in the selection with the operator 
         // in the elements
         this.id = id;
-        this.name = operator.name;
-        this.value = operator.standardValue;
-        this.standardValue = operator.standardValue;
-        this.type = operator.type;
-        this.usesUnit = operator.usesUnit;
-        this.effectiveLocal = operator.effectiveLocal;
+        this.value = baseOperator.standardValue;
     }
         
     var _p = OperatorModel.prototype = Object.create(Parent.prototype);

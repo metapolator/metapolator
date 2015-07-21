@@ -6,7 +6,7 @@ define([
   , PointModel
 ){
     "use strict";
-    function PenstrokeModel(name, baseParameters, baseOperators, parent, MOMelement) {
+    function PenstrokeModel(name, parent, MOMelement) {
         this.level = "penstroke";
         this.name = name;
         this.children = [];
@@ -17,14 +17,13 @@ define([
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
-        this.addBaseModels(baseParameters, baseOperators);
-        
         Object.defineProperty(this, 'parent', {
             value: parent,
             enumerable: false,
             writable: true,
             configurable: true
         });
+        this.setInitialParameters();
     }
     
     var _p = PenstrokeModel.prototype = Object.create(Parent.prototype);
@@ -36,7 +35,7 @@ define([
     
     _p.addPoint = function(name, MOMelement) {
         this.children.push(
-            new PointModel(name, this.baseParameters, this.baseOperators, this, MOMelement)
+            new PointModel(name, this, MOMelement)
         );
     };
 

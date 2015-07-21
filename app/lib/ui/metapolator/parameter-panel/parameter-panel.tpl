@@ -1,5 +1,5 @@
 <div id="parameters-selection">
-    <mtk-selection ng-repeat="level in levels" mtk-model="model.selection[level]" ng-if="model.selection[level].elements"></mtk-selection>
+    <mtk-selection ng-repeat="level in selection.allLevels" mtk-model="selection.selection[level]" ng-if="selection.selection[level].elements.length > 0"></mtk-selection>
 </div>
 
 <div class="single-panel control-panel" ng-if="data.view.parameterPanel.display" ng-style="{'left': data.view.parameterPanel.left + 'px', 'top': data.view.parameterPanel.top + 'px'}">

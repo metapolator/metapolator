@@ -8,13 +8,13 @@ define([
   , dialog
 ) {
     "use strict";
-    function MasterPanelController($scope, metapolatorModel, project) {
+    function MasterPanelController($scope, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
 
         $scope.duplicateMasters = function() {
-            for (var i = 0, l = $scope.model.sequences.length; i < l; i++) {
-                var sequence = $scope.model.sequences[i]
+            for (var i = 0, l = $scope.model.masterSequences.length; i < l; i++) {
+                var sequence = $scope.model.masterSequences[i]
                   , clones = [];
                 for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                     var master = sequence.children[j];
@@ -69,7 +69,7 @@ define([
         };
         
         $scope.addMasterToDesignSpace = function (master) {
-            var designSpace = metapolatorModel.currentDesignSpace
+            var designSpace = $scope.model.currentDesignSpace
               , axes = designSpace.axes
               , axisValue = null
               , instanceAxes;
@@ -81,14 +81,14 @@ define([
                   , axisValue: axisValue
                   , metapolationValue : 1
                 }];
-                var newInstance = metapolatorModel.instances[0].createNewInstance(instanceAxes, designSpace, project);
+                var newInstance = $scope.model.instanceSequences[0].createNewInstance(instanceAxes, designSpace, project);
                 instanceTools.registerInstance(project, newInstance);
-                metapolatorModel.instances[0].addInstance(newInstance);
+                $scope.model.instanceSequences[0].addInstance(newInstance);
             }  else {
                 designSpace.addAxis(master);
                 // add this axes to each instance in the design space
-                for (var i = metapolatorModel.instances.length - 1; i >= 0; i--) {
-                    var sequence = metapolatorModel.instances[i];
+                for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
+                    var sequence = $scope.model.instanceSequences[i];
                     for (var j = sequence.children.length - 1; j >= 0; j--) {
                         var instance = sequence.children[j];
                         if (instance.designSpace === designSpace) {
@@ -150,7 +150,7 @@ define([
         };
         
         function isOverDropArea(master) {
-            if (metapolatorModel.currentDesignSpace) {
+            if ($scope.model.currentDesignSpace) {
                 var dropLeft = $(".drop-area").offset().left;
                 var dropRight = $(".drop-area").offset().left + $(".drop-area").outerWidth();
                 var dropTop = $(".drop-area").offset().top;
@@ -172,7 +172,7 @@ define([
         }
         
         function isInDesignSpace(master) {
-            var designSpace = metapolatorModel.currentDesignSpace;
+            var designSpace = $scope.model.currentDesignSpace;
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var masterInDS = designSpace.axes[i];
                 if (masterInDS === master) {
@@ -230,7 +230,7 @@ define([
         };
     }
 
-    MasterPanelController.$inject = ['$scope', 'metapolatorModel', 'project'];
+    MasterPanelController.$inject = ['$scope', 'project'];
     var _p = MasterPanelController.prototype;
 
     return MasterPanelController;

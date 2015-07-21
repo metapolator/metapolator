@@ -1,7 +1,7 @@
-<div class="operator-row" ng-repeat="operator in model.selectionOperators track by $index">
-    <div ng-if="operator.name != 'effectiveValue'">
-        <div ng-click="openParameterPanel(parameter, $event, level)" class="parameter-key"><span ng-if="$index == 0">{{model.name}}</span></div>
-        <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, level)">{{operator.name}}</div>
+<div class="operator-row" ng-repeat="operator in model.operators track by $index">
+    <div ng-if="operator.name !== 'effectiveValue'">
+        <div ng-click="openParameterPanel(parameter, $event, level)" class="parameter-key"><span ng-if="$index == 0">{{model.base.name}}</span></div>
+        <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, level)">{{operator.base.name}}</div>
         <div class="operator-value">
             <span ng-if="!operator.range">
                 <input ng-model="operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> 
@@ -14,7 +14,7 @@
     </div>
 </div> 
 <div ng-if="model.effectiveValue" class="operator-row">
-    <div class="parameter-key">{{model.name}}</div>
+    <div class="parameter-key">{{model.base.name}}</div>
     <div class="parameter-operator effective-icon">&#10171;</div>
     <div class="operator-value operator-value-effective">
         <span ng-if="!model.effectiveValue.range">{{model.effectiveValue.low}}</span>

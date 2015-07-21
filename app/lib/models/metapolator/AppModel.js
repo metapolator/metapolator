@@ -1,13 +1,13 @@
 define([
    './_BaseModel'
  , './specimenPanel/SpecimenModel'
- , './masterPanel/MasterPanelModel'
+ , './masters/MasterSequenceModel'
  , './designSpaces/DesignSpaceModel'
  , './instances/InstanceSequenceModel'
 ], function(
     Parent
   , SpecimenModel
-  , MasterPanelModel
+  , MasterSequenceModel
   , DesignSpaceModel
   , InstanceSequenceModel
 ){
@@ -16,8 +16,11 @@ define([
         this.projectName = 'Canola';
         //
         this.specimen1 = new SpecimenModel(true, true, 'masters', this);
-        this.masterPanel = new MasterPanelModel();
         this.specimen2 = new SpecimenModel(false, false, 'instances', this);
+        //
+        this.masterSequences = [];
+        this.sequenceId = 0;
+        this.lastMasterSelected = null;
         //
         this.designSpaces = [];
         this.designSpaceCounter = 0;
@@ -25,7 +28,7 @@ define([
         this.currentDesignSpaceTrigger = 0;
         this.nrOfAxesTrigger = 0;
         //
-        this.instances = [];
+        this.instanceSequences = [];
         this.currentInstance = null;
         this.currentInstanceTrigger = 0;
         //
@@ -33,6 +36,26 @@ define([
         this.viewState = 0;
      }
     var _p = AppModel.prototype = Object.create(Parent.prototype);
+
+    // masters
+    _p.addSequence = function(name) {
+        var sequence = new MasterSequenceModel(name, this, this.sequenceId++);
+        this.masterSequences.push(sequence);
+        return sequence;
+    };
+
+    _p.areMastersSelected = function () {
+        for (var i = this.masterSequences.length - 1; i >= 0; i--) {
+            var sequence = this.masterSequences[i];
+            for (var j = sequence.children.length - 1; j >= 0; j--) {
+                var master = sequence.children[j];
+                if (master.edit) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
 
     // design spaces
     _p.createNewDesignSpace = function() {
@@ -54,15 +77,15 @@ define([
 
     // instances
     _p.addInstanceSequence = function(name) {
-        this.instances.push(
+        this.instanceSequences.push(
             new InstanceSequenceModel(name, this)
         );
     };
 
     _p.getInstanceAxesWithMaster = function(master, designSpace) {
         var axes = [];
-        for (var i = this.instances.length - 1; i >= 0; i--) {
-            var sequence = this.instances[i];
+        for (var i = this.instanceSequences.length - 1; i >= 0; i--) {
+            var sequence = this.instanceSequences[i];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
                 var instance = sequence.children[j];
                 if (instance.designSpace === designSpace) {
@@ -80,8 +103,8 @@ define([
 
     _p.getInstancesInDesignSpace= function(designSpace) {
         var instances = [];
-        for (var i = this.instances.length - 1; i >= 0; i--) {
-            var sequence = this.instances[i];
+        for (var i = this.instanceSequences.length - 1; i >= 0; i--) {
+            var sequence = this.instanceSequences[i];
             for (var j = sequence.children.length - 1; j >= 0; j--) {
                 var instance = sequence.children[j];
                 if (instance.designSpace === designSpace) {

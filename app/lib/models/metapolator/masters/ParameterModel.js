@@ -6,23 +6,18 @@ define([
   , OperatorModel
 ){
     'use strict';
-    function ParameterModel(parameter, level, master, element) {
-        this.level = level;
-        this.name = parameter.name;
-        this.cpsKey = parameter.cspKey;
-        this.unit = parameter.unit;
-        this.step = parameter.step;
-        this.decimals = parameter.decimals;
+    function ParameterModel(baseParameter, element) {
+        this.element = element;
+        this.base = baseParameter;
         this.operators = [];
-        this.master = master;
+
         // if the level corresponds with the effective level of the parameter
         // the effective value and the initial value are stored here
-        if (level === parameter.effectiveLevel) {
+        if (element.level === baseParameter.effectiveLevel) {
             this.effectiveValue = null;
             this.initial = null;
-            this.getInitial = parameter.getInitial;
+            this.getInitial = baseParameter.getInitial;
         }
-        this.operatorCounter = 0;
         this.stacked = false;
     }
     
@@ -61,10 +56,9 @@ define([
         this.effectiveValue = measuredValue;
     };
     
-    _p.addOperator = function(operator, id) {
-        this.operators.push(
-            new OperatorModel(operator, id)
-        );
+    _p.addOperator = function(baseOperator, id) {
+        var operator = new OperatorModel(baseOperator, id)
+        this.operators.push(operator);
         // keep a registration of stacked operators, to make the destacking process of everything faster
         //this.stacked = isStacked();
         //if (this.stacked) {
@@ -76,7 +70,8 @@ define([
         // but that prevented the id to be set null for added but not stacked
         // operators, which is necessary for the selection tool to work
         this.stacked = true;
-        this.master.parent.parent.addStackedParameter(this);
+        console.log("to do: add stacked parameters");
+        //this.master.parent.parent.addStackedParameter(this);
         //}
         /*
         function isStacked() {
@@ -99,11 +94,11 @@ define([
         var hasLocalOperator = false;
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var operator = this.operators[i];
-            if (operator.effectiveLocal) {
+            if (operator.base.effectiveLocal) {
                 hasLocalOperator = true;
-                if (operator.name === 'x') {
+                if (operator.base.name === 'x') {
                     factor *= operator.value;
-                } else if (operator.name === '÷') {
+                } else if (operator.base.name === '÷') {
                     factor /= operator.value;
                 }
             }
@@ -118,7 +113,7 @@ define([
     _p.findOperator = function(operator, id) {
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var thisOperator = this.operators[i];
-            if (thisOperator.name === operator.name && thisOperator.id === id) {
+            if (thisOperator.base.name === operator.name && thisOperator.id === id) {
                 return thisOperator;
             }
         }
@@ -130,7 +125,7 @@ define([
     _p.getOperatorByName = function(operatorName) {
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var thisOperator = this.operators[i];
-            if(thisOperator.name == operatorName) {
+            if(thisOperator.base.name == operatorName) {
                 return thisOperator;
             }
         }
@@ -151,10 +146,10 @@ define([
                     operator.id = null;
                     // todo: check if operator type is 'stack'.
                     // This matters when non-stack operators (like =) are added
-                    if (operator.name === lastOperator.name) {
-                        if (operator.name === '+' || operator.name === '-') {
+                    if (operator.base.name === lastOperator.base.base.name) {
+                        if (operator.base.name === '+' || operator.name === '-') {
                             newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                        } else if (operator.name === 'x' || operator.name === '÷') {
+                        } else if (operator.base.name === 'x' || operator.base.name === '÷') {
                             newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
                         }
                     } else {
@@ -174,8 +169,9 @@ define([
         }
     };
     
-    _p.updateEffectiveValue = function(element) {
-        var parameterName = this.name
+    _p.updateEffectiveValue = function() {
+        var element = this.element
+          , parameterName = this.base.name
           , min = null
           , max = null
           , is = null
@@ -204,19 +200,19 @@ define([
                     if (!multiply[levelCounter]) {
                         multiply[levelCounter] = [];
                     }
-                    if (operator.name === 'min' && !min) { // the deepest level applies for these operators therefor the '&& !'
+                    if (operator.base.name === 'min' && !min) { // the deepest level applies for these operators therefor the '&& !'
                         min = operator.value;
-                    } else if (operator.name === 'max' && !max) { // idem
+                    } else if (operator.base.name === 'max' && !max) { // idem
                         max = operator.value;
-                    } else if (operator.name === '=' && !is) { // idem
+                    } else if (operator.base.name === '=' && !is) { // idem
                         is = operator.value;
-                    } else if (operator.name === '+') {
+                    } else if (operator.base.name === '+') {
                         plus[levelCounter].push(parseFloat(operator.value));
-                    } else if (operator.name === '-') {
+                    } else if (operator.base.name === '-') {
                         plus[levelCounter].push(parseFloat(-operator.value));
-                    } else if (operator.name === 'x') {
+                    } else if (operator.base.name === 'x') {
                         multiply[levelCounter].push(parseFloat(operator.value));
-                    } else if (operator.name === '÷') {
+                    } else if (operator.base.name === '÷') {
                         multiply[levelCounter].push(parseFloat(1 / operator.value));
                     }
                 }

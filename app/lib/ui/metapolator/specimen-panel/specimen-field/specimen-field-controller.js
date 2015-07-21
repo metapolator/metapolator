@@ -1,7 +1,9 @@
 define([
     'jquery'
+  , 'metapolator/ui/metapolator/services/selection'
 ], function(
     $
+  , selection
 ) {
     "use strict";
     function SpecimenFieldController($scope, metapolatorModel) {
@@ -11,28 +13,36 @@ define([
         $scope.glyphClick = function(event, glyph) {
             if ($scope.model.settings.selecting && glyph.level) { // the second condition excludes fake glyphs like paragraph break, which hasnt a real model
                 if (event.metaKey || event.shiftKey || event.altKey) {
-                   $scope.toggleGlyph(glyph); 
+                   toggleGlyph(glyph);
                 } else {
-                    $scope.selectGlyph(glyph);
+                    selectGlyph(glyph);
                 }
-                metapolatorModel.masterPanel.updateSelections("glyph");
+                selection.updateSelection('glyph');
+                //metapolatorModel.masterPanel.updateSelections("glyph");
             }
         };
-        
-        $scope.toggleGlyph = function (glyph) {
-            glyph.edit = !glyph.edit;
-        };
-        
-        $scope.selectGlyph = function (glyph) {
+
+        function toggleGlyph(glyph) {
+            if (glyph.edit) {
+                glyph.edit = false;
+                selection.removeFromSelection('glyph', glyph);
+            } else {
+                glyph.edit = false;
+                selection.addToSelection('glyph', glyph);
+            }
+        }
+
+        function selectGlyph(glyph) {
             glyph.edit = true;
-        };
+            selection.addToSelection('glyph', glyph);
+        }
         
         // in the specimen1 injecting sequences (with masters)
         // in the specimen2 injecting instances
         if ($scope.model.settings.inject === "masters") {
-            $scope.injections = metapolatorModel.masterPanel.sequences;
+            $scope.injections = metapolatorModel.masterSequences;
         } else if ($scope.model.settings.inject === "instances") {
-            $scope.injections = metapolatorModel.instances;
+            $scope.injections = metapolatorModel.instanceSequences;
         }
         // inital triggering of filter
         $scope.model.updateSelectedMasters($scope.injections);

@@ -1,7 +1,9 @@
 define([
     'jquery'
+  , 'metapolator/ui/metapolator/services/selection'
 ], function(
     $
+  , selection
 ) {
     "use strict";
     function AppController($scope, model, registerFrontend) {
@@ -30,8 +32,8 @@ define([
             }
 
             function collapsPanels() {
-                for(var propertyName in $scope.model.masterPanel.selection) {
-                    $scope.model.masterPanel.selection[propertyName].parameterOperatorPanel = false;
+                for(var propertyName in selection.selection) {
+                    selection.selection[propertyName].parameterOperatorPanel = false;
                 }
             }
         };

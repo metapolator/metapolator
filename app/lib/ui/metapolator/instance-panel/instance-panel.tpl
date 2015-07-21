@@ -15,7 +15,7 @@
     <div class="fake-instance-panel">&nbsp;</div>
     <div class="fake-export-panel">&nbsp;</div>
         <ul class="ul-sequence">
-            <li class="li-sequence" ng-repeat="sequence in model.instances">
+            <li class="li-sequence" ng-repeat="sequence in model.instanceSequences">
                 <ul class="ul-master" ui-sortable="sortableOptions" ng-model="sequence.children">
                     <li class="li-master"
                         ng-repeat="instance in sequence.children"

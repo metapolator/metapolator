@@ -2,10 +2,12 @@ define([
     'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
   , 'metapolator/ui/services/GlyphRendererAPI'
+  , 'metapolator/ui/metapolator/services/selection'
 ], function(
     document
   , AppModel
   , GlyphRendererAPI
+  , selection
 ) {
     "use strict";
     function Metapolator(project, angularApp) {
@@ -54,7 +56,7 @@ define([
 
     _p._loadMOMmasters = function() {
         // load initial MOMmasters with MOMglyphs into model
-        var sequence = this.model.masterPanel.addSequence("Sequence 1")
+        var sequence = this.model.addSequence("Sequence 1")
           , MOMmasters = this.project.controller.queryAll("master");
         for (var i = 0, l = MOMmasters.length; i < l; i++) {
             var MOMmaster = MOMmasters[i]
@@ -65,6 +67,7 @@ define([
                 var cpsFile = this.project.controller._getMasterRule(masterName)
                   , MOMglyphs = MOMmaster.children
                   , master = sequence.addMaster(masterName, MOMmaster, cpsFile);
+                selection.addToSelection('master', master);
                 for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
                     var MOMglyph = MOMglyphs[j]
                       , glyphName = MOMglyph.id
@@ -83,6 +86,7 @@ define([
                 }
             }
         }
+        selection.updateSelection('master');
     };
 
     return Metapolator;

@@ -1,7 +1,9 @@
 define([
     'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/ui/metapolator/services/selection'
 ], function(
     cpsAPITools
+  , selection
 ) {
     "use strict";
     function SelectionParameterController($scope, metapolatorModel, project) {
@@ -11,8 +13,8 @@ define([
                   , operatorId = operator.id
                   , changedLevels = [];
                   
-                for (var i = $scope.model.elements.length - 1; i >= 0; i--) {
-                    var element = $scope.model.elements[i]
+                for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                    var element = $scope.model.parent.elements[i]
                       , effectiveLevel
                       , effectedElements;
                     // if there is a range, we have to find the value for this element within the range
@@ -41,14 +43,14 @@ define([
                     // and handle corresponding CPS effects. This can cause new cps rules. Eg: when
                     // the width of a master is changed with a non-effectiveLocal operator (like '+'),
                     // all glyphs in it are affected by it, so they all need their own cps rule.
-                    effectiveLevel = parameter.effectiveLevel;
+                    effectiveLevel = parameter.base.effectiveLevel;
                     effectedElements = getEffectedElements(effectiveLevel, element);
                     for (var j = 0, jl = effectedElements.length; j < jl; j++) {
                         var effectedElement = effectedElements[j]
-                          , elementParameter = effectedElement.getParameterByName(parameter.name)
+                          , elementParameter = effectedElement.getParameterByName(parameter.base.name)
                           , correctionValue
-                          , parentsFactor = effectedElement.findParentsFactor(elementParameter);
-                        elementParameter.updateEffectiveValue(effectedElement);
+                          , parentsFactor = effectedElement.findParentsFactor(parameter.base);
+                        elementParameter.updateEffectiveValue();
                         // update the cps values for each element
                         checkIfHasRule(effectedElement);
                         correctionValue = elementParameter.effectiveValue / parentsFactor / elementParameter.initial;
@@ -70,7 +72,7 @@ define([
                 // update the effectedValue selection for the changed levels
                 for (var k = 0, kl = changedLevels.length; k < kl; k++) {
                     var changedLevel = changedLevels[k]
-                      , selectionParameter = metapolatorModel.masterPanel.selection[changedLevel].getParameterByName(parameter.name);
+                      , selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
                     // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
                     if (selectionParameter) {
                         selectionParameter.updateEffectiveValue();
@@ -91,23 +93,23 @@ define([
             // with editing in ranges, we can want to set a value of a
             // not yet existing parameter and/or operator
             // if it doens't exist yet, we create it.
-            var parameter = element.findParameter(changedParameter);
+            var parameter = element.getParameterByName(changedParameter.base.name);
             if (parameter) {
                 return parameter;
             } else {
-                element.addParameter(changedParameter);
+                element.addParameter(changedParameter.base);
                 return element.parameters[element.parameters.length - 1];
             }
         }
 
         function checkIfHasOperator(elementParameter, changedOperator) {
             var id = changedOperator.id
-              , operator = elementParameter.findOperator(changedOperator, changedOperator.id);
+              , operator = elementParameter.findOperator(changedOperator.base, changedOperator.id);
             if (operator) {
                 return operator;
             } else {
                 // it has the parameter, but it hasn't the operator yet
-                elementParameter.addOperator(changedOperator, id);
+                elementParameter.addOperator(changedOperator.base, id);
                 return elementParameter.operators[elementParameter.operators.length - 1];
             }
         }
@@ -117,7 +119,7 @@ define([
               , cpsRule = parameterCollection.getItem(element.ruleIndex)
               , parameterDict = cpsRule.parameters
               , setParameter = cpsAPITools.setParameter;
-            setParameter(parameterDict, parameter.cpsKey, value);
+            setParameter(parameterDict, parameter.base.cpsKey, value);
             //console.log(parameterCollection.toString());
         }
         
@@ -128,7 +130,7 @@ define([
             var thisLevelElements = [changedElement]
               , tempArray = [];
 
-            while (thisLevelElements[0].level != effectiveLevel) {
+            while (thisLevelElements[0].level !== effectiveLevel) {
                 for (var i = 0, il = thisLevelElements.length; i < il; i++) {
                     var thisLevelElement = thisLevelElements[i];
                     for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {

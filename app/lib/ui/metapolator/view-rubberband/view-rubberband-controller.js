@@ -12,9 +12,9 @@ define([], function() {
                 }
                 // the type is set via attr and detected in the directive
                 if ($scope.type === "masters") {
-                    metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterPanel.sequences);
+                    metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterSequences);
                 } else if ($scope.type === "instances") {
-                    metapolatorModel.specimen2.updateSelectedMasters(metapolatorModel.instances);
+                    metapolatorModel.specimen2.updateSelectedMasters(metapolatorModel.instanceSequences);
                 }
             }
         };

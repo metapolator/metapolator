@@ -29,9 +29,9 @@ define([
         $scope.cloneDesignSpace = function () {
             var oldDesignSpace = $scope.model.currentDesignSpace;
             oldDesignSpace.clone();
-            var sequence0 = $scope.model.instances[0];
-            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.instances[i];
+            var sequence0 = $scope.model.instanceSequences[0];
+            for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instanceSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.designSpace === oldDesignSpace) {
