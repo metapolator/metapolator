@@ -473,8 +473,8 @@ define([
         // needed if this._dict had no keys previously
         // because then this._invalidateCache would not run
         // for example when the rules changed from not providing keys to
-        // now providing keys
-        this._nextTrigger('change', key);
+        // now providing keys.
+        this._nextTrigger('change');
         this._dict = null;
     };
 
@@ -488,7 +488,7 @@ define([
         // because then this._invalidateCache would not run
         // for example when the rules changed from not providing keys to
         // now providing keys
-        this._nextTrigger('change', key);
+        this._nextTrigger('change');
         this._buildIndex();
     };
 

@@ -138,7 +138,6 @@ define([
      * of its ParameterDict.
      */
     _p._unsetRulesCache = function() {
-        var i,l, subscription;
         this._rules = null;
         this._unsubscribeAll();
     };
@@ -162,15 +161,12 @@ define([
     };
 
     _p._getRules = function () {
-        var i, l, j, ll
+        var i, l
           , rules = []
-          , childRules
-          , item, rule
-          , selectorList
+          , item
           , callback = [this, '_structuralChangeHandler']
           , ruleChannel = 'selector-change'
           , collectionChannel = 'structural-change'
-          , copyRules
           ;
         for(i=0, l=this._items.length;i<l;i++) {
             item = this._items[i];
@@ -186,30 +182,14 @@ define([
                 this._subscribe(item, collectionChannel, callback);
                 if(item.invalid)
                     continue;
-                childRules = item.rules;
-                // rules of @import are copied, because they are reused
-                // in other collections as well. @namespace changes the
-                // rule array, for example, that changes all other instances
-                // of that rule array as well. So, rule arrays that are reused
-                // must be copied, this is currently only true for
-                // @import
-                // NOTE: this is also caused partly by the `this._rules`
-                // cache. Thus a possible solution would be to not use
-                // caches for some types of ParameterCollection. @import
-                // could, instead of returning the proxied value, return
-                // a copy of it's _reference rules.
-                // @namespace, on the other hand, needs no cache in principle
-                // becuase the important cache is the plain ParameterCollection
-                // that contains the @namespace ...
-                copyRules = (item.name === 'import');
-                for(j=0,ll=childRules.length;j<ll;j++) {
-                    rule = childRules[j];
-                    // add `this` to the third entry to produce a history
-                    // of nested ParameterCollections, this is to show
-                    // in the the ui where this rule comes from
-                    // rule[2].push(this);
-                    rules.push(copyRules ? rule.slice() : rule);
-                }
+                // To produce a history of nested ParameterCollections
+                // add `this` to the third entry; to show
+                // in the the ui where the rule comes from
+                // rule[2].push(this);
+                // NOTE: That requires each rule item to be copied!
+                // i.e. items.rules[i].slice(); otherwise the change is
+                // stored in the cache of `item` and that breaks things!
+                Array.prototype.push.apply(rules, item.rules);
             }
         }
         return rules;
@@ -305,10 +285,10 @@ define([
         // it was less effort for the moment)
 
         // prune the cache.
-        this._rules = null;
+        this._unsetRulesCache();
 
         // FIXME: it seems that "update" (check!!!) is not taken yet as an
-        // event name. PropertyDict uses "update" in th is case. For the
+        // event name. PropertyDict uses "update" in this case. For the
         // sake of a more unified interface, I say "update" is the new
         // "structural-change"
         events.push('structural-change');
