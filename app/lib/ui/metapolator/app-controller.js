@@ -23,7 +23,7 @@ define([
         // collapses the local menu and collapses all parameter / operator adding popup windows
         $scope.releaseLocalMenu = function (event) {
             if (!($(event.target).parents('.lm-head').length || $(event.target).hasClass("lm-head"))) {
-                $scope.model.display.localMenu = null;
+                $scope.model.localMenu = null;
             }
             if (!($(event.target).parents('.panel-zone').length)) {
                 collapsPanels();

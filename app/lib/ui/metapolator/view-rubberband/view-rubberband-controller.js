@@ -14,7 +14,7 @@ define([], function() {
                 if ($scope.type === "masters") {
                     metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterPanel.sequences);
                 } else if ($scope.type === "instances") {
-                    metapolatorModel.specimen2.updateSelectedMasters(metapolatorModel.instancePanel.sequences);
+                    metapolatorModel.specimen2.updateSelectedMasters(metapolatorModel.instances);
                 }
             }
         };
