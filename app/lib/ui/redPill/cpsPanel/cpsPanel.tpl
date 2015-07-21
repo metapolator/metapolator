@@ -1,4 +1,8 @@
-<p>Behold: The mighty</p><h1>CPS-Panel</h1><p>(of the Univers)</p>
+<button
+    class="draghandle"
+    ng-mousedown="resizeHeight($event)"
+    ></button>
+<h1>CPS-Panel</h1>
 
 <mtk-cps-collection
     class="root"
