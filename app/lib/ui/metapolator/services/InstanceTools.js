@@ -20,9 +20,9 @@ define([
     updateCPSfile = function(project, instance) {
         var generatedFileName = _getGeneratedCPSFileName(project.ruleController, instance.axes.length)
           , cpsString = _createMultiMasterCPS(instance.axes, generatedFileName);
-        project.ruleController.write(false, instance.cpsFile, '');
+        console.log(cpsString);
         project.ruleController.write(false, instance.cpsFile, cpsString);
-        var parameterCollection = project.ruleController.getRule(false, instance.cpsFile);
+        console.log(project.ruleController.getRule(false, instance.cpsFile).toString());
     };
 
     _createMultiMasterCPS = function(axesSet, generatedFileName) {
