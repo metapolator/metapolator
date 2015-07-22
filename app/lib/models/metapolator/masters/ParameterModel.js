@@ -1,9 +1,11 @@
 define([
     '../_BaseModel'
   , './OperatorModel'
+  , 'metapolator/ui/metapolator/services/selection'
 ], function(
     Parent
   , OperatorModel
+  , selection
 ){
     'use strict';
     function ParameterModel(baseParameter, element) {
@@ -56,7 +58,7 @@ define([
         this.effectiveValue = measuredValue;
     };
     
-    _p.addOperator = function(baseOperator, id) {
+    _p.addOperator = function(baseOperator, id, level) {
         var operator = new OperatorModel(baseOperator, id)
         this.operators.push(operator);
         // keep a registration of stacked operators, to make the destacking process of everything faster
@@ -65,13 +67,12 @@ define([
         // to prevent a bug with the system uncommented now
         // every parameter with operators added is considered a stacked parameter
         // and will be destacked
-        // where the previous setup only considered parameters with multiply of
+        // where the previous setup only considered parameters with multiple of
         // the same operatoras stacked (which is in itself more pure and faster)
         // but that prevented the id to be set null for added but not stacked
         // operators, which is necessary for the selection tool to work
         this.stacked = true;
-        console.log("to do: add stacked parameters");
-        //this.master.parent.parent.addStackedParameter(this);
+        selection.selection[level].addStackedParameter(this);
         //}
         /*
         function isStacked() {
@@ -135,8 +136,10 @@ define([
     _p.destackOperators = function() {
         if (this.stacked) {
             var lastOperator = {
-                  name: null
-              }
+                  base : {
+                      name: null
+                  }
+             }
               , newSetOperators = []
               , newOperator = {};
             if (this.operators.length > 0) {
@@ -146,8 +149,8 @@ define([
                     operator.id = null;
                     // todo: check if operator type is 'stack'.
                     // This matters when non-stack operators (like =) are added
-                    if (operator.base.name === lastOperator.base.base.name) {
-                        if (operator.base.name === '+' || operator.name === '-') {
+                    if (operator.base.name === lastOperator.base.name) {
+                        if (operator.base.name === '+' || operator.base.name === '-') {
                             newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
                         } else if (operator.base.name === 'x' || operator.base.name === '÷') {
                             newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);

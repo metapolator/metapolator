@@ -50,10 +50,10 @@ function(
     _p.addParameterOperator = function(baseParameter, baseOperator, id) {
         var parameter = this.findParameter(baseParameter);
         if (parameter) {
-            parameter.addOperator(baseOperator, id);
+            parameter.addOperator(baseOperator, id, this.level);
         } else {
             this.addParameter(baseParameter);
-            this.parameters[this.parameters.length - 1].addOperator(baseOperator, id);
+            this.parameters[this.parameters.length - 1].addOperator(baseOperator, id, this.level);
         }
     };
     

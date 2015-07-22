@@ -10,6 +10,7 @@ define([
         this.elements = [];
         this.baseParameters = baseParameters;
         this.baseOperators = baseOperators;
+        this.stackedParameters = [];
     }
         
     var _p = Selection.prototype;
@@ -48,32 +49,21 @@ define([
         return null;
     };
 
+    _p.addStackedParameter = function(parameter) {
+        if (this.stackedParameters.indexOf(parameter) === -1) {
+            this.stackedParameters.push(parameter);
+        }
+    };
 
-    /*
+    _p.destackParameters = function(level) {
+        // when a selection of a certain level changes, all the operators are destacked
+        // this means also that operator id's are set to null
+        for (var i = this.stackedParameters.length - 1; i >= 0; i--) {
+            this.stackedParameters[i].destackOperators();
+        }
+        // after destacking, empty the list
+        this.stackedParameters = [];
+    };
 
-     _p.addStackedParameter = function(parameter) {
-     if (this.stackedParameters.indexOf(parameter) == -1) {
-     this.stackedParameters.push(parameter);
-     }
-     };
-
-
-
-     _p.destackOperators = function(level) {
-     // when a selection of a certain level changes, all the operators are destacked
-     // this means also that operator id's are set to null
-     var elements = this.stackedParameters;
-     for (var i = elements.length - 1; i >= 0; i--) {
-     var element = elements[i];
-     if (element.level === level) {
-     element.destackOperators();
-     }
-     }
-     // after destacking, empty the list
-     this.stackedParameters = [];
-     };
-    */
-
-    
     return Selection;
 });

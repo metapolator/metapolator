@@ -116,6 +116,7 @@ define([
     };
 
     updateSelection = function(level) {
+        selection[level].destackParameters();
         selection[level].updateParameters();
     };
 
@@ -145,28 +146,6 @@ define([
         }
     };
     */
-
-    _destackOperators = function(level) {
-        // when a selection of a certain level changes, all the operators are destacked
-        // this means also that operator id's are set to null
-        var thisSelection = selection[level]
-          , elements = thisSelection.stackedParameters;
-        for (var i = elements.length - 1; i >= 0; i--) {
-            var element = elements[i];
-            if (element.level === level) {
-                element.destackOperators();
-            }
-        }
-        // after destacking, empty the list
-        thisSelection.stackedParameters = [];
-    };
-
-    _addStackedParameter = function(parameter) {
-        if (this.stackedParameters.indexOf(parameter) == -1) {
-            this.stackedParameters.push(parameter);
-        }
-    };
-
 
     return {
         selection : selection
