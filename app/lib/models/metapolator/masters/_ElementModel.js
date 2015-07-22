@@ -135,8 +135,8 @@ function(
         var levelElement = this
           , parentsFactor = 1;
         while(levelElement.level !== 'sequence') {
-            var levelParameter = this.findParameter(baseParameter)
-              , levelFactor
+            var levelParameter = levelElement.findParameter(baseParameter)
+              , levelFactor;
              if (levelParameter) {
                  levelFactor = levelParameter.getCPSFactor();
                  if (levelFactor !== false) {

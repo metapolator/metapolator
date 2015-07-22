@@ -44,20 +44,24 @@ define([
                     // the width of a master is changed with a non-effectiveLocal operator (like '+'),
                     // all glyphs in it are affected by it, so they all need their own cps rule.
                     effectiveLevel = parameter.base.effectiveLevel;
-                    effectedElements = getEffectedElements(effectiveLevel, element);
-                    for (var j = 0, jl = effectedElements.length; j < jl; j++) {
-                        var effectedElement = effectedElements[j]
-                          , elementParameter = effectedElement.getParameterByName(parameter.base.name)
-                          , correctionValue
-                          , parentsFactor = effectedElement.findParentsFactor(parameter.base);
-                        elementParameter.updateEffectiveValue();
-                        // update the cps values for each element
-                        checkIfHasRule(effectedElement);
-                        correctionValue = elementParameter.effectiveValue / parentsFactor / elementParameter.initial;
-                        writeValueInCPSfile(effectedElement, correctionValue, parameter);
-                        // keep score which levels have had changed values
-                        if (changedLevels.indexOf(effectedElement.level) === -1) {
-                            changedLevels.push(effectedElement.level);
+                    // if the effective level is already the level of this element, then no children
+                    // elements can be effected
+                    if (element.level !== effectiveLevel) {
+                        effectedElements = getEffectedElements(effectiveLevel, element);
+                        for (var j = 0, jl = effectedElements.length; j < jl; j++) {
+                            var effectedElement = effectedElements[j];
+                            updateEffectiveElement(effectedElement, parameter);
+                            // keep score which levels have had changed values
+                            if (changedLevels.indexOf(effectedElement.level) === -1) {
+                                changedLevels.push(effectedElement.level);
+                            }
+                        }
+                    } else {
+                        // this means that the current element is at the effective level
+                        // so we should check its inheritance and its effective value
+                        updateEffectiveElement(element, parameter);
+                        if (changedLevels.indexOf(element.level) === -1) {
+                            changedLevels.push(element.level);
                         }
                     }
 
@@ -80,6 +84,18 @@ define([
                 }
             }
         };
+
+        function updateEffectiveElement(element, parameter) {
+            var elementParameter
+              , correctionValue
+              , parentsFactor;
+            elementParameter = element.getParameterByName(parameter.base.name);
+            parentsFactor = element.findParentsFactor(parameter.base);
+            elementParameter.updateEffectiveValue();
+            checkIfHasRule(element);
+            correctionValue = elementParameter.effectiveValue / parentsFactor / elementParameter.initial;
+            writeValueInCPSfile(element, correctionValue, parameter);
+        }
 
         function checkIfHasRule(element) {
             if (!element.ruleIndex) {
@@ -120,7 +136,7 @@ define([
               , parameterDict = cpsRule.parameters
               , setParameter = cpsAPITools.setParameter;
             setParameter(parameterDict, parameter.base.cpsKey, value);
-            //console.log(parameterCollection.toString());
+            console.log(parameterCollection.toString());
         }
         
         function getEffectedElements (effectiveLevel, changedElement) {
