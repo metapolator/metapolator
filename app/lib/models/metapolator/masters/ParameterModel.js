@@ -120,19 +120,7 @@ define([
         }
         return null;
     };
-    
-    // you cannot always use this funtion, since there can be cases that there are multiple
-    // operators with the same name in a parameter
-    _p.getOperatorByName = function(operatorName) {
-        for (var i = this.operators.length - 1; i >= 0; i--) {
-            var thisOperator = this.operators[i];
-            if(thisOperator.base.name == operatorName) {
-                return thisOperator;
-            }
-        }
-        return null;
-    };
-    
+
     _p.destackOperators = function() {
         if (this.stacked) {
             var lastOperator = {
