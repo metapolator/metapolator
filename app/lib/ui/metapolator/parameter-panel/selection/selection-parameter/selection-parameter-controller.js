@@ -1,9 +1,7 @@
 define([
-    'metapolator/ui/metapolator/cpsAPITools'
-  , 'metapolator/ui/metapolator/services/selection'
+    'metapolator/ui/metapolator/services/selection'
 ], function(
-    cpsAPITools
-  , selection
+    selection
 ) {
     "use strict";
     function SelectionParameterController($scope, metapolatorModel, project) {
@@ -26,7 +24,6 @@ define([
                     // set the value of each element in the selection
                     // if there is not yet a parameter, we create it + cpsRule
                     // if there is not yet a operator, we create it
-                    checkIfHasRule(element);
                     var thisParameter = checkIfHasParameter(element, parameter)
                       , thisOperator = checkIfHasOperator(thisParameter, operator)
                       , localOperatorFactor;
@@ -36,7 +33,7 @@ define([
                     // if it has only non-local operators (add, subtract, etc) it returns false
                     localOperatorFactor = thisParameter.getCPSFactor();
                     if (localOperatorFactor !== false) {
-                        writeValueInCPSfile(element, localOperatorFactor, parameter);
+                        element.writeValueInCPSfile(localOperatorFactor, parameter, project);
                     }
 
                     // Elements down in the tree are effected by this, update their effectiveValue
@@ -86,23 +83,8 @@ define([
         };
 
         function updateEffectiveElement(element, parameter) {
-            var elementParameter
-              , correctionValue
-              , parentsFactor;
-            elementParameter = element.getParameterByName(parameter.base.name);
-            parentsFactor = element.findParentsFactor(parameter.base);
+            var elementParameter = element.getParameterByName(parameter.base.name);
             elementParameter.updateEffectiveValue();
-            checkIfHasRule(element);
-            correctionValue = elementParameter.effectiveValue / parentsFactor / elementParameter.initial;
-            writeValueInCPSfile(element, correctionValue, parameter);
-        }
-
-        function checkIfHasRule(element) {
-            if (!element.ruleIndex) {
-                var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
-                  , l = parameterCollection.length;
-                element.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, element.getSelector());
-            }
         }
 
         function checkIfHasParameter(element, changedParameter) {
@@ -129,15 +111,6 @@ define([
                 return elementParameter.operators[elementParameter.operators.length - 1];
             }
         }
-
-        function writeValueInCPSfile(element, value, parameter) {
-            var parameterCollection = project.ruleController.getRule(false, element.master.cpsFile)
-              , cpsRule = parameterCollection.getItem(element.ruleIndex)
-              , parameterDict = cpsRule.parameters
-              , setParameter = cpsAPITools.setParameter;
-            setParameter(parameterDict, parameter.base.cpsKey, value);
-            console.log(parameterCollection.toString());
-        }
         
         function getEffectedElements (effectiveLevel, changedElement) {
             // go down to the level where the change of this value has effect
@@ -151,7 +124,10 @@ define([
                     var thisLevelElement = thisLevelElements[i];
                     for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
                         var childElement = thisLevelElement.children[j];
-                        tempArray.push(childElement);
+                        // skip the unmeasured glyphs
+                        if (childElement.level !== 'glyph' || childElement.measured) {
+                            tempArray.push(childElement);
+                        }
                     }
                 }
                 thisLevelElements = tempArray;

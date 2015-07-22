@@ -13,7 +13,7 @@ define([
     function Metapolator(project, angularApp) {
         this.angularApp = angularApp;
         this.frontend = undefined;
-        this.model = this._modelFactory();
+        this.model = this._modelFactory(project);
         this.project = project;
 
         // load all masters, because right now it is very confusing
@@ -47,8 +47,8 @@ define([
     };
 
     // probably this should be replaced by sth. like `new AppModel(data);`
-    _p._modelFactory = function() {
-        var model = new AppModel();
+    _p._modelFactory = function(project) {
+        var model = new AppModel(project);
         model.addInstanceSequence("Family 1");
         model.createNewDesignSpace();
         return model;

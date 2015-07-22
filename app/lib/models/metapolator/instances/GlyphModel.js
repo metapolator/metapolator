@@ -3,10 +3,10 @@ define([
 ], function(
     Parent
 ){
-    "use strict";
+    'use strict';
     function GlyphModel(name, parent) {
-        this.level = "glyph";
-        this.type = "instance";
+        this.level = 'glyph';
+        this.type = 'instance';
         this.name = name;
         this.edit = false;
         

@@ -244,6 +244,15 @@ define([
             effectiveValue = min;
         }
         this.effectiveValue = effectiveValue;
+        this._setCorrectedCPSfactor();
+    };
+
+    _p._setCorrectedCPSfactor = function() {
+        var correctionValue
+          , parentsFactor;
+        parentsFactor = this.element.findParentsFactor(this.base);
+        correctionValue = this.effectiveValue / parentsFactor / this.initial;
+        this.element.writeValueInCPSfile(correctionValue, this);
     };
         
     

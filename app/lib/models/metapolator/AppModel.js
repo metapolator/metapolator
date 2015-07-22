@@ -12,7 +12,8 @@ define([
   , InstanceSequenceModel
 ){
     'use strict';
-    function AppModel() {
+    function AppModel(project) {
+        this._project = project
         this.projectName = 'Canola';
         //
         this.specimen1 = new SpecimenModel(true, true, 'masters', this);

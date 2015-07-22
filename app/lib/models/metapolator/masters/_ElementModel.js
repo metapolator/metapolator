@@ -1,17 +1,40 @@
 define([
     './ParameterModel'
   , 'metapolator/ui/metapolator/services/selection' // todo: Get rid of this module here.
+  , 'metapolator/ui/metapolator/cpsAPITools'
 ],
 function(
     ParameterModel
   , selection
+  , cpsAPITools
 )
 {
     "use strict";
     function _ElementModel() {
+        // todo: get rid of this.master.parent.parent._project which is now an argument of the AppModel
     }
 
     var _p = _ElementModel.prototype;
+
+    _p.writeValueInCPSfile = function(factor, parameter) {
+        // todo if factor === 1 && no value set for this parameter yet: don't write (this means it is the initial meausring when loading the project
+        // if factor === 1 && value already set: remove this out of the parameterCollection
+        this._checkIfHasRule();
+        var parameterCollection = this.master.parent.parent._project.ruleController.getRule(false, this.master.cpsFile)
+          , cpsRule = parameterCollection.getItem(this.ruleIndex)
+          , parameterDict = cpsRule.parameters
+          , setParameter = cpsAPITools.setParameter;
+        setParameter(parameterDict, parameter.base.cpsKey, factor);
+        console.log(parameterCollection.toString());
+    };
+
+    _p._checkIfHasRule = function() {
+        if (!this.ruleIndex) {
+            var parameterCollection = this.master.parent.parent._project.ruleController.getRule(false, this.master.cpsFile)
+                , l = parameterCollection.length;
+            this.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, this.getSelector());
+        }
+    };
     
     _p.deselectAllChildren = function() {
         for (var i = this.children.length -1; i >= 0; i--) {
