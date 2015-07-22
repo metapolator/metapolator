@@ -59,7 +59,7 @@ define([
     };
     
     _p.addOperator = function(baseOperator, id, level) {
-        var operator = new OperatorModel(baseOperator, id)
+        var operator = new OperatorModel(baseOperator, id);
         this.operators.push(operator);
         // keep a registration of stacked operators, to make the destacking process of everything faster
         //this.stacked = isStacked();
