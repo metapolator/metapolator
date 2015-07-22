@@ -57,7 +57,9 @@ define([
 
     _p.destackParameters = function(level) {
         // when a selection of a certain level changes, all the operators are destacked
-        // this means also that operator id's are set to null
+        // destacking is for example: when there are two multiply operators (eg x2 and x3)
+        // after destacking they are combined (x6)
+        // Destacking means also that operator id's are set to null
         for (var i = this.stackedParameters.length - 1; i >= 0; i--) {
             this.stackedParameters[i].destackOperators();
         }
