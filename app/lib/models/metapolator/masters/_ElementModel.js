@@ -123,6 +123,17 @@ function(
         return clone;
     };
 
+    // after cloning, we need to reset the master property
+    _p.setMaster = function(master) {
+        this.master = master;
+        if(this.children) {
+            for (var i = 0, l = this.children.length; i < l; i++) {
+                var child = this.children[i];
+                child.setMaster(master);
+            }
+        }
+    };
+
     _p._cloneProperties = function(clone) {
         for (var propertyName in this) {
             if (propertyName !== 'children' && propertyName !== 'parent' &&

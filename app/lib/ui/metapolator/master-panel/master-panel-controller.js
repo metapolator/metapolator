@@ -35,7 +35,6 @@ define([
                 }
                 for (var k = 0, kl = clones.length; k < kl; k++) {
                     sequence.add(clones[k]);
-
                 }
             }
             selection.updateSelection('master');
@@ -43,7 +42,7 @@ define([
 
         function setCloneProperties(clone, id) {
             clone.id = id;
-            clone.master = clone;
+            clone.setMaster(clone);
             clone.displayName = nameCopy(clone.displayName);
             // giving it a unique name before registering
             clone.name = "master-" + clone.sequenceId + "-" + clone.id;
