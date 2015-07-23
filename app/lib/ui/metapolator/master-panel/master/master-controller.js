@@ -26,7 +26,6 @@ define([
                 selectThis(master);
             }
             selection.updateSelection('master');
-            metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterSequences);
         };
         
         function toggleSelect(master) {
@@ -40,7 +39,6 @@ define([
             if (!master.edit) {
                 master.deselectAllChildren();
             }
-            metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterSequences);
         }
 
         function selectSet(master) {

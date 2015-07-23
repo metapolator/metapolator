@@ -1,23 +1,18 @@
 define([
    './_BaseModel'
- , './specimenPanel/SpecimenModel'
  , './masters/MasterSequenceModel'
  , './designSpaces/DesignSpaceModel'
  , './instances/InstanceSequenceModel'
 ], function(
     Parent
-  , SpecimenModel
   , MasterSequenceModel
   , DesignSpaceModel
   , InstanceSequenceModel
 ){
     'use strict';
     function AppModel(project) {
-        this._project = project
+        this._project = project; // todo: get rid of this. find a way to get project to writeCPS method
         this.projectName = 'Canola';
-        //
-        this.specimen1 = new SpecimenModel(true, true, 'masters', this);
-        this.specimen2 = new SpecimenModel(false, false, 'instances', this);
         //
         this.masterSequences = [];
         this.sequenceId = 0;

@@ -25,7 +25,7 @@ function(
           , parameterDict = cpsRule.parameters
           , setParameter = cpsAPITools.setParameter;
         setParameter(parameterDict, parameter.base.cpsKey, factor);
-        console.log(parameterCollection.toString());
+        //console.log(parameterCollection.toString());
     };
 
     _p._checkIfHasRule = function() {

@@ -1,15 +1,12 @@
 define([], function() {
-    "use strict";
+    'use strict';
     function FontByController($scope) {
         this.$scope = $scope;
-        this.$scope.name = 'fontBy';
-        
-        $scope.fontBys = ["Glyph", "Word", "Specimen"];
-        // inital setting
-        $scope.model.fontBy = $scope.fontBys[2];
-        
+
+        $scope.fontBys = ['Glyph', 'Word', 'Specimen'];
+
         $scope.setFontBy = function(fontBy) {
-             $scope.model.parent.setFontby(fontBy);   
+             $scope.model.fontBy = fontBy;
         };
     }
 

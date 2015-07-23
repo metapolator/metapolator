@@ -13,14 +13,38 @@ define([
         this.type = 'master';
         this.name = name;
         this.edit = false;
-        this.children = [];
 
         // cps properties
-        this.parameters = [];
         this.measured = false; // only the initial parameter values are measured for glyphs when they appear in the view
-        this.master = parent;
-        this.MOMelement = MOMelement;
         this.ruleIndex = null;
+
+        Object.defineProperty(this, 'parameters', {
+            value: [],
+            enumerable: false,
+            writable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(this, 'children', {
+            value: [],
+            enumerable: false,
+            writable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(this, 'master', {
+            value: parent,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(this, 'MOMelement', {
+            value: MOMelement,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        });
 
         Object.defineProperty(this, 'parent', {
             value: parent,
@@ -67,7 +91,6 @@ define([
                       , elementParameter = effectedElement.getParameterByName(baseParameter.name)
                       , MOMelement = effectedElement.MOMelement;
                     elementParameter.setInitial(MOMelement);
-                    elementParameter.updateEffectiveValue();
                 }
             }
 

@@ -223,7 +223,7 @@ define([
         // hover masters
         $scope.mouseoverMaster = function(master) {
             if (master.display || master.edit) {
-                var current = $(".specimen-field-masters ul li.master-" + master.name);
+                var current = $(".specimen-field-master ul li.master-" + master.name);
                 $(".specimen-field-masters ul li").not(current).each(function() {
                     $(this).addClass("dimmed");
                 });

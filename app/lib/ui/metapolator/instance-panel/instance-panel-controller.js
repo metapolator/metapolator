@@ -252,8 +252,8 @@ define([
             // Dim specimen text
             if (instance.display || instance === $scope.model.currentInstance) {
                 // here is 'master' used for syncing with master reasons
-                var textCurrent = $(".specimen-field-instances ul li.master-" + instance.name);
-                $(".specimen-field-instances ul li").not(textCurrent).each(function() {
+                var textCurrent = $(".specimen-field-instance ul li.master-" + instance.name);
+                $(".specimen-field-instance ul li").not(textCurrent).each(function() {
                     $(this).addClass("dimmed");
                 });
             }
@@ -263,7 +263,7 @@ define([
             // Restore slider diamonds
             $(".design-space-diamond").css("opacity", "");
             // Restore specimen text
-            $(".specimen-field-instances ul li").removeClass("dimmed");
+            $(".specimen-field-instance ul li").removeClass("dimmed");
         };
     }
 

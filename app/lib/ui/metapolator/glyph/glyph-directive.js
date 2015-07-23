@@ -40,9 +40,9 @@ define([
                     } else if (scope.model.type === "instance") {
                         scope.checkBaseMasters(scope.model);
                     }
-                    masterName = scope.model.getMasterName()
-                    svg = scope.renderGlyph(masterName, glyphName);
 
+                    masterName = scope.model.getMasterName();
+                    svg = scope.renderGlyph(masterName, glyphName);
                     element.append(svg);
 
                     element.bind('$destroy', function(event) {

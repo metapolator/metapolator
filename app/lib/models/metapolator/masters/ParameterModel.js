@@ -180,7 +180,7 @@ define([
                     this.setInitial(element.MOMelement);
                 }
                 initial = this.initial;
-                
+
             }
             if (elementParameter) {
                 for (var i = 0, l = elementParameter.operators.length; i < l; i++) {

@@ -13,7 +13,7 @@
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[1].share / totalPanelParts) + '* 100%)'}">
-            <mtk-specimen-panel class="panel" mtk-model="model.specimen1"></mtk-specimen-panel>
+            <mtk-specimen-panel class="panel" mtk-model="model.masterSequences" mtk-type="'master'" mtk-rubberband="true" mtk-glyphrange="true"></mtk-specimen-panel>
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[2].share / totalPanelParts) + '* 100%)'}">
@@ -26,7 +26,7 @@
             </div>
             <mtk-horizontal-divider></mtk-horizontal-divider>
             <div class="semi-panel">
-                <mtk-specimen-panel class="panel" mtk-model="model.specimen2"></mtk-specimen-panel>
+                <mtk-specimen-panel class="panel" mtk-model="model.instanceSequences" mtk-type="'instance'" mtk-rubberband="false" mtk-glyphrange="false"></mtk-specimen-panel>
             </div>
         </mtk-panel>
         

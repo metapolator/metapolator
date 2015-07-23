@@ -13,7 +13,7 @@ define([
           , replace : false
           , scope : {
                 model : '=mtkModel'
-              , type : '=type'
+              , type : '=mtkType'
             }
           , link : function(scope, element, attrs, ctrl) {
                 var dS = 8, 

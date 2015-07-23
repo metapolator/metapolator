@@ -60,7 +60,6 @@ define([
         // the first by refactoring the design space
         // the second by refactoring the specimen
         this.parent.parent.currentInstanceTrigger++;
-        this.parent.parent.specimen2.updateSelectedMasters(this.parent.parent.instanceSequences);
 
     };
 
