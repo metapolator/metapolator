@@ -25,6 +25,7 @@ define([
                 newParameter.updateOperators();
             }
         }
+
     };
 
     _p._hasThisParameter = function (baseParameter) {

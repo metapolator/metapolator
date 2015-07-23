@@ -5,11 +5,14 @@ define([
 ) {
     'use strict';
     var updateSelection
+      , sequences = []
+      , updateSequences
       , getSelectionElements
       , removeFromSelection
       , addToSelection
-      , _destackOperators
-      , _addStackedParameter
+      , _getParentElements
+      , _getNextLevel
+      , _getPreviousLevel
       , allLevels = ['master', 'glyph', 'penstroke', 'point']
       , baseParameters = [{
         name : 'Width'
@@ -116,43 +119,74 @@ define([
     };
 
     updateSelection = function(level) {
+        var nextLevel = _getNextLevel(level)
+          , previousLevel = _getPreviousLevel(level)
+          , elements = []
+          , parentElements;
+        if (previousLevel !== false) {
+            parentElements = _getParentElements(previousLevel);
+        } else {
+            // this means we are at the highest level, its parents are
+            // the stored sequences
+            parentElements = sequences;
+        }
+
+        for (var i = 0, l = parentElements.length; i < l; i++) {
+            var parentElement = parentElements[i];
+            for (var j = 0, jl = parentElement.children.length; j < jl; j++) {
+                var thisElement = parentElement.children[j];
+                if (thisElement.edit) {
+                    elements.push(thisElement);
+                }
+            }
+        }
+        selection[level].elements = elements;
         selection[level].destackParameters();
         selection[level].updateParameters();
+        if (nextLevel !== false) {
+            updateSelection(nextLevel, selection[level].elements);
+        }
+    };
+
+    _getParentElements = function(level) {
+        return selection[level].elements;
+    };
+
+    _getNextLevel = function(level) {
+        var thisIndex = allLevels.indexOf(level);
+        if (thisIndex === -1 || thisIndex + 1 === allLevels.length - 1) {
+            return false;
+        } else {
+            return allLevels[thisIndex + 1];
+        }
+    };
+
+    _getPreviousLevel = function(level) {
+        var thisIndex = allLevels.indexOf(level);
+        if (thisIndex === -1 || thisIndex - 1 < 0) {
+            return false;
+        } else {
+            return allLevels[thisIndex - 1];
+        }
     };
 
     getSelectionElements = function(level) {
         return selection[level].elements;
     };
 
-    /*
-    setSelections = function(updatedLevel) {
-        // SetSelections is called whenever a selection at this level is changed
-        _destackOperators(updatedLevel);
-        var parentEmpty = false;
-        // and do this for all levels beyond
-        var beyond = false;
-        for (var i = 0, l = allLevels.length; i < l; i++) {
-            var level = allLevels[i];
-            if (level === updatedLevel) {
-                beyond = true;
-            }
-            if (beyond) {
-                this.selection[level].updateThisSelection(parentEmpty);
-            }
-            if (parentEmpty || this.selection[level].elements.length === 0) {
-                // if this level is empty, then deeper levels are empty automatically
-                parentEmpty = true;
-            }
-        }
+    updateSequences = function(injected) {
+        sequences = injected;
     };
-    */
+
+
 
     return {
         selection : selection
+      , updateSequences : updateSequences
       , updateSelection : updateSelection
       , getSelectionElements : getSelectionElements
-      , addToSelection : addToSelection
-      , removeFromSelection : removeFromSelection
+      //, addToSelection : addToSelection
+      //, removeFromSelection : removeFromSelection
       , allLevels : allLevels
       , baseParameters : baseParameters // this one is public because measureGlyph needs it. todo: find another way to get them there
     };

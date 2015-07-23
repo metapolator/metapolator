@@ -29,13 +29,11 @@ define([
                         copiedCPSstring = copyCPSString(master);
                         registerMaster(clone, copiedCPSstring);
                         master.edit = false;
-                        selection.removeFromSelection('master', master);
                         clones.push(clone);
                     }
                 }
                 for (var k = 0, kl = clones.length; k < kl; k++) {
                     sequence.add(clones[k]);
-                    selection.addToSelection('master', clones[k]);
 
                 }
             }

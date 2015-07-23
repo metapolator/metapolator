@@ -322,16 +322,13 @@ define([
         function toggleGlyph(glyph) {
             if (glyph.edit) {
                 glyph.edit = false;
-                selection.removeFromSelection('glyph', glyph);
             } else {
                 glyph.edit = false;
-                selection.addToSelection('glyph', glyph);
             }
         }
 
         function selectGlyph(glyph) {
             glyph.edit = true;
-            selection.addToSelection('glyph', glyph);
         }
 
         // spaces manager

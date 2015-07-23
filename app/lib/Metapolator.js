@@ -67,7 +67,6 @@ define([
                 var cpsFile = this.project.controller._getMasterRule(masterName)
                   , MOMglyphs = MOMmaster.children
                   , master = sequence.addMaster(masterName, MOMmaster, cpsFile);
-                selection.addToSelection('master', master);
                 for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
                     var MOMglyph = MOMglyphs[j]
                       , glyphName = MOMglyph.id
@@ -86,6 +85,7 @@ define([
                 }
             }
         }
+        selection.updateSequences(this.model.masterSequences);
         selection.updateSelection('master');
     };
 

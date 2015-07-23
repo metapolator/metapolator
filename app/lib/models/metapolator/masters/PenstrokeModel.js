@@ -9,6 +9,7 @@ define([
     function PenstrokeModel(name, parent, MOMelement) {
         this.level = "penstroke";
         this.name = name;
+        this.edit = true;
         this.parent = parent;
         this.children = [];
 

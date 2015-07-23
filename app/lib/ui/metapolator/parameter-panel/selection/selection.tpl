@@ -17,3 +17,5 @@
         Cancel
     </div>
 </div>
+
+<div ng-repeat="element in model.elements">{{element.name}}</div>

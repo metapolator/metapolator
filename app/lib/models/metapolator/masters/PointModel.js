@@ -7,6 +7,7 @@ define([
     function PointModel(name, parent, MOMelement) {
         this.level = "point";
         this.name = name;
+        this.edit = true;
         this.parent = parent;
 
         // cps properties

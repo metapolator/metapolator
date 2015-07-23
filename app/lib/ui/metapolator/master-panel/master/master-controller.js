@@ -31,10 +31,8 @@ define([
         function toggleSelect(master) {
             if (master.edit) {
                 master.edit = false;
-                selection.removeFromSelection('master', master);
             } else {
                 master.edit = true;
-                selection.addToSelection('master', master);
             }
             if (!master.edit) {
                 master.deselectAllChildren();
@@ -55,10 +53,8 @@ define([
                     }
                     if (phase == 1 || (phase == 2 && thisHit)) {
                         thisMaster.edit = true;
-                        selection.addToSelection('master', master);
                     } else {
                         thisMaster.edit = false;
-                        selection.removeFromSelection('master', master);
                         thisMaster.deselectAllChildren();
                     }
                 }
@@ -73,11 +69,9 @@ define([
                     var thisMaster = sequence.children[j];
                     if (thisMaster == master) {
                         thisMaster.edit = true;
-                        selection.addToSelection('master', master);
                     } else {
                         if (thisMaster.edit) {
                             thisMaster.edit = false;
-                            selection.removeFromSelection('master', master);
                             thisMaster.deselectAllChildren();
                         }
                     } 

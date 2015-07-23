@@ -18,10 +18,8 @@ define([
                             if (isInSet(glyph)) {
                                 if (glyph.edit) {
                                     glyph.edit = false;
-                                    selection.removeFromSelection('glyph', glyph);
                                 } else {
                                     glyph.edit = false;
-                                    selection.addToSelection('glyph', glyph);
                                 }
                             }
                         }
@@ -46,7 +44,6 @@ define([
             for (var i = set.length - 1; i >= 0; i--) {
                 var glyph = set[i];
                 glyph.edit = true;
-                selection.addToSelection('glyph', glyph);
             }
             selection.updateSelection('glyph');
             $scope.$apply();
@@ -61,7 +58,6 @@ define([
                         for (var k = master.children.length - 1; k >= 0; k--) {
                             var glyph = master.children[k];
                             glyph.edit = false;
-                            selection.removeFromSelection('glyph', glyph);
                         }
                     }
                 }
