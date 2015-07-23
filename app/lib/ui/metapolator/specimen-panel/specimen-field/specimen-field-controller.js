@@ -308,14 +308,13 @@ define([
 
         // glyph clicking
         $scope.glyphClick = function(event, glyph) {
-            if ($scope.model.rubberband && glyph.level) { // the second condition excludes fake glyphs like paragraph break, which hasnt a real model
+            if ($scope.model.rubberband && glyph.level && glyph.parent.edit) { // the second condition excludes fake glyphs like paragraph break, which hasnt a real model
                 if (event.metaKey || event.shiftKey || event.altKey) {
                    toggleGlyph(glyph);
                 } else {
                     selectGlyph(glyph);
                 }
                 selection.updateSelection('glyph');
-                //metapolatorModel.masterPanel.updateSelections('glyph');
             }
         };
 
