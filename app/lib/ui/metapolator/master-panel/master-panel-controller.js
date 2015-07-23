@@ -20,6 +20,7 @@ define([
                   , clones = [];
                 for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                     var master = sequence.children[j];
+                    master.deselectAllChildren();
                     // todo: change [0] to [viewState]
                     if (master.edit) {
                         var clone = master.clone()
@@ -48,6 +49,7 @@ define([
             clone.name = "master-" + clone.sequenceId + "-" + clone.id;
             clone.cpsFile = clone.name + ".cps";
         }
+
 
         function registerMaster(master, cpsString) {
             project.ruleController.write(false, master.cpsFile, cpsString);
