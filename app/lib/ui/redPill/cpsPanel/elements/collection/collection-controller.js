@@ -126,6 +126,10 @@ define([
         this.cpsCollection.splice(index, 1, [replacement]);
     };
 
+    p.insertCPSElement = function(index, item) {
+        this.cpsCollection.splice(index, 0, [item]);
+    };
+
     _p._commandHandler = function(event, command, index) {
         var args
           , method
@@ -142,6 +146,10 @@ define([
             case 'replace':
                 // index, replacement
                 method = this.replaceCPSElement.bind(this);
+                break
+            case 'insert':
+                // index, item
+                method = this.insertCPSElement.bind(this);
                 break
             default:
                 console.warn('unkown command:', command, 'index:', index);
