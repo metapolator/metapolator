@@ -9,6 +9,7 @@ define([
   , 'metapolator/ui/redPill/cpsPanel/elements/comment/comment'
   , 'metapolator/ui/redPill/cpsPanel/elements/generic/generic'
   , 'metapolator/ui/redPill/cpsPanel/elements/importCollection/importCollection'
+  , 'metapolator/ui/redPill/cpsPanel/elements/newItem/newItem'
   , 'metapolator/ui/redPill/cpsPanel/dragAndDrop/dragAndDrop'
 ], function(
     angular
@@ -21,12 +22,13 @@ define([
   , comment
   , generic
   , importCollection
+  , newItem
   , dragAndDrop
 ) {
     "use strict";
     return angular.module('cps.collection', [rule.name, namespaceCollection.name
                            , comment.name, generic.name, dragAndDrop.name
-                           , importCollection.name])
+                           , importCollection.name, newItem.name])
       .controller('CollectionController', Controller)
       .directive('mtkCpsCollection', directive)
       .directive('mtkCollectionDrop', collectionDropDirective)

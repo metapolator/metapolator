@@ -17,11 +17,12 @@ define([
       , getTargetData = genericTargetTools.getTargetData
       ;
 
-    function doubleClickHandler(findElement, getPositionReference
-                                , controller, element, container, event) {
+    function doubleClickHandler(findElement, getPositionReference, $compile
+                              , scope , controller, element, container, event) {
         var target
           , placementReference
           , uiElement
+          , index
           ;
 
         if(event.defaultPrevented)
@@ -46,12 +47,14 @@ define([
         // place the interface:
         placementReference = getPositionReference(controller.empty, target.element, container);
         // target.insertPosition is "before" or "after" or "append"
-
+        index = target.index;
+        if(target.insertPosition === 'after')
+            index +=1;
         // TODO: make a form here
-        uiElement = element.ownerDocument.createElement('h3');
-        uiElement.textContent = 'HeyHey!';
-
+        uiElement = element.ownerDocument.createElement('mtk-cps-new-item');
+        // add attribute "index", index
         domStuff.insert(placementReference, target.insertPosition, uiElement);
+        $compile(angular.element(uiElement))(scope);
 
         // and when the interface loses focus
         // finalize()
@@ -59,7 +62,7 @@ define([
     }
 
 
-    function CollectionNewItemDirective(DropHelper) {
+    function CollectionNewItemDirective($compile) {
         function link(_scope, element, attrs) {
             var scope = element.isolateScope()
               , controller = scope.controller
@@ -73,6 +76,8 @@ define([
                 null
               , findElement
               , getPositionReference
+              , $compile
+              , scope
               , controller
               , element[0]
               , container
@@ -84,6 +89,6 @@ define([
           , link:link
         };
     }
-    CollectionNewItemDirective.$inject = [];
+    CollectionNewItemDirective.$inject = ['$compile'];
     return CollectionNewItemDirective;
 });

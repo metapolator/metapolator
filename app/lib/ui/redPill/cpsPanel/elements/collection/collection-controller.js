@@ -126,7 +126,7 @@ define([
         this.cpsCollection.splice(index, 1, [replacement]);
     };
 
-    p.insertCPSElement = function(index, item) {
+    _p.insertCPSElement = function(index, item) {
         this.cpsCollection.splice(index, 0, [item]);
     };
 
@@ -146,16 +146,16 @@ define([
             case 'replace':
                 // index, replacement
                 method = this.replaceCPSElement.bind(this);
-                break
+                break;
             case 'insert':
                 // index, item
                 method = this.insertCPSElement.bind(this);
-                break
+                break;
             default:
                 console.warn('unkown command:', command, 'index:', index);
                 return;
         }
-        args = [method, 0]
+        args = [method, 0];
         Array.prototype.push.apply(args, externalArgs);
         setTimeout.apply(null, args);
     };
