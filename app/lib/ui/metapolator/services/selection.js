@@ -154,7 +154,7 @@ define([
 
     _getNextLevel = function(level) {
         var thisIndex = allLevels.indexOf(level);
-        if (thisIndex === -1 || thisIndex + 1 === allLevels.length - 1) {
+        if (thisIndex === -1 || thisIndex + 1 === allLevels.length) {
             return false;
         } else {
             return allLevels[thisIndex + 1];
