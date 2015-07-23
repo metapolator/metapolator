@@ -9,6 +9,7 @@ define([
     function PenstrokeModel(name, parent, MOMelement) {
         this.level = "penstroke";
         this.name = name;
+        this.parent = parent;
         this.children = [];
 
         // cps properties
@@ -17,12 +18,6 @@ define([
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
-        Object.defineProperty(this, 'parent', {
-            value: parent,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
         this.setInitialParameters();
     }
     

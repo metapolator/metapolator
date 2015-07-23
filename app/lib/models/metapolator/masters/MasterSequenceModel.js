@@ -11,14 +11,10 @@ define([
         this.name = name;
         this.level = "sequence";
         this.canEdit = true;
+        this.parent = parent;
         this.children = [];
+
         this.masterId = 0;
-        Object.defineProperty(this, 'parent', {
-            value: parent,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
     }
         
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);

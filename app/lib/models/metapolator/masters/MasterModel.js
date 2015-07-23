@@ -15,6 +15,7 @@ define([
         this.display = false;
         this.edit = true;
         this.ag = "Ag";
+        this.parent = parent;
         this.children = [];
 
         // cps properties
@@ -23,13 +24,7 @@ define([
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
         this.ruleIndex = 3;
-        
-        Object.defineProperty(this, 'parent', {
-            value: parent,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
+
         this.setInitialParameters();
     }
     

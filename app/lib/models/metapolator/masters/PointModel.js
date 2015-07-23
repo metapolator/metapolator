@@ -7,6 +7,7 @@ define([
     function PointModel(name, parent, MOMelement) {
         this.level = "point";
         this.name = name;
+        this.parent = parent;
 
         // cps properties
         this.parameters = [];
@@ -14,12 +15,6 @@ define([
         this.MOMelement = MOMelement;
         this.ruleIndex = null;
 
-        Object.defineProperty(this, 'parent', {
-            value: parent,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        });
         this.setInitialParameters();
     }
     
