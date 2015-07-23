@@ -16,11 +16,7 @@ define([
                         for (var k = master.children.length - 1; k >= 0; k--) {
                             var glyph = master.children[k];
                             if (isInSet(glyph)) {
-                                if (glyph.edit) {
-                                    glyph.edit = false;
-                                } else {
-                                    glyph.edit = false;
-                                }
+                                glyph.edit = !glyph.edit;
                             }
                         }
                     }
