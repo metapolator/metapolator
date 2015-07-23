@@ -22,8 +22,6 @@ define([], function() {
           , glyphrange : $scope.glyphrange
           , type : $scope.type
         };
-
-        console.log($scope.model);
     }
 
     SpecimenPanelController.$inject = ['$scope'];
