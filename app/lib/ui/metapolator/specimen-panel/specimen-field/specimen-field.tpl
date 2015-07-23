@@ -8,7 +8,7 @@
             ng-class="'master-' + getMasterName(glyph)"><!--
             --><mtk-glyph mtk-model="glyph"
                           ng-click="glyphClick($event, glyph)"
-                          ng-class="{'selected' : glyph.edit}"
+                          ng-class="{'selected' : glyph.edit, 'selected-master': glyph.parent.edit}"
                           ng-style="{'height': model.sizes.fontSize + 'px'}"></mtk-glyph><!--
 
         --></li>
