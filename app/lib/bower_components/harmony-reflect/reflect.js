@@ -832,13 +832,9 @@ Validator.prototype = {
    * The getOwnPropertyNames trap was replaced by the ownKeys trap,
    * which now also returns an array (of strings or symbols) and
    * which performs the same rigorous invariant checks as getOwnPropertyNames
-   *
-   * See issue #48 on how this trap can still get invoked by external libs
-   * that don't use the patched Object.getOwnPropertyNames function.
    */
   getOwnPropertyNames: function() {
-    console.warn("getOwnPropertyNames trap is deprecated. Use ownKeys instead");
-    return this.ownKeys();
+    throw new TypeError("getOwnPropertyNames trap is deprecated");
   },
 
   /**
@@ -1320,24 +1316,17 @@ Validator.prototype = {
    *   new proxy(...args)
    * Triggers this trap
    */
-  construct: function(target, args, newTarget) {
+  construct: function(target, args) {
     var trap = this.getTrap("construct");
     if (trap === undefined) {
-      return Reflect.construct(target, args, newTarget);
+      return Reflect.construct(target, args);
     }
 
-    if (typeof target !== "function") {
+    if (typeof this.target === "function") {
+      return trap.call(this.handler, target, args);
+    } else {
       throw new TypeError("new: "+ target + " is not a function");
     }
-
-    if (newTarget === undefined) {
-      newTarget = target;
-    } else {
-      if (typeof newTarget !== "function") {
-        throw new TypeError("new: "+ newTarget + " is not a function");
-      }      
-    }
-    return trap.call(this.handler, target, args, newTarget);
   }
 };
 
@@ -1926,27 +1915,16 @@ var Reflect = global.Reflect = {
     // target.apply(receiver, args)
     return Function.prototype.apply.call(target, receiver, args);
   },
-  construct: function(target, args, newTarget) {
+  construct: function(target, args) {
     // return new target(...args);
 
     // if target is a proxy, invoke its "construct" trap
     var handler = directProxies.get(target);
     if (handler !== undefined) {
-      return handler.construct(handler.target, args, newTarget);
-    }
-    
-    if (typeof target !== "function") {
-      throw new TypeError("target is not a function: " + target);
-    }
-    if (newTarget === undefined) {
-      newTarget = target;
-    } else {
-      if (typeof newTarget !== "function") {
-        throw new TypeError("newTarget is not a function: " + target);
-      }      
+      return handler.construct(handler.target, args);
     }
 
-    var proto = newTarget.prototype;
+    var proto = target.prototype;
     var instance = (Object(proto) === proto) ? Object.create(proto) : {};
     var result = Function.prototype.apply.call(target, instance, args);
     return Object(result) === result ? result : instance;

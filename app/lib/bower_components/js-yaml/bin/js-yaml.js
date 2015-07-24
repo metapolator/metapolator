@@ -3,8 +3,6 @@
 
 'use strict';
 
-/*eslint-disable no-console*/
-
 
 // stdlib
 var fs    = require('fs');
@@ -28,7 +26,7 @@ var cli = new argparse.ArgumentParser({
 });
 
 
-cli.addArgument([ '-c', '--compact' ], {
+cli.addArgument(['-c', '--compact'], {
   help:   'Display errors in compact mode',
   action: 'storeTrue'
 });
@@ -36,22 +34,21 @@ cli.addArgument([ '-c', '--compact' ], {
 
 // deprecated (not needed after we removed output colors)
 // option suppressed, but not completely removed for compatibility
-cli.addArgument([ '-j', '--to-json' ], {
+cli.addArgument(['-j', '--to-json'], {
   help:   argparse.Const.SUPPRESS,
   dest:   'json',
   action: 'storeTrue'
 });
 
 
-cli.addArgument([ '-t', '--trace' ], {
+cli.addArgument(['-t', '--trace'], {
   help:   'Show stack trace on error',
   action: 'storeTrue'
 });
 
-cli.addArgument([ 'file' ], {
-  help:   'File to read, utf-8 encoded without BOM',
-  nargs:  '?',
-  defaultValue: '-'
+
+cli.addArgument(['file'], {
+  help:   'File to read, utf-8 encoded without BOM'
 });
 
 
@@ -63,29 +60,12 @@ var options = cli.parseArgs();
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function readFile(filename, encoding, callback) {
-  if (options.file === '-') {
-    // read from stdin
 
-    var chunks = [];
-
-    process.stdin.on('data', function (chunk) {
-      chunks.push(chunk);
-    });
-
-    process.stdin.on('end', function () {
-      return callback(null, Buffer.concat(chunks).toString(encoding));
-    });
-  } else {
-    fs.readFile(filename, encoding, callback);
-  }
-}
-
-readFile(options.file, 'utf8', function (error, input) {
+fs.readFile(options.file, 'utf8', function (error, input) {
   var output, isYaml;
 
   if (error) {
-    if (error.code === 'ENOENT') {
+    if ('ENOENT' === error.code) {
       console.error('File not found: ' + options.file);
       process.exit(2);
     }

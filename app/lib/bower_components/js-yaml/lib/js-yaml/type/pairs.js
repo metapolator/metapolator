@@ -5,10 +5,6 @@ var Type = require('../type');
 var _toString = Object.prototype.toString;
 
 function resolveYamlPairs(data) {
-  if (null === data) {
-    return true;
-  }
-
   var index, length, pair, keys, result,
       object = data;
 
@@ -34,10 +30,6 @@ function resolveYamlPairs(data) {
 }
 
 function constructYamlPairs(data) {
-  if (null === data) {
-    return [];
-  }
-
   var index, length, pair, keys, result,
       object = data;
 

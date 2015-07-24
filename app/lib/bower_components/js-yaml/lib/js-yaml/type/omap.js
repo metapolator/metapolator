@@ -6,10 +6,6 @@ var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
 
 function resolveYamlOmap(data) {
-  if (null === data) {
-    return true;
-  }
-
   var objectKeys = [], index, length, pair, pairKey, pairHasKey,
       object = data;
 
@@ -45,12 +41,7 @@ function resolveYamlOmap(data) {
   return true;
 }
 
-function constructYamlOmap(data) {
-  return null !== data ? data : [];
-}
-
 module.exports = new Type('tag:yaml.org,2002:omap', {
   kind: 'sequence',
-  resolve: resolveYamlOmap,
-  construct: constructYamlOmap
+  resolve: resolveYamlOmap
 });

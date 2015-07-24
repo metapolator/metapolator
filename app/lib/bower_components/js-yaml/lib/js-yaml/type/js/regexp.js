@@ -3,14 +3,6 @@
 var Type = require('../../type');
 
 function resolveJavascriptRegExp(data) {
-  if (null === data) {
-    return false;
-  }
-
-  if (0 === data.length) {
-    return false;
-  }
-
   var regexp = data,
       tail   = /\/([gim]*)$/.exec(data),
       modifiers = '';

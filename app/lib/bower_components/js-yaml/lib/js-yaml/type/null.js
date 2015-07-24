@@ -3,10 +3,6 @@
 var Type = require('../type');
 
 function resolveYamlNull(data) {
-  if (null === data) {
-    return true;
-  }
-
   var max = data.length;
 
   return (max === 1 && data === '~') ||
