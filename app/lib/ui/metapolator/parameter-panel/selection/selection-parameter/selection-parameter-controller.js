@@ -12,6 +12,7 @@ define([
                   , changedLevels = [];
                   
                 for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                    // 1) Write the value in all models of all elements within selection
                     var element = $scope.model.parent.elements[i]
                       , effectiveLevel
                       , effectedElements;
@@ -26,65 +27,71 @@ define([
                     // if there is not yet a operator, we create it
                     var thisParameter = checkIfHasParameter(element, parameter)
                       , thisOperator = checkIfHasOperator(thisParameter, operator)
-                      , localOperatorFactor;
+                      , localOperatorFactor
+                      , effectedElement;
                     thisOperator.setValue(thisValue);
-                    // check if this parameter has localOperators (like multiply and divide)
-                    // the function returns the combined factor of these if it has any.
-                    // if it has only non-local operators (add, subtract, etc) it returns false
-                    localOperatorFactor = thisParameter.getCPSFactor();
-                    if (localOperatorFactor !== false) {
-                        element.writeValueInCPSfile(localOperatorFactor, parameter, project);
-                    }
 
-                    // Elements down in the tree are effected by this, update their effectiveValue
-                    // and handle corresponding CPS effects. This can cause new cps rules. Eg: when
-                    // the width of a master is changed with a non-effectiveLocal operator (like '+'),
-                    // all glyphs in it are affected by it, so they all need their own cps rule.
                     effectiveLevel = parameter.base.effectiveLevel;
-                    // if the effective level is already the level of this element, then no children
-                    // elements can be effected
-                    if (element.level !== effectiveLevel) {
-                        effectedElements = getEffectedElements(effectiveLevel, element);
+                    effectedElements = getEffectedElements(effectiveLevel, element);
+                    // push the levels that need an update at the end
+                    changedLevels.push(effectiveLevel);
+                    if (operator.base.effectiveLocal) {
+                        // 2) If the operator is effective local (multiply and divide) then write the
+                        // value to the cps. We have to check the local operator factor again, because
+                        // there could be more local operators effective
+                        localOperatorFactor = thisParameter.getCPSFactor();
+                        element.writeValueInCPSfile(localOperatorFactor, parameter);
                         for (var j = 0, jl = effectedElements.length; j < jl; j++) {
-                            var effectedElement = effectedElements[j];
-                            updateEffectiveElement(effectedElement, parameter);
-                            // keep score which levels have had changed values
-                            if (changedLevels.indexOf(effectedElement.level) === -1) {
-                                changedLevels.push(effectedElement.level);
-                            }
+                            effectedElement = effectedElements[j];
+                            // The effected elements are children down the tree of the element. Eg: if master
+                            // has a 'x 2' for 'width' (width is effective at glyph level), each glyph has
+                            // a doubled width value.
+                            // The last argument (false), means its only an update of the effective value
+                            // no cps has to be written in this element (because of the nature of this operator)
+                            updateEffectiveElement(effectedElement, parameter, false);
                         }
                     } else {
-                        // this means that the current element is at the effective level
-                        // so we should check its inheritance and its effective value
-                        updateEffectiveElement(element, parameter);
-                        if (changedLevels.indexOf(element.level) === -1) {
-                            changedLevels.push(element.level);
+                        // 3) If the operator is not effective local, but down in the tree (like add, etc)
+                        // it effects the children of this element at the effective level.
+                        for (var k = 0, kl = effectedElements.length; k < kl; k++) {
+                            effectedElement = effectedElements[k];
+                            // the last argument (true), means its an update of the effective value
+                            // AND cps has to be written in this element
+                            updateEffectiveElement(effectedElement, parameter, true);
                         }
                     }
-
                 }
-                if (operator.range) {
-                    // update the range boundaries after setting each element,
-                    // so the new value of a (inbetween range) element
-                    // gets the right myPosition relative to the new boundaries
-                    operator.low.old = operator.low.current;
-                    operator.high.old = operator.high.current;
-                }
-                // update the effectedValue selection for the changed levels
-                for (var k = 0, kl = changedLevels.length; k < kl; k++) {
-                    var changedLevel = changedLevels[k]
-                      , selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
-                    // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
-                    if (selectionParameter) {
-                        selectionParameter.updateEffectiveValue();
-                    }
-                }
+                resetRange(operator);
+                updateLevels(changedLevels, parameter);
             }
         };
 
-        function updateEffectiveElement(element, parameter) {
+        function updateLevels(changedLevels, parameter) {
+            // update the effectedValue selection for the changed levels
+            for (var m = 0, ml = changedLevels.length; m < ml; m++) {
+                console.log(selection.selection[changedLevels[m]]);
+                var changedLevel = changedLevels[m]
+                  , selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
+                // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
+                if (selectionParameter) {
+                    selectionParameter.updateEffectiveValue();
+                }
+            }
+        }
+
+        function resetRange(operator) {
+            if (operator.range) {
+                // update the range boundaries after setting each element,
+                // so the new value of a (inbetween range) element
+                // gets the right myPosition relative to the new boundaries
+                operator.low.old = operator.low.current;
+                operator.high.old = operator.high.current;
+            }
+        }
+
+        function updateEffectiveElement(element, parameter, writeCPS) {
             var elementParameter = element.getParameterByName(parameter.base.name);
-            elementParameter.updateEffectiveValue();
+            elementParameter.updateEffectiveValue(writeCPS);
         }
 
         function checkIfHasParameter(element, changedParameter) {

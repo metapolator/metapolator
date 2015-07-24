@@ -160,7 +160,7 @@ define([
         }
     };
     
-    _p.updateEffectiveValue = function() {
+    _p.updateEffectiveValue = function(writeCPS) {
         var element = this.element
           , parameterName = this.base.name
           , min = null
@@ -244,10 +244,13 @@ define([
             effectiveValue = min;
         }
         this.effectiveValue = effectiveValue;
-        this._setCorrectedCPSfactor();
+        if (writeCPS) {
+            this._setCorrectedCPSfactor();
+        }
     };
 
     _p._setCorrectedCPSfactor = function() {
+        console.log('write cps ' + this.element.name);
         var correctionValue
           , parentsFactor;
         parentsFactor = this.element.findParentsFactor(this.base);
