@@ -1,4 +1,4 @@
-<div class="parameter-selection-head">
+<div class="parameter-selection-head" ng-if="model.level === 'master' || model.level === 'glyph'">
     <div class="parameter-selection-title">{{model.level}}</div>
     <div class="parameter-selection-add-button panel-zone" ng-click="togglePanel($event)">+</div>
 </div>
