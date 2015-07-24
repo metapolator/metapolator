@@ -1,0 +1,1 @@
+I want travis.ci to re-run the tests it once passed. So I checked out that old commit and I am submiting a pull request. I have to include this extra commit otherwise github refuses to actually register a new pull request. At the same time, I want this file to be completely irrelevant in terms of code functionality. There we go... let's see what happens :-)
