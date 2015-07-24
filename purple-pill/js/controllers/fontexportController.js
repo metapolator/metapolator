@@ -184,8 +184,10 @@ function($scope, $http, sharedScope, $timeout) {
               , data, name
               ;
             if (!it.done){
-                if (progress)
+                if (progress){
+                    it['target_data'] = obj.getFileName();
                     progress.setData(index, totalInstances, it.value);
+                }
             } else {
                 exportObjects.pop();
 
