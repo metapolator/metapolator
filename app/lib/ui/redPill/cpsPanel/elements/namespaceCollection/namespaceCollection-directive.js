@@ -24,7 +24,7 @@ define([
           , controller: 'NamespaceCollectionController'
           , replace: false
           , template: ''
-          , scope: { cpsCollection: '=' , index: '=', mtkElementTools: '='}
+          , scope: { cpsCollection: '=item' , index: '=', mtkElementTools: '='}
           , link: link
           /*CAUTION: if
           , bindToController: true >>> then reference $scope.index=controller.index in the controller

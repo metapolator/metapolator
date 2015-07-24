@@ -6,7 +6,7 @@
 
 <mtk-cps-collection
     class="root"
-    cps-collection="collection"
+    item="collection"
 
     mtk-dragover-autoscroll
     mtk-collection-drop

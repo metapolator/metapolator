@@ -4,7 +4,7 @@
     ><mtk-cps-rule
         ng-switch-when="Rule"
 
-        cps-rule="item"
+        item="item"
         index="$index"
 
         mtk-element-tools="elementTools"
@@ -15,7 +15,7 @@
     <mtk-cps-namespace-collection mtk-cps-collection
         ng-switch-when="AtNamespaceCollection"
 
-        cps-collection="item"
+        item="item"
         index="$index"
 
         mtk-element-tools="elementTools"
@@ -29,7 +29,7 @@
     <mtk-cps-comment
         ng-switch-when="Comment"
 
-        comment="item"
+        item="item"
         index="$index"
 
         mtk-element-tools="elementTools"

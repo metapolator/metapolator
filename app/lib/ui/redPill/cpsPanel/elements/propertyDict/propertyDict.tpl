@@ -17,7 +17,7 @@
         <mtk-cps-comment
             ng-switch-when="Comment"
 
-            comment="item[1]"
+            item="item[1]"
             index="$index"
 
             mtk-element-tools="elementTools"

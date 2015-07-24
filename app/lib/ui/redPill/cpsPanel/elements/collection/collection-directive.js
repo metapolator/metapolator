@@ -22,7 +22,7 @@ define([
           // because of recursion problems of angularjs, the template is
           // applied in the link function
           , template: ''
-          , scope: { cpsCollection: '=' }
+          , scope: { cpsCollection: '=item' }
           , link:link
         };
     }

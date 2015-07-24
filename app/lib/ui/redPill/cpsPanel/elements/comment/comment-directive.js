@@ -66,7 +66,7 @@ define([
           , controller: 'CommentController'
           , replace: false
           , template: template
-          , scope: {comment: '=', index: '=', mtkElementTools: '='}
+          , scope: {comment: '=item', index: '=', mtkElementTools: '='}
           , controllerAs: 'ctrl'
           , bindToController: true
           , link: link
