@@ -600,7 +600,7 @@ define([
                 total += one;
                 console.warn('exported', glyph.id, 'this took', one,'ms');
                 context$2$0.next = 37;
-                return {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id, 'target_name':this._targetName};
+                return {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id};
             case 37:
                 i++;
                 context$2$0.next = 4;

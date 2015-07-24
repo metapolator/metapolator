@@ -132,7 +132,7 @@ define([
             one = timer.now() - time;
             total += one;
             console.warn('exported', glyph.id, 'this took', one,'ms');
-            yield {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id, 'target_name':this._targetName};
+            yield {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id};
         }
         font = new opentype.Font({
             familyName: master.fontinfo.familyName
