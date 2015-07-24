@@ -54,7 +54,6 @@ define([
                 angular.element(display).on('click', helpers.handlerDecorator(
                           scope, ctrl.startEdit.bind(ctrl), true, true));
 
-                console.log(display, text, isMarkdown(text))
                 if(isMarkdown(text))
                     display.innerHTML = marked(text.slice('#md'.length));
                 else
