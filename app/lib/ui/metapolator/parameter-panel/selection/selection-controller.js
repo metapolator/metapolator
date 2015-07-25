@@ -1,9 +1,12 @@
 define([
     'jquery'
   , 'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/ui/metapolator/services/selection'
+
 ], function(
     $
   , cpsAPITools
+  , selection
 ) {
     "use strict";
     function SelectionController($scope, project) {
@@ -11,6 +14,7 @@ define([
         // Handling the parameter add panel 
         $scope.panelParameter = null;
         $scope.panelOperator = null;
+        $scope.selection = selection;
 
     
         $scope.addParameterToPanel = function(parameter) {
@@ -40,71 +44,26 @@ define([
                 // add a rule for this element with this parameter
             }
             operatorId++;
-            $scope.model.parameterOperatorPanel = false;
+            selection.closePanel();
             $scope.model.updateParameters();
         }
 
         $scope.togglePanel = function(event) {
             $scope.panelOperator = null;
             $scope.panelParameter = null;
-
-            if ($scope.model.parameterOperatorPanel) {
-                $scope.model.parameterOperatorPanel = false;
+            console.log(selection.panel.level);
+            console.log($scope.model.level);
+            console.log(selection.panel.type);
+            console.log('parameterOperator');
+            if (selection.panel.level === $scope.model.level && selection.panel.type === 'parameterOperator') {
+                console.log("toggle");
+                selection.closePanel();
             } else {
-                $scope.parameterPanelTop = $(event.target).offset().top + 20;
-                $scope.parameterPanelLeft = $(event.target).offset().left + 20;
-                $scope.model.parameterOperatorPanel = true;
+                selection.panel.top = $(event.target).offset().top + 20;
+                selection.panel.left = $(event.target).offset().left + 20;
+                selection.panel.level = $scope.model.level;
+                selection.panel.type = 'parameterOperator';
             }
-        };
-        
-        $scope.openParameterPanel = function(parameter, event, level) {
-            $scope.closeParameterPanel();
-            var target = event.currentTarget
-              , targetLeft
-              , targetTop;
-            $(target).addClass("selected-parameter");
-            targetLeft = event.clientX;
-            targetTop = event.clientY;
-            $scope.data.view.parameterPanel.display = true;
-            $scope.data.view.parameterPanel.left = targetLeft;
-            $scope.data.view.parameterPanel.top = targetTop;
-            $scope.data.view.parameterPanel.level = level;
-            $scope.data.view.parameterPanel.selected = parameter.name;
-        };
-        
-        $scope.closeParameterPanel = function() {
-            $scope.data.view.parameterPanel.display = false;
-            $scope.data.view.parameterPanel.selected = null;
-            $scope.data.view.parameterPanel.level = null;
-            $("parameters .parameter-key").each(function() {
-                $(this).removeClass("selected-parameter");
-            });
-        };
-    
-        $scope.openOperatorPanel = function(parameter, operator, event, level) {
-            $scope.closeOperatorPanel();
-            var target = event.currentTarget
-              , targetLeft
-              , targetTop;
-            $(target).addClass("selected-parameter");
-            targetLeft = event.clientX;
-            targetTop = event.clientY;
-            $scope.data.view.operatorPanel.display = true;
-            $scope.data.view.operatorPanel.left = targetLeft;
-            $scope.data.view.operatorPanel.top = targetTop;
-            $scope.data.view.operatorPanel.level = level;
-            $scope.data.view.operatorPanel.selectedParameter = parameter.name;
-            $scope.data.view.operatorPanel.selected = operator.name;
-        };
-        
-        $scope.closeOperatorPanel = function() {
-            $scope.data.view.operatorPanel.display = false;
-            $scope.data.view.operatorPanel.selectedParameter = null;
-            $scope.data.view.operatorPanel.selected = null;
-            $scope.data.view.operatorPanel.level = null;
-            $("parameters .parameter-operator").each(function() {
-                $(this).removeClass("selected-parameter");
-            });
         };
     }
 

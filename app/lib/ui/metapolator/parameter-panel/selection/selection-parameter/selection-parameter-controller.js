@@ -5,11 +5,12 @@ define([
 ) {
     "use strict";
     function SelectionParameterController($scope, metapolatorModel, project) {
+        $scope.selection = selection;
+
         $scope.changeValue = function(parameter, operator, value, keyEvent) {
             if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
                 var thisValue = null
-                  , operatorId = operator.id
-                  , changedLevels = [];
+                  , operatorId = operator.id;
                   
                 for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                     // 1) Write the value in all models of all elements within selection
@@ -34,7 +35,6 @@ define([
                     effectiveLevel = parameter.base.effectiveLevel;
                     effectedElements = getEffectedElements(effectiveLevel, element);
                     // push the levels that need an update at the end
-                    changedLevels.push(effectiveLevel);
                     if (operator.base.effectiveLocal) {
                         // 2) If the operator is effective local (multiply and divide) then write the
                         // value to the cps. We have to check the local operator factor again, because
@@ -60,22 +60,18 @@ define([
                             updateEffectiveElement(effectedElement, parameter, true);
                         }
                     }
+                    updateLevel(effectiveLevel, parameter);
                 }
                 resetRange(operator);
-                updateLevels(changedLevels, parameter);
             }
         };
 
-        function updateLevels(changedLevels, parameter) {
-            // update the effectedValue selection for the changed levels
-            for (var m = 0, ml = changedLevels.length; m < ml; m++) {
-                console.log(selection.selection[changedLevels[m]]);
-                var changedLevel = changedLevels[m]
-                  , selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
-                // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
-                if (selectionParameter) {
-                    selectionParameter.updateEffectiveValue();
-                }
+        function updateLevel(changedLevel, parameter) {
+            // update the effectedValue selection for the changed level
+            var selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
+            // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
+            if (selectionParameter) {
+                selectionParameter.updateEffectiveValue();
             }
         }
 
@@ -204,7 +200,39 @@ define([
         function round(value, decimals) {
             return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
         }
-        
+
+
+        $scope.toggleParameterPanel = function(parameter, event) {
+            if(selection.panel.level === $scope.model.parent.level && selection.panel.type === 'parameter') {
+                selection.closePanel();
+            } else {
+                openParameterPanel(parameter, event);
+            }
+        };
+
+        $scope.toggleOperatorPanel = function(parameter, operator, event) {
+            if(selection.panel.level === $scope.model.parent.level && selection.panel.type === 'operator') {
+                selection.closePanel();
+            } else {
+                openOperatorPanel(parameter, operator, event);
+            }
+        };
+
+        function openParameterPanel(parameter, event) {
+            selection.panel.level = $scope.model.parent.level;
+            selection.panel.type = 'parameter';           
+            selection.panel.left = $(event.target).offset().left + 20;
+            selection.panel.top = $(event.target).offset().top + 20;
+            selection.panel.parameter = parameter.base.name;
+        }
+
+        function openOperatorPanel(parameter, operator, event) {
+            selection.panel.level = $scope.model.parent.level;
+            selection.panel.type = 'operator';
+            selection.panel.left = $(event.target).offset().left + 20;
+            selection.panel.top = $(event.target).offset().top + 20;
+            selection.panel.operator = operator.base.name;
+        }
         
         $scope.changeParameter = function(parameter) {
             /*
@@ -297,9 +325,7 @@ define([
              $scope.data.closeOperatorPanel();
              */
         };
-    
 
-    
         $scope.showOperator = function(thisOperator) {
             /*
             var display = true, hasThisOperator = false;
@@ -320,7 +346,7 @@ define([
             return display;
             */
         };
-        
+
     }
 
     SelectionParameterController.$inject = ['$scope', 'metapolatorModel', 'project'];

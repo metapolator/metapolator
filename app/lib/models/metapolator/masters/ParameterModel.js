@@ -250,7 +250,6 @@ define([
     };
 
     _p._setCorrectedCPSfactor = function() {
-        console.log('write cps ' + this.element.name);
         var correctionValue
           , parentsFactor;
         parentsFactor = this.element.findParentsFactor(this.base);

@@ -27,14 +27,8 @@ define([
             if (!($(event.target).parents('.lm-head').length || $(event.target).hasClass("lm-head"))) {
                 $scope.model.localMenu = null;
             }
-            if (!($(event.target).parents('.panel-zone').length)) {
-                collapsPanels();
-            }
-
-            function collapsPanels() {
-                for(var propertyName in selection.selection) {
-                    selection.selection[propertyName].parameterOperatorPanel = false;
-                }
+            if (!($(event.target).parents('.panel-zone').length) && !$(event.target).hasClass("panel-zone")) {
+                selection.closePanel();
             }
         };
         

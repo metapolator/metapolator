@@ -1,7 +1,11 @@
 <div class="operator-row" ng-repeat="operator in model.operators track by $index">
     <div ng-if="operator.name !== 'effectiveValue'">
-        <div ng-click="openParameterPanel(parameter, $event, level)" class="parameter-key"><span ng-if="$index == 0">{{model.base.name}}</span></div>
-        <div class="parameter-operator" ng-click="openOperatorPanel(parameter, operator, $event, level)">{{operator.base.name}}</div>
+        <div ng-click="toggleParameterPanel(model, $event)"
+             class="parameter-key panel-zone"
+             ng-class="{'selected-parameter': selection.panel === model.parent.level + '-parameter' && model.base.name === panel.selectedParameter.base.name}">
+                <span ng-if="$index == 0">{{model.base.name}}</span>
+        </div>
+        <div class="parameter-operator panel-zone" ng-class="{'selected-parameter': selection.panel === model.parent.level + '-operator'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.name}}</div>
         <div class="operator-value">
             <span ng-if="!operator.range">
                 <input ng-model="operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> 
@@ -22,3 +26,26 @@
     </div>
 </div>
 
+<div class="single-panel control-panel"
+     ng-if="selection.panel.level === model.parent.level && selection.panel.type === 'parameter' && model.base.name === selection.panel.parameter"
+     ng-style="{'left': selection.panel.left + 'px', 'top': selection.panel.top + 'px'}">
+    <div ng-repeat="parameter in selection.baseParameters"
+         ng-class="{'selected': parameter.name === selection.panel.parameter}"
+         class="control-panel-parameter control-panel-button push-button"
+         ng-click="changeParameter(parameter)">{{parameter.name}}</div>
+    <div class="control-panel-cancel control-panel-button push-button" ng-click="removeParameter()">
+        Remove
+    </div>
+</div>
+
+<div class="single-panel control-panel"
+     ng-if="selection.panel.level === model.parent.level && selection.panel.type === 'operator'"
+     ng-style="{'left': selection.panel.left + 'px', 'top': selection.panel.top + 'px'}">
+    <div ng-repeat="operator in selection.baseOperators"
+         ng-class="{'selected': operator.name === selection.panel.operator}"
+         class="control-panel-parameter control-panel-button push-button"
+         ng-click="changeOperator(operator)">{{operator.name}}</div>
+    <div class="control-panel-cancel control-panel-button push-button" ng-click="removeOperator()">
+        Remove
+    </div>
+</div>

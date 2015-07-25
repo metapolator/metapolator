@@ -6,7 +6,9 @@
     <mtk-selection-parameter ng-repeat="parameter in model.parameters" mtk-model="parameter"></mtk-selection-parameter>
 </div>
 
-<div class="parameters-control-panel panel-zone" ng-if="model.parameterOperatorPanel" ng-style="{'top': parameterPanelTop, 'left': parameterPanelLeft}">
+<div class="parameters-control-panel panel-zone" 
+     ng-if="selection.panel.level === model.level && selection.panel.type === 'parameterOperator'" 
+     ng-style="{'top': selection.panel.top, 'left': selection.panel.left}">
     <div class="control-panel-parameters">
         <div ng-repeat="parameter in model.baseParameters" ng-class="{'selected': parameter.name == panelParameter.name}" class="control-panel-parameter control-panel-button push-button" ng-click="addParameterToPanel(parameter)">{{parameter.name}}</div>
     </div>

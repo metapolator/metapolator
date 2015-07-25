@@ -24,6 +24,7 @@
     text-align: right;
     padding: 7px 4px 0 0;
     float: left;
+    cursor: default;
 }
 
 .parameter-operator {
@@ -32,6 +33,7 @@
     text-align: center;
     padding: 7px 4px 0 4px;
     float: left;
+    cursor: default;
 }
 
 .effective-icon {
@@ -70,4 +72,16 @@
     width: 40%;
     text-align: right;
     display: inline-block;
+}
+
+.control-panel-button {
+    background: @mtk-color-2;
+    color: @mtk-color-1;
+    padding: 8px 8px 5px 8px;
+    margin-bottom: 2px;
+    cursor: default;
+}
+
+.control-panel-button.selected, .control-panel-button.push-button-down {
+    background: @mtk-color-red;
 }
