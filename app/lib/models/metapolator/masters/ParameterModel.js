@@ -25,37 +25,22 @@ define([
     
         
     var _p = ParameterModel.prototype = Object.create(Parent.prototype);
-
-    _p.clone = function(master) {
-        var clone = {};
-        clone = new this.constructor();
-        this._cloneProperties(clone);
-        if(this.operators) {
-            this._cloneOperators(clone);
-        }
-        clone.master = master;
-        return clone;
-    };
-
-    _p._cloneProperties = function(clone) {
-        for (var propertyName in this) {
-            if (propertyName !== 'operators' && propertyName !== 'master' && propertyName !== '$$hashKey') {
-                clone[propertyName] = this[propertyName];
-            }
-        }
-    };
-
-    _p._cloneOperators = function(clone) {
-        clone.operators = [];
-        for (var i = 0, l = this.operators.length; i < l; i++) {
-            clone.operators.push(this.operators[i].clone());
-        }
-    };
     
     _p.setInitial = function(MOMelement) {
         var measuredValue = this.getInitial(MOMelement);
         this.initial = measuredValue;
         this.effectiveValue = measuredValue;
+    };
+    
+    // operator functions   
+    _p.checkIfHasOperator = function(changedOperator) {
+        var id = changedOperator.id
+          , operator = this.findOperator(changedOperator.base, changedOperator.id);
+        if (operator) {
+            return operator;
+        } else {
+            return this.addOperator(changedOperator.base, id);
+        }
     };
     
     _p.addOperator = function(baseOperator, id, level) {
@@ -88,6 +73,7 @@ define([
             return false;
         }
         */
+       return operator;
     };
     
     _p.removeOperator = function(operator) {
@@ -97,27 +83,6 @@ define([
             index = this.operators.indexOf(parameterOperator);
             this.operators.splice(index, 1);  
         }     
-    };
-
-    _p.getCPSFactor = function() {
-        var factor = 1;
-        var hasLocalOperator = false;
-        for (var i = this.operators.length - 1; i >= 0; i--) {
-            var operator = this.operators[i];
-            if (operator.base.effectiveLocal) {
-                hasLocalOperator = true;
-                if (operator.base.name === 'x') {
-                    factor *= operator.value;
-                } else if (operator.base.name === '÷') {
-                    factor /= operator.value;
-                }
-            }
-        }
-        if (hasLocalOperator) {
-            return factor;
-        } else {
-            return false;
-        }
     };
     
     _p.findOperator = function(operator, id) {
@@ -169,6 +134,28 @@ define([
         }
     };
     
+    // cps functions      
+    _p.getCPSFactor = function() {
+        var factor = 1;
+        var hasLocalOperator = false;
+        for (var i = this.operators.length - 1; i >= 0; i--) {
+            var operator = this.operators[i];
+            if (operator.base.effectiveLocal) {
+                hasLocalOperator = true;
+                if (operator.base.name === 'x') {
+                    factor *= operator.value;
+                } else if (operator.base.name === '÷') {
+                    factor /= operator.value;
+                }
+            }
+        }
+        if (hasLocalOperator) {
+            return factor;
+        } else {
+            return false;
+        }
+    };
+      
     _p.updateEffectiveValue = function(writeCPS) {
         var element = this.element
           , parameterName = this.base.name
@@ -265,7 +252,33 @@ define([
         correctionValue = this.effectiveValue / parentsFactor / this.initial;
         this.element.writeValueInCPSfile(correctionValue, this);
     };
-        
     
+    // cloning
+    _p.clone = function(master) {
+        var clone = {};
+        clone = new this.constructor();
+        this._cloneProperties(clone);
+        if (this.operators) {
+            this._cloneOperators(clone);
+        }
+        clone.master = master;
+        return clone;
+    };
+
+    _p._cloneProperties = function(clone) {
+        for (var propertyName in this) {
+            if (propertyName !== 'operators' && propertyName !== 'master' && propertyName !== '$$hashKey') {
+                clone[propertyName] = this[propertyName];
+            }
+        }
+    };
+
+    _p._cloneOperators = function(clone) {
+        clone.operators = [];
+        for (var i = 0, l = this.operators.length; i < l; i++) {
+            clone.operators.push(this.operators[i].clone());
+        }
+    };
+       
     return ParameterModel;
 });

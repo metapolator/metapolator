@@ -15,6 +15,17 @@ function(
     }
 
     var _p = _ElementModel.prototype;
+    
+    _p.setInitialParameters = function() {
+        // on the creation of an element, we check if there are effective parameters
+        // at the level of the element
+        for (var i = selection.baseParameters.length - 1; i >= 0; i--) {
+            var baseParameter = selection.baseParameters[i];
+            if (baseParameter.effectiveLevel === this.level) {
+                this._addParameter(baseParameter);    
+            }
+        }
+    };
 
     _p.writeValueInCPSfile = function(factor, parameter) {
         // todo if factor === 1 && no value set for this parameter yet: don't write (this means it is the initial meausring when loading the project
@@ -42,17 +53,6 @@ function(
             child.edit = false;
         }
     };
-    
-    _p.setInitialParameters = function() {
-        // on the creation of an element, we check if there are effective parameters
-        // at the level of the element
-        for (var i = selection.baseParameters.length - 1; i >= 0; i--) {
-            var baseParameter = selection.baseParameters[i];
-            if (baseParameter.effectiveLevel === this.level) {
-                this.addParameter(baseParameter);    
-            }
-        }
-    };
 
     _p.getParameterByName = function(parameterName) {
         for (var i = this.parameters.length - 1; i >= 0; i--) {
@@ -64,10 +64,31 @@ function(
         return null;
     };
     
-    _p.addParameter = function(baseParameter) {
-        this.parameters.push(
-            new ParameterModel(baseParameter, this)
-        );
+    _p.checkIfHasParameter = function(changedParameter) {
+        // with editing in ranges, we can want to set a value of a
+        // not yet existing parameter and/or operator
+        // if it doens't exist yet, we create it.
+        var parameter = this.getParameterByName(changedParameter.base.name);
+        if (parameter) {
+            return parameter;
+        } else {
+            element.addParameter(changedParameter.base);
+            return this.parameters[element.parameters.length - 1];
+        }
+    };
+    
+    _p.addParameterOperator = function(baseParameter, baseOperator, id) {
+        var parameter = this.getParameterByName(baseParameter.name);
+        if (!parameter) {
+            parameter = this._addParameter(baseParameter);
+        }
+        parameter.addOperator(baseOperator, id, this.level);
+    };
+    
+    _p._addParameter = function(baseParameter) {
+        var parameter = new ParameterModel(baseParameter, this);
+        this.parameters.push(parameter);
+        return parameter;
     };
     
     _p.removeParameter = function(baseParameter) {
@@ -79,46 +100,52 @@ function(
         }
     };
     
-    _p.addParameterOperator = function(baseParameter, baseOperator, id) {
-        var parameter = this.findParameter(baseParameter);
-        if (parameter) {
-            parameter.addOperator(baseOperator, id, this.level);
-        } else {
-            this.addParameter(baseParameter);
-            this.parameters[this.parameters.length - 1].addOperator(baseOperator, id, this.level);
+    // cps functions
+    _p.findParentsFactor = function(baseParameter) {
+        // this function finds all the factors for this parameter in its parent or grandparents (etc)
+        // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
+        // by (effectiveValue / initial), we need to divide it also by the parents factor
+        var levelElement = this
+          , parentsFactor = 1;
+        while(levelElement.level !== 'sequence') {
+            var levelParameter = levelElement.findParameter(baseParameter)
+              , levelFactor;
+             if (levelParameter) {
+                 levelFactor = levelParameter.getCPSFactor();
+                 if (levelFactor !== false) {
+                     parentsFactor *= levelFactor;
+                 }
+             }
+            levelElement = levelElement.parent;
         }
+        return parentsFactor;
     };
     
-    _p.findParameter = function(parameter) {
-        for (var i = this.parameters.length - 1; i >= 0; i--) {
-            var thisParameter = this.parameters[i];
-            if (thisParameter.base.name === parameter.name) {
-                return thisParameter;
-            }
-        }
-        return null;
-    };
-    
-    _p.findLevelOffspring = function(level) {
-        // this function starts to walk down the tree until it reaches the argument level
-        // and returns all element of that specific level. Eg: If you ask for point level
-        // of glyph 'A', it returns all points of 'A'.
-        var levelOffspring = [this]
+    _p.getEffectedElements = function(effectiveLevel) {
+        // go down to the level where the change of this value has effect
+        // and get the elements.
+        var thisLevelElements = [this]
           , tempArray = [];
-        while(levelOffspring[0].level != level) {
-            for (var i = levelOffspring.length - 1; i >= 0; i--) {
-                var element = levelOffspring[i];
-                for (var j = element.children.length - 1; j >= 0; j--) {
-                    var child = element.children[j];
-                    tempArray.push(child);
+
+        while (thisLevelElements[0].level !== effectiveLevel) {
+            for (var i = 0, il = thisLevelElements.length; i < il; i++) {
+                var thisLevelElement = thisLevelElements[i];
+                for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
+                    var childElement = thisLevelElement.children[j];
+                    // skip the unmeasured glyphs
+                    if (childElement.level !== 'glyph' || childElement.measured) {
+                        tempArray.push(childElement);
+                    }
                 }
-            }          
-            levelOffspring = tempArray;
+            }
+            thisLevelElements = tempArray;
             tempArray = [];
-        }
-        return levelOffspring;
+        }  
+        return thisLevelElements; 
     };
 
+    
+    // cloning
     _p.clone = function() {
         var clone = {};
         clone = new this.constructor();
@@ -130,17 +157,6 @@ function(
             this._cloneParameters(clone);
         }
         return clone;
-    };
-
-    // after cloning, we need to reset the master property
-    _p.setMaster = function(master) {
-        this.master = master;
-        if(this.children) {
-            for (var i = 0, l = this.children.length; i < l; i++) {
-                var child = this.children[i];
-                child.setMaster(master);
-            }
-        }
     };
 
     _p._cloneProperties = function(clone) {
@@ -169,26 +185,6 @@ function(
     _p.add = function(item) {
         this.children.push(item);
         item.parent = this;
-    };
-
-    _p.findParentsFactor = function(baseParameter) {
-        // this function finds all the factors for this parameter in its parent or grandparents (etc)
-        // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
-        // by (effectiveValue / initial), we need to divide it also by the parents factor
-        var levelElement = this
-          , parentsFactor = 1;
-        while(levelElement.level !== 'sequence') {
-            var levelParameter = levelElement.findParameter(baseParameter)
-              , levelFactor;
-             if (levelParameter) {
-                 levelFactor = levelParameter.getCPSFactor();
-                 if (levelFactor !== false) {
-                     parentsFactor *= levelFactor;
-                 }
-             }
-            levelElement = levelElement.parent;
-        }
-        return parentsFactor;
     };
 
     return _ElementModel;

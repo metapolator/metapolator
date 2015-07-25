@@ -55,7 +55,7 @@ define([
                 if (baseParameter.effectiveLevel === 'glyph') {
                     effectedElements = [this];
                 } else {
-                    effectedElements = this.findLevelOffspring(baseParameter.effectiveLevel);
+                    effectedElements = this.getEffectedElements(baseParameter.effectiveLevel);
                 }
                 for (var j = 0, jl = effectedElements.length; j < jl; j++) {
                     var effectedElement = effectedElements[j]

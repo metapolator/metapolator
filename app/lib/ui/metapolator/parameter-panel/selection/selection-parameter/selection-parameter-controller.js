@@ -26,14 +26,14 @@ define([
                     // set the value of each element in the selection
                     // if there is not yet a parameter, we create it + cpsRule
                     // if there is not yet a operator, we create it
-                    var thisParameter = checkIfHasParameter(element, parameter)
-                      , thisOperator = checkIfHasOperator(thisParameter, operator)
+                    var thisParameter = element.checkIfHasParameter(parameter)
+                      , thisOperator = thisParameter.checkIfHasOperator(operator)
                       , localOperatorFactor
                       , effectedElement;
                     thisOperator.setValue(thisValue);
 
                     effectiveLevel = parameter.base.effectiveLevel;
-                    effectedElements = getEffectedElements(effectiveLevel, element);
+                    effectedElements = element.getEffectedElements(effectiveLevel);
                     // push the levels that need an update at the end
                     if (operator.base.effectiveLocal) {
                         // 2) If the operator is effective local (multiply and divide) then write the
@@ -88,55 +88,6 @@ define([
         function updateEffectiveElement(element, parameter, writeCPS) {
             var elementParameter = element.getParameterByName(parameter.base.name);
             elementParameter.updateEffectiveValue(writeCPS);
-        }
-
-        function checkIfHasParameter(element, changedParameter) {
-            // with editing in ranges, we can want to set a value of a
-            // not yet existing parameter and/or operator
-            // if it doens't exist yet, we create it.
-            var parameter = element.getParameterByName(changedParameter.base.name);
-            if (parameter) {
-                return parameter;
-            } else {
-                element.addParameter(changedParameter.base);
-                return element.parameters[element.parameters.length - 1];
-            }
-        }
-
-        function checkIfHasOperator(elementParameter, changedOperator) {
-            var id = changedOperator.id
-              , operator = elementParameter.findOperator(changedOperator.base, changedOperator.id);
-            if (operator) {
-                return operator;
-            } else {
-                // it has the parameter, but it hasn't the operator yet
-                elementParameter.addOperator(changedOperator.base, id);
-                return elementParameter.operators[elementParameter.operators.length - 1];
-            }
-        }
-        
-        function getEffectedElements (effectiveLevel, changedElement) {
-            // go down to the level where the change of this value has effect
-            // and get the elements.
-
-            var thisLevelElements = [changedElement]
-              , tempArray = [];
-
-            while (thisLevelElements[0].level !== effectiveLevel) {
-                for (var i = 0, il = thisLevelElements.length; i < il; i++) {
-                    var thisLevelElement = thisLevelElements[i];
-                    for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
-                        var childElement = thisLevelElement.children[j];
-                        // skip the unmeasured glyphs
-                        if (childElement.level !== 'glyph' || childElement.measured) {
-                            tempArray.push(childElement);
-                        }
-                    }
-                }
-                thisLevelElements = tempArray;
-                tempArray = [];
-            }  
-            return thisLevelElements; 
         }
         
         function getRangeValue (element, parameter, operator) {
