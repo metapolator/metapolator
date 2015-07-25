@@ -89,6 +89,15 @@ define([
         }
         */
     };
+    
+    _p.removeOperator = function(operator) {
+        var parameterOperator = this.findOperator(operator.base, operator.id)
+          , index;
+        if (parameterOperator){
+            index = this.operators.indexOf(parameterOperator);
+            this.operators.splice(index, 1);  
+        }     
+    };
 
     _p.getCPSFactor = function() {
         var factor = 1;

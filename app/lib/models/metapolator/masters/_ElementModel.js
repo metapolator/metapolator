@@ -25,7 +25,7 @@ function(
           , parameterDict = cpsRule.parameters
           , setParameter = cpsAPITools.setParameter;
         setParameter(parameterDict, parameter.base.cpsKey, factor);
-        //console.log(parameterCollection.toString());
+        console.log(parameterCollection.toString());
     };
 
     _p._checkIfHasRule = function() {
@@ -68,6 +68,15 @@ function(
         this.parameters.push(
             new ParameterModel(baseParameter, this)
         );
+    };
+    
+    _p.removeParameter = function(baseParameter) {
+        var elementParameter = this.getParameterByName(baseParameter.name)
+          , index;
+        if (elementParameter) {
+            index = this.parameters.indexOf(elementParameter);
+            this.parameters.splice(index, 1);
+        }
     };
     
     _p.addParameterOperator = function(baseParameter, baseOperator, id) {

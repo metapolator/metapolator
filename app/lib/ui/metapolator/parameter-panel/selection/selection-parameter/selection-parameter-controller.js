@@ -231,6 +231,7 @@ define([
             selection.panel.type = 'operator';
             selection.panel.left = $(event.target).offset().left + 20;
             selection.panel.top = $(event.target).offset().top + 20;
+            selection.panel.parameter = $scope.model;
             selection.panel.operator = operator;
         }
         
@@ -239,79 +240,24 @@ define([
         };
     
         $scope.removeParameter = function() {
-            /*
-             var oldParameterName = $scope.data.view.parameterPanel.selected;
-             var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
-             angular.forEach(elements, function(element) {
-             var parameters = element.parameters;
-             angular.forEach(parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             parameters.splice(parameters.indexOf(thisParameter), 1);
-             }
-             if (parameters.length == 0) {
-             // todo: remove rule in api and in model
-             }
-             });
-             });
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeParameterPanel();
-             */
-        };
-    
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i];
+                element.removeParameter(selection.panel.parameter.base);          
+            } 
+            $scope.model.parent.updateParameters();
+        };   
 
         $scope.changeOperator = function(baseOperator) {
             $scope.model.parent.changeOperator($scope.model, selection.panel.operator, baseOperator);
         };
     
         $scope.removeOperator = function() {
-            /*
-             var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
-             var oldOperatorName = $scope.data.view.operatorPanel.selected;
-             var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
-             angular.forEach(elements, function(element) {
-             var parameters = element.parameters;
-             angular.forEach(parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             angular.forEach(thisParameter.operators, function(thisOperator) {
-             var thisOperators = thisParameter.operators;
-             if (thisOperator.name == oldOperatorName) {
-             // todo: change by API
-             thisOperators.splice(thisOperators.indexOf(thisOperator), 1);
-             }
-             if (thisOperators.length == 0) {
-             parameters.splice(parameters.indexOf(thisParameter), 1);
-             // todo: remove rule in api and in model
-             }
-             });
-             }
-             });
-             $scope.checkEffectiveValueEffects(element, element.level, oldParameterName, XXXOPERATOR);
-             // todo check if we need the operator here
-             });
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeOperatorPanel();
-             */
-        };
-
-        $scope.showOperator = function(thisOperator) {
-            /*
-            var display = true, hasThisOperator = false;
-            var level = $scope.data.view.operatorPanel.level;
-            var parameterName = $scope.data.view.operatorPanel.selectedParameter;
-            angular.forEach($scope.parameterSelection[level], function(parameter) {
-                if (parameter.name == parameterName) {
-                    angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == thisOperator.name) {
-                            hasThisOperator = true;
-                        }
-                    });
-                }
-            });
-            if (thisOperator.name != $scope.data.view.operatorPanel.selected && thisOperator.type == "unique" && hasThisOperator) {
-                display = false;
-            }
-            return display;
-            */
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i]
+                  , elementParameter = element.getParameterByName(selection.panel.parameter.base.name);
+                elementParameter.removeOperator(selection.panel.operator);          
+            } 
+            $scope.model.parent.updateParameters();
         };
 
     }

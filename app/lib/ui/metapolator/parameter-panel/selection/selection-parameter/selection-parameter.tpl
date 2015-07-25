@@ -33,7 +33,7 @@
          ng-class="{'selected': parameter.name === selection.panel.parameter.base.name}"
          class="control-panel-parameter control-panel-button push-button"
          ng-mousedown="changeParameter(parameter)">{{parameter.name}}</div>
-    <div class="control-panel-cancel control-panel-button push-button" ng-click="removeParameter()">
+    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeParameter()">
         Remove
     </div>
 </div>
@@ -45,7 +45,7 @@
          ng-class="{'selected': operator.name === selection.panel.operator.base.name}"
          class="control-panel-parameter control-panel-button push-button"
          ng-mousedown="changeOperator(operator)">{{operator.name}}</div>
-    <div class="control-panel-cancel control-panel-button push-button" ng-click="removeOperator()">
+    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeOperator()">
         Remove
     </div>
 </div>
