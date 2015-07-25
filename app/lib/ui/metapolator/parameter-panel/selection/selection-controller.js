@@ -51,12 +51,7 @@ define([
         $scope.togglePanel = function(event) {
             $scope.panelOperator = null;
             $scope.panelParameter = null;
-            console.log(selection.panel.level);
-            console.log($scope.model.level);
-            console.log(selection.panel.type);
-            console.log('parameterOperator');
             if (selection.panel.level === $scope.model.level && selection.panel.type === 'parameterOperator') {
-                console.log("toggle");
                 selection.closePanel();
             } else {
                 selection.panel.top = $(event.target).offset().top + 20;
