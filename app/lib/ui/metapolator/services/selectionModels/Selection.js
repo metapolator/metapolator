@@ -20,7 +20,6 @@ define([
             var element = this.elements[i]
               , elementParameter
               , elementOperator;
-            // get the parameter
             elementParameter = element.getParameterByName(parameter.base.name);
             // if paramet doenst exist create it.
             // get the operator
@@ -31,9 +30,20 @@ define([
             // set the standardvalue
             elementOperator.setValue(newBaseOperator.standardValue);
             // if old operator was local: update cps
-            // if old operator was non-local: update cps of effected elements
-            
-            
+            // if old operator was non-local: update cps of effected elements    
+        }  
+        this.updateParameters();  
+    };
+    
+    _p.changeParameter = function(currentParameter, newBaseParameter) {       
+        for (var i = this.elements.length - 1; i >= 0; i--) {
+            var element = this.elements[i]
+              , elementParameter
+              , elementOperator;
+              
+            elementParameter = element.getParameterByName(currentParameter.base.name);
+            elementParameter.base = newBaseParameter;
+            // update cps stuff            
         }  
         this.updateParameters();  
     };

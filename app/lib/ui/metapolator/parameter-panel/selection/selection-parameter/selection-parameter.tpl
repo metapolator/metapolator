@@ -30,7 +30,7 @@
      ng-if="selection.panel.level === model.parent.level && selection.panel.type === 'parameter' && model.base.name === selection.panel.parameter.base.name"
      ng-style="{'left': selection.panel.left + 'px', 'top': selection.panel.top + 'px'}">
     <div ng-repeat="parameter in selection.baseParameters"
-         ng-class="{'selected': parameter.name === selection.panel.parameter}"
+         ng-class="{'selected': parameter.name === selection.panel.parameter.base.name}"
          class="control-panel-parameter control-panel-button push-button"
          ng-mousedown="changeParameter(parameter)">{{parameter.name}}</div>
     <div class="control-panel-cancel control-panel-button push-button" ng-click="removeParameter()">
@@ -42,7 +42,7 @@
      ng-if="selection.panel.level === model.parent.level && selection.panel.type === 'operator'"
      ng-style="{'left': selection.panel.left + 'px', 'top': selection.panel.top + 'px'}">
     <div ng-repeat="operator in selection.baseOperators"
-         ng-class="{'selected': operator.name === selection.panel.operator}"
+         ng-class="{'selected': operator.name === selection.panel.operator.base.name}"
          class="control-panel-parameter control-panel-button push-button"
          ng-mousedown="changeOperator(operator)">{{operator.name}}</div>
     <div class="control-panel-cancel control-panel-button push-button" ng-click="removeOperator()">

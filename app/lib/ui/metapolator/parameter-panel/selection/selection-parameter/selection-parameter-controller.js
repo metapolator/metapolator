@@ -234,22 +234,8 @@ define([
             selection.panel.operator = operator;
         }
         
-        $scope.changeParameter = function(parameter) {
-            /*
-             var oldParameterName = $scope.data.view.parameterPanel.selected;
-             if (oldParameterName != parameter.name) {
-             var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
-             angular.forEach(elements, function(element) {
-             angular.forEach(element.parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             thisParameter.name = parameter.name;
-             }
-             });
-             });
-             }
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeParameterPanel();
-             */
+        $scope.changeParameter = function(baseParameter) {
+            $scope.model.parent.changeParameter($scope.model, baseParameter);
         };
     
         $scope.removeParameter = function() {
