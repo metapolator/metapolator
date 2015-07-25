@@ -223,7 +223,7 @@ define([
             selection.panel.type = 'parameter';           
             selection.panel.left = $(event.target).offset().left + 20;
             selection.panel.top = $(event.target).offset().top + 20;
-            selection.panel.parameter = parameter.base.name;
+            selection.panel.parameter = parameter;
         }
 
         function openOperatorPanel(parameter, operator, event) {
@@ -231,7 +231,7 @@ define([
             selection.panel.type = 'operator';
             selection.panel.left = $(event.target).offset().left + 20;
             selection.panel.top = $(event.target).offset().top + 20;
-            selection.panel.operator = operator.base.name;
+            selection.panel.operator = operator;
         }
         
         $scope.changeParameter = function(parameter) {
@@ -273,27 +273,11 @@ define([
         };
     
 
-        $scope.changeOperator = function(operator) {
-            /*
-             var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
-             var oldOperatorName = $scope.data.view.operatorPanel.selected;
-             if (oldOperatorName != operator.name) {
-             var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
-             angular.forEach(elements, function(element) {
-             angular.forEach(element.parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             angular.forEach(thisParameter.operators, function(thisOperator) {
-             if (thisOperator.name == oldOperatorName) {
-             thisOperator.name = operator.name;
-             }
-             });
-             }
-             });
-             });
-             }
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeOperatorPanel();
-             */
+        $scope.changeOperator = function(baseOperator) {
+            console.log($scope.model);
+            console.log(selection.panel.operator);
+            console.log(baseOperator);
+            $scope.model.parent.changeOperator($scope.model, selection.panel.operator, baseOperator);
         };
     
         $scope.removeOperator = function() {

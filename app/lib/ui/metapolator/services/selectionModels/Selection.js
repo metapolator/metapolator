@@ -14,6 +14,29 @@ define([
     }
         
     var _p = Selection.prototype;
+    
+    _p.changeOperator = function(parameter, currentOperator, newBaseOperator) {       
+        for (var i = this.elements.length - 1; i >= 0; i--) {
+            var element = this.elements[i]
+              , elementParameter
+              , elementOperator;
+            // get the parameter
+            elementParameter = element.getParameterByName(parameter.base.name);
+            // if paramet doenst exist create it.
+            // get the operator
+            elementOperator = elementParameter.findOperator(currentOperator.base, currentOperator.id);
+            // if not exists, create it. 
+            // update the base of it
+            elementOperator.base = newBaseOperator;
+            // set the standardvalue
+            elementOperator.setValue(newBaseOperator.standardValue);
+            // if old operator was local: update cps
+            // if old operator was non-local: update cps of effected elements
+            
+            
+        }  
+        this.updateParameters();  
+    };
 
     _p.updateParameters = function() {
         this.parameters = [];
