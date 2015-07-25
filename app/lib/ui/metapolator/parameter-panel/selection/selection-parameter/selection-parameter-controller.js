@@ -274,9 +274,6 @@ define([
     
 
         $scope.changeOperator = function(baseOperator) {
-            console.log($scope.model);
-            console.log(selection.panel.operator);
-            console.log(baseOperator);
             $scope.model.parent.changeOperator($scope.model, selection.panel.operator, baseOperator);
         };
     
