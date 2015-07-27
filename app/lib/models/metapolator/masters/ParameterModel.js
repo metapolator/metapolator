@@ -32,19 +32,51 @@ define([
         this.effectiveValue = measuredValue;
     };
     
+    _p.changedOperator = function(operator) {
+        var element = this.element
+          , effectedElements = element.getEffectedElements(this.base.effectiveLevel)
+          , localOperatorFactor
+          , effectedElement;
+        if (operator.base.effectiveLocal) {
+            // If the operator is effective local (multiply and divide) then write the
+            // value to the cps. We have to check the local operator factor again, because
+            // there could be more local operators effective
+            localOperatorFactor = this.getCPSFactor();
+            element.writeValueInCPSfile(localOperatorFactor, this);
+            for (var i = 0, l = effectedElements.length; i < l; i++) {
+                effectedElement = effectedElements[i];
+                // The effected elements are children down the tree of the element. Eg: if master
+                // has a 'x 2' for 'width' (width is effective at glyph level), each glyph has
+                // a doubled width value.
+                // The last argument (false), means its only an update of the effective value
+                // no cps has to be written in this element (because of the nature of this operator)
+                effectedElement.updateEffectiveValue(this.base, false);
+            }
+        } else {
+            // If the operator is not effective local, but down in the tree (like add, etc)
+            // it only effects the children of this element at the effective level.
+            for (var j = 0, jl = effectedElements.length; j < jl; j++) {
+                effectedElement = effectedElements[j];
+                // the last argument (true), means its an update of the effective value
+                // AND cps has to be written in this element
+                effectedElement.updateEffectiveValue(this.base, true);
+            }
+        }
+    };
+    
     // operator functions   
-    _p.checkIfHasOperator = function(changedOperator) {
+    _p.checkIfHasOperator = function(changedOperator, level) {
         var id = changedOperator.id
           , operator = this.findOperator(changedOperator.base, changedOperator.id);
         if (operator) {
             return operator;
         } else {
-            return this.addOperator(changedOperator.base, id);
+            return this.addOperator(changedOperator.base, id, level);
         }
     };
     
     _p.addOperator = function(baseOperator, id, level) {
-        var operator = new OperatorModel(baseOperator, id);
+        var operator = new OperatorModel(baseOperator, id, this);
         this.operators.push(operator);
         // keep a registration of stacked operators, to make the destacking process of everything faster
         //this.stacked = isStacked();
@@ -76,13 +108,22 @@ define([
        return operator;
     };
     
-    _p.removeOperator = function(operator) {
-        var parameterOperator = this.findOperator(operator.base, operator.id)
+    _p.changeOperator = function(currentOperator, newBaseOperator) {     
+        var operator = this.checkIfHasOperator(currentOperator, this.element.level);
+        this._cleanUpOperatorEffects(operator);
+        // asign new base and the standard value belonging to that base
+        operator.base = newBaseOperator;
+        operator.setValue(newBaseOperator.standardValue);
+    };
+    
+    _p.removeOperator = function(currentOperator, element) {
+        var operator = this.findOperator(currentOperator.base, currentOperator.id)
           , index;
-        if (parameterOperator){
-            index = this.operators.indexOf(parameterOperator);
+        if (operator){
+            this._cleanUpOperatorEffects(operator);
+            index = this.operators.indexOf(operator);
             this.operators.splice(index, 1);  
-        }     
+        }  
     };
     
     _p.findOperator = function(operator, id) {
@@ -134,7 +175,21 @@ define([
         }
     };
     
-    // cps functions      
+    // cps functions   
+    _p._cleanUpOperatorEffects = function(operator) {
+        // set the value temp to standard, so all the cps will be cleaned up
+        operator.setValue(operator.base.standardValue);
+        this.changedOperator(operator);
+    };
+    
+    _p.removeCPS = function() {
+        // todo: currently this is quite a rough method to reset the cps. We should just remove rules instead.
+        for (var i = 0, l = this.operators.length; i < l; i++) {
+            var operator = this.operators[i];
+            this._cleanUpOperatorEffects(operator);
+        }       
+    };
+       
     _p.getCPSFactor = function() {
         var factor = 1;
         var hasLocalOperator = false;
@@ -249,6 +304,9 @@ define([
         var correctionValue
           , parentsFactor;
         parentsFactor = this.element.findParentsFactor(this.base);
+        console.log(this.effectiveValue);
+        console.log(parentsFactor);
+        console.log(this.initial);
         correctionValue = this.effectiveValue / parentsFactor / this.initial;
         this.element.writeValueInCPSfile(correctionValue, this);
     };

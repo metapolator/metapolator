@@ -64,25 +64,21 @@ function(
         return null;
     };
     
-    _p.checkIfHasParameter = function(changedParameter) {
+    _p.addParameterOperator = function(baseParameter, baseOperator, id) {
+        var parameter = this.checkIfHasParameter(baseParameter);
+        parameter.addOperator(baseOperator, id, this.level);
+    };
+    
+    _p.checkIfHasParameter = function(baseParameter) {
         // with editing in ranges, we can want to set a value of a
         // not yet existing parameter and/or operator
         // if it doens't exist yet, we create it.
-        var parameter = this.getParameterByName(changedParameter.base.name);
+        var parameter = this.getParameterByName(baseParameter.name);
         if (parameter) {
             return parameter;
         } else {
-            element.addParameter(changedParameter.base);
-            return this.parameters[element.parameters.length - 1];
+            return this._addParameter(baseParameter);
         }
-    };
-    
-    _p.addParameterOperator = function(baseParameter, baseOperator, id) {
-        var parameter = this.getParameterByName(baseParameter.name);
-        if (!parameter) {
-            parameter = this._addParameter(baseParameter);
-        }
-        parameter.addOperator(baseOperator, id, this.level);
     };
     
     _p._addParameter = function(baseParameter) {
@@ -95,12 +91,28 @@ function(
         var elementParameter = this.getParameterByName(baseParameter.name)
           , index;
         if (elementParameter) {
+            elementParameter.removeCPS();
             index = this.parameters.indexOf(elementParameter);
             this.parameters.splice(index, 1);
         }
     };
     
+    _p.changeParameter = function(currentParameter, newBaseParameter) {  
+        // get the old one, or create one it it didn't have one
+        var parameter = this.checkIfHasParameter(currentParameter.base);
+        // because of the current solution of removing cps, we have to set the values
+        // of the operators to a standard value. 
+        // We could do something to store them and afterwards check the effects and apply cps
+        parameter.removeCPS();
+        parameter.base = newBaseParameter;         
+    };
+       
     // cps functions
+    _p.updateEffectiveValue = function(baseParameter, writeCPS) {
+        var elementParameter = this.getParameterByName(baseParameter.name);
+        elementParameter.updateEffectiveValue(writeCPS);  
+    };
+    
     _p.findParentsFactor = function(baseParameter) {
         // this function finds all the factors for this parameter in its parent or grandparents (etc)
         // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
@@ -108,7 +120,7 @@ function(
         var levelElement = this
           , parentsFactor = 1;
         while(levelElement.level !== 'sequence') {
-            var levelParameter = levelElement.findParameter(baseParameter)
+            var levelParameter = levelElement.getParameterByName(baseParameter.name)
               , levelFactor;
              if (levelParameter) {
                  levelFactor = levelParameter.getCPSFactor();
@@ -157,6 +169,17 @@ function(
             this._cloneParameters(clone);
         }
         return clone;
+    };
+    
+    // after cloning, we need to reset the master property
+    _p.setMaster = function(master) {
+        this.master = master;
+        if (this.children) {
+            for (var i = 0, l = this.children.length; i < l; i++) {
+                var child = this.children[i];
+                child.setMaster(master);
+            }
+        }
     };
 
     _p._cloneProperties = function(clone) {

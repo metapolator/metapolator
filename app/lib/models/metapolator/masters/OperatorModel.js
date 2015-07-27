@@ -4,8 +4,9 @@ define([
     Parent
 ){
     "use strict";
-    function OperatorModel(baseOperator, id) {
+    function OperatorModel(baseOperator, id, parameter) {
         this.base = baseOperator;
+        this.parameter = parameter;
         // the operator id connects the operator in the selection with the operator 
         // in the elements
         this.id = id;
@@ -15,7 +16,7 @@ define([
     var _p = OperatorModel.prototype = Object.create(Parent.prototype);
     
     _p.setValue = function(value) {
-        this.value = value;
+        this.value = value;    
     };
 
     _p.clone = function() {

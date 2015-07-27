@@ -13,7 +13,7 @@ define([
                   , operatorId = operator.id;
                   
                 for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
-                    // 1) Write the value in all models of all elements within selection
+                    // Write the value in all models of all elements within selection
                     var element = $scope.model.parent.elements[i]
                       , effectiveLevel
                       , effectedElements;
@@ -26,46 +26,19 @@ define([
                     // set the value of each element in the selection
                     // if there is not yet a parameter, we create it + cpsRule
                     // if there is not yet a operator, we create it
-                    var thisParameter = element.checkIfHasParameter(parameter)
-                      , thisOperator = thisParameter.checkIfHasOperator(operator)
-                      , localOperatorFactor
-                      , effectedElement;
+                    var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
+                      , thisOperator = thisParameter.checkIfHasOperator(operator);
                     thisOperator.setValue(thisValue);
-
-                    effectiveLevel = parameter.base.effectiveLevel;
-                    effectedElements = element.getEffectedElements(effectiveLevel);
-                    // push the levels that need an update at the end
-                    if (operator.base.effectiveLocal) {
-                        // 2) If the operator is effective local (multiply and divide) then write the
-                        // value to the cps. We have to check the local operator factor again, because
-                        // there could be more local operators effective
-                        localOperatorFactor = thisParameter.getCPSFactor();
-                        element.writeValueInCPSfile(localOperatorFactor, parameter);
-                        for (var j = 0, jl = effectedElements.length; j < jl; j++) {
-                            effectedElement = effectedElements[j];
-                            // The effected elements are children down the tree of the element. Eg: if master
-                            // has a 'x 2' for 'width' (width is effective at glyph level), each glyph has
-                            // a doubled width value.
-                            // The last argument (false), means its only an update of the effective value
-                            // no cps has to be written in this element (because of the nature of this operator)
-                            updateEffectiveElement(effectedElement, parameter, false);
-                        }
-                    } else {
-                        // 3) If the operator is not effective local, but down in the tree (like add, etc)
-                        // it effects the children of this element at the effective level.
-                        for (var k = 0, kl = effectedElements.length; k < kl; k++) {
-                            effectedElement = effectedElements[k];
-                            // the last argument (true), means its an update of the effective value
-                            // AND cps has to be written in this element
-                            updateEffectiveElement(effectedElement, parameter, true);
-                        }
-                    }
-                    updateLevel(effectiveLevel, parameter);
+                    // the changed operator method checks the effects for the effective value (whether it is
+                    // at the local level or down in the tree) and writes CPS if needed
+                    thisParameter.changedOperator(thisOperator);
+                    updateLevel(parameter.base.effectiveLevel, parameter);
                 }
                 resetRange(operator);
             }
         };
-
+        
+        // todo: move this one to the selection module?
         function updateLevel(changedLevel, parameter) {
             // update the effectedValue selection for the changed level
             var selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
@@ -83,11 +56,6 @@ define([
                 operator.low.old = operator.low.current;
                 operator.high.old = operator.high.current;
             }
-        }
-
-        function updateEffectiveElement(element, parameter, writeCPS) {
-            var elementParameter = element.getParameterByName(parameter.base.name);
-            elementParameter.updateEffectiveValue(writeCPS);
         }
         
         function getRangeValue (element, parameter, operator) {
@@ -187,7 +155,11 @@ define([
         }
         
         $scope.changeParameter = function(baseParameter) {
-            $scope.model.parent.changeParameter($scope.model, baseParameter);
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i];
+                element.changeParameter($scope.model, baseParameter);
+            }
+            $scope.model.parent.updateParameters(); 
         };
     
         $scope.removeParameter = function() {
@@ -199,14 +171,19 @@ define([
         };   
 
         $scope.changeOperator = function(baseOperator) {
-            $scope.model.parent.changeOperator($scope.model, selection.panel.operator, baseOperator);
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i]
+                  , parameter = element.checkIfHasParameter(selection.panel.parameter.base);
+                parameter.changeOperator(selection.panel.operator, baseOperator);          
+            } 
+            $scope.model.parent.updateParameters();          
         };
     
         $scope.removeOperator = function() {
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 var element = $scope.model.parent.elements[i]
                   , elementParameter = element.getParameterByName(selection.panel.parameter.base.name);
-                elementParameter.removeOperator(selection.panel.operator);          
+                elementParameter.removeOperator(selection.panel.operator, element);          
             } 
             $scope.model.parent.updateParameters();
         };
