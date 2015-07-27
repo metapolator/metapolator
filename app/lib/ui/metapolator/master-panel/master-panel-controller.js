@@ -12,32 +12,48 @@ define([
     "use strict";
     function MasterPanelController($scope, project) {
         this.$scope = $scope;
-        this.$scope.name = 'masterPanel';
+        
+        $scope.removeMasters = function() {
+            if ($scope.model.areMastersSelected()) {
+                for (var i = 0, l = $scope.model.masterSequences.length; i < l; i++) {
+                    var sequence = $scope.model.masterSequences[i];
+                    for (var j = 0, jl = sequence.children.length; j < jl; j++) {
+                        var master = sequence.children[j];
+                        if (master.edit) {
+                            master.remove();
+                        }
+                    }
+                } 
+                
+            }
+        };
 
         $scope.duplicateMasters = function() {
-            for (var i = 0, l = $scope.model.masterSequences.length; i < l; i++) {
-                var sequence = $scope.model.masterSequences[i]
-                  , clones = [];
-                for (var j = 0, jl = sequence.children.length; j < jl; j++) {
-                    var master = sequence.children[j];
-                    master.deselectAllChildren();
-                    // todo: change [0] to [viewState]
-                    if (master.edit) {
-                        var clone = master.clone()
-                          , copiedCPSstring
-                          , newId = sequence.addToMasterId();
-                        setCloneProperties(clone, newId);
-                        copiedCPSstring = copyCPSString(master);
-                        registerMaster(clone, copiedCPSstring);
-                        master.edit = false;
-                        clones.push(clone);
+            if ($scope.model.areMastersSelected()) {
+                for (var i = 0, l = $scope.model.masterSequences.length; i < l; i++) {
+                    var sequence = $scope.model.masterSequences[i]
+                      , clones = [];
+                    for (var j = 0, jl = sequence.children.length; j < jl; j++) {
+                        var master = sequence.children[j];
+                        master.deselectAllChildren();
+                        // todo: change [0] to [viewState]
+                        if (master.edit) {
+                            var clone = master.clone()
+                              , copiedCPSstring
+                              , newId = sequence.addToMasterId();
+                            setCloneProperties(clone, newId);
+                            copiedCPSstring = copyCPSString(master);
+                            registerMaster(clone, copiedCPSstring);
+                            master.edit = false;
+                            clones.push(clone);
+                        }
+                    }
+                    for (var k = 0, kl = clones.length; k < kl; k++) {
+                        sequence.add(clones[k]);
                     }
                 }
-                for (var k = 0, kl = clones.length; k < kl; k++) {
-                    sequence.add(clones[k]);
-                }
+                selection.updateSelection('master');
             }
-            selection.updateSelection('master');
         };
 
         function setCloneProperties(clone, id) {

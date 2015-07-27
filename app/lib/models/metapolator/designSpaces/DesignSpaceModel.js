@@ -62,7 +62,8 @@ define([
     };
 
     _p.removeAxis = function(master) {
-        var index = this._findMasterIndex(master);
+        var index = this._findMasterIndex(master)
+          , axesWithMaster;
         this.axes.splice(index, 1);
         // setting the new slack if needed
         if (index < this.slack) {
@@ -73,7 +74,38 @@ define([
         if (this.axes.length < 3) {
             this.slack = 0;
         }
+        // handle the effects on instances
+        axesWithMaster = this.parent.getInstanceAxesWithMaster(master, this);
+        if (this.axes.length === 0) {
+           this._removeInstances(axesWithMaster); 
+        } else {
+            this._removeMasterFromInstances(axesWithMaster);
+        }
         this.parent.nrOfAxesTrigger++;
+    };
+    
+    _p._removeInstances = function(axesWithMaster) {
+        for (var i = axesWithMaster.length - 1; i >= 0; i--) {
+            var instance = axesWithMaster[i].parent;
+            instance.remove();
+        }
+    };
+    
+    _p._removeMasterFromInstances = function(axesWithMaster) {
+        for (var i = axesWithMaster.length - 1; i >= 0; i--) {
+            var axis = axesWithMaster[i];
+            axis.remove();
+        }
+    };
+    
+    _p.hasMaster = function(master) {
+        for (var i = this.axes.length - 1; i >= 0; i--) {
+            var axis = this.axes[i];
+            if (axis === master) {
+                return true;
+            }
+        }
+        return false;
     };
 
     _p._getIndex = function() {

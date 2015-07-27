@@ -110,6 +110,15 @@ define([
         }
         return instances;
     };
+    
+    _p.removeMasterFromDesignSpaces = function(master) {   
+        for (var i = 0, l = this.designSpaces.length; i < l; i++) {
+            var designSpace = this.designSpaces[i];
+            if (designSpace.hasMaster(master)) {
+                designSpace.removeAxis(master);
+            } 
+        }
+    };
 
     return AppModel;
 });

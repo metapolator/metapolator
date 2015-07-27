@@ -7,7 +7,7 @@
         <div class="lm-divider"></div>
         <div class="lm-button" ng-mouseup="duplicateMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Duplicate</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="deleteMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Delete…</div>
+        <div class="lm-button" ng-mouseup="removeMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Delete…</div>
     </div>
 </mtk-local-menu>
 

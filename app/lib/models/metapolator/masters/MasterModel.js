@@ -49,6 +49,28 @@ define([
        }
        return false;
    };
+
+    _p.remove = function() { 
+        console.log(this);
+        // todo: get rid of this.parent.parent._project
+        var project = this.parent.parent._project
+          , index;
+        project.deleteMaster(this.name);
+        // empty cps file to prevent caching issues
+        project.ruleController.write(false, this.cpsFile, '');
+        index = this._getIndex();
+        this.parent.parent.removeMasterFromDesignSpaces(this);
+        this.parent.children.splice(index, 1);
+    };
+    
+    _p._getIndex = function() {
+        for (var i = this.parent.children.length - 1; i >= 0; i--) {
+            var master = this.parent.children[i];
+            if (master === this) {
+                return i;
+            }
+        }
+    };
     
     return MasterModel;
 });

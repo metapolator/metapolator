@@ -103,31 +103,11 @@ define([
             }
             dialog.confirm(message, function(result){
                 if(result) {
-                    if (n2 === 1) {
-                        designSpace.removeAxis(master);
-                        removeInstances(axesWithMaster);
-                    } else {
-                        designSpace.removeAxis(master);
-                        removeMasterFromInstances(axesWithMaster, slack);
-                    }
+                    designSpace.removeAxis(master);
                     $scope.$apply();
                 }
             });
         };
-
-        function removeInstances(axesWithMaster) {
-            for (var i = axesWithMaster.length - 1; i >= 0; i--) {
-                var instance = axesWithMaster[i].parent;
-                instance.remove();
-            }
-        }
-
-        function removeMasterFromInstances(axesWithMaster) {
-            for (var i = axesWithMaster.length - 1; i >= 0; i--) {
-                var axis = axesWithMaster[i];
-                axis.remove();
-            }
-        }
     }
 
     ControlController.$inject = ['$scope', 'project'];
