@@ -45,35 +45,40 @@ define([
       }]
       , baseOperators = [{
             order : 0
-          , name : 'x'
+          , name : 'multiply'
+          , sign : '×'
           , standardValue : 1
           , type : 'stack'
           , usesUnit : false
           , effectiveLocal : true
         }, {
             order : 1
-          , name : '÷'
+          , name : 'divide'
+          , sign : '÷'
           , standardValue : 1
           , type : 'stack'
           , usesUnit : false
           , effectiveLocal : true
         }, {
             order : 2
-          , name : '+'
+          , name : 'add'
+          , sign : '+'
           , standardValue : 0
           , type : 'stack'
           , usesUnit : true
           , effectiveLocal : false
         }, {
             order : 3
-          , name : '-'
+          , name : 'subtract'
+          , sign : '−'
           , standardValue : 0
           , type : 'stack'
           , usesUnit : true
           , effectiveLocal : false
         }, {
             order : 4
-          , name : '='
+          , name : 'is'
+          , sign : '='
           , standardValue : null
           , type : 'unique'
           , usesUnit : true
@@ -81,6 +86,7 @@ define([
         }, {
             order : 5
           , name : 'min'
+          , sign : 'min'
           , standardValue : 0
           , type : 'unique'
           , usesUnit : true
@@ -88,6 +94,7 @@ define([
         }, {
             order : 6
           , name : 'max'
+          , sign : 'max'
           , standardValue : 0
           , type : 'unique'
           , usesUnit : true

@@ -153,9 +153,9 @@ define([
                     // todo: check if operator type is 'stack'.
                     // This matters when non-stack operators (like =) are added
                     if (operator.base.name === lastOperator.base.name) {
-                        if (operator.base.name === '+' || operator.base.name === '-') {
+                        if (operator.base.name === 'add' || operator.base.name === 'subtract') {
                             newOperator.value = parseFloat(newOperator.value) + parseFloat(operator.value);
-                        } else if (operator.base.name === 'x' || operator.base.name === '÷') {
+                        } else if (operator.base.name === 'multiply' || operator.base.name === 'divide') {
                             newOperator.value = parseFloat(newOperator.value) * parseFloat(operator.value);
                         }
                     } else {
@@ -197,9 +197,9 @@ define([
             var operator = this.operators[i];
             if (operator.base.effectiveLocal) {
                 hasLocalOperator = true;
-                if (operator.base.name === 'x') {
+                if (operator.base.name === 'multiply') {
                     factor *= operator.value;
-                } else if (operator.base.name === '÷') {
+                } else if (operator.base.name === 'divide') {
                     factor /= operator.value;
                 }
             }
@@ -246,15 +246,15 @@ define([
                         min = operator.value;
                     } else if (operator.base.name === 'max' && !max) { // idem
                         max = operator.value;
-                    } else if (operator.base.name === '=' && !is) { // idem
+                    } else if (operator.base.name === 'is' && !is) { // idem
                         is = operator.value;
-                    } else if (operator.base.name === '+') {
+                    } else if (operator.base.name === 'add') {
                         plus[levelCounter].push(parseFloat(operator.value));
-                    } else if (operator.base.name === '-') {
+                    } else if (operator.base.name === 'subtract') {
                         plus[levelCounter].push(parseFloat(-operator.value));
-                    } else if (operator.base.name === 'x') {
+                    } else if (operator.base.name === 'multiply') {
                         multiply[levelCounter].push(parseFloat(operator.value));
-                    } else if (operator.base.name === '÷') {
+                    } else if (operator.base.name === 'divide') {
                         multiply[levelCounter].push(parseFloat(1 / operator.value));
                     }
                 }

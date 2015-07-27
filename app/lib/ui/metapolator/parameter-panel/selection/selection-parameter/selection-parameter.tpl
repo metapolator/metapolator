@@ -5,7 +5,7 @@
              ng-class="{'selected-parameter': selection.panel === model.parent.level + '-parameter' && model.base.name === panel.selectedParameter.base.name}">
                 <span ng-if="$index == 0">{{model.base.name}}</span>
         </div>
-        <div class="parameter-operator panel-zone" ng-class="{'selected-parameter': selection.panel === model.parent.level + '-operator'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.name}}</div>
+        <div class="parameter-operator panel-zone" ng-class="{'selected-parameter': selection.panel === model.parent.level + '-operator'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.sign}}</div>
         <div class="operator-value">
             <span ng-if="!operator.range">
                 <input ng-model="operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> 
@@ -44,7 +44,7 @@
     <div ng-repeat="operator in selection.baseOperators"
          ng-class="{'selected': operator.name === selection.panel.operator.base.name}"
          class="control-panel-parameter control-panel-button push-button"
-         ng-mousedown="changeOperator(operator)">{{operator.name}}</div>
+         ng-mousedown="changeOperator(operator)">{{operator.sign}}</div>
     <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeOperator()">
         Remove
     </div>
