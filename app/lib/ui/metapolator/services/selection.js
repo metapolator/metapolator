@@ -40,7 +40,7 @@ define([
           , decimals : 2
           , effectiveLevel : 'point'
           , getInitial : function(MOMelement) {
-                //return MOMelement.right.getComputedStyle().get('onLength');
+                return MOMelement.right.getComputedStyle().get('onLength');
             }
       }]
       , baseOperators = [{
