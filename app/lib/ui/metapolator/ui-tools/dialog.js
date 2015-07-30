@@ -10,38 +10,38 @@ define([
 
     confirm = function(message, callback) {
         openDialogScreen(message, false, true, false);
-        $('#dialog-button-true').click(function() {
+        $('.dialog-button-true').click(function() {
             closeDialogScreen();
-            $('#dialog-button-true').unbind();
+            $('.dialog-button-true').unbind();
             callback(true);
         });
-        $('#dialog-button-false').click(function() {
+        $('.dialog-button-false').click(function() {
             closeDialogScreen();
-            $('#dialog-button-false').unbind();
+            $('.dialog-button-false').unbind();
             callback(false);
         });
     };
 
     openDialogScreen = function (message, loading, buttons, close) {
-        $("#layover").fadeIn(100);
-        $("#dialog #dialog-content").html(message);
+        $(".layover").fadeIn(100);
+        $(".dialog .dialog-content").html(message);
         if (loading) {
-            $("#dialog-loading").show();
+            $(".dialog-loading").show();
         }
         if (buttons) {
-            $("#dialog-confirm").show();
+            $(".dialog-confirm").show();
         }
         if (close) {
-            $("#dialog-close").show();
+            $(".dialog-close").show();
         }
     };
 
     closeDialogScreen = function () {
-        $("#layover").fadeOut(300);
+        $(".layover").fadeOut(300);
         // hide buttons
-        $("#dialog-loading").hide();
-        $("#dialog-close").hide();
-        $("#dialog-confirm").hide();
+        $(".dialog-loading").hide();
+        $(".dialog-close").hide();
+        $(".dialog-confirm").hide();
     };
 
 

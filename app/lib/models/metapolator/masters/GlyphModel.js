@@ -1,7 +1,7 @@
 define([
     './_ElementModel'
   , './PenstrokeModel'
-  , 'metapolator/ui/metapolator/services/selection' // todo: Get rid of this module here. This module is here, because the measureGlyph() needs the baseParameters.
+  , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
     Parent
   , PenstrokeModel

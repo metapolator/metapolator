@@ -1,5 +1,5 @@
 define([
-    'metapolator/ui/metapolator/services/selection'
+    'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
     selection
 ) {

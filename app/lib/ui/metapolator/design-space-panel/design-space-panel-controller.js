@@ -1,6 +1,6 @@
 define([
-    'metapolator/ui/metapolator/services/dialog'
-  , 'metapolator/ui/metapolator/services/instanceTools'
+    'metapolator/ui/metapolator/ui-tools/dialog'
+  , 'metapolator/ui/metapolator/ui-tools/instanceTools'
 ], function(
     dialog
   , instanceTools

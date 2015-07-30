@@ -1,11 +1,11 @@
-<div id="layover">
-    <div id="dialog">
-        <div id="dialog-close" ng-click="closeDialogScreen()">×</div>
-        <div id="dialog-loading"><img src="lib/ui/metapolator/assets/img/loading.gif"></div>
-        <div id="dialog-content"></div>
-        <div id="dialog-confirm">
-            <button id="dialog-button-true" ng-click="">Okay</button>
-            <button id="dialog-button-false">Cancel</button>
+<div class="layover">
+    <div class="dialog">
+        <div class="dialog-close" ng-click="closeDialogScreen()">×</div>
+        <div class="dialog-loading"><img src="lib/ui/metapolator/assets/img/loading.gif"></div>
+        <div class="dialog-content"></div>
+        <div class="dialog-confirm">
+            <button class="dialog-button-true" ng-click="">Okay</button>
+            <button class="dialog-button-false">Cancel</button>
         </div>
     </div>
 </div>

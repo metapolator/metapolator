@@ -1,12 +1,12 @@
 define([
-    './selectionModels/Selection'
+    './selection/Selection'
 ], function(
     Selection
 ) {
     'use strict';
     var updateSelection
       , sequences = []
-      , updateSequences
+      , injectSequences
       , getSelectionElements
       , _getParentElements
       , _getNextLevel
@@ -163,7 +163,7 @@ define([
         return selection[level].elements;
     };
 
-    updateSequences = function(injected) {
+    injectSequences = function(injected) {
         sequences = injected;
     };
 
@@ -178,7 +178,7 @@ define([
 
     return {
         selection : selection
-      , updateSequences : updateSequences
+      , injectSequences : injectSequences
       , updateSelection : updateSelection
       , getSelectionElements : getSelectionElements
       , allLevels : allLevels

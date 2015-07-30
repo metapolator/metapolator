@@ -51,7 +51,6 @@ define([
    };
 
     _p.remove = function() { 
-        console.log(this);
         // todo: get rid of this.parent.parent._project
         var project = this.parent.parent._project
           , index;

@@ -1,8 +1,8 @@
 define([
     'jquery'
-  , 'metapolator/ui/metapolator/services/instanceTools'
-  , 'metapolator/ui/metapolator/services/dialog'
-  , 'metapolator/ui/metapolator/services/selection'
+  , 'metapolator/ui/metapolator/ui-tools/instanceTools'
+  , 'metapolator/ui/metapolator/ui-tools/dialog'
+  , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
     $
   , instanceTools

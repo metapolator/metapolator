@@ -3,7 +3,7 @@ define([
   , './GlyphModel'
   , './AxisModel'
   , 'metapolator/ui/metapolator/cpsAPITools'
-  , 'metapolator/ui/metapolator/services/instanceTools'
+  , 'metapolator/ui/metapolator/ui-tools/instanceTools'
 ], function(
     Parent
   , GlyphModel

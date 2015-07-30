@@ -2,8 +2,6 @@ define([], function() {
     "use strict";
     function InstanceController($scope) {
         this.$scope = $scope;
-        this.$scope.name = 'instance';
-        
         
         $scope.getDiamondColor = function(instance) {
             if (instance.isCurrent()) {

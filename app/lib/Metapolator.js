@@ -2,7 +2,7 @@ define([
     'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
   , 'metapolator/ui/services/GlyphRendererAPI'
-  , 'metapolator/ui/metapolator/services/selection'
+  , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
     document
   , AppModel
@@ -85,7 +85,7 @@ define([
                 }
             }
         }
-        selection.updateSequences(this.model.masterSequences);
+        selection.injectSequences(this.model.masterSequences);
         selection.updateSelection('master');
     };
 

@@ -1,5 +1,5 @@
 define([
-    'metapolator/ui/metapolator/services/dialog'
+    'metapolator/ui/metapolator/ui-tools/dialog'
 ], function(
     dialog
 ) {

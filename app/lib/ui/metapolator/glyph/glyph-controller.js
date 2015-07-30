@@ -2,8 +2,7 @@ define([], function() {
     "use strict";
     function GlyphController($scope, glyphRendererAPI) {
         this.$scope = $scope;
-        this.$scope.name = 'glyph';
-        
+
         // if a glyph of an instance is rendered, we need to check if the corresponding glyph
         // of iths baseMaster(s) are measured already
         $scope.checkBaseMasters = function(glyph) {

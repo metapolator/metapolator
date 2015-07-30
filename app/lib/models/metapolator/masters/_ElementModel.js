@@ -1,6 +1,6 @@
 define([
     './ParameterModel'
-  , 'metapolator/ui/metapolator/services/selection' // todo: Get rid of this module here.
+  , 'metapolator/ui/metapolator/ui-tools/selectionTools'
   , 'metapolator/ui/metapolator/cpsAPITools'
 ],
 function(
