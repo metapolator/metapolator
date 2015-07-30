@@ -50,8 +50,6 @@ define([
         
         $scope.removeInstance = function (instance) {
             var designSpace = instance.designSpace
-              , index = $scope.model.instanceSequences[0].children.indexOf(instance)
-              , l
               , n = 0;
             // check if it is the last instance on the design space
             for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
@@ -62,8 +60,8 @@ define([
                         n++;
                     }
                 }
-            } 
-            if (n == 1) {
+            }
+            if (n === 1) {
                 var message = "Delete instance? This also deletes the design space '" + designSpace.name + "'.";
                 dialog.confirm(message, function(result){
                     if (result) {

@@ -41,7 +41,7 @@ define([
     var _p = InstanceModel.prototype = Object.create(Parent.prototype);
 
     _p.remove = function() {
-        var index = this._getIndex() ;
+        var index = this._getIndex();
         this.parent.children.splice(index, 1);
         this._findNewCurrentInstance(index);
     };
