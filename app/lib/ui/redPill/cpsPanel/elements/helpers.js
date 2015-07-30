@@ -72,10 +72,17 @@ define([
         return [cols, lines.length];
     };
 
+    function hasFocus(element) {
+        var document = element.ownerDocument;
+        return (element === document.activeElement
+                && (!document.hasFocus || document.hasFocus()));
+    }
+
     return {
         handlerDecorator: handlerDecorator
       , stopPropagation: stopPropagation
       , Timer: Timer
       , calculateTextBoxSize: calculateTextBoxSize
+      , hasFocus: hasFocus
     };
 });

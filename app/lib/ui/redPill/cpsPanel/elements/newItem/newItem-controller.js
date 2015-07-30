@@ -4,7 +4,7 @@ define([
     "use strict";
     function NewItemController($scope) {
         this.$scope = $scope;
-        $scope.element = null;
+        $scope.element = 'rule';//default selection
         this.elements = {
             'rule': 'mtk-cps-new-rule'
           , '@namespace': 'mtk-cps-new-namespace-collection'

@@ -249,7 +249,7 @@ mtk-cps-panel {
 
     @line-height: 1.2em;
     mtk-cps-property, mtk-cps-new-property, mtk-cps-selector-list,
-    mtk-cps-comment, mtk-cps-import-collection{
+    mtk-cps-comment, mtk-cps-import-collection, mtk-cps-new-item {
         line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
         display: inline-block;
         border-bottom: 2px solid transparent;
@@ -302,6 +302,9 @@ mtk-cps-panel {
             white-space: nowrap;
             cursor: help;
         }
+    }
+    mtk-cps-new-item{
+        display: block;
     }
     *.dragging {
         background: white;
@@ -383,10 +386,12 @@ mtk-cps-panel {
         cursor: grab;
     }
 
-    .tool-delete:hover {
+    .tool-delete:hover,
+    .tool-cancel:hover {
         color: #f00;
     }
 
+    .tool-cancel::before,
     .tool-delete::before {
         content: "\2717";
     }

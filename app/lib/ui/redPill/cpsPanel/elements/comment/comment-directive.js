@@ -72,5 +72,6 @@ define([
         };
     }
     CommentDirective.$inject = [];
+    CommentDirective.getFormatClass = getFormatClass;
     return CommentDirective;
 });

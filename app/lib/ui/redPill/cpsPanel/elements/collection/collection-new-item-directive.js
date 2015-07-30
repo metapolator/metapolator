@@ -17,6 +17,11 @@ define([
       , getTargetData = genericTargetTools.getTargetData
       ;
 
+    /*
+     * If indicated place the form. The positioning is figured out buy looking
+     * at the event coordinates, very similar to what we do when finding
+     * drag targets.
+     */
     function doubleClickHandler(findElement, getPositionReference, $compile
                               , scope , controller, element, container, event) {
         var target
@@ -46,19 +51,19 @@ define([
 
         // place the interface:
         placementReference = getPositionReference(controller.empty, target.element, container);
+
         // target.insertPosition is "before" or "after" or "append"
         index = target.index;
         if(target.insertPosition === 'after')
             index +=1;
-        // TODO: make a form here
+
+        // mtk-cps-new-item manages the forms here
         uiElement = element.ownerDocument.createElement('mtk-cps-new-item');
         // add attribute "index", index
+        uiElement.setAttribute('index', index);
+
         domStuff.insert(placementReference, target.insertPosition, uiElement);
         $compile(angular.element(uiElement))(scope);
-
-        // and when the interface loses focus
-        // finalize()
-        // remove()
     }
 
 
