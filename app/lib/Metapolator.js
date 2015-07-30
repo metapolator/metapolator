@@ -29,7 +29,6 @@ define([
         this.angularApp.constant('modelController', this.project.controller);
         this.angularApp.constant('project', this.project);
         this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
-        this.angularApp.constant('instanceTools', this.instanceTools);
 
         // will be called on angular.bootstrap
         // see ui/app-controller.js
