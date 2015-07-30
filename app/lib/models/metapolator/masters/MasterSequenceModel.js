@@ -6,7 +6,8 @@ define([
   , MasterModel
 ){
     "use strict";
-    function SequenceModel(name, parent, id) {
+    function SequenceModel(name, parent, id, project) {
+        this._project = project;
         this.id = id;
         this.name = name;
         this.level = "sequence";
@@ -20,7 +21,7 @@ define([
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
     
     _p.addMaster = function(name, MOMelement, cpsFile) {
-        var master = new MasterModel(name, this, MOMelement, cpsFile, this.id, this.masterId++);
+        var master = new MasterModel(name, this, MOMelement, cpsFile, this.id, this.masterId++, this._project);
         this.children.push(master);
         return master;
     };

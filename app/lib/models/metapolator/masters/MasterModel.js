@@ -6,7 +6,8 @@ define([
   , GlyphModel
 ){
     "use strict";
-    function MasterModel(name, parent, MOMelement, cpsFile, sequenceId, masterId) {
+    function MasterModel(name, parent, MOMelement, cpsFile, sequenceId, masterId, project) {
+        this._project = project;
         this.level = "master";
         this.id = masterId;
         this.sequenceId = sequenceId;

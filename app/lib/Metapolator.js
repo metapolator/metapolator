@@ -13,8 +13,9 @@ define([
     function Metapolator(project, angularApp) {
         this.angularApp = angularApp;
         this.frontend = undefined;
-        this.model = this._modelFactory(project);
         this.project = project;
+        this.model = this._modelFactory();
+
 
         // load all masters, because right now it is very confusing
         // when some masters are missing from the MOM
@@ -46,8 +47,8 @@ define([
     };
 
     // probably this should be replaced by sth. like `new AppModel(data);`
-    _p._modelFactory = function(project) {
-        var model = new AppModel(project);
+    _p._modelFactory = function() {
+        var model = new AppModel(this.project);
         model.addInstanceSequence("Family 1");
         model.createNewDesignSpace();
         return model;

@@ -174,7 +174,7 @@ define([
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 var element = $scope.model.parent.elements[i]
                   , parameter = element.checkIfHasParameter(selection.panel.parameter.base);
-                parameter.changeOperator(selection.panel.operator, baseOperator);          
+                parameter.changeOperator(selection.panel.operator, baseOperator);
             } 
             $scope.model.parent.updateParameters();          
         };

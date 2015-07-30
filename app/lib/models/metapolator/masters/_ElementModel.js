@@ -11,7 +11,6 @@ function(
 {
     "use strict";
     function _ElementModel() {
-        // todo: get rid of this.master.parent.parent._project which is now an argument of the AppModel
     }
 
     var _p = _ElementModel.prototype;
@@ -31,7 +30,7 @@ function(
         // todo if factor === 1 && no value set for this parameter yet: don't write (this means it is the initial meausring when loading the project
         // if factor === 1 && value already set: remove this out of the parameterCollection
         this._checkIfHasRule();
-        var parameterCollection = this.master.parent.parent._project.ruleController.getRule(false, this.master.cpsFile)
+        var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
           , cpsRule = parameterCollection.getItem(this.ruleIndex)
           , parameterDict = cpsRule.parameters
           , setParameter = cpsAPITools.setParameter;
@@ -41,7 +40,7 @@ function(
 
     _p._checkIfHasRule = function() {
         if (!this.ruleIndex) {
-            var parameterCollection = this.master.parent.parent._project.ruleController.getRule(false, this.master.cpsFile)
+            var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
                 , l = parameterCollection.length;
             this.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, this.getSelector());
         }

@@ -11,7 +11,7 @@ define([
 ){
     'use strict';
     function AppModel(project) {
-        this._project = project; // todo: get rid of this. find a way to get project to writeCPS method
+        this._project = project;
         this.projectName = 'Canola';
         //
         this.masterSequences = [];
@@ -35,7 +35,7 @@ define([
 
     // masters
     _p.addSequence = function(name) {
-        var sequence = new MasterSequenceModel(name, this, this.sequenceId++);
+        var sequence = new MasterSequenceModel(name, this, this.sequenceId++, this._project);
         this.masterSequences.push(sequence);
         return sequence;
     };

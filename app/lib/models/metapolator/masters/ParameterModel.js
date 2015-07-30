@@ -337,6 +337,6 @@ define([
             clone.operators.push(this.operators[i].clone());
         }
     };
-       
+
     return ParameterModel;
 });
