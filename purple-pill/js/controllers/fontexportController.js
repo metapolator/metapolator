@@ -10,8 +10,8 @@ function($scope, $http, sharedScope, $timeout) {
 
             if (this.fileFormat == "UFO"){
                 getGenerator = $scope.data.stateful.project.getUFOExportGenerator.bind($scope.data.stateful.project);
-//TODO:     } else if (this.fileFormat == "OTF"){
-//TODO:         getGenerator = $scope.data.stateful.project.getOTFExportGenerator.bind($scope.data.stateful.project);
+            } else if (this.fileFormat == "OTF"){
+                getGenerator = $scope.data.stateful.project.getOTFExportGenerator.bind($scope.data.stateful.project);
             }
             retval = getGenerator(
                 instance.name
@@ -84,13 +84,13 @@ function($scope, $http, sharedScope, $timeout) {
 
         function exportingGlyphMessage (data, instanceIndex, totalInstances) {
             var msg
+              , instanceName = data['target_name']
               , currentGlyph = data['current_glyph'] + 1 //humans start counting from 1.
               , totalGlyphs = data['total_glyphs']
               , glyphId = data['glyph_id']
               ;
-            msg = totalInstances + " instances to export."
-            msg += "Calculating glyph '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
-            msg += " of instance #" + (instanceIndex+1);
+            msg = "Calculating '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
+            msg += " of '" + instanceName + "' (" + (instanceIndex+1) + " of " + totalInstances + ")";
             return msg;
         }
 
@@ -184,11 +184,12 @@ function($scope, $http, sharedScope, $timeout) {
               , data, name
               ;
             if (!it.done){
-                if (progress)
+                if (progress){
+                    it['target_data'] = obj.getFileName();
                     progress.setData(index, totalInstances, it.value);
+                }
             } else {
                 exportObjects.pop();
-                obj.pruneGenerator();
 
                 if (obj.fileFormat == "UFO"){
                     data = $scope.data.stateful.project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
@@ -227,7 +228,8 @@ function($scope, $http, sharedScope, $timeout) {
         angular.forEach($scope.data.families, function(family) {
             angular.forEach(family.instances, function(instance) {
                 if (instance.exportFont){
-                    exportObjects.push(new ExportObject(instance/*, fileFormat*/));
+                    exportObjects.push(new ExportObject(instance, "OTF"));
+                    exportObjects.push(new ExportObject(instance, "UFO"));
                 }
             });
         });
