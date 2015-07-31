@@ -36,6 +36,7 @@ requirejs.config({
         // used to load glyphBasics when the browser executes this.
         'metapolator/rendering/glyphBasics'
       , 'metapolator/project/UFOExportController.js'
+      , 'metapolator/project/OTFExportController.js'
         // see the es6/Proxy module, we load this only when needed
       , 'es6/Reflect'
     ]
@@ -72,6 +73,7 @@ try {
     paths: {
         'metapolator/rendering/glyphBasics': 'rendering/glyphBasics.es6'
       , 'metapolator/project/UFOExportController': 'project/UFOExportController.es6'
+      , 'metapolator/project/OTFExportController': 'project/OTFExportController.es6'
     }});
 } catch(err) {
     console.info("No generators, falling back.");

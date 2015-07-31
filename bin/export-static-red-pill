@@ -16,10 +16,14 @@ mkdir "$TARGET" \
 MODULE_0="lib/bower_components/harmony-reflect/reflect.js"
 # The optimizer fails on Harmony generators
 MODULE_1="lib/rendering/glyphBasics.es6.js"
+MODULE_2="lib/project/UFOExportController.es6.js"
+MODULE_3="lib/project/OTFExportController.es6.js"
 # We have a feature detection in the main file, if generators
 # are not supported, this file needs to be present
-MODULE_2="lib/rendering/glyphBasics.js"
-MODULES="$MODULE_0 $MODULE_1 $MODULE_2"
+MODULE_4="lib/rendering/glyphBasics.js"
+MODULE_5="lib/project/UFOExportController.js"
+MODULE_6="lib/project/OTFExportController.js"
+MODULES="$MODULE_0 $MODULE_1 $MODULE_2 $MODULE_3 $MODULE_4 $MODULE_5 $MODULE_6"
 for module in $MODULES; do
     mkdir -p "$(dirname $TARGET/$module)" && cp "$SOURCE/app/$module" "$TARGET/$module";
 done
