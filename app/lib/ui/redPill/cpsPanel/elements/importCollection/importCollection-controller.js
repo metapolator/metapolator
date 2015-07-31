@@ -36,9 +36,13 @@ define([
         this.$scope.message = _message.join('\n');
     };
 
+    _p._getResouceName = function() {
+        return this.item.resourceName || '(no resource name yet)';
+    }
+
     _p._resetItemScope = function(errorMessage) {
         var $scope = this.$scope;
-        $scope.cpsFile = this.item.resourceName;
+        $scope.cpsFile = this._getResouceName();
         $scope.cpsFileOptions = null;
         this._setValidityMessage(errorMessage);
     };

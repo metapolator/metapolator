@@ -14,7 +14,7 @@
     ng-init="initEdit()"
         ></select>";<!--
 --><mtk-element-toolbar
-    ng-if="!edit"
+    ng-if="!edit && !hideToolbar"
     mtk-tools="ctrl.mtkElementTools"
     mtk-click-handler="ctrl.clickToolHandler"
         ></mtk-element-toolbar>
