@@ -38,7 +38,6 @@ define([
             }
         };
         
-        // todo: move this one to the selection module?
         function updateLevel(changedLevel, parameter) {
             // update the effectedValue selection for the changed level
             var selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
