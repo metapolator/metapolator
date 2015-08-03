@@ -44,8 +44,8 @@ define([
                         $(document.body).append(state.templayer.element);
                     }).on('drag', function() {
                         var ropeLength,
-                            x = d3.event.x - dS, 
-                            y = d3.event.y - dS; 
+                          x = d3.event.x - dS,
+                          y = d3.event.y - dS;
                         positionDiamond(x, y);
                         ropeLength = getRopeLength(x, -y); 
                         state.fontSize = getAbsolutePixels(ropeLength, state.pixelOffset);
