@@ -52,8 +52,7 @@ define([
    };
 
     _p.remove = function() { 
-        // todo: get rid of this.parent.parent._project
-        var project = this.parent.parent._project
+        var project = this._project
           , index;
         project.deleteMaster(this.name);
         // empty cps file to prevent caching issues
