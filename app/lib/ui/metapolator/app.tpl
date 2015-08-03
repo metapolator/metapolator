@@ -45,5 +45,3 @@
 </mtk-pagewrap>
 
 <mtk-vertical-divider mtk-total-parts="totalParts" mtk-dividers="dividers" mtk-panels="panels" ng-repeat="divider in dividers" divider="{{$index}}" ng-if="divider.view === model.viewState"></mtk-vertical-divider>
-
-<mtk-dialog></mtk-dialog>
