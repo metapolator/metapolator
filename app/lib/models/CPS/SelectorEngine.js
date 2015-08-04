@@ -111,6 +111,10 @@ define([
         for(i=0, l=simpleSelectors.length;i<l;i++) {
             simpleSelector = simpleSelectors[i];
             name = simpleSelector.name;
+
+            if(simpleSelector.invalid)
+                throw new CPSError('simpleSelector "'+ simpleSelector +'" is invalid: ' + simpleSelector.message);
+
             switch(simpleSelector.type) {
                 case 'type':
                     body.push(' && (element.type === ', stringify(name), ')');
