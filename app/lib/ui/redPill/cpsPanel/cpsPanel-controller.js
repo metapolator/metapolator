@@ -1,16 +1,33 @@
 define([
+    'metapolator/errors'
 ], function(
+    errors
 ) {
     "use strict";
-    function CpsPanelController($scope, model) {
-        var masterName = 'web'
-          ,parameterCollection = model.getMasterCPS(false, masterName)
-          // , parameterCollection = model._ruleController.getRule(false, 'lib/metapolate-4.cps')
-          ;
+
+    var CPSError = errors.CPS;
+
+    function CpsPanelController($scope, modelController, ruleController) {
         this.$scope = $scope;
-        this.$scope.collection = parameterCollection;
+        this.$scope.ctrl = this;
+
+        this._modelController = modelController;
+        this._ruleController = ruleController;
+
+        this.displayModes = ['cps-collection', 'cps-style'];
+        $scope.displayMode = this.displayModes[1];
+
+        $scope.cpsFile = null;
+        $scope.cpsFileOptions = [];
+        $scope.collection = null;
+
+        $scope.elementSelector = 'left'; //null
+        $scope.styleElement = null;
+
+
+        this._waiting = null;
     }
-    CpsPanelController.$inject = ['$scope', 'ModelController'];
+    CpsPanelController.$inject = ['$scope', 'ModelController', 'ruleController'];
     var _p = CpsPanelController.prototype;
 
 
@@ -54,7 +71,7 @@ define([
 
     // For the styledict view we should be able to display all rules that it is made up from
     // the most specific one at the top (styledict knows the order)
-    // the inactive parameters should be visually very differeny from the active parameters
+    // the inactive parameters should be visually very different from the active parameters
     //           although, editing should be possible
     // parameters can be added to all displayed rules
     // (OR new rules can be added to the master PropertyCollection of the element
@@ -80,9 +97,81 @@ define([
     //            element needs a redraw
 
 
+    _p._receiveOptions = function(options) {
+        this.$scope.cpsFileOptions = options;
+        this._waiting = null;
+        setTimeout(this.$scope.$apply.bind(this.$scope));
+    };
 
+    _p._receiveCollection = function(collection) {
+        this.$scope.collection = collection;
+        setTimeout(this.$scope.$apply.bind(this.$scope));
+        this._waiting = null;
+    };
 
+    _p.initCPSFileOptions = function() {
+        if(this._waiting) return;
 
+        this._waiting = this._ruleController.getAvailableRules(true)
+            .then(this._receiveOptions.bind(this))
+            .then(this._initCollectionView.bind(this))
+            .then(null, errors.unhandledPromise)
+            ;
+        return this._waiting;
+    };
+
+    _p._initCollectionView = function() {
+        if(!this.$scope.cpsFile) {
+            // 0 is often 'base.cps' which is kind of a bad default choice
+            // because it is very big.
+            // TODO: find a better way to select a default, maybe use
+            // the cps file of the first master
+            this.$scope.cpsFile = this.$scope.cpsFileOptions[1];
+        }
+        this.changeCPSFile();
+    };
+
+    _p.changeCPSFile = function() {
+        if(this._waiting) return;
+        var file = this.$scope.cpsFile;
+        this.$scope.collection = null;
+        this._waiting = this._ruleController.getRule(true, file)
+            .then(this._receiveCollection.bind(this))
+            .then(null, errors.unhandledPromise)
+            ;
+        return this._waiting;
+    };
+
+    _p._selectFirst = function(selector) {
+        try {
+            return this._modelController.query(selector);
+        }
+        catch(error) {
+            if(!(error instanceof CPSError))
+                throw error;
+            console.warn('selector "' + selector + '" did not parse:', error.message);
+        }
+        return null;
+    };
+
+    _p._changeElement = function(element) {
+        this.$scope.styleElement = element;
+        this.$scope.$apply();
+    }
+
+    _p.changeSelector = function() {
+        // select one element (query, not query all)
+        // then set scope.styleElement = result
+
+        var element = this._selectFirst(this.$scope.elementSelector) || null;
+        if(this.$scope.styleElement === element)
+            return;
+        // force to unload the current element
+        this.$scope.styleElement = null;
+        // later, load the new one
+        setTimeout(this._changeElement.bind(this, element));
+
+    };
 
     return CpsPanelController;
 });

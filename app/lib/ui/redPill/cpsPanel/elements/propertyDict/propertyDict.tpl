@@ -9,6 +9,9 @@
             index="$index"
             edit="controller.getEditingPropertyData($index, false)"
 
+            ng-init="controller.registerName($index, item[1].name)"
+            ng-class="controller.isActive($index, item[1].name, 'active', 'shadowed')"
+
             mtk-element-tools="elementTools"
             mtk-drag="cps/property"
             mtk-drag-data="[controller.cpsPropertyDict, $index]"

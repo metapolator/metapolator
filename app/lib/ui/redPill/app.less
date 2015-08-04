@@ -183,12 +183,18 @@ mtk-cps-panel {
         z-index: 10;
     }
 
-    mtk-cps-collection.root {
+    mtk-cps-collection.root,
+    mtk-cps-style-dict {
         display: block;
         flex-grow: 1;
         flex-shrink: 1;
         overflow-y: scroll;
+    }
 
+
+    mtk-cps-style {
+        display: block;
+        background: red;
     }
 
     mtk-cps-rule {
@@ -313,6 +319,18 @@ mtk-cps-panel {
             cursor: help;
         }
     }
+
+    /**
+     * These properties are defined but more specific properties are used
+     */
+    mtk-cps-property.shadowed {
+        span.property-name,
+        span.property-value {
+            color: gray;
+            text-decoration: line-through;
+        }
+    }
+
     mtk-cps-new-item{
         display: block;
     }

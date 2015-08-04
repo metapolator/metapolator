@@ -24,6 +24,8 @@ define([
         this._propertyDictSubscription = this.cpsPropertyDict.on(
                             'update', [this, '_propertyDictUpdateHandler']);
         $scope.$on('$destroy', this._destroy.bind(this));
+
+        this._activeNamesRegistry = Object.create(null);
     }
 
     PropertyDictController.$inject = ['$scope'];
@@ -137,12 +139,12 @@ define([
             case 'replace':
                 // externalArgs: index, recplacement
                 method = this.replaceCPSElement.bind(this);
-                break
+                break;
             default:
                 console.warn('unkown command:', command, 'index:', index);
                 return;
         }
-        args = [method, 0]
+        args = [method, 0];
         Array.prototype.push.apply(args, externalArgs);
         setTimeout.apply(null, args);
     };
@@ -169,6 +171,37 @@ define([
         else
             item = this.cpsPropertyDict.getItem(index);
         return (index + ':' + item.hash);
+    };
+
+
+    /**
+     * Used for style-dict where the first property name of all rules is
+     * the only active one.
+     *
+     * Collection in turn doesn't define the usedNamesSet, then this stuff
+     * is "turned off".
+     */
+    _p.registerName = function(index, name) {
+        if(!this.usedNamesSet) return;
+        if(this.usedNamesSet.has(name)) return;
+        this._activeNamesRegistry[name] = index;
+        this.usedNamesSet.add(name);
+    };
+
+    /**
+     * Used for style-dict where the first property name of all rules is
+     * the only active one.
+     *
+     * Collection in turn doesn't define the usedNamesSet, then this stuff
+     * is "turned off".
+     */
+    _p.isActive = function(index, name, activeClass, inactiveCLass) {
+        if(!this.usedNamesSet)
+            return '';
+        return (this._activeNamesRegistry[name] === index
+                ? activeClass
+                : inactiveCLass
+                );
     };
 
     return PropertyDictController;

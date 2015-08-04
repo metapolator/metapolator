@@ -102,7 +102,7 @@ define([
           , controller: 'PropertyDictController'
           , replace: false
           , template: template
-          , scope: { cpsPropertyDict: '=' }
+          , scope: { cpsPropertyDict: '=', usedNamesSet: '='}
           , bindToController: true
           , controllerAs: 'controller'
           , link: link
