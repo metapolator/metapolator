@@ -399,12 +399,20 @@ define([
         return result;
     };
 
+    _p._loadRules = function(force) {
+        if(this._rules === null || force)
+            //this call is most expensive
+            this._rules = this._controller.getRulesForElement(this.element);
+    };
+
+    _p.getRules = function(rules) {
+        this._loadRules();
+        return this._rules.slice();
+    };
 
     _p._buildIndex = function() {
         var i, l, j, ll, keys, key, parameters, subscriberID;
-        if(this._rules === null)
-            // lazy rule getting, this call is most expensive
-            this._rules = this._controller.getRulesForElement(this.element);
+        this._loadRules();
         this._dict = Object.create(null);
         for(i=0,l=this._rules.length;i<l;i++) {
             parameters = this._rules[i].parameters;
