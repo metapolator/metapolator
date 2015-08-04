@@ -37,7 +37,6 @@ define([
                   , setter: null
                   , newHeight: null
                 };
-                console.log(state);
                 state.mouseup = endResizeHeight.bind(state);
                 state.mousemove = changeHeight.bind(state);
 

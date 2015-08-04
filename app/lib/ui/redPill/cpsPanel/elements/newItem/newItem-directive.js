@@ -96,6 +96,7 @@ define([
             }
 
             scope.changeElement = changeElement;
+            changeElement();
         }
         return {
             restrict: 'E' // only matches element names

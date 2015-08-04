@@ -28,17 +28,17 @@ define([
             Parent.prototype._setValidityMessage.call(this, message);
     };
 
-    _p._insertItem = function() {
-        if(!this.item.resourceName || this.item.invalid)
+    _p._insertItem = function(item) {
+        if(!item.resourceName || item.invalid)
             return;
-        this.$scope.$emit('command', 'insert', this.index, this.item);
+        this.$scope.$emit('command', 'insert', this.index, item);
     };
 
     _p.finalize = function() {
         if(!this._waiting)
-            this._insertItem();
+            this._insertItem(this.item);
         else
-            return this._waiting.then(this._insertItem.bind(this));
+            return this._waiting.then(this._insertItem.bind(this, this.item));
     };
 
     return NewImportCollectionController;

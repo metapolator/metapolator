@@ -17,4 +17,5 @@
     ng-trim="false"
     style="height:{{(valueHeight || 1) * 1.2}}em"
     cols="{{valueWidth < 2 ? 2 : valueWidth}}"
+    title="Enter a comment; insert #md as first content to render the comment as markdown."
 ></textarea>

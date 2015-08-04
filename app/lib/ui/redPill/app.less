@@ -195,12 +195,22 @@ mtk-cps-panel {
         display: block;
     }
 
+
     mtk-cps-property-dict::before {
         content: '{'
     }
     mtk-cps-property-dict::after {
         content: '}';
         display: block;
+    }
+
+    mtk-cps-new-selector-list > div {
+        display: inline-block;
+        text-align: center;
+    }
+
+    mtk-cps-new-rule mtk-cps-new-selector-list::after {
+        content: '{}';
     }
 
     mtk-cps-property-dict {
@@ -224,8 +234,6 @@ mtk-cps-panel {
 
     mtk-cps-comment {
         display: inline-block;
-
-
         color: darkslategray;
         vertical-align: top;
         span {
@@ -282,7 +290,9 @@ mtk-cps-panel {
         .selectorlist {
             color: maroon;
         }
-
+        .display.selectorlist {
+            min-width: 3em; /* need space to click for a new selectorlist */
+        }
         .display.property-value,
         .display.selectorlist {
             display: inline-block;
@@ -330,20 +340,29 @@ mtk-cps-panel {
         padding-left: 1em;
     }
 
-    mtk-cps-namespace-collection {
-        > mtk-cps-selector-list::before{
+
+    mtk-cps-namespace-collection,
+    mtk-cps-new-namespace-collection {
+
+        > mtk-cps-selector-list::before,
+        > mtk-cps-new-selector-list::before{
             content: "@namespace (";
         }
-        > mtk-cps-selector-list{
+        > mtk-cps-selector-list,
+        > mtk-cps-new-selector-list {
             /*eliminates a pesky space between the element and the ::after*/
             display: inline-flex;
         }
-        > mtk-cps-selector-list::after{
+        > mtk-cps-selector-list::after,
+        > mtk-cps-new-selector-list::after {
             content: ") {";
         }
     }
-    mtk-cps-namespace-collection::after{
+    mtk-cps-namespace-collection::after ,
+    mtk-cps-new-namespace-collection::after {
         content: "}";
+    }
+    mtk-cps-namespace-collection::after {
         display: block;
     }
 

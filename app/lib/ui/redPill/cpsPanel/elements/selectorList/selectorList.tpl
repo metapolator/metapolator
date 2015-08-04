@@ -11,6 +11,8 @@
     ng-trim="false"
     style="height:{{(valueHeight || 1) * 1.2}}em"
     cols="{{valueWidth < 2 ? 2 : valueWidth}}"
+    placeholder="{{controller.placeholder}}"
+    title="enter a selector"
 ></textarea><!--
 --><span
     ng-if="!edit"

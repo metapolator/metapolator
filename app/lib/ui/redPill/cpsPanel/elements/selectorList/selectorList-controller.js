@@ -28,16 +28,22 @@ define([
     SelectorListController.$inject = ['$scope'];
     var _p = SelectorListController.prototype;
 
+    _p.placeholder = 'enter a selector';
+
     _p._initSelectorList = function() {
-        var $scope = this.$scope;
-        $scope.selectorList = this.selectorListHost.getSelectorList().toString();
-        $scope.invalid = $scope.selectorList.invalid;
-        $scope.message = $scope.selectorList.message || '';
+        var $scope = this.$scope
+          , selectorList = this.selectorListHost.getSelectorList();
+        $scope.selectorList = selectorList.toString();
+        $scope.invalid = selectorList.invalid;
+        $scope.message = selectorList.message || '';
         this._setValueBoxSize($scope.selectorList);
     };
 
-    _p._setValueBoxSize = function(value) {
-        var sizes = helpers.calculateTextBoxSize(value)
+    _p._setValueBoxSize = function(_value) {
+        var value = _value === ''
+                    ? this.placeholder
+                    : _value
+          , sizes = helpers.calculateTextBoxSize(value)
           , cols = sizes[0]
           , lines = sizes[1];
         this.$scope.valueWidth = cols;
