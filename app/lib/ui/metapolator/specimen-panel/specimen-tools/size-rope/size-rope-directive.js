@@ -13,6 +13,7 @@ define([
           , replace : false
           , scope : {
                 model : '=mtkModel'
+              , type : '=mtkType'
             }
           , link : function(scope, element, attrs, ctrl) {
                 var dS = 8, 
@@ -43,12 +44,13 @@ define([
                         $(document.body).append(state.templayer.element);
                     }).on('drag', function() {
                         var ropeLength,
-                            x = d3.event.x - dS, 
-                            y = d3.event.y - dS; 
+                          x = d3.event.x - dS,
+                          y = d3.event.y - dS;
                         positionDiamond(x, y);
                         ropeLength = getRopeLength(x, -y); 
                         state.fontSize = getAbsolutePixels(ropeLength, state.pixelOffset);
                         scope.limitFontSize(state.fontSize);
+                        scope.handleSVGbox();
                     }).on('dragend', function() {
                         diamondstatic.attr('class', 'size-rope-diamond');
                         $(state.templayer.element).remove();

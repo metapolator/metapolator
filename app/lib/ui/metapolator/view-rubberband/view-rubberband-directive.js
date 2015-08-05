@@ -8,13 +8,11 @@ define([
         return {
             restrict : 'A'
           , controller : 'ViewRubberbandController'
-          , replace : false,
-            scope : {
+          , replace : false
+          , scope : {
                 model : '=mtkModel'
             }
           , link : function(scope, element, attrs, ctrl) {
-                // set the type, so we know which updateSelectedMasters we need to use (masters or instances)
-                scope.type = attrs.mtkViewRubberband;
                 var mouse = {
                     click : false,
                     move : false,

@@ -1,11 +1,27 @@
 define([], function() {
-    "use strict";
+    'use strict';
     function SpecimenPanelController($scope) {
         this.$scope = $scope;
-        this.$scope.name = 'specimenPanel';
-        if ($scope.model.settings.rubberband) {
-            
-        }
+
+        $scope.model = {
+            sequences : $scope.sequences
+          , sizes : {
+                fontSize : 128
+              , lineHeight : null
+              , lineHeightSetting : 1
+          }
+          , mixer : {
+                specimenSample : null
+              , fontBy : 'Specimen'
+              , filter : ''
+              , strict : 0
+            }
+          , selectedMasters : []
+          , glyphsIn : []
+          , rubberband : $scope.rubberband
+          , glyphrange : $scope.glyphrange
+          , type : $scope.type
+        };
     }
 
     SpecimenPanelController.$inject = ['$scope'];

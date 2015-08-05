@@ -8,6 +8,7 @@ define(['require/text!./specimen-samples.tpl'], function(template) {
           , template : template
           , scope : {
                 model : '=mtkModel'
+              , glyphRange : '=mtkGlyphRange'
             }
         };
     }

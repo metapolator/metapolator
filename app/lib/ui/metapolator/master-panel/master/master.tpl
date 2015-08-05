@@ -8,7 +8,7 @@
     <ul>
         <li ng-repeat="character in model.ag"><!--
             
-            --><mtk-glyph ng-if="getGlyph(character)" mtk-model="getGlyph(character)">{{character}}</mtk-glyph><!--
+            --><mtk-glyph ng-if="getGlyph(character)" mtk-model="getGlyph(character)" class="list-mtk-glyph"></mtk-glyph><!--
             
         --></li>
     </ul> 

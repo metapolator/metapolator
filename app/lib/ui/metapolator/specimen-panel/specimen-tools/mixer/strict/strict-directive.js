@@ -13,16 +13,21 @@ define([
                 model : '=mtkModel'
             }
           , link : function(scope, element, attrs, ctrl) {
-                var buttonW = scope.sizes.buttonW, spacing = scope.sizes.spacing, margin = scope.sizes.margin
+                var sizes = {
+                    buttonW : 10,
+                    spacing : 6,
+                    margin : 2
+                  }
+                  , buttonW = sizes.buttonW, spacing = sizes.spacing, margin = sizes.margin
                   , svg = d3.select(element[0]).append('svg').attr('width', '110px').attr('height', '20px')
                   , x
                   , drag = d3.behavior.drag().on('dragstart', function() {
                     }).on('drag', function() {
                         x = d3.event.x;
-                        d3.select(this).attr('x', scope.limitX(x));
+                        d3.select(this).attr('x', limitX(x));
                     }).on('dragend', function() {
-                        d3.select(this).attr('x', scope.positionX(x).x);
-                        scope.setStrict(scope.positionX(x).strict);
+                        d3.select(this).attr('x', positionX(x).x);
+                        scope.setStrict(positionX(x).strict);
                         scope.$apply();
                         redraw();
                     })
@@ -56,6 +61,38 @@ define([
                 }
     
                 redraw();
+
+                function limitX(x) {
+                    var limitLeft = sizes.margin,
+                        limitRight = limitLeft + 2 * (sizes.buttonW + sizes.spacing);
+                    if (x < limitLeft) {
+                        x = limitLeft;
+                    } else if (x > limitRight) {
+                        x = limitRight;
+                    }
+                    return x;
+                }
+
+                function positionX(x) {
+                    var pos0 = sizes.margin
+                        , pos1 = sizes.margin + sizes.buttonW + sizes.spacing
+                        , pos2 = sizes.margin + 2 * (sizes.buttonW + sizes.spacing)
+                        , strict;
+                    if (x < (pos1 - 0.5 * sizes.buttonW)) {
+                        x = pos0;
+                        strict = 0;
+                    } else if (x < (pos2 - 0.5 * sizes.buttonW)) {
+                        x = pos1;
+                        strict = 1;
+                    } else {
+                        x = pos2;
+                        strict = 2;
+                    }
+                    return {
+                        x : x,
+                        strict : strict
+                    };
+                }
             }
         };
     }

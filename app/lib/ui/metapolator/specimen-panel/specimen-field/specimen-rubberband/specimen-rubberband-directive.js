@@ -80,7 +80,7 @@ define([
                         // trigger a click+move+release event
                         if (mouse.move) {
                             var selected = [];
-                            $(element).find("mtk-glyph").each(function() {
+                            $(element).find("mtk-glyph.selected-master").each(function() {
                                 $(this).removeClass("temp-selected");
                                 if (isThisInBox(this)) {
                                     var model = angular.element(this).isolateScope().model;
@@ -127,7 +127,7 @@ define([
                 }
                 
                 function findHoveredGlyphs(event) {
-                    $(element).find("mtk-glyph").each(function() {
+                    $(element).find("mtk-glyph.selected-master").each(function() {
                         if (event.shiftKey || event.ctrlKey || event.metaKey) {
                             // the temp-selected and the temp-unselected only represent wether a glyph is caught by the rubberband
                             // the real selected represents the edit: true state of a glyph. 

@@ -1,31 +1,39 @@
 define([
     'jquery'
+  , 'metapolator/ui/metapolator/ui-tools/instanceTools'
+  , 'metapolator/ui/metapolator/ui-tools/dialog'
 ], function(
     $
+  , instanceTools
+  , dialog
 ) {
     "use strict";
-    function InstancePanelController($scope, metapolatorModel, $timeout) {
+    function InstancePanelController($scope, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
-        
-        //$scope.colWidth = metapolatorModel.display.panel.panels[5] / 
-        
+
         $scope.addInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
-              , axes = [];
-            for (var i = designSpace.axes.length - 1; i >= 0; i--) {
+            var designSpace = $scope.model.currentInstance.designSpace
+              , axes = []
+              , instance
+              , n = designSpace.axes.length;
+            for (var i = 0; i < n; i++) {
                 var master = designSpace.axes[i];
                 axes.push({
                     master: master,
-                    axisValue: 50
+                    axisValue: 50,
+                    metapolationValue: 1 / n
                 });
             }
-            $scope.model.sequences[0].addInstance(axes, designSpace);
+            instance = $scope.model.instanceSequences[0].createNewInstance(axes, designSpace, project);
+            instanceTools.registerInstance(project, instance);
+            $scope.model.instanceSequences[0].addInstance(instance);
         };
         
-        $scope.duplicateInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
-              , axes = [];
+        $scope.cloneInstance = function () {
+            var designSpace = $scope.model.currentDesignSpace
+              , axes = []
+              , clone;
             for (var i = 0, l = $scope.model.currentInstance.axes.length; i < l; i++) {
                 var axis = $scope.model.currentInstance.axes[i];
                 axes.push({
@@ -35,55 +43,41 @@ define([
                     master: axis.master
                 });
             }
-            $scope.model.sequences[0].addInstance(axes, designSpace);
+            clone = $scope.model.instanceSequences[0].createNewInstance(axes, designSpace, project);
+            instanceTools.registerInstance(project, clone);
+            $scope.model.instanceSequences[0].addInstance(clone);
         };
         
-        $scope.deleteInstance = function (instance) {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace
-              , index = $scope.model.sequences[0].children.indexOf(instance)
-              , l
+        $scope.removeInstance = function (instance) {
+            var designSpace = instance.designSpace
               , n = 0;
             // check if it is the last instance on the design space
-            for (var i = $scope.model.sequences.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.sequences[i];
+            for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instanceSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var thisInstance = sequence.children[j];
                     if (thisInstance.designSpace === designSpace) {
                         n++;
                     }
                 }
-            } 
-            if (n == 1) {
+            }
+            if (n === 1) {
                 var message = "Delete instance? This also deletes the design space '" + designSpace.name + "'.";
-                metapolatorModel.display.dialog.confirm(message, function(result){
+                dialog.confirm(message, function(result){
                     if (result) {
-                        deleteInstance();
-                        metapolatorModel.designSpacePanel.removeDesignSpace(designSpace);
+                        instance.remove();
+                        designSpace.remove();
                         $scope.$apply();
                     }
                 });
             } else {
-                deleteInstance();
+                instance.remove();
             }
-            
-            function deleteInstance() {
-                $scope.model.sequences[0].children.splice($scope.model.sequences[0].children.indexOf(instance), 1);
-                l = $scope.model.sequences[0].children.length;
-                if (l > 0) {
-                    // when the deleted instance was the last in array
-                    if (index >= l) {
-                        index = l - 1;
-                    }
-                    // select the instance with same index as deleted one
-                    $scope.model.setCurrentInstance($scope.model.sequences[0].children[index]);
-                } else {
-                    $scope.model.setCurrentInstance(null);
-                }            
-            }
+
         };
         
         $scope.canAddInstance = function () {
-            var designSpace = metapolatorModel.designSpacePanel.currentDesignSpace;
+            var designSpace = $scope.model.currentDesignSpace;
             if (designSpace && designSpace.axes.length > 0) {
                 return true;
             } else {
@@ -94,8 +88,8 @@ define([
         //export fonts
         
         $scope.instancesForExport = function () {
-            for (var i = $scope.model.sequences.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.sequences[i];
+            for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.instanceSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.exportFont) {
@@ -105,6 +99,8 @@ define([
             } 
             return false;
         };
+
+        /*
 
         $scope.export_is_running = false;
         
@@ -170,13 +166,13 @@ define([
               ;
               
             function setProgress(width, text) {
-                $("#progress-bar").animate({"opacity": 1, "width": width + "%"}, /*duration:*/ UI_UPDATE_TIMESLICE);
+                $("#progress-bar").animate({"opacity": 1, "width": width + "%"}, UI_UPDATE_TIMESLICE);
                 if (text)
                     $("#progress-bar-label").html(text);
             }
     
             function setDownloadBlobLink(text, blob, filename) {
-                $("#progress-bar").animate({"width": "100%", "opacity": 1}, /*duration:*/ UI_UPDATE_TIMESLICE);
+                $("#progress-bar").animate({"width": "100%", "opacity": 1},  UI_UPDATE_TIMESLICE);
                 $("#progress-bar-label").html("");
                 $("#progress-bar-blob-download").css("display", "block");
                 $("#progress-bar-blob-download").children("a").html(text).click(function(){
@@ -187,7 +183,7 @@ define([
             }
             
             function resetProgressBar() {
-                $("#progress-bar").animate({"opacity": 0, "width": 0}, /*duration:*/ 0); // (that means "do it immediately!")
+                $("#progress-bar").animate({"opacity": 0, "width": 0}, 0); // (that means "do it immediately!")
                 $("#progress-bar-label").html("");
                 $("#progress-bar-blob-download").css("display", "none").children("a").unbind("click");
             }
@@ -236,7 +232,8 @@ define([
     
             $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
         };
-      
+        */
+
         // angular-ui sortable
         $scope.sortableOptions = {
             handle : '.list-edit',
@@ -251,10 +248,10 @@ define([
                 $(this).css({ opacity: 0.1 });
             });
             // Dim specimen text
-            if (instance.display || instance == $scope.model.currentInstance) {
+            if (instance.display || instance === $scope.model.currentInstance) {
                 // here is 'master' used for syncing with master reasons
-                var textCurrent = $(".specimen-field-instances ul li.master-" + instance.name);
-                $(".specimen-field-instances ul li").not(textCurrent).each(function() {
+                var textCurrent = $(".specimen-field-instance ul li.master-" + instance.name);
+                $(".specimen-field-instance ul li").not(textCurrent).each(function() {
                     $(this).addClass("dimmed");
                 });
             }
@@ -264,11 +261,11 @@ define([
             // Restore slider diamonds
             $(".design-space-diamond").css("opacity", "");
             // Restore specimen text
-            $(".specimen-field-instances ul li").removeClass("dimmed");
+            $(".specimen-field-instance ul li").removeClass("dimmed");
         };
     }
 
-    InstancePanelController.$inject = ['$scope', 'metapolatorModel'];
+    InstancePanelController.$inject = ['$scope', '$timeout', 'project'];
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;

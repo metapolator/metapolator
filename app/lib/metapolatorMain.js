@@ -19,15 +19,6 @@ require([
 ) {
     "use strict";
 
-    // TODO: get rid of this.
-    var lasttime = null;
-    window.logCall = function(name) {
-        var thistime = Date.now();
-        console.log(name + " " + (thistime - lasttime));
-        lasttime = thistime;
-    };
-
-
     document.body.classList.add('dependencies-ready');
     // init, loading the project from http at './project'
     var projectPath = 'project'

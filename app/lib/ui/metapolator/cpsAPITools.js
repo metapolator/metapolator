@@ -1,5 +1,5 @@
-require([
-  , 'metapolator/errors'
+define([
+    'metapolator/errors'
   , 'metapolator/project/parameters/registry'
   , 'metapolator/models/CPS/elements/ParameterValue'
   , 'metapolator/models/CPS/elements/Parameter'
@@ -9,7 +9,7 @@ require([
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 ],
 function (
-  , errors
+    errors
   , parameterRegistry
   , ParameterValue
   , Parameter

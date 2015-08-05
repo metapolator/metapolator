@@ -25,18 +25,22 @@ mtk-master div {
 
 .list-view.selected {
     background: @mtk-color-2;
-    // temp. apply this to svg later on
-    color: @mtk-color-1;
+}
+
+.list-view.selected svg {
+    fill: #fff;
 }
 
 .list-view ul {
     list-style: outside none none;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 .list-view ul li {
-    display: inline;
+    display: inline-block;
+    height: 100%;
 }
 
 .list-edit {

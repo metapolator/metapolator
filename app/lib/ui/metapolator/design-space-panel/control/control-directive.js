@@ -7,7 +7,7 @@ define([
   , d3
   , $
 ) {
-    "use strict";
+    'use strict';
     function controlDirective() {
         return {
             restrict: 'E',
@@ -22,17 +22,17 @@ define([
                     initialBuildGraphics();
                     redrawFunction();
                 });
-                var dragActive = false;
-                var designSpace = null;
-                var thisInstance = null;
-                var inactiveInstances = [];
-                var svg = d3.select(element[0]).append('svg');
-                var layerSingle = svg.append('g').attr('class', 'single-layer');
-                var inactiveLayer = svg.append('g').attr('class', 'inactive-axes');
-                var activeLayer = svg.append('g').attr('class', 'active-axes');
-                var singleContainer;
+                var dragActive = false
+                  , designSpace = null
+                  , thisInstance = null
+                  , inactiveInstances = []
+                  , svg = d3.select(element[0]).append('svg')
+                  , layerSingle = svg.append('g').attr('class', 'single-layer')
+                  , inactiveLayer = svg.append('g').attr('class', 'inactive-axes')
+                  , activeLayer = svg.append('g').attr('class', 'active-axes')
+                  , singleContainer
 
-                var graphics = {
+                  , graphics = {
                     elementWidth : null,
                     axisWidth : null,
                     paddingLeft : 50, 
@@ -46,7 +46,7 @@ define([
                     diamondsize : 7, 
                     diamondPadding : 12, 
                     paddingRemoveButton : 6,
-                    diamondShape : "10,2 4,2 2,6 7,15 12,6",
+                    diamondShape : '10,2 4,2 2,6 7,15 12,6',
                     axesString : null,
                     reverseAxesString : null
                 };
@@ -56,34 +56,31 @@ define([
                 // todo, when changing design space, automatically the current instance is changed as well
                 // this causes 2 triggers for redraw, where only the designspace redraw function should be fired
                 
-                scope.$watch('instancePanel.currentInstanceTrigger', function() {
+                scope.$watch('model.parent.currentInstanceTrigger', function() {
                     return softRedraw();
                 });
                 
-                scope.$watch('designSpacePanel.currentDesignSpaceTrigger', function() {
+                scope.$watch('model.parent.currentDesignSpaceTrigger', function() {
                     return redrawFunction();
                 });
                 
-                scope.$watch('designSpacePanel.nrOfAxesTrigger', function() {
+                scope.$watch('model.parent.nrOfAxesTrigger', function() {
                     // for now using a full redraw. We can make this more specific later on
                     return redrawFunction();
                 });
                             
                 function redrawFunction() {
-                    window.logCall("start svg");
                     removeAll();
                     buildData();
                     if (thisInstance) {
                         drawAll();
-                        window.logCall("end svg");
-                    }  
+                    }
                     if (inactiveInstances.length > 0) {
                         drawInactiveAxes();
                     }
                 }
                 
                 function softRedraw() {
-                    window.logCall("start softRedraw");
                     inactiveLayer.selectAll('*').remove();
                     buildData();
                     if (thisInstance) {
@@ -92,26 +89,26 @@ define([
                     if (inactiveInstances.length > 0) {
                         drawInactiveAxes();
                     }
-                    window.logCall("end softRedraw");
                 }
                 
                 function buildData() {
                     designSpace = scope.model;
                     thisInstance = null;
                     inactiveInstances = [];
-                    for (var i = scope.instancePanel.sequences.length - 1; i >= 0; i--) {
-                        var sequence = scope.instancePanel.sequences[i];
+                    for (var i = scope.model.parent.instanceSequences.length - 1; i >= 0; i--) {
+                        var sequence = scope.model.parent.instanceSequences[i];
                         for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                             var instance = sequence.children[j];
-                            if (instance.designSpace == designSpace) {
-                                if (instance == scope.instancePanel.currentInstance) {
+                            if (instance.designSpace === designSpace) {
+                                if (instance === scope.model.parent.currentInstance) {
                                     thisInstance = instance;
                                 } else {
                                     for (var k = 0, kl = instance.axes.length; k < kl; k++) {
-                                        if (k == designSpace.slack) {
-                                            var thisSlack = true;
+                                        var thisSlack;
+                                        if (k === designSpace.slack) {
+                                            thisSlack = true;
                                         } else {
-                                            var thisSlack = false;
+                                            thisSlack = false;
                                         }
                                         var thisAxis = instance.axes[k];
                                         if (!inactiveInstances[k]) {
@@ -133,7 +130,7 @@ define([
                 var axisContainer = null;
                 
                 function drawAll() {
-                    if (thisInstance.axes.length == 1) {
+                    if (thisInstance.axes.length === 1) {
                         drawSingleExtras();
                     }  
                     axisContainer = drawContainers();
@@ -150,32 +147,32 @@ define([
                     for (var i = 0, l = thisInstance.axes.length; i < l; i++) {
                         var axis = thisInstance.axes[i];
                         // readjust active axis
-                        d3.select("#axis-active" + i).attr('d', function() {
-                            if (designSpace.slack == i) {
+                        d3.select('#axis-active' + i).attr('d', function() {
+                            if (designSpace.slack === i) {
                                 return 'M' + ((100 - axis.axisValue) * (graphics.axisStep) + graphics.indentLeft) + ' 0 L' + (graphics.axisRightPoint) + ' 0';
                             } else {
                                 return 'M' + graphics.indentLeft + ' 0  L' + (axis.axisValue * (graphics.axisStep) + graphics.indentLeft) + ' 0';
                             }
                         });
                         // readjust handle
-                        d3.select("#slider" + i).attr('cx', function() {
-                            if (designSpace.slack == i) {
+                        d3.select('#slider' + i).attr('cx', function() {
+                            if (designSpace.slack === i) {
                                 return (100 - axis.axisValue) * (graphics.axisStep) + graphics.indentLeft;
                             } else {
                                 return axis.axisValue * (graphics.axisStep) + graphics.indentLeft;
                             }
                         });
                         // readjust diamond
-                        d3.select("#diamond" + i).attr('transform', function() {
-                            if (designSpace.slack == i) {
-                                return "translate(" + ((100 - axis.axisValue) * (graphics.axisStep) + graphics.indentPlusDiamond) + ", -28)";
+                        d3.select('#diamond' + i).attr('transform', function() {
+                            if (designSpace.slack === i) {
+                                return 'translate(' + ((100 - axis.axisValue) * (graphics.axisStep) + graphics.indentPlusDiamond) + ', -28)';
                             } else {
-                                return "translate(" + (axis.axisValue * (graphics.axisStep) + graphics.indentPlusDiamond) + ", -28)";
+                                return 'translate(' + (axis.axisValue * (graphics.axisStep) + graphics.indentPlusDiamond) + ', -28)';
                             }
                         });
                         // reassign color
-                        d3.select("#diamond" + i + " polygon").attr('fill', thisInstance.color).attr('stroke', thisInstance.color)
-                        .attr('class', 'design-space-diamond instance-' + thisInstance.name).style("opacity", 1);
+                        d3.select('#diamond' + i + ' polygon').attr('fill', thisInstance.color).attr('stroke', thisInstance.color)
+                        .attr('class', 'design-space-diamond instance-' + thisInstance.name).style('opacity', 1);
                     }  
                 }
                 
@@ -186,16 +183,16 @@ define([
                         for (var j = 0, k = axes.length; j < k; j++) {
                             var instance = axes[j];
                             // readjust diamond
-                            d3.select(".inactive-axis-" + i + " .inactive-diamond-" + j).attr('transform', function(instance, index) {
+                            d3.select('.inactive-axis-' + i + ' .inactive-diamond-' + j).attr('transform', function(instance, index) {
                                 if (instance.slack) {
                                     var x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * (100 - instance.value);
                                 } else {
                                     var x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * instance.value;
                                 }
-                                return "translate(" + x + ", 0)";
+                                return 'translate(' + x + ', 0)';
                             });
                             // reassign color
-                            d3.select(".inactive-diamond-" + j + " polygon").attr('stroke', instance.color);
+                            d3.select('.inactive-diamond-' + j + ' polygon').attr('stroke', instance.color);
                         }
                     }
                 }
@@ -204,19 +201,18 @@ define([
                 // drawing functions
                 function drawContainers() {
                     var data = thisInstance.axes;
-                    var axisContainer = activeLayer.selectAll('g').data(data).enter().append('g').attr('transform', function(axis, index) {
+                    return activeLayer.selectAll('g').data(data).enter().append('g').attr('transform', function(axis, index) {
                         var x = graphics.leftOffset;
                         var y = index * graphics.axisDistance + graphics.paddingTop;
-                        return "translate(" + x + "," + y + ")";
+                        return 'translate(' + x + ',' + y + ')';
                     }).attr('class', function(axis, index) {
                         return 'slider-container-' + index + ' not-dragging';
                     }); 
-                    return axisContainer;
                 }
                 
                 function drawBackLine(axisContainer) {
                     axisContainer.append('path').attr('d', function(axis, index) {
-                        if (designSpace.slack == index) {
+                        if (designSpace.slack === index) {
                             return graphics.reverseAxesString;
                         } else {
                             return graphics.axesString;
@@ -229,13 +225,13 @@ define([
                         activeLayer.selectAll('.slider-axis-active').remove();
                     }
                     axisContainer.append('path').attr('d', function(axis, index) {
-                        if (designSpace.slack == index) {
+                        if (designSpace.slack === index) {
                             return 'M' + ((100 - axis.axisValue) * (graphics.axisStep) + graphics.indentLeft) + ' 0 L' + (graphics.axisRightPoint) + ' 0';
                         } else {
                             return 'M' + graphics.indentLeft + ' 0  L' + (axis.axisValue * (graphics.axisStep) + graphics.indentLeft) + ' 0';
                         }
                     }).attr('class', 'slider-axis-active').attr('id', function(axis, index) {
-                        return "axis-active" + index;
+                        return 'axis-active' + index;
                     });
                 }
                 
@@ -244,7 +240,7 @@ define([
                         activeLayer.selectAll('.slider-handle').remove();
                     }
                     axisContainer.append('circle').attr('r', 8).attr('cx', function(axis, index) {
-                        if (designSpace.slack == index) {
+                        if (designSpace.slack === index) {
                             return (100 - axis.axisValue) * (graphics.axisStep) + graphics.indentLeft;
                         } else {
                             return axis.axisValue * (graphics.axisStep) + graphics.indentLeft;
@@ -263,10 +259,10 @@ define([
                     axisContainer.append('g').attr('id', function(axis, index) {
                         return 'diamond' + index;
                     }).attr('transform', function(axis, index) {
-                        if (designSpace.slack == index) {
-                            return "translate(" + ((100 - axis.axisValue) * (graphics.axisStep) + graphics.indentPlusDiamond) + ", -28)";
+                        if (designSpace.slack === index) {
+                            return 'translate(' + ((100 - axis.axisValue) * (graphics.axisStep) + graphics.indentPlusDiamond) + ', -28)';
                         } else {
-                            return "translate(" + (axis.axisValue * (graphics.axisStep) + graphics.indentPlusDiamond) + ", -28)";
+                            return 'translate(' + (axis.axisValue * (graphics.axisStep) + graphics.indentPlusDiamond) + ', -28)';
                         }
                     }).append('polygon')
                       .attr('points', graphics.diamondShape)
@@ -277,14 +273,15 @@ define([
                 }
         
                 function drawLabel(axisContainer) {
-                    var label = axisContainer.append('g').attr('transform', function(axis, index) {
-                        if (index == designSpace.slack) {
-                            var x = graphics.leftOffset - 10;
+                    var x
+                      , label = axisContainer.append('g').attr('transform', function(axis, index) {
+                        if (index === designSpace.slack) {
+                            x = graphics.leftOffset - 10;
                         } else {
-                            var x = graphics.rightTextLeftPoint;
+                            x = graphics.rightTextLeftPoint;
                         }
                         var y = graphics.paddingLabel;
-                        return "translate(" + x + "," + y + ")";
+                        return 'translate(' + x + ',' + y + ')';
                     }).attr('class', 'slider-label-container').style('display', function(axis, index) {
                         if (index != designSpace.slack || designSpace.axes.length < 3) {
                             return 'block';
@@ -302,22 +299,22 @@ define([
                     
                     //remove button
                     var removeButton = label.append('g').attr('transform', function(axis, index) {
-                        var x = document.getElementById("slider-label-" + index).getBoundingClientRect().width;
+                        var x = document.getElementById('slider-label-' + index).getBoundingClientRect().width;
                         x += graphics.paddingRemoveButton + 10;
-                        return "translate(" + x + ",0)";
+                        return 'translate(' + x + ',0)';
                     }).attr('class', 'remove-master-g');
                     removeButton.append('circle').attr('cx', 3).attr('cy', -2).attr('r', 7).attr('class', 'remove-master-bg');
-                    removeButton.append('text').attr('x', 0).attr('y', '2').text("×").
-                        attr('class', 'remove-master-text').on("click", function(axis, index) {
+                    removeButton.append('text').attr('x', 0).attr('y', '2').text('×').
+                        attr('class', 'remove-master-text').on('click', function(axis, index) {
                             scope.removeMaster(axis.master, designSpace);
                         });
                 }
                 
                 function drawSingleExtras() {
                     var singleContainer = layerSingle.append('g').attr('transform', function(d, i) {
-                        var x = graphics.leftOffset;
-                        var y = graphics.axisDistance + graphics.paddingTop;
-                        return "translate(" + x + "," + y + ")";
+                        var x = graphics.leftOffset
+                          , y = graphics.axisDistance + graphics.paddingTop;
+                        return 'translate(' + x + ',' + y + ')';
                     }).attr('class', 'slider-container');
                     singleContainer.append('path').attr('d', function(d, i) {
                         return graphics.axesString;
@@ -326,25 +323,25 @@ define([
                 }
                 
                 function drawInactiveAxes() {
-                    var data = inactiveInstances;
-                    inactiveLayer.selectAll('g').data(data).enter().append('g').attr('transform', function(axis, index) {
+                    var x;
+                    inactiveLayer.selectAll('g').data(inactiveInstances).enter().append('g').attr('transform', function(axis, index) {
                         var y = index * graphics.axisDistance + graphics.paddingTop - 28;
-                        return "translate(0, " + y + ")";
+                        return 'translate(0, ' + y + ')';
                     })
                     .attr('class', function(axis, index) {
                         return 'inactive-axis-' + index;
                     })
-                    .selectAll("g").data(function(axis, index) { 
+                    .selectAll('g').data(function(axis, index) {
                         return axis; 
                     }).enter().append('g').attr('transform', function(instance, index) {
                         if (instance.slack) {
-                            var x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * (100 - instance.value);
+                            x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * (100 - instance.value);
                         } else {
-                            var x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * instance.value;
+                            x = graphics.paddingLeft - graphics.diamondsize + graphics.axisWidth / 100 * instance.value;
                         }
-                        return "translate(" + x + ", 0)";
+                        return 'translate(' + x + ', 0)';
                     }).attr('class', function(instance, index){
-                        return "inactive-instance-" + index;
+                        return 'inactive-instance-' + index;
                     }).append('polygon')
                       .attr('points', graphics.diamondShape)
                       .attr('class', function(instance,index) {
@@ -392,10 +389,10 @@ define([
                 var startX, startMouseX;
     
                 var drag = d3.behavior.drag().on('dragstart', function() {
-                    var slack = designSpace.slack;
-                    var thisIndex = d3.select(this).attr('index');
-                    $(".slider-container-" + thisIndex).attr("class", "slider-container-" + thisIndex + " dragging");
-                    if (slack == thisIndex) {
+                    var slack = designSpace.slack
+                      , thisIndex = parseInt(d3.select(this).attr('index'));
+                    $('.slider-container-' + thisIndex).attr('class', 'slider-container-' + thisIndex + ' dragging');
+                    if (slack === thisIndex) {
                         slackRatios = setSlackRatio(slack);
                     }
                     startX = parseInt(d3.select(this).attr('cx'));
@@ -403,61 +400,62 @@ define([
                     dragActive = true;
                 }).on('drag', function() {
                     // redraw slider and active axis
-                    var slack = designSpace.slack;
-                    var thisMouseX = d3.event.sourceEvent.clientX;
-                    var deltaX = thisMouseX - startMouseX;
-                    var xPosition = limitX(startX + deltaX);
-                    var thisIndex = d3.select(this).attr('index');
-                    var thisValue = (xPosition - graphics.indentLeft) / (graphics.axisStep);
-                    var type = d3.select(this).attr('type');
-                    if (thisIndex == slack) {
+                    var slack = designSpace.slack
+                      , thisMouseX = d3.event.sourceEvent.clientX
+                      , deltaX = thisMouseX - startMouseX
+                      , xPosition = limitX(startX + deltaX)
+                      , thisIndex = parseInt(d3.select(this).attr('index'))
+                      , thisValue = (xPosition - graphics.indentLeft) / (graphics.axisStep)
+                      , type = d3.select(this).attr('type');
+                    if (thisIndex === slack) {
                         drawSlackAxes(slack, xPosition);
+                        writeValueToModel(thisIndex, (100 - thisValue));
                         // change all others proportionally
                         for (var i = 0; i < thisInstance.axes.length; i++) {
-                            if (i != slack) {
-                                var proportionalValue = thisValue * slackRatios[i];
-                                var proportionalPosition = proportionalValue * (graphics.axisStep) + graphics.indentLeft;
+                            if (i !== slack) {
+                                var proportionalValue = thisValue * slackRatios[i]
+                                  , proportionalPosition = proportionalValue * (graphics.axisStep) + graphics.indentLeft;
                                 drawNormalAxes(i, proportionalPosition);
                                 writeValueToModel(i, proportionalValue);
                             }
                         }
                     } else {
                         drawNormalAxes(thisIndex, xPosition);
+                        writeValueToModel(thisIndex, thisValue);
                         // when current slider has the largest value, it drags the slack slider with it
                         if (thisInstance.axes.length > 1 && isLargestSlider(thisInstance, thisIndex, thisValue, slack)) {
                             drawSlackAxes(slack, xPosition);
-                            writeValueToModel(slack, 100 - thisValue);
+                            writeValueToModel(slack, (100 - thisValue));
                         }
                     }
-
+                    scope.$apply();
                 }).on('dragend', function() {
-                    var slack = designSpace.slack;
-                    var thisMouseX = d3.event.sourceEvent.clientX;
-                    var deltaX = thisMouseX - startMouseX;
-                    var xPosition = limitX(startX + deltaX);
-                    var thisIndex = d3.select(this).attr('index');
-                    var thisValue = (xPosition - graphics.indentLeft) / (graphics.axisStep);
-                    $(".slider-container-" + thisIndex).attr("class", "slider-container-" + thisIndex + " not-dragging");
+                    var slack = designSpace.slack
+                      , thisMouseX = d3.event.sourceEvent.clientX
+                      , deltaX = thisMouseX - startMouseX
+                      , xPosition = limitX(startX + deltaX)
+                      , thisIndex = parseInt(d3.select(this).attr('index'))
+                      , thisValue = (xPosition - graphics.indentLeft) / (graphics.axisStep);
+                    $('.slider-container-' + thisIndex).attr('class', 'slider-container-' + thisIndex + ' not-dragging');
                     // write value of this axis to model
                     // slackmaster: reverse active axis
-                    if (thisIndex == slack) {
+                    if (thisIndex === slack) {
                         thisValue = 100 - thisValue;
                     }
                     writeValueToModel(thisIndex, thisValue);
-                    thisInstance.updateMetapolationValues();
+                    scope.setMetapolationValues(thisInstance);
                     scope.$apply();
-                    //scope.data.metapolate();
                     dragActive = false;
                 });
     
                 function setSlackRatio(slack) {
                     if (thisInstance.axes.length > 1) {
-                        var ratios = [];
-                        var highest = findHighest(slack);
+                        var ratios = []
+                          , highest = findHighest(slack);
     
                         var max = thisInstance.axes[highest].axisValue;
                         for (var i = 0; i < thisInstance.axes.length; i++) {
-                            if (max != 0) {
+                            if (max !== 0) {
                                 ratios.push(thisInstance.axes[i].axisValue / max);
                             } else {
                                 ratios.push(1);
@@ -480,19 +478,18 @@ define([
                 }
     
                 function drawNormalAxes(axis, xPosition) {
-                    d3.select("circle#slider" + axis).attr('cx', xPosition);
-                    d3.select("path#axis-active" + axis).attr('d', 'M' + graphics.indentLeft + ' 0  L' + xPosition + ' 0');
-                    d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - graphics.diamondsize) + ", -28)");
+                    d3.select('circle#slider' + axis).attr('cx', xPosition);
+                    d3.select('path#axis-active' + axis).attr('d', 'M' + graphics.indentLeft + ' 0  L' + xPosition + ' 0');
+                    d3.select('g#diamond' + axis).attr('transform', 'translate(' + (xPosition - graphics.diamondsize) + ', -28)');
                 }
     
                 function drawSlackAxes(axis, xPosition) {
-                    d3.select("circle#slider" + axis).attr('cx', xPosition);
-                    d3.select("path#axis-active" + axis).attr('d', 'M' + xPosition + ' 0 L' + (graphics.axisRightPoint) + ' 0');
-                    d3.select('g#diamond' + axis).attr('transform', "translate(" + (xPosition - graphics.diamondsize) + ", -28)");
+                    d3.select('circle#slider' + axis).attr('cx', xPosition);
+                    d3.select('path#axis-active' + axis).attr('d', 'M' + xPosition + ' 0 L' + (graphics.axisRightPoint) + ' 0');
+                    d3.select('g#diamond' + axis).attr('transform', 'translate(' + (xPosition - graphics.diamondsize) + ', -28)');
                 }
     
                 function writeValueToModel(axis, value) {
-                    designSpace.axes[axis].value = formatX(value);
                     thisInstance.axes[axis].axisValue = formatX(value);
                 }
     
@@ -508,8 +505,7 @@ define([
     
                 function formatX(x) {
                     var roundedX = Math.round(x * 10) / 10;
-                    var toF = roundedX.toFixed(1);
-                    return toF;
+                    return roundedX.toFixed(1);
                 }
     
                 function isLargestSlider(instance, index, value, slack) {

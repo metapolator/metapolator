@@ -5,15 +5,15 @@
     <div class="lm-body" ng-if="display.localMenu == 'masters'">
         <div class="lm-button" ng-mouseup="importUfo()">Import ufo…</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="duplicateMasters()" ng-class="{'inactive': !model.areChildrenSelected()}">Duplicate</div>
+        <div class="lm-button" ng-mouseup="duplicateMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Duplicate</div>
         <div class="lm-divider"></div>
-        <div class="lm-button" ng-mouseup="deleteMasters()" ng-class="{'inactive': !model.areChildrenSelected()}">Delete…</div>
+        <div class="lm-button" ng-mouseup="removeMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Delete…</div>
     </div>
 </mtk-local-menu>
 
 <div class="list-container" mtk-view-rubberband="masters">
     <ul class="ul-sequence">
-        <li class="li-sequence" ng-repeat="sequence in model.sequences">
+        <li class="li-sequence" ng-repeat="sequence in model.masterSequences">
             <ul class="ul-master" ui-sortable="sortableOptions" ng-model="sequence.children">
                 <li class="li-master"
                     ng-repeat="master in sequence.children"
@@ -21,7 +21,7 @@
                     ng-mouseleave="mouseleaveMaster()">
                     <mtk-master class="mtk-master"
                                 mtk-model="master"
-                                ng-class="{'selected': master.edit[0]}"></mtk-master>
+                                ng-class="{'selected': master.edit}"></mtk-master>
                 </li>
             </ul>
         </li>
@@ -31,7 +31,7 @@
             <img src="lib/ui/metapolator/assets/img/importUfo.png">
         </div>
         <div title="Duplicate Master(s)" ng-click="duplicateMasters();" class="list-button">
-            <img src="lib/ui/metapolator/assets/img/duplicateMaster.png" ng-class="{'inactive': !model.areChildrenSelected()}">
+            <img src="lib/ui/metapolator/assets/img/duplicateMaster.png" ng-class="{'inactive': !model.areMastersSelected()}">
         </div>
     </div>
 </div>

@@ -1,72 +1,63 @@
-define([], function() {
+define([
+    'metapolator/ui/metapolator/ui-tools/selectionTools'
+], function(
+    selection
+) {
     "use strict";
-    function SelectionParameterController($scope, metapolatorModel) {
+    function SelectionParameterController($scope, metapolatorModel, project) {
+        $scope.selection = selection;
+
         $scope.changeValue = function(parameter, operator, value, keyEvent) {
             if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
                 var thisValue = null
                   , operatorId = operator.id;
                   
-                for (var i = $scope.model.elements.length - 1; i >= 0; i--) {
-                    var element = $scope.model.elements[i]
+                for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                    // Write the value in all models of all elements within selection
+                    var element = $scope.model.parent.elements[i]
                       , effectiveLevel
-                      , effectedElements
-                      , selectionParameter;
+                      , effectedElements;
                     // if there is a range, we have to find the value for this element within the range
                     if (operator.range) {
-                        thisValue = $scope.getRangeValue(element, parameter, operator);
+                        thisValue = getRangeValue(element, parameter, operator);
                     } else {
-                        thisValue = $scope.managedInputValue(value, parameter, operator, keyEvent);
+                        thisValue = managedInputValue(value, parameter, operator, keyEvent);
                     }
                     // set the value of each element in the selection
-                    element.setValue(parameter, operator, thisValue);
-                    effectiveLevel = parameter.effectiveLevel;
-                    // elements down in the tree are effected by this, update their effectiveValue
-                    effectedElements = $scope.getEffectedElements(effectiveLevel, element);
-                    for (var j = 0, jl = effectedElements.length; j < jl; j++) {
-                        var effectedElement = effectedElements[j]
-                          , elementParameter = effectedElement.getParameterByName(parameter.name);
-                        elementParameter.updateEffectiveValue(effectedElement);
-                    }
-                    // update the selection of effective values
-                    selectionParameter = metapolatorModel.masterPanel.selection[effectiveLevel].getParameterByName(parameter.name);
-                    // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
-                    if (selectionParameter) {
-                        selectionParameter.updateEffectiveValue();
-                    }
+                    // if there is not yet a parameter, we create it + cpsRule
+                    // if there is not yet a operator, we create it
+                    var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
+                      , thisOperator = thisParameter.checkIfHasOperator(operator);
+                    thisOperator.setValue(thisValue);
+                    // the changed operator method checks the effects for the effective value (whether it is
+                    // at the local level or down in the tree) and writes CPS if needed
+                    thisParameter.changedOperator(thisOperator);
+                    updateLevel(parameter.base.effectiveLevel, parameter);
                 }
-                if (operator.range) {
-                    // update the range boundaries after setting each element,
-                    // so the new value of a (inbetween range) element
-                    // gets the right myPosition relative to the new boundaries
-                    operator.low.old = operator.low.current;
-                    operator.high.old = operator.high.current;
-                }
+                resetRange(operator);
             }
         };
         
-        $scope.getEffectedElements = function(effectiveLevel, changedElement) {
-            // go down to the level where the change of this value has effect
-            // and get the elements.
+        function updateLevel(changedLevel, parameter) {
+            // update the effectedValue selection for the changed level
+            var selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
+            // only when that selection is visible (eg: if no glyphs are selected, no need to update that level)
+            if (selectionParameter) {
+                selectionParameter.updateEffectiveValue();
+            }
+        }
 
-            var thisLevelElements = [changedElement]
-              , tempArray = [];
-
-            while (thisLevelElements[0].level != effectiveLevel) {
-                for (var i = 0, il = thisLevelElements.length; i < il; i++) {
-                    var thisLevelElement = thisLevelElements[i];
-                    for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
-                        var childElement = thisLevelElement.children[j];
-                        tempArray.push(childElement);
-                    }
-                }
-                thisLevelElements = tempArray;
-                tempArray = [];
-            }  
-            return thisLevelElements; 
-        };
+        function resetRange(operator) {
+            if (operator.range) {
+                // update the range boundaries after setting each element,
+                // so the new value of a (inbetween range) element
+                // gets the right myPosition relative to the new boundaries
+                operator.low.old = operator.low.current;
+                operator.high.old = operator.high.current;
+            }
+        }
         
-        $scope.getRangeValue = function(element, parameter, operator) {
-            window.logCall("getRangeValue");
+        function getRangeValue (element, parameter, operator) {
             var scale = null
               , myPosition = null
               , newValue = null
@@ -95,10 +86,9 @@ define([], function() {
                 newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.decimals);
             }
             return newValue;
-        };
+        }
         
-        $scope.managedInputValue = function(value, parameter, operator, keyEvent) {
-            window.logCall("managedInputValue");
+        function managedInputValue (value, parameter, operator, keyEvent) {
             var currentValue = value.current
               , step
               , decimals;
@@ -123,131 +113,83 @@ define([], function() {
                 }
             }
             return currentValue;
-        };
+        }
         
         function round(value, decimals) {
             return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
         }
+
+
+        $scope.toggleParameterPanel = function(parameter, event) {
+            if(selection.panel.level === $scope.model.parent.level && selection.panel.type === 'parameter') {
+                selection.closePanel();
+            } else {
+                openParameterPanel(parameter, event);
+            }
+        };
+
+        $scope.toggleOperatorPanel = function(parameter, operator, event) {
+            if(selection.panel.level === $scope.model.parent.level && selection.panel.type === 'operator') {
+                selection.closePanel();
+            } else {
+                openOperatorPanel(parameter, operator, event);
+            }
+        };
+
+        function openParameterPanel(parameter, event) {
+            selection.panel.level = $scope.model.parent.level;
+            selection.panel.type = 'parameter';           
+            selection.panel.left = $(event.target).offset().left + 20;
+            selection.panel.top = $(event.target).offset().top + 20;
+            selection.panel.parameter = parameter;
+        }
+
+        function openOperatorPanel(parameter, operator, event) {
+            selection.panel.level = $scope.model.parent.level;
+            selection.panel.type = 'operator';
+            selection.panel.left = $(event.target).offset().left + 20;
+            selection.panel.top = $(event.target).offset().top + 20;
+            selection.panel.parameter = $scope.model;
+            selection.panel.operator = operator;
+        }
         
-        
-        $scope.changeParameter = function(parameter) {
-            /*
-             var oldParameterName = $scope.data.view.parameterPanel.selected;
-             if (oldParameterName != parameter.name) {
-             var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
-             angular.forEach(elements, function(element) {
-             angular.forEach(element.parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             thisParameter.name = parameter.name;
-             }
-             });
-             });
-             }
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeParameterPanel();
-             */
+        $scope.changeParameter = function(baseParameter) {
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i];
+                element.changeParameter($scope.model, baseParameter);
+            }
+            $scope.model.parent.updateParameters(); 
         };
     
         $scope.removeParameter = function() {
-            /*
-             var oldParameterName = $scope.data.view.parameterPanel.selected;
-             var elements = $scope.findElementsEdit($scope.data.view.parameterPanel.level);
-             angular.forEach(elements, function(element) {
-             var parameters = element.parameters;
-             angular.forEach(parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             parameters.splice(parameters.indexOf(thisParameter), 1);
-             }
-             if (parameters.length == 0) {
-             // todo: remove rule in api and in model
-             }
-             });
-             });
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeParameterPanel();
-             */
-        };
-    
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i];
+                element.removeParameter(selection.panel.parameter.base);          
+            } 
+            $scope.model.parent.updateParameters();
+        };   
 
-        $scope.changeOperator = function(operator) {
-            /*
-             var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
-             var oldOperatorName = $scope.data.view.operatorPanel.selected;
-             if (oldOperatorName != operator.name) {
-             var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
-             angular.forEach(elements, function(element) {
-             angular.forEach(element.parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             angular.forEach(thisParameter.operators, function(thisOperator) {
-             if (thisOperator.name == oldOperatorName) {
-             thisOperator.name = operator.name;
-             }
-             });
-             }
-             });
-             });
-             }
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeOperatorPanel();
-             */
+        $scope.changeOperator = function(baseOperator) {
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i]
+                  , parameter = element.checkIfHasParameter(selection.panel.parameter.base);
+                parameter.changeOperator(selection.panel.operator, baseOperator);
+            } 
+            $scope.model.parent.updateParameters();          
         };
     
         $scope.removeOperator = function() {
-            /*
-             var oldParameterName = $scope.data.view.operatorPanel.selectedParameter;
-             var oldOperatorName = $scope.data.view.operatorPanel.selected;
-             var elements = $scope.findElementsEdit($scope.data.view.operatorPanel.level);
-             angular.forEach(elements, function(element) {
-             var parameters = element.parameters;
-             angular.forEach(parameters, function(thisParameter) {
-             if (thisParameter.name == oldParameterName) {
-             angular.forEach(thisParameter.operators, function(thisOperator) {
-             var thisOperators = thisParameter.operators;
-             if (thisOperator.name == oldOperatorName) {
-             // todo: change by API
-             thisOperators.splice(thisOperators.indexOf(thisOperator), 1);
-             }
-             if (thisOperators.length == 0) {
-             parameters.splice(parameters.indexOf(thisParameter), 1);
-             // todo: remove rule in api and in model
-             }
-             });
-             }
-             });
-             $scope.checkEffectiveValueEffects(element, element.level, oldParameterName, XXXOPERATOR);
-             // todo check if we need the operator here
-             });
-             $scope.data.updateSelectionParameters(false);
-             $scope.data.closeOperatorPanel();
-             */
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                var element = $scope.model.parent.elements[i]
+                  , elementParameter = element.getParameterByName(selection.panel.parameter.base.name);
+                elementParameter.removeOperator(selection.panel.operator, element);          
+            } 
+            $scope.model.parent.updateParameters();
         };
-    
 
-    
-        $scope.showOperator = function(thisOperator) {
-            /*
-            var display = true, hasThisOperator = false;
-            var level = $scope.data.view.operatorPanel.level;
-            var parameterName = $scope.data.view.operatorPanel.selectedParameter;
-            angular.forEach($scope.parameterSelection[level], function(parameter) {
-                if (parameter.name == parameterName) {
-                    angular.forEach(parameter.operators, function(operator) {
-                        if (operator.name == thisOperator.name) {
-                            hasThisOperator = true;
-                        }
-                    });
-                }
-            });
-            if (thisOperator.name != $scope.data.view.operatorPanel.selected && thisOperator.type == "unique" && hasThisOperator) {
-                display = false;
-            }
-            return display;
-            */
-        };
-        
     }
 
-    SelectionParameterController.$inject = ['$scope', 'metapolatorModel'];
+    SelectionParameterController.$inject = ['$scope', 'metapolatorModel', 'project'];
     var _p = SelectionParameterController.prototype;
 
     return SelectionParameterController;

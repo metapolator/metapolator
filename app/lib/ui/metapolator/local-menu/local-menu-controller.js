@@ -5,11 +5,10 @@ define([], function() {
         // which handles the click outside a lm-head button
         // to collapse an open local menu body
         this.$scope = $scope;
-        this.$scope.name = 'localMenu';
-        this.$scope.display = this.display = metapolatorModel.display;
+        this.$scope.display = metapolatorModel;
         
         this.toggleMenu = function(name) {
-            if ($scope.display.localMenu == name) {
+            if ($scope.display.localMenu === name) {
                 // close the current menu
                 $scope.display.localMenu = null;
             } else {

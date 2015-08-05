@@ -11,7 +11,10 @@ define([
           , replace: false
           , template: template
           , scope: {
-                model: '=mtkModel'
+                sequences : '=mtkModel'
+              , type : '=mtkType'
+              , rubberband : '=mtkRubberband'
+              , glyphrange : '=mtkGlyphrange'
             }
         };
     }

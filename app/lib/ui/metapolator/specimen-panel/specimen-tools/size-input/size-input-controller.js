@@ -2,7 +2,6 @@ define([], function() {
     "use strict";
     function SizeInputController($scope) {
         this.$scope = $scope;
-        this.$scope.name = 'sizeInput';
     }
 
 

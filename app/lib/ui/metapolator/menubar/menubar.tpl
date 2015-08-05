@@ -14,10 +14,10 @@
 </div>
 
 <div class="view-buttons">
-    <div ng-repeat="menuItem in model.display.panel.menuItems" 
-         ng-click="model.display.panel.viewState = $index" 
+    <div ng-repeat="menuItem in menuItems"
+         ng-click="model.viewState = $index"
          class="menu-item" 
-         ng-class="{'menu-item-current': $index == model.display.panel.viewState }">
+         ng-class="{'menu-item-current': $index === model.viewState }">
         {{menuItem}}
     </div>
 </div>
@@ -27,7 +27,7 @@
         <div class="lm-head" ng-mousedown="localMenuCtrl.toggleMenu('help')">
             <b>Help</b>
         </div>
-        <div class="lm-body" ng-if="display.localMenu == 'help'">
+        <div class="lm-body" ng-if="display.localMenu === 'help'">
             <div style="text-align:center">Each opens in a new tab</div>
             <div class="lm-divider"></div>
             <div class="lm-button"><a title="Github is a great project collaboration system" href="https://github.com/metapolator/metapolator" target="_blank">Github Project</a></div>
@@ -44,7 +44,6 @@
             <div class="lm-button"><a title="Support the project with a T shirt (EU)" href="http://metapolator.spreadshirt.com" target="_blank">Buy T Shirts (EU)</a></div>
             <div class="lm-divider"></div>
             <div class="lm-button"><a title="To look behind the curtain and see the true underlying reality, take the red pill" href="http://metapolator.com/red-pill-demo/" target="_blank">Technology Demo</a></b></div>
-            </div>
         </div>
     </mtk-local-menu>
 </div>

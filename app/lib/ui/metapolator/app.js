@@ -10,7 +10,6 @@ define([
   , './font-export-panel/font-export-panel'
   , './metadata-panel/metadata-panel'
   , './menubar/menubar'
-  , './dialog/dialog'
   , './divider/horizontal-divider/horizontal-divider'
   , './divider/vertical-divider/vertical-divider'
 ], function(
@@ -25,12 +24,11 @@ define([
   , fontExportPanelModule
   , metadataPanel
   , menubarModule
-  , dialogModule
   , horizontalDividerModule
   , verticallDividerModule
 ) {
     "use strict";
-    return angular.module('mtk.metapolator', [parameterPanelModule.name, specimenPanelModule.name, masterPanelModule.name, designSpacePanelModule.name, instancePanelModule.name, fontExportPanelModule.name, menubarModule.name, dialogModule.name, metadataPanel.name, horizontalDividerModule.name, verticallDividerModule.name])
+    return angular.module('mtk.metapolator', [parameterPanelModule.name, specimenPanelModule.name, masterPanelModule.name, designSpacePanelModule.name, instancePanelModule.name, fontExportPanelModule.name, menubarModule.name, metadataPanel.name, horizontalDividerModule.name, verticallDividerModule.name])
       .controller('AppController', Controller)
       .directive('metapolator', directive)
       ;

@@ -1,4 +1,8 @@
-define([], function() {
+define([
+    'metapolator/ui/metapolator/ui-tools/selectionTools'
+], function(
+    selection
+) {
     "use strict";
     function MasterController($scope, metapolatorModel) {
         this.$scope = $scope;
@@ -15,32 +19,31 @@ define([], function() {
         
         $scope.selectManager = function (event, master) {
             if (event.ctrlKey || event.metaKey) {
-                $scope.toggleSelect(master);
+                toggleSelect(master);
             } else if (event.shiftKey) {
-                $scope.selectSet(master);    
+                selectSet(master);
             } else {
-                $scope.selectThis(master);
+                selectThis(master);
             }
-            metapolatorModel.masterPanel.updateSelections("master");
-            metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterPanel.sequences);
+            selection.updateSelection('master');
         };
         
-        $scope.toggleSelect = function (master) {
-            window.logCall("toggleSelect");
-            master.edit[0] = !master.edit[0]; 
-            if (!master.edit[0]) {
+        function toggleSelect(master) {
+            if (master.edit) {
+                master.edit = false;
+            } else {
+                master.edit = true;
+            }
+            if (!master.edit) {
                 master.deselectAllChildren();
             }
-            metapolatorModel.masterPanel.updateSelections("master");
-            metapolatorModel.specimen1.updateSelectedMasters(metapolatorModel.masterPanel.sequences);
-        };
-        
-        $scope.selectSet = function (master) {
-            window.logCall("selectSet");
-            var otherMaster = metapolatorModel.masterPanel.lastMasterSelected
+        }
+
+        function selectSet(master) {
+            var otherMaster = metapolatorModel.lastMasterSelected
               , phase = 0;
-            for (var i = metapolatorModel.masterPanel.sequences.length - 1; i >= 0; i--) {
-                var sequence = metapolatorModel.masterPanel.sequences[i];
+            for (var i = metapolatorModel.masterSequences.length - 1; i >= 0; i--) {
+                var sequence = metapolatorModel.masterSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var thisMaster = sequence.children[j]
                       , thisHit = false;
@@ -49,33 +52,32 @@ define([], function() {
                         thisHit = true;   
                     }
                     if (phase == 1 || (phase == 2 && thisHit)) {
-                        thisMaster.edit[0] = true;
+                        thisMaster.edit = true;
                     } else {
-                        thisMaster.edit[0] = false;
+                        thisMaster.edit = false;
                         thisMaster.deselectAllChildren();
                     }
                 }
             }
-        };
-        
-        $scope.selectThis = function (master) {
-            window.logCall("selectThis");
-            metapolatorModel.masterPanel.lastMasterSelected = master;
-            for (var i = metapolatorModel.masterPanel.sequences.length - 1; i >= 0; i--) {
-                var sequence = metapolatorModel.masterPanel.sequences[i];
+        }
+
+        function selectThis(master) {
+            metapolatorModel.lastMasterSelected = master;
+            for (var i = metapolatorModel.masterSequences.length - 1; i >= 0; i--) {
+                var sequence = metapolatorModel.masterSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var thisMaster = sequence.children[j];
                     if (thisMaster == master) {
-                        thisMaster.edit[0] = true;    
+                        thisMaster.edit = true;
                     } else {
-                        if (thisMaster.edit[0]) {
-                            thisMaster.edit[0] = false;
+                        if (thisMaster.edit) {
+                            thisMaster.edit = false;
                             thisMaster.deselectAllChildren();
                         }
                     } 
                 }
             }
-        };
+        }
     }
 
     MasterController.$inject = ['$scope', 'metapolatorModel'];
