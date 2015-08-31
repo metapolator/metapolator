@@ -23,6 +23,16 @@ define([
     _p.getMasterName = function() {
         return this.parent.name;
     };
+
+    _p.getMasterGlyphs = function(glyphName) {
+        var glyphs = [];
+        for (var i = this.parent.axes.length - 1; i >= 0; i--) {
+            var axis =  this.parent.axes[i]
+              , master = axis.master;
+            glyphs.push(master.findGlyphByName(this.name));
+        }
+        return glyphs;
+    };
     
     
     return GlyphModel;

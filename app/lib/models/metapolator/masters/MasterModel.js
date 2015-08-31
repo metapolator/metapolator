@@ -17,6 +17,7 @@ define([
         this.edit = true;
         this.ag = "Ag";
         this.parent = parent;
+        this.originalMaster = this;
         this.children = [];
 
         // cps properties

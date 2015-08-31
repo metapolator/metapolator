@@ -15,18 +15,18 @@ define([
                 // add css classes for breaks and spaces
                   , parentElement = element.parent()
                   , svg;
-                if (glyphName === "space") {
-                    parentElement.addClass("space-character");
-                } else if (glyphName === "*n") {
+                if (glyphName === 'space') {
+                    parentElement.addClass('space-character');
+                } else if (glyphName === '*n') {
                     // no-glyph is used by the specimenRubberband, to ignore these when making a selection
-                    element.addClass("no-glyph");
-                    parentElement.addClass("line-break");
-                } else if (glyphName === "*p") {
-                    element.addClass("no-glyph");
-                    parentElement.addClass("paragraph-break");
-                } else if (glyphName === "*specimenbreak") {
-                    element.addClass("no-glyph");
-                    parentElement.addClass("specimen-break");
+                    element.addClass('no-glyph');
+                    parentElement.addClass('line-break');
+                } else if (glyphName === '*p') {
+                    element.addClass('no-glyph');
+                    parentElement.addClass('paragraph-break');
+                } else if (glyphName === '*specimenbreak') {
+                    element.addClass('no-glyph');
+                    parentElement.addClass('specimen-break');
                 } 
                 
                 // this is to ignore the fake glyphs, like specimenbreak etc. Their object
