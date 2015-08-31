@@ -221,6 +221,14 @@ function(
                 child.setMaster(master);
             }
         }
+        // restore the links to the master and to the element in the cloned parameters
+        if (this.parameters) {
+            for (var j = 0, jl = this.parameters.length; j < jl; j++) {
+                var parameter = this.parameters[j];
+                parameter.master = master;
+                parameter.element = this;
+            }
+        }
     };
 
     _p._cloneProperties = function(clone) {
