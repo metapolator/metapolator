@@ -1,6 +1,6 @@
 define([
 ], function() {
-    "use strict";
+    'use strict';
     function glyphDirective() {
         return {
             restrict: 'E'
@@ -33,12 +33,14 @@ define([
                 // doesn't have a level (only a name)
                 if (scope.model.level) {
                     // measure the glyph upon first rendering
-                    if (scope.model.type === "master") {
-                        if (!scope.model.measured) {
-                            scope.model.measureGlyph();
+                    if (scope.model.type === 'master') {
+                        scope.model.checkIfIsDisplayed();
+                    } else if (scope.model.type === 'instance') {
+                        // for instances we have to check its master(s) and check the corresponding glyph(s)
+                        var masterGlyphs = scope.model.getMasterGlyphs(scope.model.name);
+                        for (var i = masterGlyphs.length - 1; i >= 0; i--) {
+                            masterGlyphs[i].checkIfIsDisplayed();
                         }
-                    } else if (scope.model.type === "instance") {
-                        scope.checkBaseMasters(scope.model);
                     }
 
                     masterName = scope.model.getMasterName();
