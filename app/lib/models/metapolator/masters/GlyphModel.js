@@ -47,14 +47,19 @@ define([
 
     _p.checkIfIsDisplayed = function() {
         if (!this.displayed) {
+            // if a glyph is never displayed before it can have been measured
+            // (because measure info is shared among cloned masters)
             if (!this._isMeasured()) {
                 this._measureGlyph();
             }
+            // if this is the first display, it possibly needs to catch up
+            // on its cps (when its master has non-local operators (like plus and mines)
             this._catchUpCPS();
         }
     };
 
     _p._isMeasured = function() {
+        // find the original master (cloned masters shared this info with each other)
         var glyph = this._getOriginalGlyph();
         return glyph.measured;
     };
@@ -102,6 +107,7 @@ define([
                 for (var j = 0, jl = effectedElements.length; j < jl; j++) {
                     var effectedElement = effectedElements[j]
                         , elementParameter = effectedElement.getParameterByName(parameter.base.name);
+                    // update the effective value + the true argument means its going to write cps
                     elementParameter.updateEffectiveValue(true);
                 }
             }
