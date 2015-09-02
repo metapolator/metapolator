@@ -73,6 +73,7 @@ define([
     _p.setSelectorList = setSelectorList;
 
     function getSelectorList() {
+        /*jshint validthis: true*/
         return this._selectorList;
     }
 
@@ -103,7 +104,7 @@ define([
             // e.g. via _structuralChangeHandler. So, the second call to
             // a not cleared child collection performs namespace.multiply
             // a second time on the same rules item.
-            rules[i] = [namespace.multiply(rules[i][0]), rules[i][1]]
+            rules[i] = [namespace.multiply(rules[i][0]), rules[i][1]];
         }
         return rules;
     };
