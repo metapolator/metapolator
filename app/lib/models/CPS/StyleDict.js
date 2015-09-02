@@ -416,8 +416,12 @@ define([
         this._dict = Object.create(null);
         for(i=0,l=this._rules.length;i<l;i++) {
             parameters = this._rules[i].parameters;
+
             subscriberID = parameters.on('add', [this, '_parameterAddHandler'], i);
             this._dictSubscriptions.push([parameters, subscriberID]);
+            subscriberID = parameters.on('update', [this, '_parameterUpdateHandler'], i);
+            this._dictSubscriptions.push([parameters, subscriberID]);
+
 
             keys = parameters.keys();
             for(j=0, ll=keys.length; j<ll; j++) {
@@ -500,6 +504,13 @@ define([
         this._buildIndex();
     };
 
+    _p._parameterUpdateHandler = function(data, channelKey, keys) {
+        // If any of the parameterDicts fired it's update event we pass it along here
+        // update, in contrast to change is fired when the parameterDict
+        // changed but did not change it's value.
+        // This is used for rendering in the ui only.
+        this._nextTrigger('update');
+    }
     /**
      * parameters.onPropertyChange wont trigger on "add", because we won't
      * have subscribed to it by then.
