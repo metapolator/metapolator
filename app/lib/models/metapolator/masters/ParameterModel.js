@@ -304,9 +304,6 @@ define([
         var correctionValue
           , parentsFactor;
         parentsFactor = this.element.findParentsFactor(this.base);
-        console.log(this.effectiveValue);
-        console.log(parentsFactor);
-        console.log(this.initial);
         correctionValue = this.effectiveValue / parentsFactor / this.initial;
         this.element.writeValueInCPSfile(correctionValue, this);
     };
