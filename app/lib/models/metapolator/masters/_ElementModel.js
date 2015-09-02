@@ -27,12 +27,12 @@ function(
     };
 
     _p.writeValueInCPSfile = function(factor, parameter) {
-    this._updateRuleIndexes(10);
         var parameterCollection
           , cpsRule;
-        if (factor === 1) {
-            this._removeParameter(parameter);
-        } else {
+        // this is commented out, see https://github.com/metapolator/metapolator/issues/394#issuecomment-137112014
+        //if (factor === 1) {
+        //    this._removeParameter(parameter);
+        //} else {
             if (!this.ruleIndex) {
                 this._addRule();
             }
@@ -41,8 +41,8 @@ function(
             var parameterDict = cpsRule.parameters
               , setParameter = cpsAPITools.setParameter;
             setParameter(parameterDict, parameter.base.cpsKey, factor);
-        }
-        //console.log(cpsRule.toString());
+        //}
+        console.log(cpsRule.toString());
     };
 
     _p._removeParameter = function(parameter) {
