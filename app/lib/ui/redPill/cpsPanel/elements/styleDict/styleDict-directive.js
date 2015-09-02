@@ -7,8 +7,21 @@ define([
 ) {
     "use strict";
 
-    function styleDictDirective($compile, dragDataService, dragIndicatorService) {
-        //function link(scope, element, attrs, controller) {}
+    function styleDictDirective() {
+        function link(scope, element, attrs, controller) {
+            scope.updateNames = function(usedNamesSet) {
+                var i,l,children = element[0].children, child;
+                for(i=0,l=children.length;i<l;i++) {
+                    child = children[i];
+                    if(child.tagName.toLowerCase() !== 'mtk-cps-rule')
+                        continue;
+                    angular.element(child)
+                           .isolateScope()
+                           .updateUsedNames(usedNamesSet);
+
+                }
+            };
+        }
 
 
         return {
@@ -17,11 +30,11 @@ define([
           , replace: false
           , template: template
           , scope: { element: '=item' }
-          //, link:link
+          , link:link
           , controllerAs: 'ctrl'
           , bindToController: true
         };
     }
-    styleDictDirective.$inject = ['$compile'];
+    styleDictDirective.$inject = [];
     return styleDictDirective;
 });

@@ -13,29 +13,62 @@ define([
 
         // store also this.element, it may get changed by the directive/binding
         // before $destroy is called
-        this._elementSubscription = [this.element, this.element.on('CPS-change', [this, '_cpsChangeHandler'])];
+
+        this._styleDictSubscription = [this._styleDict, this._styleDict.on(
+                ['change', 'update'] , [this, '_styleDictChangeHandler']
+        )];
         $scope.$on('$destroy', this._destroy.bind(this));
 
-        this._reset();
+
+        this.items = null;
+        this.names = null;
+        this._scheduledUpdateNames = false;
+        this._resetItems();
+        this._updateNames();
     }
 
     StyleDictController.$inject = ['$scope'];
     var _p = StyleDictController.prototype;
 
-    _p._reset = function() {
+    _p._resetItems = function(){
         this.items = this._styleDict.getRules();
+    };
+
+    _p.__updateNames = function() {
         this.names = new Set();
-    }
-    _p._cpsChangeHandler = function() {
-        this._reset();
-        setTimeout(this.$scope.$apply.call(this.$scope));
+        this.$scope.updateNames(this.names);
+        this._scheduledUpdateNames = false;
+    };
+
+    /**
+     * This call is asynchronously debounced for two reasons:
+     *
+     * When called from the constructor, the children are not initialized
+     * yet.
+     * When called from _styleDictChangeHandler there are often both events
+     * fireing after directly each other "change" and "update".
+     */
+    _p._updateNames = function() {
+        /*global setTimeout:true*/
+        if(this._scheduledUpdateNames) return;
+        this._scheduledUpdateNames = true;
+        setTimeout(this.__updateNames.bind(this));
+    };
+
+    _p._styleDictChangeHandler = function(userData, event, eventData) {
+        if(event === 'change') {
+            this._resetItems();
+            // re-render the children
+            this.$scope.$apply();
+        }
+        this._updateNames();
     };
 
     _p._destroy = function() {
-        if(!this._elementSubscription)
-            return;
-        this._elementSubscription[0].off(this._elementSubscription[1]);
-        this._elementSubscription = null;
+        if(this._styleDictSubscription) {
+            this._styleDictSubscription[0].off(this._styleDictSubscription[1]);
+            this._styleDictSubscription = null;
+        }
     };
 
     return StyleDictController;

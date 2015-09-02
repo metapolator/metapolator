@@ -53,10 +53,15 @@ define([
         target.splice(targetIndex, 0, property);
     }
 
+    function isProperty(item) {
+        return item instanceof Parameter;
+    }
+
     return {
         makeProperty: makeProperty
       , appendProperty: appendProperty
       , updateProperty: updateProperty
       , moveCPSElement: moveCPSElement
+      , isProperty: isProperty
     };
 });

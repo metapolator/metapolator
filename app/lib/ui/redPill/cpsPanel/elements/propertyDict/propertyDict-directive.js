@@ -90,6 +90,67 @@ define([
                 )
               ;
 
+
+            function _executeForEveryPropertyElement(callback, args) {
+                var listItems
+                  , items
+                  , i,l
+                  , ii, ll
+                  , property
+                  , properties
+                  , tag = 'mtk-cps-property'.toUpperCase()
+                  ;
+                // This seems a bit clumsy, but it tries to be only medium
+                // dependant on the DOM structure i.e. the <mtk-cps-property>
+                // must be a direct child of the <li>/child elements of
+                // container but it doesn't need to be the first/the last
+                // or stuff like that.
+                listItems = container.children; // a node list
+                for(i=0,l=listItems.length;i<l;i++) {
+                    items = listItems[i].children; // a node list
+                    for(ii=0,ll=items.length;ii<ll;ii++) {
+                        if(items[ii].tagName === tag) {
+                            // Array.prototype.concat(1, ['a', 'b']) returns [1, 'a', 'b']
+                            // Array.prototype.concat(1, 'a') returns [1, 'a']
+                            // Thus args can be a single argument or an array of arguments
+                            // Array.prototype.concat performs the normalization
+                            // CAUTION: if the single argument is meant to be an array,
+                            // this becomes messy ;-)
+                            callback.apply(null, Array.prototype.concat(items[ii], args));
+                            //nothing else to do in this item
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function _updateUsedNames(propertyElement) {
+                var scope = angular.element(propertyElement).isolateScope()
+                  // NOTE: this stuff would be located at the controller of
+                  // property if the property-directive uses bindToController
+                  // in the future ...
+                  , item = scope.property
+                  , name = item.name
+                  , index = scope.index
+                  , classes = ['active', 'shadowed']
+                  , active
+                  ;
+                if(!controller.isActive(index, name))
+                    classes.reverse();
+                propertyElement.classList.add(classes[0]);
+                propertyElement.classList.remove(classes[1]);
+            }
+
+            /**
+             * Implicitly `usedNamesSet` must have the correct state when
+             * executing this. i.e. the parent style-dict would have made
+             * a reset prior of executing this method
+             */
+            scope.updateUsedNames = function(usedNamesSet) {
+                controller.resetNamesRegistry(usedNamesSet);
+                _executeForEveryPropertyElement(_updateUsedNames);
+            };
+
             element.on('dragover', dropHelper.dragoverHandler);
             element.on('drop', dropHelper.dropHandler);
 
@@ -102,7 +163,7 @@ define([
           , controller: 'PropertyDictController'
           , replace: false
           , template: template
-          , scope: { cpsPropertyDict: '=', usedNamesSet: '='}
+          , scope: { cpsPropertyDict: '=' }
           , bindToController: true
           , controllerAs: 'controller'
           , link: link

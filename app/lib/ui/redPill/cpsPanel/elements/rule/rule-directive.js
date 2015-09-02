@@ -1,8 +1,10 @@
 define([
-   'metapolator/ui/redPill/cpsPanel/elements/helpers'
+    'angular'
+  , 'metapolator/ui/redPill/cpsPanel/elements/helpers'
   , 'require/text!./rule.tpl'
     ], function(
-    helpers
+    angular
+  , helpers
   , template
 ) {
     "use strict";
@@ -15,6 +17,17 @@ define([
             scope.$on('newPropertyRequest', helpers.handlerDecorator(scope,
                             controller.initNewPropertyHandler, true, true));
 
+            scope.updateUsedNames = function(usedNamesSet) {
+                var i,l,children = element[0].children, child, scope;
+                for(i=0,l=children.length;i<l;i++) {
+                    child = children[i];
+                    if(child.tagName.toLowerCase() !== 'mtk-cps-property-dict')
+                        continue;
+                    scope = angular.element(child).isolateScope();
+                    scope.updateUsedNames(usedNamesSet);
+                }
+            };
+
             //element.bind('dblclick',
         }
 
@@ -23,7 +36,7 @@ define([
           , controller: 'RuleController'
           , replace: false
           , template: template
-          , scope: {cpsRule: '=item', index: '=', mtkElementTools: '=', usedNamesSet: '='}
+          , scope: {cpsRule: '=item', index: '=', mtkElementTools: '='}
           , bindToController: true
           , controllerAs: 'controller'
           , link: link

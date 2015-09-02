@@ -7,7 +7,9 @@ define([
 ) {
     "use strict";
 
-    var KeyError = errors.Key;
+    var KeyError = errors.Key
+      , assert = errors.assert
+      ;
 
     function PropertyDictController($scope) {
         this.$scope = $scope;
@@ -25,7 +27,8 @@ define([
                             'update', [this, '_propertyDictUpdateHandler']);
         $scope.$on('$destroy', this._destroy.bind(this));
 
-        this._activeNamesRegistry = Object.create(null);
+        this._usedNamesSet = null;
+        this._activeNamesRegistry = null;
     }
 
     PropertyDictController.$inject = ['$scope'];
@@ -174,34 +177,39 @@ define([
     };
 
 
-    /**
-     * Used for style-dict where the first property name of all rules is
-     * the only active one.
-     *
-     * Collection in turn doesn't define the usedNamesSet, then this stuff
-     * is "turned off".
-     */
-    _p.registerName = function(index, name) {
-        if(!this.usedNamesSet) return;
-        if(this.usedNamesSet.has(name)) return;
+    _p._registerName = function(index, name) {
+        if(this._usedNamesSet.has(name)) return;
         this._activeNamesRegistry[name] = index;
-        this.usedNamesSet.add(name);
+        this._usedNamesSet.add(name);
     };
-
     /**
-     * Used for style-dict where the first property name of all rules is
+     * Used within a style-dict where the first property name of all rules is
      * the only active one.
-     *
-     * Collection in turn doesn't define the usedNamesSet, then this stuff
-     * is "turned off".
+     * "collection" does not use these interfaces
      */
-    _p.isActive = function(index, name, activeClass, inactiveCLass) {
-        if(!this.usedNamesSet)
-            return '';
-        return (this._activeNamesRegistry[name] === index
-                ? activeClass
-                : inactiveCLass
-                );
+    _p.resetNamesRegistry = function (usedNamesSet) {
+        var i,items;
+        this._usedNamesSet = usedNamesSet || null;
+        this._activeNamesRegistry = usedNamesSet ? Object.create(null) : null;
+        if(!this._activeNamesRegistry)
+            return;
+        items = this.cpsPropertyDict.items;
+        // last item in the dict is active, so register back to front
+        for(i=items.length-1;i>=0;i--) {
+            if(!cpsTools.isProperty(items[i]))
+                continue;
+            this._registerName(i, items[i].name);
+        }
+    };
+    /**
+     * Used within a style-dict where the first property name of all rules is
+     * the only active one.
+     * "collection" does not use these interfaces
+     */
+    _p.isActive = function(index, name) {
+        assert(this._activeNamesRegistry !== null
+                , 'Call "resetNamesRegistry" before using this interface');
+        return this._activeNamesRegistry[name] === index;
     };
 
     return PropertyDictController;

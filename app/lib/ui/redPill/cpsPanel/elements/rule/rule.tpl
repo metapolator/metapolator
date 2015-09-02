@@ -1,11 +1,11 @@
 <mtk-cps-selector-list
-    selector-list-host="controller.cpsRule"></mtk-cps-selector-list><!--
-    --><mtk-element-toolbar
-            ng-if="controller.mtkElementTools"
-            mtk-tools="controller.mtkElementTools"
-            mtk-click-handler="controller.toolClickHandler"
+        selector-list-host="controller.cpsRule"
+        ></mtk-cps-selector-list><!--
+--><mtk-element-toolbar
+        ng-if="controller.mtkElementTools"
+        mtk-tools="controller.mtkElementTools"
+        mtk-click-handler="controller.toolClickHandler"
         ></mtk-element-toolbar><!--
 --><mtk-cps-property-dict
-    cps-property-dict="controller.cpsRule.parameters"
-    used-names-set="controller.usedNamesSet"
-    ></mtk-cps-property-dict>
+        cps-property-dict="controller.cpsRule.parameters"
+        ></mtk-cps-property-dict>
