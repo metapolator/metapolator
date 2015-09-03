@@ -1,3 +1,20 @@
+0.4.10 (July 30, 2015)
+======================
+* Add loadSync method for Node.js.
+* Unit tests for basic types and tables.
+* Implement MACSTRING codec.
+* Support multilingual names.
+* Handle names of font variation axes and instances.
+
+0.4.9 (June 23, 2015)
+=====================
+* Improve memory usage by deferring glyph / path loading. Thanks @Pomax!
+* Put examples in the "examples" directory. Use the local web server to see them.
+
+0.4.8 (June 3, 2015)
+====================
+* Fix an issue with writing out fonts that have an UPM != 1000.
+
 0.4.6 (March 26, 2015)
 ======================
 * Fix issues with exporting/subsetting TrueType fonts.
