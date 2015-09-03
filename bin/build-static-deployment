@@ -1,12 +1,80 @@
 #!/bin/sh
 SOURCE="$(dirname $0)/..";
-PROJECT=$1
-TARGET=$2
+APP=$1
+PROJECT=$2
+TARGET=$3
+
+
+if test "$APP" = '--help' || test "$APP" = '-h' || test "$APP" = ''; then
+    echo "Usage: $(basename $0) APPLICATION PROJECTDIR TARGETDIR\n"
+    echo 'Build an instance of a Metapolator application as a HTML website to be served (statically) from any simple HTTP file server.\n'
+
+    echo 'APPLICATION: the Metapolator application to be exported, choices are:'
+    echo '\t * metapolator'
+    echo '\t * red-pill'
+    echo '\t * slider-demo'
+    echo '\t * stand-alone'
+    echo '\t * --help: displays this page'
+
+    echo 'PROJECTDIR: a Metapolator project directory.'
+
+    echo 'TARGETDIR: the target directory of this operation.'
+
+
+    exit 0;
+fi
+
+#
+lessfile=0
+assetsrootdir=''
+case $APP in
+    metapolator)
+        mainfile=metapolatorMain
+        lessfile=$SOURCE/app/lib/ui/metapolator/app.less
+        htmlfile=metapolator.html
+        assetsrootdir=lib/ui/metapolator
+        ;;
+    red-pill)
+        mainfile=redPillMain
+        lessfile=$SOURCE/app/lib/ui/redPill/app.less
+        htmlfile=red-pill.html
+        ;;
+    slider-demo)
+        mainfile=sliderDemoMain
+        htmlfile=slider-demo.html
+        ;;
+    stand-alone)
+        mainfile=metapolatorStandAlone
+        htmlfile=slider-demo.html
+        ;;
+    *) echo "Invalid selection! Try: $(basename $0) --help"
+       exit 1
+       ;;
+esac
+
+echo "Exporting $APP"
+
+
 
 mkdir "$TARGET" \
     && cp -a "$PROJECT/." "$TARGET/project" \
     && cp "$SOURCE/README.md" "$TARGET" \
     && cp "$SOURCE/LICENSE.txt" "$TARGET";
+
+
+if test $lessfile != 0; then
+    # build the less to css
+    node $SOURCE/node_modules/.bin/lessc \
+        --include-path="$SOURCE/app/" \
+        --strict-imports $lessfile \
+        --rootpath="$assetsrootdir/" \
+        "$TARGET/main.css";
+fi
+
+if test "$assetsrootdir" != ''; then
+    test -d "$TARGET/$assetsrootdir" || mkdir -p "$TARGET/$assetsrootdir";
+    cp -R $SOURCE/app/$assetsrootdir/assets $TARGET/$assetsrootdir/assets;
+fi
 
 
 # copy files not suited for the optimizer
@@ -28,31 +96,17 @@ for module in $MODULES; do
     mkdir -p "$(dirname $TARGET/$module)" && cp "$SOURCE/app/$module" "$TARGET/$module";
 done
 
-for mainfile in "redPillMain" "sliderDemoMain" "metapolatorStandAlone"; do
 # build the javascript into one file
-    node $SOURCE/node_modules/.bin/r.js -o \
-        optimize=none\
-        mainConfigFile="$SOURCE/app/lib/browserConfig.js" \
-        baseUrl="$SOURCE/app/lib" \
-        paths.requireLib="bower_components/requirejs/require" \
-        name="$mainfile" \
-        include=requireLib,browserConfig \
-        out="$TARGET/$mainfile"".js";
-done
+node $SOURCE/node_modules/.bin/r.js -o \
+    optimize=none\
+    mainConfigFile="$SOURCE/app/lib/browserConfig.js" \
+    baseUrl="$SOURCE/app/lib" \
+    paths.requireLib="bower_components/requirejs/require" \
+    name="$mainfile" \
+    include=requireLib,browserConfig \
+    out="$TARGET/$mainfile"".js";
 
-
-# build the less to css
-node $SOURCE/node_modules/.bin/lessc \
-        --include-path="$SOURCE/app/" \
-        --strict-imports "$SOURCE/app/lib/ui/redPill/app.less" \
-        "$TARGET/main.css";
-
-
-# we keep the html files separate usually, but for an export we
-# move them to the root directory
-cp $SOURCE/app/lib/html/*.html $TARGET/;
-
-echo 'copied html files to root';
+cp $SOURCE/app/lib/html/$htmlfile $TARGET/index.html;
 
 for line in $(find $TARGET -maxdepth 1 -name "*.html" -type f); do
   echo "activating production <header> of $line";
@@ -61,8 +115,6 @@ for line in $(find $TARGET -maxdepth 1 -name "*.html" -type f); do
       sed s":<!-- production:<!-- production -->:" > "$line";
   unlink "$line~";
 done
-
-cp $TARGET/red-pill.html $TARGET/index.html;
 
 
 # make a directory listing at index.html in $TARGET for every directory recursively
