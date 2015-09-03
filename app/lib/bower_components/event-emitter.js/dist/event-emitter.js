@@ -80,17 +80,19 @@ eventEmitter = function () {
    * @returns emitter instance (allows chaining).
    */
   EventEmitter.prototype.off = function (name, handler) {
+    var subscribers = this.events[name] || [];
+    var l = subscribers.length;
     // Remove all events
     if (!name) {
       this.events = {};
     } else if (!handler) {
       delete this.events[name];
     } else {
-      this._loopSubscribers(name, function (subscribers, i) {
-        if (subscribers[i] === handler) {
-          subscribers.splice(i, 1);
+      while (l--) {
+        if (subscribers[l].fn === handler) {
+          subscribers.splice(l, 1);
         }
-      });
+      }
     }
     return this;
   };
@@ -109,26 +111,19 @@ eventEmitter = function () {
    */
   EventEmitter.prototype.trigger = function (name) {
     var args = Array.prototype.slice.call(arguments, 1);
-    this._loopSubscribers(name, function (subscribers, i) {
-      var handler = subscribers[i];
-      handler.fn.apply(handler.context, args);
-    });
-    return this;
-  };
-  /**
-   * Helper method to call specified fn for each event
-   * subscriber.
-   *
-   * @private
-   *
-   * @param {string} name - Name of event to remove listener from.
-   * @param {function} fn - Name of event to remove listener from.
-   */
-  EventEmitter.prototype._loopSubscribers = function (name, fn) {
-    var subscribers = this.events[name] || [], l = subscribers.length;
-    while (l--) {
-      fn(subscribers, l);
+    var subscribers = this.events[name] || [];
+    var l = subscribers.length;
+    // fixes bug where handler could be called twice when handler
+    // is responsible for moving event handlers. Now all handlers will
+    // execute, regardless if they are removed during another handler.
+    var copy = [];
+    for (var i = 0; i < l; i++) {
+      copy.push(subscribers[i]);
     }
+    while (l--) {
+      copy[l].fn.apply(copy[l].context, args);
+    }
+    return this;
   };
   /* -----------------------------------------------------------------------------
    * export

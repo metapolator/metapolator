@@ -19,6 +19,10 @@ define([
       , CPSParserError = errors.CPSParser
       ;
 
+    /**
+     * selectorEngine is optional if not present the selector will be compiled
+     * lazily when used first.
+     */
     function selectorListFromString(string, sourceName, selectorEngine) {
         var ast;
         try {
@@ -30,6 +34,10 @@ define([
         return selectorListFromAST(ast, sourceName, selectorEngine);
     }
 
+    /**
+     * selectorEngine is optional if not present the selector will be compiled
+     * lazily when used first.
+     */
     function selectorListFromAST(ast, sourceName, selectorEngine) {
         var rules
           , selectorList

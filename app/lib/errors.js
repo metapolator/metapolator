@@ -65,6 +65,10 @@ define(function() {
     makeError('Event', undefined , new errors.Error());
     makeError('Emitter', undefined , new errors.Event());
     makeError('Receiver', undefined , new errors.Event());
+    // UI = user interface
+    makeError('UI', undefined , new errors.Event());
+    // When the ui-setup was done wrong
+    makeError('UISetup', undefined , new errors.UI());
 
     /**
      * if expression is false, throw an Assertion

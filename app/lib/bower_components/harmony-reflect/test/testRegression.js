@@ -178,6 +178,50 @@ function test() {
     assert(proto.age === 2, 'age on prototype updated');
   }());
   
+  (function () {
+    var obj = {};
+    assert(Object.freeze(obj) === obj, 'freeze returns obj');
+    var obj2 = {};
+    assert(Object.seal(obj2) === obj2, 'seal returns obj');
+  }());
+  
+  // see https://github.com/tvcutsem/harmony-reflect/issues/43
+  (function () {
+
+    function wrap(obj) {
+        return new Proxy(obj, {});
+    }
+    var proxy = wrap({a: 1, b: 2});
+    var result = [];
+    for (var prop in proxy) { result.push(prop) }
+    assert(JSON.stringify(result) === '["a","b"]',
+           'enumerate on proxy returns a,b');
+
+    result = [];
+    proxy = wrap(proxy);
+    for (var prop in proxy) { result.push(prop) }
+    assert(JSON.stringify(result) === '["a","b"]',
+           'enumerate on proxied proxy returns a,b');
+  }());
+  
+  // see https://github.com/tvcutsem/harmony-reflect/issues/46
+  (function () {
+
+    var handler = {
+        deleteProperty: function(target,name) {
+          return Reflect.deleteProperty(target,name);
+        }
+    };
+
+    var o = {x: 1, y: 2};
+    var inner = new Proxy(o, handler);
+    var outer = new Proxy(inner, handler);
+
+    delete outer.x;
+    assert(outer.x === undefined,
+          'delete on a proxy of a proxy');
+  }());
+  
 }
 
 if (typeof window === "undefined") {

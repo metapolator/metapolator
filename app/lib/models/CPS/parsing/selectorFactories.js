@@ -23,7 +23,7 @@ define([
   , Comment
 ) {
     "use strict";
-    var CPSError = errors.CPS;
+    var CPSParserError = errors.CPSParser;
     /**
      * Constructors OR factory functions
      * this can be both because JavaScript allows to call a factory function
@@ -60,14 +60,14 @@ define([
         'ruleset': function(node, source) {
             var selectorList, parameterDict;
             if(node.children[0].type !== 'selector')
-                throw new CPSError('The first child of "ruleset" is '
+                throw new CPSParserError('The first child of "ruleset" is '
                 + 'expected to be a "selector", but got "' + node.children[0].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
                 +'.', (new Error()).stack);
 
             if(node.children[1].type !== 'block')
-                throw new CPSError('The second child of "ruleset" is '
+                throw new CPSParserError('The second child of "ruleset" is '
                 + 'expected to be a "block", but got "' + node.children[1].type +'" '
                 +'" in a ruleset from: ' + source + 'line: '
                 + node.lineNo
@@ -210,7 +210,7 @@ define([
           ;
         for(;i<elements.length;i++) {
             if(!(elements[i] instanceof GenericCPSNode))
-                throw new CPSError(['Unknown type for a simple selector:'
+                throw new CPSParserError(['Unknown type for a simple selector:'
                                   , item.constructor.name, 'typeof:'
                                   , typeof item].join(' ')
                                   );
@@ -256,7 +256,7 @@ define([
                 name = element._ast[1][1][1];
         }
         if(typeof name !== 'string' && name !== undefined)
-            throw new CPSError('Can\'t find a name for SimpleSelector ('
+            throw new CPSParserError('Can\'t find a name for SimpleSelector ('
                             + element + ')');
         return name;
     }

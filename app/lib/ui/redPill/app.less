@@ -5,15 +5,17 @@
 @app-color: #CCC;
 @app-gap: .5em;
 @app-border: 1px solid black;
+@glyph-outline: 1px solid rgba(0, 0, 0, .1);
 
 html {
     font-family: monospace;
     background-color: @app-color;
-    overflow-y: scroll;
+    overflow-y: hidden;
+    height: 100%;
 }
 body {
     margin: 0;
-    padding: 0 3em;
+    padding: 0;
 }
 
 .compatibility-info {
@@ -36,8 +38,8 @@ body.dependencies-ready .compatibility-info{
 red-pill {
     display: none;
 }
-body.dependencies-ready red-pill{
-    display: block;
+body.dependencies-ready {
+    height: 100%;
 }
 
 red-pill label {
@@ -50,8 +52,6 @@ red-pill label select {
 
 red-pill {
     color: black;
-    border: @app-border;
-    padding: @app-gap;
     background: white;
 }
 
@@ -80,11 +80,25 @@ mtk-red-pill-glyphs > label > * {
 
 mtk-red-pill-glyph {
     display: block;
-    border: @app-border;
-    margin-left: @app-gap;
-    margin-bottom: @app-gap;
-    overflow: auto;
-    background: white;
+    overflow: visible;
+    height: 100%;
+
+    position: relative;
+    span.particulars {
+        position: absolute;
+        display: inline-block;
+        white-space: nowrap;
+        top: 0
+        left: 0;
+        width: 0;
+        overflow: hidden;
+        background: lightyellow
+    }
+
+    svg {
+        outline: @glyph-outline;
+        height: 100%;
+    }
 
     svg g.layer-centerline {
         fill: none;
@@ -105,6 +119,11 @@ mtk-red-pill-glyph {
     }
 }
 
+mtk-red-pill-glyph:hover span.particulars {
+    width: auto;
+    z-index: 100;
+}
+
 mtk-red-pill-glyphs ol{
     white-space: normal;
     padding:0;
@@ -113,12 +132,22 @@ mtk-red-pill-glyphs ol{
 mtk-red-pill-glyphs li {
     display: inline-block;
     vertical-align: top;
-    width:33.333%
 }
 
-red-pill .children {
-    white-space: nowrap;
 
+
+red-pill {
+
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    > * {
+        flex-grow: 1;
+        flex-shrink: 1;
+        overflow: auto;
+    }
     mtk-text-editor{
         width: 450px;
     }
@@ -127,5 +156,280 @@ red-pill .children {
     mtk-text-editor {
         display: inline-block;
         vertical-align: top;
+    }
+}
+
+mtk-cps-panel {
+
+    max-height: 100%;
+    height: 50%; /* todo: this should have a drag handle control */
+
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    > .draghandle {
+        cursor: ns-resize;
+    }
+
+    /* used as drag indicator */
+    indicator {
+        display: block;
+        max-width: 250px;
+        position: relative;
+        outline: 1px solid grey;
+        z-index: 10;
+    }
+
+    mtk-cps-collection.root,
+    mtk-cps-style-dict {
+        display: block;
+        flex-grow: 1;
+        flex-shrink: 1;
+        overflow-y: scroll;
+    }
+
+
+    mtk-cps-style {
+        display: block;
+        background: red;
+    }
+
+    mtk-cps-rule {
+        display: block;
+    }
+
+
+    mtk-cps-property-dict::before {
+        content: '{'
+    }
+    mtk-cps-property-dict::after {
+        content: '}';
+        display: block;
+    }
+
+    mtk-cps-new-selector-list > div {
+        display: inline-block;
+        text-align: center;
+    }
+
+    mtk-cps-new-rule mtk-cps-new-selector-list::after {
+        content: '{}';
+    }
+
+    mtk-cps-property-dict {
+        display: inline;
+        ol {
+            /*important, that we can detect double clicks when the list is
+             empty. Double click is used to add a new-property interface.
+             */
+            min-height: .5em;
+            display: block;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-family: monospace;
+            font-size: .9em;
+            li {
+                padding-left: 1em;
+            }
+        }
+    }
+
+    mtk-cps-comment {
+        display: inline-block;
+        color: darkslategray;
+        vertical-align: top;
+        span {
+            display: inline-block;
+        }
+        span.format-standard {
+            white-space: pre;
+            font-family: monospace;
+        }
+        span.format-standard::before{
+            content: '/*';
+        }
+        span.format-standard::after{
+            content: '*/';
+        }
+
+        span.format-markdown {
+            font-family: sans-serif;
+        }
+    }
+
+    @line-height: 1.2em;
+    mtk-cps-property, mtk-cps-new-property, mtk-cps-selector-list,
+    mtk-cps-comment, mtk-cps-import-collection, mtk-cps-new-item {
+        line-height: @line-height; /* this is also hardcoded in the template of the textarea! */
+        display: inline-block;
+        border-bottom: 2px solid transparent;
+
+        .input, .display {
+            vertical-align: top;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
+        .display {
+            background: white;
+        }
+
+        .input {
+            background: lightyellow;
+            resize: none;
+        }
+
+        .property-name {
+            color: midnightblue;
+        }
+        .property-value {
+            color: darkgreen;
+        }
+
+        .selectorlist {
+            color: maroon;
+        }
+        .display.selectorlist {
+            min-width: 3em; /* need space to click for a new selectorlist */
+        }
+        .display.property-value,
+        .display.selectorlist {
+            display: inline-block;
+            white-space: pre;
+        }
+
+        > div {
+            display: inline-block;
+            position: relative;
+        }
+        .invalid {
+        }
+        .invalid:after {
+            content: "\26A0  invalid property \26A0";
+            font-family: sans-serif;
+            color: red;
+            white-space: nowrap;
+            cursor: help;
+        }
+    }
+
+    /**
+     * These properties are defined but more specific properties are used
+     */
+    mtk-cps-property.shadowed {
+        span.property-name,
+        span.property-value {
+            color: gray;
+            text-decoration: line-through;
+        }
+    }
+
+    mtk-cps-new-item{
+        display: block;
+    }
+    *.dragging {
+        background: white;
+        opacity: .5;;
+        mtk-cps-toolbutton {
+            display: none;
+        }
+    }
+    mtk-cps-toolbar {
+        position: relative;
+    }
+    mtk-cps-toolbar > * {
+        position: absolute;
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+    }
+
+    mtk-cps-collection-li {
+        background-color: rgba(100, 155, 50, 0.05);
+        display: block;
+        padding-left: 1em;
+    }
+
+
+    mtk-cps-namespace-collection,
+    mtk-cps-new-namespace-collection {
+
+        > mtk-cps-selector-list::before,
+        > mtk-cps-new-selector-list::before{
+            content: "@namespace (";
+        }
+        > mtk-cps-selector-list,
+        > mtk-cps-new-selector-list {
+            /*eliminates a pesky space between the element and the ::after*/
+            display: inline-flex;
+        }
+        > mtk-cps-selector-list::after,
+        > mtk-cps-new-selector-list::after {
+            content: ") {";
+        }
+    }
+    mtk-cps-namespace-collection::after ,
+    mtk-cps-new-namespace-collection::after {
+        content: "}";
+    }
+    mtk-cps-namespace-collection::after {
+        display: block;
+    }
+
+
+    @tool-size: 1em;
+    mtk-drag-handle,
+    mtk-cps-toolbutton {
+        display: inline-block;
+        padding: 0;
+        margin-right: .2em;
+        border: none;
+        background:none;
+        overflow: hidden;
+
+        width: @tool-size;
+        height: @line-height;
+        vertical-align: top;
+        color: #ccc;
+        cursor: default;
+        font-family: sans-serif;
+    }
+
+
+    mtk-drag-handle::before,
+    mtk-cps-toolbutton::before {
+        display:block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    mtk-drag-handle:hover,
+    mtk-cps-toolbutton:hover {
+        color: #000;
+    }
+
+    mtk-drag-handle::before {
+        content: "\2B0D";
+    }
+    mtk-drag-handle {
+        cursor: grab;
+    }
+
+    .tool-delete:hover,
+    .tool-cancel:hover {
+        color: #f00;
+    }
+
+    .tool-cancel::before,
+    .tool-delete::before {
+        content: "\2717";
     }
 }

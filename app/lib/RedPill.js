@@ -1,10 +1,19 @@
 define([
     'metapolator/errors'
   , 'metapolator/webAPI/window'
+  , 'metapolator/webAPI/document'
+  , 'metapolator/ui/services/GlyphRendererAPI'
+  , 'metapolator/ui/services/DragDataService'
+  , 'metapolator/ui/services/DragIndicatorService'
   , 'codemirror/lib/codemirror'
 ], function(
     errors
   , window
+  , document
+  , GlyphRendererAPI
+  , DragDataService
+  , DragIndicatorService
+  , _
 ) {
     "use strict";
 
@@ -17,6 +26,12 @@ define([
         this.frontend = undefined;
         this.project = project;
         this.loadTextEditor = loadTextEditor;
+        this.glyphRendererAPI = new GlyphRendererAPI(document, this.project.controller,
+            {noParentSizing: true}
+        );
+        this.dragDataService = new DragDataService();
+        this.dragIndicatorService = new DragIndicatorService();
+
         this.model = {
             masters: this.project.masters
         };
@@ -35,6 +50,15 @@ define([
         this.angularApp.constant('redPillModel', this.model);
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
+        this.angularApp.constant('ruleController', this.project.ruleController);
+        this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
+
+
+        // very specific for the cps-panel, right now
+        this.angularApp.constant('dragDataService', this.dragDataService);
+        this.angularApp.constant('dragIndicatorService', this.dragIndicatorService);
+        //end very specific for the cps-panel
+
         this.angularApp.constant('io', io);
         this.angularApp.constant('config', {loadTextEditor: loadTextEditor});
 

@@ -30,6 +30,5 @@
   },
   "_source": "git://github.com/Teleborder/FileSaver.js.git",
   "_target": "~1.20150304.1",
-  "_originalSource": "file-saver.js",
-  "_direct": true
+  "_originalSource": "file-saver.js"
 }

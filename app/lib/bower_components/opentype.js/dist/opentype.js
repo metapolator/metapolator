@@ -166,7 +166,7 @@ DefaultEncoding.prototype.charToGlyphIndex = function(c) {
     var glyphs = this.font.glyphs;
     if (glyphs) {
         for (var i = 0; i < glyphs.length; i += 1) {
-            var glyph = glyphs[i];
+            var glyph = glyphs.get(i);
             for (var j = 0; j < glyph.unicodes.length; j += 1) {
                 if (glyph.unicodes[j] === code) {
                     return i;
@@ -239,15 +239,16 @@ function addGlyphNames(font) {
     var glyph;
     var glyphIndexMap = font.tables.cmap.glyphIndexMap;
     var charCodes = Object.keys(glyphIndexMap);
+
     for (var i = 0; i < charCodes.length; i += 1) {
         var c = charCodes[i];
         var glyphIndex = glyphIndexMap[c];
-        glyph = font.glyphs[glyphIndex];
+        glyph = font.glyphs.get(glyphIndex);
         glyph.addUnicode(parseInt(c));
     }
 
     for (i = 0; i < font.glyphs.length; i += 1) {
-        glyph = font.glyphs[i];
+        glyph = font.glyphs.get(i);
         if (font.cffEncoding) {
             glyph.name = font.cffEncoding.charset[i];
         } else {
@@ -274,6 +275,7 @@ exports.addGlyphNames = addGlyphNames;
 var path = require('./path');
 var sfnt = require('./tables/sfnt');
 var encoding = require('./encoding');
+var glyphset = require('./glyphset');
 
 // A Font represents a loaded OpenType font file.
 // It contains a set of glyphs and methods to draw text on a drawing context,
@@ -297,8 +299,8 @@ function Font(options) {
     this.unitsPerEm = options.unitsPerEm || 1000;
     this.ascender = options.ascender;
     this.descender = options.descender;
-    this.supported = true;
-    this.glyphs = options.glyphs || [];
+    this.supported = true; // Deprecated: parseBuffer will throw an error if font is not supported.
+    this.glyphs = new glyphset.GlyphSet(this, options.glyphs || []);
     this.encoding = new encoding.DefaultEncoding(this);
     this.tables = {};
 }
@@ -320,10 +322,10 @@ Font.prototype.charToGlyphIndex = function(s) {
 // the given character and a glyph; for complex scripts this might not be the case.
 Font.prototype.charToGlyph = function(c) {
     var glyphIndex = this.charToGlyphIndex(c);
-    var glyph = this.glyphs[glyphIndex];
+    var glyph = this.glyphs.get(glyphIndex);
     if (!glyph) {
         // .notdef
-        glyph = this.glyphs[0];
+        glyph = this.glyphs.get(0);
     }
 
     return glyph;
@@ -349,10 +351,10 @@ Font.prototype.nameToGlyphIndex = function(name) {
 
 Font.prototype.nameToGlyph = function(name) {
     var glyphIndex = this.nametoGlyphIndex(name);
-    var glyph = this.glyphs[glyphIndex];
+    var glyph = this.glyphs.get(glyphIndex);
     if (!glyph) {
         // .notdef
-        glyph = this.glyphs[0];
+        glyph = this.glyphs.get(0);
     }
 
     return glyph;
@@ -381,10 +383,6 @@ Font.prototype.getKerningValue = function(leftGlyph, rightGlyph) {
 // Helper function that invokes the given callback for each glyph in the given text.
 // The callback gets `(glyph, x, y, fontSize, options)`.
 Font.prototype.forEachGlyph = function(text, x, y, fontSize, options, callback) {
-    if (!this.supported) {
-        return;
-    }
-
     x = x !== undefined ? x : 0;
     y = y !== undefined ? y : 0;
     fontSize = fontSize !== undefined ? fontSize : 72;
@@ -545,7 +543,7 @@ Font.prototype.download = function() {
 
 exports.Font = Font;
 
-},{"./encoding":3,"./path":8,"./tables/sfnt":23}],5:[function(require,module,exports){
+},{"./encoding":3,"./glyphset":6,"./path":9,"./tables/sfnt":24}],5:[function(require,module,exports){
 // The Glyph object
 
 'use strict';
@@ -554,24 +552,71 @@ var check = require('./check');
 var draw = require('./draw');
 var path = require('./path');
 
+function getPathDefinition(glyph, path) {
+    var _path = path || { commands: [] };
+    return {
+        configurable: true,
+
+        get: function() {
+            if (typeof _path === 'function') {
+                _path = _path();
+            }
+
+            return _path;
+        },
+
+        set: function(p) {
+            _path = p;
+        }
+    };
+}
+
 // A Glyph is an individual mark that often corresponds to a character.
 // Some glyphs, such as ligatures, are a combination of many characters.
 // Glyphs are the basic building blocks of a font.
 //
 // The `Glyph` class contains utility methods for drawing the path and its points.
 function Glyph(options) {
-    this.font = options.font || null;
+    // By putting all the code on a prototype function (which is only declared once)
+    // we reduce the memory requirements for larger fonts by some 2%
+    this.bindConstructorValues(options);
+}
+
+Glyph.prototype.bindConstructorValues = function(options) {
     this.index = options.index || 0;
+
+    // These three values cannnot be deferred for memory optimization:
     this.name = options.name || null;
     this.unicode = options.unicode || undefined;
     this.unicodes = options.unicodes || options.unicode !== undefined ? [options.unicode] : [];
-    this.xMin = options.xMin || 0;
-    this.yMin = options.yMin || 0;
-    this.xMax = options.xMax || 0;
-    this.yMax = options.yMax || 0;
-    this.advanceWidth = options.advanceWidth || 0;
-    this.path = options.path || null;
-}
+
+    // But by binding these values only when necessary, we reduce can
+    // the memory requirements by almost 3% for larger fonts.
+    if (options.xMin) {
+        this.xMin = options.xMin;
+    }
+
+    if (options.yMin) {
+        this.yMin = options.yMin;
+    }
+
+    if (options.xMax) {
+        this.xMax = options.xMax;
+    }
+
+    if (options.yMax) {
+        this.yMax = options.yMax;
+    }
+
+    if (options.advanceWidth) {
+        this.advanceWidth = options.advanceWidth;
+    }
+
+    // The path for a glyph is the most memory intensive, and is bound as a value
+    // with a getter/setter to ensure we actually do path parsing only once the
+    // path is actually needed by anything.
+    Object.defineProperty(this, 'path', getPathDefinition(this, options.path));
+};
 
 Glyph.prototype.addUnicode = function(unicode) {
     if (this.unicodes.length === 0) {
@@ -590,7 +635,7 @@ Glyph.prototype.getPath = function(x, y, fontSize) {
     x = x !== undefined ? x : 0;
     y = y !== undefined ? y : 0;
     fontSize = fontSize !== undefined ? fontSize : 72;
-    var scale = 1 / this.font.unitsPerEm * fontSize;
+    var scale = 1 / this.path.unitsPerEm * fontSize;
     var p = new path.Path();
     var commands = this.path.commands;
     for (var i = 0; i < commands.length; i += 1) {
@@ -705,7 +750,7 @@ Glyph.prototype.drawPoints = function(ctx, x, y, fontSize) {
     x = x !== undefined ? x : 0;
     y = y !== undefined ? y : 0;
     fontSize = fontSize !== undefined ? fontSize : 24;
-    var scale = 1 / this.font.unitsPerEm * fontSize;
+    var scale = 1 / this.path.unitsPerEm * fontSize;
 
     var blueCircles = [];
     var redCircles = [];
@@ -745,7 +790,7 @@ Glyph.prototype.drawMetrics = function(ctx, x, y, fontSize) {
     x = x !== undefined ? x : 0;
     y = y !== undefined ? y : 0;
     fontSize = fontSize !== undefined ? fontSize : 24;
-    scale = 1 / this.font.unitsPerEm * fontSize;
+    scale = 1 / this.path.unitsPerEm * fontSize;
     ctx.lineWidth = 1;
 
     // Draw the origin
@@ -753,24 +798,111 @@ Glyph.prototype.drawMetrics = function(ctx, x, y, fontSize) {
     draw.line(ctx, x, -10000, x, 10000);
     draw.line(ctx, -10000, y, 10000, y);
 
+    // This code is here due to memory optimization: by not using
+    // defaults in the constructor, we save a notable amount of memory.
+    var xMin = this.xMin || 0;
+    var yMin = this.yMin || 0;
+    var xMax = this.xMax || 0;
+    var yMax = this.yMax || 0;
+    var advanceWidth = this.advanceWidth || 0;
+
     // Draw the glyph box
     ctx.strokeStyle = 'blue';
-    draw.line(ctx, x + (this.xMin * scale), -10000, x + (this.xMin * scale), 10000);
-    draw.line(ctx, x + (this.xMax * scale), -10000, x + (this.xMax * scale), 10000);
-    draw.line(ctx, -10000, y + (-this.yMin * scale), 10000, y + (-this.yMin * scale));
-    draw.line(ctx, -10000, y + (-this.yMax * scale), 10000, y + (-this.yMax * scale));
+    draw.line(ctx, x + (xMin * scale), -10000, x + (xMin * scale), 10000);
+    draw.line(ctx, x + (xMax * scale), -10000, x + (xMax * scale), 10000);
+    draw.line(ctx, -10000, y + (-yMin * scale), 10000, y + (-yMin * scale));
+    draw.line(ctx, -10000, y + (-yMax * scale), 10000, y + (-yMax * scale));
 
     // Draw the advance width
     ctx.strokeStyle = 'green';
-    draw.line(ctx, x + (this.advanceWidth * scale), -10000, x + (this.advanceWidth * scale), 10000);
+    draw.line(ctx, x + (advanceWidth * scale), -10000, x + (advanceWidth * scale), 10000);
 };
 
 exports.Glyph = Glyph;
 
-},{"./check":1,"./draw":2,"./path":8}],6:[function(require,module,exports){
+},{"./check":1,"./draw":2,"./path":9}],6:[function(require,module,exports){
+// The GlyphSet object
+
+'use strict';
+
+var _glyph = require('./glyph');
+
+// A GlyphSet represents all glyphs available in the font, but modelled using
+// a deferred glyph loader, for retrieving glyphs only once they are absolutely
+// necessary, to keep the memory footprint down.
+function GlyphSet(font, glyphs) {
+    this.font = font;
+    this.glyphs = {};
+    if (Array.isArray(glyphs)) {
+        for (var i = 0; i < glyphs.length; i++) {
+            this.glyphs[i] = glyphs[i];
+        }
+    }
+
+    this.length = (glyphs && glyphs.length) || 0;
+}
+
+GlyphSet.prototype.get = function(index) {
+    if (typeof this.glyphs[index] === 'function') {
+        this.glyphs[index] = this.glyphs[index]();
+    }
+
+    return this.glyphs[index];
+};
+
+GlyphSet.prototype.push = function(index, loader) {
+    this.glyphs[index] = loader;
+    this.length++;
+};
+
+function glyphLoader(font, index) {
+    return new _glyph.Glyph({index: index, font: font});
+}
+
+/**
+ * Generate a stub glyph that can be filled with all metadata *except*
+ * the "points" and "path" properties, which must be loaded only once
+ * the glyph's path is actually requested for text shaping.
+ */
+
+function ttfGlyphLoader(font, index, parseGlyph, data, position, buildPath) {
+    return function() {
+        var glyph = new _glyph.Glyph({index: index, font: font});
+
+        glyph.path = function() {
+            parseGlyph(glyph, data, position);
+            var path = buildPath(font.glyphs, glyph);
+            path.unitsPerEm = font.unitsPerEm;
+            return path;
+        };
+
+        return glyph;
+    };
+}
+
+function cffGlyphLoader(font, index, parseCFFCharstring, charstring) {
+    return function() {
+        var glyph = new _glyph.Glyph({index: index, font: font});
+
+        glyph.path = function() {
+            var path = parseCFFCharstring(font, glyph, charstring);
+            path.unitsPerEm = font.unitsPerEm;
+            return path;
+        };
+
+        return glyph;
+    };
+}
+
+exports.GlyphSet = GlyphSet;
+exports.glyphLoader = glyphLoader;
+exports.ttfGlyphLoader = ttfGlyphLoader;
+exports.cffGlyphLoader = cffGlyphLoader;
+
+},{"./glyph":5}],7:[function(require,module,exports){
 // opentype.js
 // https://github.com/nodebox/opentype.js
-// (c) 2014 Frederik De Bleser
+// (c) 2015 Frederik De Bleser
 // opentype.js may be freely distributed under the MIT license.
 
 /* global ArrayBuffer, DataView, Uint8Array, XMLHttpRequest  */
@@ -839,8 +971,7 @@ function loadFromUrl(url, callback) {
 // Public API ///////////////////////////////////////////////////////////
 
 // Parse the OpenType file data (as an ArrayBuffer) and return a Font object.
-// If the file could not be parsed (most likely because it contains Postscript outlines)
-// we return an empty Font object with the `supported` flag set to `false`.
+// Throws an error if the font could not be parsed.
 function parseBuffer(buffer) {
     var indexToLocFormat;
     var hmtxOffset;
@@ -880,10 +1011,6 @@ function parseBuffer(buffer) {
         case 'cmap':
             font.tables.cmap = cmap.parse(data, offset);
             font.encoding = new encoding.CmapEncoding(font.tables.cmap);
-            if (!font.encoding) {
-                font.supported = false;
-            }
-
             break;
         case 'head':
             font.tables.head = head.parse(data, offset);
@@ -944,19 +1071,17 @@ function parseBuffer(buffer) {
         cff.parse(data, cffOffset, font);
         encoding.addGlyphNames(font);
     } else {
-        font.supported = false;
+        throw new Error('Font doesn\'t contain TrueType or CFF outlines.');
     }
 
-    if (font.supported) {
-        if (kernOffset) {
-            font.kerningPairs = kern.parse(data, kernOffset);
-        } else {
-            font.kerningPairs = {};
-        }
+    if (kernOffset) {
+        font.kerningPairs = kern.parse(data, kernOffset);
+    } else {
+        font.kerningPairs = {};
+    }
 
-        if (gposOffset) {
-            gpos.parse(data, gposOffset, font);
-        }
+    if (gposOffset) {
+        gpos.parse(data, gposOffset, font);
     }
 
     return font;
@@ -977,12 +1102,16 @@ function load(url, callback) {
         }
 
         var font = parseBuffer(arrayBuffer);
-        if (!font.supported) {
-            return callback('Font is not supported (is this a Postscript font?)');
-        }
-
         return callback(null, font);
     });
+}
+
+// Syncronously load the font from a URL or file.
+// When done, return the font object or throw an error.
+function loadSync(url) {
+    var fs = require('fs');
+    var buffer = fs.readFileSync(url);
+    return parseBuffer(toArrayBuffer(buffer));
 }
 
 exports._parse = parse;
@@ -991,8 +1120,9 @@ exports.Glyph = glyph.Glyph;
 exports.Path = path.Path;
 exports.parse = parseBuffer;
 exports.load = load;
+exports.loadSync = loadSync;
 
-},{"./encoding":3,"./font":4,"./glyph":5,"./parse":7,"./path":8,"./tables/cff":10,"./tables/cmap":11,"./tables/glyf":12,"./tables/gpos":13,"./tables/head":14,"./tables/hhea":15,"./tables/hmtx":16,"./tables/kern":17,"./tables/loca":18,"./tables/maxp":19,"./tables/name":20,"./tables/os2":21,"./tables/post":22,"fs":undefined}],7:[function(require,module,exports){
+},{"./encoding":3,"./font":4,"./glyph":5,"./parse":8,"./path":9,"./tables/cff":11,"./tables/cmap":12,"./tables/glyf":13,"./tables/gpos":14,"./tables/head":15,"./tables/hhea":16,"./tables/hmtx":17,"./tables/kern":18,"./tables/loca":19,"./tables/maxp":20,"./tables/name":21,"./tables/os2":22,"./tables/post":23,"fs":undefined}],8:[function(require,module,exports){
 // Parsing utility functions
 
 'use strict';
@@ -1206,7 +1336,7 @@ Parser.prototype.skip = function(type, amount) {
 
 exports.Parser = Parser;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // Geometric objects
 
 'use strict';
@@ -1376,7 +1506,7 @@ Path.prototype.toSVG = function(decimalPlaces) {
 
 exports.Path = Path;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Table metadata
 
 'use strict';
@@ -1433,7 +1563,7 @@ Table.prototype.encode = function() {
 
 exports.Table = Table;
 
-},{"./check":1,"./types":24}],10:[function(require,module,exports){
+},{"./check":1,"./types":25}],11:[function(require,module,exports){
 // The `CFF` table contains the glyph outlines in PostScript format.
 // https://www.microsoft.com/typography/OTSPEC/cff.htm
 // http://download.microsoft.com/download/8/0/1/801a191c-029d-4af3-9642-555f6fe514ee/cff.pdf
@@ -1442,7 +1572,7 @@ exports.Table = Table;
 'use strict';
 
 var encoding = require('../encoding');
-var _glyph = require('../glyph');
+var glyphset = require('../glyphset');
 var parse = require('../parse');
 var path = require('../path');
 var table = require('../table');
@@ -1798,7 +1928,7 @@ function parseCFFEncoding(data, start, charset) {
 // Take in charstring code and return a Glyph object.
 // The encoding is described in the Type 2 Charstring Format
 // https://www.microsoft.com/typography/OTSPEC/charstr2.htm
-function parseCFFCharstring(code, font, index) {
+function parseCFFCharstring(font, glyph, code) {
     var c1x;
     var c1y;
     var c2x;
@@ -2002,7 +2132,7 @@ function parseCFFCharstring(code, font, index) {
                     p.curveTo(c3x, c3y, c4x, c4y, x, y);
                     break;
                 default:
-                    console.log('Glyph ' + index + ': unknown operator ' + 1200 + v);
+                    console.log('Glyph ' + glyph.index + ': unknown operator ' + 1200 + v);
                     stack.length = 0;
                 }
                 break;
@@ -2172,7 +2302,7 @@ function parseCFFCharstring(code, font, index) {
                 break;
             default:
                 if (v < 32) {
-                    console.log('Glyph ' + index + ': unknown operator ' + v);
+                    console.log('Glyph ' + glyph.index + ': unknown operator ' + v);
                 } else if (v < 247) {
                     stack.push(v - 139);
                 } else if (v < 251) {
@@ -2196,10 +2326,9 @@ function parseCFFCharstring(code, font, index) {
     }
 
     parse(code);
-    var glyph = new _glyph.Glyph({font: font, index: index});
-    glyph.path = p;
+
     glyph.advanceWidth = width;
-    return glyph;
+    return p;
 }
 
 // Subroutines are encoded using the negative half of the number space.
@@ -2263,10 +2392,10 @@ function parseCFFTable(data, start, font) {
     // Prefer the CMAP encoding to the CFF encoding.
     font.encoding = font.encoding || font.cffEncoding;
 
-    font.glyphs = [];
+    font.glyphs = new glyphset.GlyphSet(font);
     for (var i = 0; i < font.nGlyphs; i += 1) {
         var charString = charStringsIndex.objects[i];
-        font.glyphs.push(parseCFFCharstring(charString, font, i));
+        font.glyphs.push(i, glyphset.cffGlyphLoader(font, i, parseCFFCharstring, charString));
     }
 }
 
@@ -2355,8 +2484,7 @@ function makeStringIndex(strings) {
     ]);
     t.strings = [];
     for (var i = 0; i < strings.length; i += 1) {
-        if (strings[i])
-            t.strings.push({name: 'string_' + i, type: 'STRING', value: strings[i]});
+        t.strings.push({name: 'string_' + i, type: 'STRING', value: strings[i]});
     }
 
     return t;
@@ -2455,8 +2583,9 @@ function makeCharStringsIndex(glyphs) {
     var t = new table.Table('CharStrings INDEX', [
         {name: 'charStrings', type: 'INDEX', value: []}
     ]);
+
     for (var i = 0; i < glyphs.length; i += 1) {
-        var glyph = glyphs[i];
+        var glyph = glyphs.get(i);
         var ops = glyphToOps(glyph);
         t.charStrings.push({name: glyph.name, type: 'CHARSTRING', value: ops});
     }
@@ -2492,6 +2621,7 @@ function makeCFFTable(glyphs, options) {
         {name: 'privateDictIndex', type: 'TABLE'}
     ]);
 
+    var fontScale = 1 / options.unitsPerEm;
     // We use non-zero values for the offsets so that the DICT encodes them.
     // This is important because the size of the Top DICT plays a role in offset calculation,
     // and the size shouldn't change after we've written correct offsets.
@@ -2500,6 +2630,7 @@ function makeCFFTable(glyphs, options) {
         fullName: options.fullName,
         familyName: options.familyName,
         weight: options.weightName,
+        fontMatrix: [fontScale, 0, 0, fontScale, 0, 0],
         charset: 999,
         encoding: 0,
         charStrings: 999,
@@ -2509,10 +2640,12 @@ function makeCFFTable(glyphs, options) {
     var privateAttrs = {};
 
     var glyphNames = [];
+    var glyph;
 
     // Skip first glyph (.notdef)
     for (var i = 1; i < glyphs.length; i += 1) {
-        glyphNames.push(glyphs[i].name);
+        glyph = glyphs.get(i);
+        glyphNames.push(glyph.name);
     }
 
     var strings = [];
@@ -2552,7 +2685,7 @@ function makeCFFTable(glyphs, options) {
 exports.parse = parseCFFTable;
 exports.make = makeCFFTable;
 
-},{"../encoding":3,"../glyph":5,"../parse":7,"../path":8,"../table":9}],11:[function(require,module,exports){
+},{"../encoding":3,"../glyphset":6,"../parse":8,"../path":9,"../table":10}],12:[function(require,module,exports){
 // The `cmap` table stores the mappings from characters to glyphs.
 // https://www.microsoft.com/typography/OTSPEC/cmap.htm
 
@@ -2682,7 +2815,7 @@ function makeCmapTable(glyphs) {
 
     t.segments = [];
     for (i = 0; i < glyphs.length; i += 1) {
-        var glyph = glyphs[i];
+        var glyph = glyphs.get(i);
         for (var j = 0; j < glyph.unicodes.length; j += 1) {
             addSegment(t, glyph.unicodes[j], i);
         }
@@ -2740,14 +2873,14 @@ function makeCmapTable(glyphs) {
 exports.parse = parseCmapTable;
 exports.make = makeCmapTable;
 
-},{"../check":1,"../parse":7,"../table":9}],12:[function(require,module,exports){
+},{"../check":1,"../parse":8,"../table":10}],13:[function(require,module,exports){
 // The `glyf` table describes the glyphs in TrueType outline format.
 // http://www.microsoft.com/typography/otspec/glyf.htm
 
 'use strict';
 
 var check = require('../check');
-var _glyph = require('../glyph');
+var glyphset = require('../glyphset');
 var parse = require('../parse');
 var path = require('../path');
 
@@ -2778,12 +2911,8 @@ function parseGlyphCoordinate(p, flag, previousValue, shortVectorBitMask, sameBi
 }
 
 // Parse a TrueType glyph.
-function parseGlyph(data, start, index, font) {
-    //var p, glyph, flag, i, j, flags,
-    //    endPointIndices, numberOfCoordinates, repeatCount, points, point, px, py,
-    //    component, moreComponents;
+function parseGlyph(glyph, data, start) {
     var p = new parse.Parser(data, start);
-    var glyph = new _glyph.Glyph({font: font, index: index});
     glyph.numberOfContours = p.parseShort();
     glyph.xMin = p.parseShort();
     glyph.yMin = p.parseShort();
@@ -2903,8 +3032,6 @@ function parseGlyph(data, start, index, font) {
             moreComponents = !!(flags & 32);
         }
     }
-
-    return glyph;
 }
 
 // Transform an array of points and return a new array.
@@ -3011,35 +3138,35 @@ function getPath(points) {
     return p;
 }
 
+function buildPath(glyphs, glyph) {
+    if (glyph.isComposite) {
+        for (var j = 0; j < glyph.components.length; j += 1) {
+            var component = glyph.components[j];
+            var componentGlyph = glyphs.get(component.glyphIndex);
+            if (componentGlyph.points) {
+                var transformedPoints = transformPoints(componentGlyph.points, component);
+                glyph.points = glyph.points.concat(transformedPoints);
+            }
+        }
+    }
+
+    return getPath(glyph.points);
+}
+
 // Parse all the glyphs according to the offsets from the `loca` table.
 function parseGlyfTable(data, start, loca, font) {
-    var glyphs = [];
+    var glyphs = new glyphset.GlyphSet(font);
     var i;
+
     // The last element of the loca table is invalid.
     for (i = 0; i < loca.length - 1; i += 1) {
         var offset = loca[i];
         var nextOffset = loca[i + 1];
         if (offset !== nextOffset) {
-            glyphs.push(parseGlyph(data, start + offset, i, font));
+            glyphs.push(i, glyphset.ttfGlyphLoader(font, i, parseGlyph, data, start + offset, buildPath));
         } else {
-            glyphs.push(new _glyph.Glyph({font: font, index: i}));
+            glyphs.push(i, glyphset.glyphLoader(font, i));
         }
-    }
-    // Go over the glyphs again, resolving the composite glyphs.
-    for (i = 0; i < glyphs.length; i += 1) {
-        var glyph = glyphs[i];
-        if (glyph.isComposite) {
-            for (var j = 0; j < glyph.components.length; j += 1) {
-                var component = glyph.components[j];
-                var componentGlyph = glyphs[component.glyphIndex];
-                if (componentGlyph.points) {
-                    var transformedPoints = transformPoints(componentGlyph.points, component);
-                    glyph.points = glyph.points.concat(transformedPoints);
-                }
-            }
-        }
-
-        glyph.path = getPath(glyph.points);
     }
 
     return glyphs;
@@ -3047,7 +3174,7 @@ function parseGlyfTable(data, start, loca, font) {
 
 exports.parse = parseGlyfTable;
 
-},{"../check":1,"../glyph":5,"../parse":7,"../path":8}],13:[function(require,module,exports){
+},{"../check":1,"../glyphset":6,"../parse":8,"../path":9}],14:[function(require,module,exports){
 // The `GPOS` table contains kerning pairs, among other things.
 // https://www.microsoft.com/typography/OTSPEC/gpos.htm
 
@@ -3288,7 +3415,7 @@ function parseGposTable(data, start, font) {
 
 exports.parse = parseGposTable;
 
-},{"../check":1,"../parse":7}],14:[function(require,module,exports){
+},{"../check":1,"../parse":8}],15:[function(require,module,exports){
 // The `head` table contains global information about the font.
 // https://www.microsoft.com/typography/OTSPEC/head.htm
 
@@ -3348,7 +3475,7 @@ function makeHeadTable(options) {
 exports.parse = parseHeadTable;
 exports.make = makeHeadTable;
 
-},{"../check":1,"../parse":7,"../table":9}],15:[function(require,module,exports){
+},{"../check":1,"../parse":8,"../table":10}],16:[function(require,module,exports){
 // The `hhea` table contains information for horizontal layout.
 // https://www.microsoft.com/typography/OTSPEC/hhea.htm
 
@@ -3403,7 +3530,7 @@ function makeHheaTable(options) {
 exports.parse = parseHheaTable;
 exports.make = makeHheaTable;
 
-},{"../parse":7,"../table":9}],16:[function(require,module,exports){
+},{"../parse":8,"../table":10}],17:[function(require,module,exports){
 // The `hmtx` table contains the horizontal metrics for all glyphs.
 // https://www.microsoft.com/typography/OTSPEC/hmtx.htm
 
@@ -3425,7 +3552,7 @@ function parseHmtxTable(data, start, numMetrics, numGlyphs, glyphs) {
             leftSideBearing = p.parseShort();
         }
 
-        var glyph = glyphs[i];
+        var glyph = glyphs.get(i);
         glyph.advanceWidth = advanceWidth;
         glyph.leftSideBearing = leftSideBearing;
     }
@@ -3434,7 +3561,7 @@ function parseHmtxTable(data, start, numMetrics, numGlyphs, glyphs) {
 function makeHmtxTable(glyphs) {
     var t = new table.Table('hmtx', []);
     for (var i = 0; i < glyphs.length; i += 1) {
-        var glyph = glyphs[i];
+        var glyph = glyphs.get(i);
         var advanceWidth = glyph.advanceWidth || 0;
         var leftSideBearing = glyph.leftSideBearing || 0;
         t.fields.push({name: 'advanceWidth_' + i, type: 'USHORT', value: advanceWidth});
@@ -3447,7 +3574,7 @@ function makeHmtxTable(glyphs) {
 exports.parse = parseHmtxTable;
 exports.make = makeHmtxTable;
 
-},{"../parse":7,"../table":9}],17:[function(require,module,exports){
+},{"../parse":8,"../table":10}],18:[function(require,module,exports){
 // The `kern` table contains kerning pairs.
 // Note that some fonts use the GPOS OpenType layout table to specify kerning.
 // https://www.microsoft.com/typography/OTSPEC/kern.htm
@@ -3484,7 +3611,7 @@ function parseKernTable(data, start) {
 
 exports.parse = parseKernTable;
 
-},{"../check":1,"../parse":7}],18:[function(require,module,exports){
+},{"../check":1,"../parse":8}],19:[function(require,module,exports){
 // The `loca` table stores the offsets to the locations of the glyphs in the font.
 // https://www.microsoft.com/typography/OTSPEC/loca.htm
 
@@ -3519,7 +3646,7 @@ function parseLocaTable(data, start, numGlyphs, shortVersion) {
 
 exports.parse = parseLocaTable;
 
-},{"../parse":7}],19:[function(require,module,exports){
+},{"../parse":8}],20:[function(require,module,exports){
 // The `maxp` table establishes the memory requirements for the font.
 // We need it just to get the number of glyphs in the font.
 // https://www.microsoft.com/typography/OTSPEC/maxp.htm
@@ -3564,7 +3691,7 @@ function makeMaxpTable(numGlyphs) {
 exports.parse = parseMaxpTable;
 exports.make = makeMaxpTable;
 
-},{"../parse":7,"../table":9}],20:[function(require,module,exports){
+},{"../parse":8,"../table":10}],21:[function(require,module,exports){
 // The `name` naming table.
 // https://www.microsoft.com/typography/OTSPEC/name.htm
 
@@ -3719,7 +3846,7 @@ function makeNameTable(options) {
 exports.parse = parseNameTable;
 exports.make = makeNameTable;
 
-},{"../parse":7,"../table":9,"../types":24}],21:[function(require,module,exports){
+},{"../parse":8,"../table":10,"../types":25}],22:[function(require,module,exports){
 // The `OS/2` table contains metrics required in OpenType fonts.
 // https://www.microsoft.com/typography/OTSPEC/os2.htm
 
@@ -3975,7 +4102,7 @@ exports.getUnicodeRange = getUnicodeRange;
 exports.parse = parseOS2Table;
 exports.make = makeOS2Table;
 
-},{"../parse":7,"../table":9}],22:[function(require,module,exports){
+},{"../parse":8,"../table":10}],23:[function(require,module,exports){
 // The `post` table stores additional PostScript information, such as glyph names.
 // https://www.microsoft.com/typography/OTSPEC/post.htm
 
@@ -4048,7 +4175,7 @@ function makePostTable() {
 exports.parse = parsePostTable;
 exports.make = makePostTable;
 
-},{"../encoding":3,"../parse":7,"../table":9}],23:[function(require,module,exports){
+},{"../encoding":3,"../parse":8,"../table":10}],24:[function(require,module,exports){
 // The `sfnt` wrapper provides organization for the tables in the font.
 // It is the top-level data structure in a font.
 // https://www.microsoft.com/typography/OTSPEC/otff.htm
@@ -4160,7 +4287,7 @@ function metricsForChar(font, chars, notFoundMetrics) {
     for (var i = 0; i < chars.length; i += 1) {
         var glyphIndex = font.charToGlyphIndex(chars[i]);
         if (glyphIndex > 0) {
-            var glyph = font.glyphs[glyphIndex];
+            var glyph = font.glyphs.get(glyphIndex);
             return glyph.getMetrics();
         }
     }
@@ -4187,14 +4314,15 @@ function fontToSfntTable(font) {
     var advanceWidths = [];
     var leftSideBearings = [];
     var rightSideBearings = [];
-    var firstCharIndex = null;
+    var firstCharIndex;
     var lastCharIndex = 0;
     var ulUnicodeRange1 = 0;
     var ulUnicodeRange2 = 0;
     var ulUnicodeRange3 = 0;
     var ulUnicodeRange4 = 0;
+
     for (var i = 0; i < font.glyphs.length; i += 1) {
-        var glyph = font.glyphs[i];
+        var glyph = font.glyphs.get(i);
         var unicode = glyph.unicode | 0;
         if (firstCharIndex > unicode || firstCharIndex === null) {
             firstCharIndex = unicode;
@@ -4316,7 +4444,8 @@ function fontToSfntTable(font) {
         fullName: fullName,
         familyName: font.familyName,
         weightName: font.styleName,
-        postScriptName: postScriptName
+        postScriptName: postScriptName,
+        unitsPerEm: font.unitsPerEm
     });
     // Order the tables according to the the OpenType specification 1.4.
     var tables = [headTable, hheaTable, maxpTable, os2Table, nameTable, cmapTable, postTable, cffTable, hmtxTable];
@@ -4347,7 +4476,7 @@ exports.computeCheckSum = computeCheckSum;
 exports.make = makeSfntTable;
 exports.fontToTable = fontToSfntTable;
 
-},{"../check":1,"../table":9,"./cff":10,"./cmap":11,"./head":14,"./hhea":15,"./hmtx":16,"./maxp":19,"./name":20,"./os2":21,"./post":22}],24:[function(require,module,exports){
+},{"../check":1,"../table":10,"./cff":11,"./cmap":12,"./head":15,"./hhea":16,"./hmtx":17,"./maxp":20,"./name":21,"./os2":22,"./post":23}],25:[function(require,module,exports){
 // Data types used in the OpenType font file.
 // All OpenType fonts use Motorola-style byte ordering (Big Endian)
 
@@ -4386,7 +4515,7 @@ encode.CHAR = function(v) {
     return [v.charCodeAt(0)];
 };
 
-sizeOf.BYTE = constant(1);
+sizeOf.CHAR = constant(1);
 
 // Convert an ASCII string to a list of bytes.
 encode.CHARARRAY = function(v) {
@@ -4515,16 +4644,56 @@ encode.NUMBER16 = function(v) {
     return [28, (v >> 8) & 0xFF, v & 0xFF];
 };
 
-sizeOf.NUMBER16 = constant(2);
+sizeOf.NUMBER16 = constant(3);
 
-// Convert a signed number between -(2^31) and +(2^31-1) to a four-byte value.
+// Convert a signed number between -(2^31) and +(2^31-1) to a five-byte value.
 // This is useful if you want to be sure you always use four bytes,
 // at the expense of wasting a few bytes for smaller numbers.
 encode.NUMBER32 = function(v) {
     return [29, (v >> 24) & 0xFF, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF];
 };
 
-sizeOf.NUMBER32 = constant(4);
+sizeOf.NUMBER32 = constant(5);
+
+encode.REAL = function(v) {
+    var value = v.toString();
+
+    // Some numbers use an epsilon to encode the value. (e.g. JavaScript will store 0.0000001 as 1e-7)
+    // This code converts it back to a number without the epsilon.
+    var m = /\.(\d*?)(?:9{5,20}|0{5,20})\d{0,2}(?:e(.+)|$)/.exec(value);
+    if (m) {
+        var epsilon = parseFloat('1e' + ((m[2] ? +m[2] : 0) + m[1].length));
+        value = (Math.round(v * epsilon) / epsilon).toString();
+    }
+
+    var nibbles = '';
+    var i;
+    var ii;
+    for (i = 0, ii = value.length; i < ii; i += 1) {
+        var c = value[i];
+        if (c === 'e') {
+            nibbles += value[++i] === '-' ? 'c' : 'b';
+        } else if (c === '.') {
+            nibbles += 'a';
+        } else if (c === '-') {
+            nibbles += 'e';
+        } else {
+            nibbles += c;
+        }
+    }
+
+    nibbles += (nibbles.length & 1) ? 'f' : 'ff';
+    var out = [30];
+    for (i = 0, ii = nibbles.length; i < ii; i += 2) {
+        out.push(parseInt(nibbles.substr(i, 2), 16));
+    }
+
+    return out;
+};
+
+sizeOf.REAL = function(v) {
+    return encode.REAL(v).length;
+};
 
 encode.NAME = encode.CHARARRAY;
 sizeOf.NAME = sizeOf.CHARARRAY;
@@ -4532,12 +4701,13 @@ sizeOf.NAME = sizeOf.CHARARRAY;
 encode.STRING = encode.CHARARRAY;
 sizeOf.STRING = sizeOf.CHARARRAY;
 
-// Convert a ASCII string to a list of UTF16 bytes.
+// Convert a JavaScript string to UTF16-BE.
 encode.UTF16 = function(v) {
     var b = [];
     for (var i = 0; i < v.length; i += 1) {
-        b.push(0);
-        b.push(v.charCodeAt(i));
+        var codepoint = v.charCodeAt(i);
+        b.push((codepoint >> 8) & 0xFF);
+        b.push(codepoint & 0xFF);
     }
 
     return b;
@@ -4636,9 +4806,13 @@ encode.OPERAND = function(v, type) {
             // We make it easy for ourselves and always encode offsets as
             // 4 bytes. This makes offset calculation for the top dict easier.
             d = d.concat(encode.NUMBER32(v));
-        } else {
-            // FIXME Add support for booleans
+        } else if (type === 'number') {
             d = d.concat(encode.NUMBER(v));
+        } else if (type === 'real') {
+            d = d.concat(encode.REAL(v));
+        } else {
+            throw new Error('Unknown operand type ' + type);
+            // FIXME Add support for booleans
         }
     }
 
@@ -4684,6 +4858,12 @@ encode.OBJECT = function(v) {
     return encodingFunction(v.value);
 };
 
+sizeOf.OBJECT = function(v) {
+    var sizeOfFunction = sizeOf[v.type];
+    check.argument(sizeOfFunction !== undefined, 'No sizeOf function for type ' + v.type);
+    return sizeOfFunction(v.value);
+};
+
 // Convert a table object to bytes.
 // A table contains a list of fields containing the metadata (name, type and default value).
 // The table itself has the field values set as attributes.
@@ -4707,6 +4887,25 @@ encode.TABLE = function(table) {
     return d;
 };
 
+sizeOf.TABLE = function(table) {
+    var numBytes = 0;
+    var length = table.fields.length;
+
+    for (var i = 0; i < length; i += 1) {
+        var field = table.fields[i];
+        var sizeOfFunction = sizeOf[field.type];
+        check.argument(sizeOfFunction !== undefined, 'No sizeOf function for field type ' + field.type);
+        var value = table[field.name];
+        if (value === undefined) {
+            value = field.value;
+        }
+
+        numBytes += sizeOfFunction(value);
+    }
+
+    return numBytes;
+};
+
 // Merge in a list of bytes.
 encode.LITERAL = function(v) {
     return v;
@@ -4720,5 +4919,5 @@ exports.decode = decode;
 exports.encode = encode;
 exports.sizeOf = sizeOf;
 
-},{"./check":1}]},{},[6])(6)
+},{"./check":1}]},{},[7])(7)
 });

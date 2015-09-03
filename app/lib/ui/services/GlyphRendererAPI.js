@@ -42,11 +42,12 @@ define([
         data.svg.appendChild(use);
     };
 
-    function GlyphRendererAPI(document, controller) {
+    function GlyphRendererAPI(document, controller, options /* default: undefined*/) {
         this._doc = document;
         this._controller = controller;
         this._glyphs = Object.create(null);
         this.__renderGlyph = this._renderGlyph.bind(this);
+        this._options = options || Object.create(null);
         // A small number in ms, to allow pending changes to come in.
         // However, we don't want to wait `long`, because this will be
         // perceived as pure waiting time and new events will reset the
@@ -234,7 +235,7 @@ define([
 
     _p._applySVGViewBox = function(svg, viewBox) {
         svg.setAttribute('viewBox', viewBox.join(' '));
-        if(!svg.parentElement)
+        if(!svg.parentElement || this._options.noParentSizing)
             return;
         // Set the newly calculated width to parentElement
         // This should be done automatically by the browser, but

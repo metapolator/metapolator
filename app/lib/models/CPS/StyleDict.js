@@ -399,17 +399,35 @@ define([
         return result;
     };
 
-
-    _p._buildIndex = function() {
-        var i, l, j, ll, keys, key, parameters, subscriberID;
-        if(this._rules === null)
-            // lazy rule getting, this call is most expensive
+    _p._loadRules = function(force) {
+        if(this._rules === null || force)
+            //this call is most expensive
             this._rules = this._controller.getRulesForElement(this.element);
+    };
+
+    _p.getRules = function(rules) {
+        if(!this._dict) this._buildIndex();
+        return this._rules.slice();
+    };
+
+    /**
+     * Loads the rules if missing.
+     * Initializes and indexes this._dict
+     * Subscribes to propertyDict and property changes and updates
+     */
+    _p._buildIndex = function() {
+        assert(this._dict === null, 'Index alreay initializes, run invalidateRules to purge it.');
+        var i, l, j, ll, keys, key, parameters, subscriberID;
+        this._loadRules();
         this._dict = Object.create(null);
         for(i=0,l=this._rules.length;i<l;i++) {
             parameters = this._rules[i].parameters;
+
             subscriberID = parameters.on('add', [this, '_parameterAddHandler'], i);
             this._dictSubscriptions.push([parameters, subscriberID]);
+            subscriberID = parameters.on('update', [this, '_parameterUpdateHandler'], i);
+            this._dictSubscriptions.push([parameters, subscriberID]);
+
 
             keys = parameters.keys();
             for(j=0, ll=keys.length; j<ll; j++) {
@@ -473,8 +491,8 @@ define([
         // needed if this._dict had no keys previously
         // because then this._invalidateCache would not run
         // for example when the rules changed from not providing keys to
-        // now providing keys
-        this._nextTrigger('change', key);
+        // now providing keys.
+        this._nextTrigger('change');
         this._dict = null;
     };
 
@@ -488,37 +506,53 @@ define([
         // because then this._invalidateCache would not run
         // for example when the rules changed from not providing keys to
         // now providing keys
-        this._nextTrigger('change', key);
+        this._nextTrigger('change');
         this._buildIndex();
+    };
+
+    _p._parameterUpdateHandler = function(data, channelKey, keys) {
+        // If any of the parameterDicts fired it's update event we pass it along here
+        // update, in contrast to change is fired when the parameterDict
+        // changed but did not change it's value.
+        // This is used for rendering in the ui only.
+        this._nextTrigger('update');
     };
 
     /**
      * parameters.onPropertyChange wont trigger on "add", because we won't
      * have subscribed to it by then.
      */
-    _p._parameterAddHandler = function(data, channelKey, key) {
-        var index = data
-          , parametersIndexForKey = this._propertySubscriptions[key]
+    _p._parameterAddHandler = function(data, channelKey, keys) {
+        var i, l;
+        for(i=0,l=keys.length;i<l;i++)
+            this.__parameterAddHandler(data, channelKey, keys[i]);
+    };
+
+    _p.__parameterAddHandler = function(data, channelKey, key) {
+        var newRuleIndex = data
+          , currentRuleIndex = this._propertySubscriptions[key]
                     ? this._propertySubscriptions[key][2]
                     : undefined
           ;
 
-        if(parametersIndexForKey < index)
-            // the lower index overrides the higher index
+        // Note: the lower index is more specific and must be used.
+        // These are the indexes in this._rules of course. More specific
+        // indexes come first.
+        if(newRuleIndex > currentRuleIndex)
             return;
-        else if(parametersIndexForKey > index) {
+        else if(newRuleIndex < currentRuleIndex) {
             this._unsetDictValue(key);
             this._invalidateCache(key);
         }
-        else if(parametersIndexForKey === index)
+        else if(currentRuleIndex === newRuleIndex)
             // When both are identical this means we don't have an "add"
             // event by definition! Something in the programming logic went
             // terribly wrong.
             throw new AssertionError('The old index must not be identical '
-                        + 'to the new one, but it is.\n index: ' + index
+                        + 'to the new one, but it is.\n index: ' + newRuleIndex
                         + ' key: ' + key
                         + ' channel: ' + channelKey);
-        this._setDictValue(this._rules[index].parameters, key, index);
+        this._setDictValue(this._rules[newRuleIndex].parameters, key, newRuleIndex);
     };
 
     _p._setDictValue = function(parameters, key, parametersIndex) {

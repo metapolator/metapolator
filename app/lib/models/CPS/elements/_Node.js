@@ -11,6 +11,13 @@ define([
 
     var AbstractInterfaceError = errors.AbstractInterface;
 
+    var _id_counter = 0
+      , emitterMixinSetup
+      ;
+    function getUniqueID() {
+        return _id_counter++;
+    }
+
     /**
      * All Elements in a ParametersCollection have this base type OR
      * should at least expose the same Interface (ducktyping).
@@ -27,6 +34,10 @@ define([
         if(!this.__firstTimeInitFlag) {
             emitterMixin.init(this);
             Object.defineProperty(this, '__firstTimeInitFlag', {value: true});
+            // FIXME: the uniqueID should only be available for CPS-Nodes
+            // that are not considered immutable! We shouldn't use it for
+            // Parameters or Selectorlists
+            Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
         }
     }
     var _p = _Node.prototype = Object.create(Parent.prototype);
@@ -48,6 +59,12 @@ define([
      * deleted. So don't use it anywhere else!
      * We will probably not have all nodes using this method, it depends
      * on the context.
+     *
+     * An `immutable` CPS-Node (like Paramter) must not change it's state
+     * or the state when running this method. Because, after removal it
+     * may be reused. Probably this is also true for `mutable` CPS-Nodes.
+     * FIXME: Get the semantics straight io this. Maybe it needs renaming,
+     * maybe we can remove it.
      */
     _p.destroy = function(data) {
         this._trigger('destroy', data);

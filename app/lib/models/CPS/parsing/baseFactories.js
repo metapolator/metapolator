@@ -48,6 +48,7 @@ define([
         'stylesheet': function(node, source) {
             var items = []
               , i=0
+              , child
               ;
 
             if(node.children)
@@ -55,7 +56,16 @@ define([
                     if(node.children[i].type === '__GenericAST__'
                                     && node.children[i].instance.type === 's')
                         continue;
-                    items.push(node.children[i].instance);
+                    child = node.children[i].instance;
+                    if(child instanceof ParameterCollection && !child.name)
+                        // This is to compensate the ParameterCollection created
+                        // by the deperecated @dictionary rule. A ParameterCollection
+                        // without a name is a plain ParameterCollection, it
+                        // can be flattened into the list of children.
+                        // FIXME: remove @dictionary for good and then this code.
+                        Array.prototype.push.apply(items, child.items)
+                    else
+                        items.push(child);
                 }
 
             return new ParameterCollection(items, source, node.lineNo);

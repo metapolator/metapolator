@@ -77,6 +77,11 @@ if they have encoding tables we can't read).
 
     var font = opentype.parse(myBuffer);
 
+### Loading a font synchronously (Node.js)
+Use `opentype.loadSync(url)` to load a font from a file and return a `Font` object.
+Throws an error if the font could not be parsed. This only works in Node.js.
+
+    var font = opentype.loadSync('fonts/Roboto-Black.ttf');
 
 ### Writing a font
 Once you have a `Font` object (either by using `opentype.load` or by creating a new one from scratch) you can write it
@@ -91,14 +96,14 @@ on the font name.
     var notdefPath = new opentype.Path();
     notdefPath.moveTo(100, 0);
     notdefPath.lineTo(100, 700);
-    // more drawing instructions.... 
+    // more drawing instructions....
     var notdefGlyph = new opentype.Glyph({
         name: '.notdef',
         unicode: 0,
         advanceWidth: 650,
         path: notdefPath
     });
-    
+
     var aPath = new opentype.Path();
     aPath.moveTo(100, 0);
     aPath.lineTo(100, 700);
@@ -123,6 +128,8 @@ A Font represents a loaded OpenType font file. It contains a set of glyphs and m
 
 * `glyphs`: an indexed list of Glyph objects.
 * `unitsPerEm`: X/Y coordinates in fonts are stored as integers. This value determines the size of the grid. Common values are 2048 and 4096.
+* `ascender`: Distance from baseline of highest ascender. In font units, not pixels.
+* `descender`: Distance from baseline of lowest descender. In font units, not pixels.
 
 #### `Font.getPath(text, x, y, fontSize, options)`
 Create a Path that represents the given text.
@@ -173,7 +180,7 @@ A Glyph is an individual mark that often corresponds to a character. Some glyphs
 * `index`: The index number of the glyph.
 * `advanceWidth`: The width to advance the pen when drawing this glyph.
 * `xMin`, `yMin`, `xMax`, `yMax`: The bounding box of the glyph.
-* `path`: The raw, unscaled path of the glyph. 
+* `path`: The raw, unscaled path of the glyph.
 
 ##### `Glyph.getPath(x, y, fontSize)`
 Get a scaled glyph Path object we can draw on a drawing context.
@@ -212,6 +219,15 @@ Once you have a path through `Font.getPath` or `Glyph.getPath`, you can use it.
 Draw the path on the given 2D context. This uses the `fill`, `stroke` and `strokeWidth` properties of the `Path` object.
 * `ctx`: The drawing context.
 
+##### `Path.toPathData(decimalPlaces)`
+Convert the Path to a string of path data instructions.
+See http://www.w3.org/TR/SVG/paths.html#PathData
+* `decimalPlaces`: The amount of decimal places for floating-point values. (default: 2)
+
+##### `Path.toSVG(decimalPlaces)`
+Convert the path to a SVG &lt;path&gt; element, as a string.
+* `decimalPlaces`: The amount of decimal places for floating-point values. (default: 2)
+
 #### Path commands
 * **Move To**: Move to a new position. This creates a new contour. Example: `{type: 'M', x: 100, y: 200}`
 * **Line To**: Draw a line from the previous position to the given coordinate. Example: `{type: 'L', x: 100, y: 200}`
@@ -222,7 +238,6 @@ Draw the path on the given 2D context. This uses the `fill`, `stroke` and `strok
 Planned
 =======
 * Support for ligatures and contextual alternates.
-* Support for SVG paths.
 
 Thanks
 ======

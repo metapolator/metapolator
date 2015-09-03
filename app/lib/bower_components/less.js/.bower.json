@@ -1,7 +1,7 @@
 {
   "name": "less",
-  "version": "1.7.3",
-  "main": "./dist/less-1.7.0.js",
+  "version": "1.7.5",
+  "main": "./dist/less-1.7.5.js",
   "ignore": [
     "**/.*",
     "benchmark",
@@ -16,11 +16,11 @@
     "bower.json"
   ],
   "homepage": "https://github.com/less/less.js",
-  "_release": "1.7.3",
+  "_release": "1.7.5",
   "_resolution": {
     "type": "version",
-    "tag": "v1.7.3",
-    "commit": "e7ddf620c51ef98525d0a47d600389ac3ccb6b64"
+    "tag": "v1.7.5",
+    "commit": "ad19bfe8acebaea71f0414a9f1908d2a2f783c2f"
   },
   "_source": "git://github.com/less/less.js.git",
   "_target": "~1.7.0",

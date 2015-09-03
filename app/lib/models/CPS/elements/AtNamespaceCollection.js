@@ -72,17 +72,22 @@ define([
 
     _p.setSelectorList = setSelectorList;
 
+    function getSelectorList() {
+        /*jshint validthis: true*/
+        return this._selectorList;
+    }
+
+    _p.getSelectorList = getSelectorList;
+
     Object.defineProperty(_p, 'selectorList', {
         enumerable: true
       , set: setSelectorList
-      , get: function() {
-            return this._selectorList;
-        }
+      , get: getSelectorList
     });
 
     /**
      * Wrapper to add the namespace to the rules returned by
-     * Parant.prototype._getRules
+     * Parent.prototype._getRules
      */
     _p._getRules = function() {
         var rules, i, l
@@ -92,13 +97,14 @@ define([
             return [];
         rules = Parent.prototype._getRules.call(this);
         for(i=0,l=rules.length;i<l;i++) {
-            var chk = rules[i][1].parameters.has('__intersection');
-            // NOTE: Parent.prototype._getRules must copy rule arrays
-            // of collections of which the rules are going to be reused!
-            // FIXME: is is better do always create a copy here?
-            // that would spare that test in Parent.prototype._getRules
-            // rules[i] = [namespace.multiply(rules[i][0]), rules[i][1]]
-            rules[i][0] = namespace.multiply(rules[i][0]);
+            // This creates a copy which is inevitable; otherwise the cache
+            // accumulates the changes made here beyond calls to _unsetRulesCache
+            // To be exact, changes made here persist otherwise in child
+            // rule collections. These changes survive _unsetRulesCache
+            // e.g. via _structuralChangeHandler. So, the second call to
+            // a not cleared child collection performs namespace.multiply
+            // a second time on the same rules item.
+            rules[i] = [namespace.multiply(rules[i][0]), rules[i][1]];
         }
         return rules;
     };

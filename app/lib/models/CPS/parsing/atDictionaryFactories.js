@@ -96,12 +96,23 @@ define([
       , 'atrulers': function(node, source) {
             var items = []
               , i=0
+              , child
               ;
             for(;i<node.children.length;i++) {
                 if(node.children[i].type === '__GenericAST__'
                                 && node.children[i].instance.type === 's')
                     continue;
-                items.push(node.children[i].instance);
+                child = node.children[i].instance
+                if(child instanceof ParameterCollection && !child.name)
+                    // This is to compensate the ParameterCollection created
+                    // by the deperecated @dictionary rule (children of the one
+                    // found here). A ParameterCollection without a name is
+                    // a plain ParameterCollection, it can be flattened into
+                    // the list of children.
+                    // FIXME: remove @dictionary for good and then this code.
+                    Array.prototype.push.apply(items, child.items)
+                else
+                    items.push(child);
             }
             //return new AtRuleCollection(undefined, items, source, node.lineNo);
             // We are NOT creating AtRuleCollections anymore!
