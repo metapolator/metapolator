@@ -406,11 +406,17 @@ define([
     };
 
     _p.getRules = function(rules) {
-        this._loadRules();
+        if(!this._dict) this._buildIndex();
         return this._rules.slice();
     };
 
+    /**
+     * Loads the rules if missing.
+     * Initializes and indexes this._dict
+     * Subscribes to propertyDict and property changes and updates
+     */
     _p._buildIndex = function() {
+        assert(this._dict === null, 'Index alreay initializes, run invalidateRules to purge it.');
         var i, l, j, ll, keys, key, parameters, subscriberID;
         this._loadRules();
         this._dict = Object.create(null);
@@ -510,7 +516,8 @@ define([
         // changed but did not change it's value.
         // This is used for rendering in the ui only.
         this._nextTrigger('update');
-    }
+    };
+
     /**
      * parameters.onPropertyChange wont trigger on "add", because we won't
      * have subscribed to it by then.
