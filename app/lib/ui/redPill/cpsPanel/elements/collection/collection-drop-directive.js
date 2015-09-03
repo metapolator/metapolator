@@ -32,8 +32,8 @@ define([
                 )
               ;
 
-            element.on('dragover', dropHelper.dragoverHandler);
-            element.on('drop', dropHelper.dropHandler);
+            element[0].addEventListener('dragover', dropHelper.dragoverHandler);
+            element[0].addEventListener('drop', dropHelper.dropHandler);
         }
 
         return {

@@ -27,7 +27,7 @@ define([
                 element.on(name, endScrolling);
             });
 
-            element.on('dragover', function autoscroll(event) {
+            element[0].addEventListener('dragover', function autoscroll(event) {
                 var start = false
                   , margin = 50
                   , speed = 20 // max pixels per iteration

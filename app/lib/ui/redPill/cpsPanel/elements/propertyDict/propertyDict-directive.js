@@ -151,8 +151,8 @@ define([
                 _executeForEveryPropertyElement(_updateUsedNames);
             };
 
-            element.on('dragover', dropHelper.dragoverHandler);
-            element.on('drop', dropHelper.dropHandler);
+            element[0].addEventListener('dragover', dropHelper.dragoverHandler);
+            element[0].addEventListener('drop', dropHelper.dropHandler);
 
             angular.element(container).on('dblclick', helpers.handlerDecorator(scope,
                             scope.$emit.bind(scope, 'newPropertyRequest'), true, false));

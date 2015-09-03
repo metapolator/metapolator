@@ -62,8 +62,8 @@ define([
                 dragDataService.remove(dragDataType);
             }
 
-            element.on('dragstart', dragstartHandler);
-            element.on('dragend', dragendHandler);
+            element[0].addEventListener('dragstart', dragstartHandler);
+            element[0].addEventListener('dragend', dragendHandler);
         }
         return {
             restrict: 'A' // only matches attribute names
