@@ -15,7 +15,9 @@ if(window.demoMode) {
           , fsEvents: fsEvents
             // fill the InMemory io module with the contents from disk
           , promise: ioREST.copyRecursive(false, 'project', io, 'project') && false
-          , loadTextEditor: true
+          // used to be true, but at the moment it's badly integrated and the
+          // dev tool is more important
+          , loadTextEditor: false
         };
     });
 }

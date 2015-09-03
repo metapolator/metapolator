@@ -8,10 +8,7 @@
         <meta name="author" content="">
 
         <title>Metapolator</title>
-
-        <!-- less
-
-        for development only and will disappear in production -->
+        <!-- development -->
         <link rel="stylesheet/less" type="text/css" href="lib/ui/metapolator/app.less" />
 
         <script>
@@ -25,17 +22,18 @@
                 relativeUrls : false,
             };
         </script>
-
-
         <script src="lib/bower_components/less.js/dist/less-1.7.0.min.js"></script>
-        <!-- end of less -->
-
         <script src="lib/bower_components/requirejs/require.js"></script>
         <script>
         require(['lib/browserConfig.js'], function(){
             require(['lib/metapolatorMain.js']);
         });
         </script>
+        <!-- end of development -->
+        <!-- production
+        <link rel="stylesheet" type="text/css" href="main.css" />
+        <script src="metapolatorMain.js"></script>
+        <!-- end of production -->
     </head>
     <body>
         <metapolator class="unselectable"></metapolator>
