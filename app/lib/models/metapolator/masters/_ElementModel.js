@@ -29,10 +29,9 @@ function(
     _p.writeValueInCPSfile = function(factor, parameter) {
         var parameterCollection
           , cpsRule;
-        // this is commented out, see https://github.com/metapolator/metapolator/issues/394#issuecomment-137112014
-        //if (factor === 1) {
-        //    this._removeParameter(parameter);
-        //} else {
+        if (factor === 1) {
+            this._removeParameter(parameter);
+        } else {
             if (!this.ruleIndex) {
                 this._addRule();
             }
@@ -41,8 +40,8 @@ function(
             var parameterDict = cpsRule.parameters
               , setParameter = cpsAPITools.setParameter;
             setParameter(parameterDict, parameter.base.cpsKey, factor);
-        //}
-        console.log(cpsRule.toString());
+            //console.log(cpsRule.toString());
+        }
     };
 
     _p._removeParameter = function(parameter) {
@@ -52,25 +51,28 @@ function(
             // if the factor equals 1 and the element already has an index, that means the cps rule is unnecessary
             // so we remove the property in the rule
             var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-                , ruleIndex = this.ruleIndex
-                , cpsRule = parameterCollection.getItem(ruleIndex);
+              , ruleIndex = this.ruleIndex
+              , cpsRule = parameterCollection.getItem(ruleIndex);
             cpsRule.parameters.erase(parameter.base.cpsKey);
             // if this is the last property in the rule, we remove the rule itself
             // therefor we have to rewrite all the rule indexes of this master
-            // this._removeRule(parameterCollection, ruleIndex);
+            if (cpsRule.parameters.keys().length === 0) {
+                this._removeRule(parameterCollection, ruleIndex);
+            }
         }
     };
 
     _p._addRule = function() {
         if (!this.ruleIndex) {
             var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-                , l = parameterCollection.length;
+              , l = parameterCollection.length;
             this.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, this.getSelector());
         }
     };
 
     _p._removeRule = function(parameterCollection, currentRuleIndex) {
         parameterCollection.splice(currentRuleIndex, 1);
+        this.ruleIndex = null;
         this._updateRuleIndexes(currentRuleIndex);
     };
 
