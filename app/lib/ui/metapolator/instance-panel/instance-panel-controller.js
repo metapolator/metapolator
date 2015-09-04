@@ -1,11 +1,17 @@
 define([
     'jquery'
+  , 'jszip'
+  , 'filesaver'
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
+  , 'metapolator/project/MetapolatorProject'
 ], function(
     $
+  , JSZip
+  , saveAs
   , instanceTools
   , dialog
+  , project
 ) {
     "use strict";
     function InstancePanelController($scope, $timeout, project) {
@@ -100,8 +106,6 @@ define([
             return false;
         };
 
-        /*
-
         $scope.export_is_running = false;
         
         $scope.exportFonts = function() {
@@ -121,6 +125,9 @@ define([
                 var year, month, day, hours, minutes, seconds
                   , date = new Date()
                   ;
+                function zero_padding(value){
+                    return value < 10 ? "0" + String(value) : String(value);
+                }
                 year = zero_padding(date.getFullYear());
                 month = zero_padding(date.getMonth());
                 day = zero_padding(date.getDate());
@@ -131,7 +138,7 @@ define([
                 return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
             }
     
-            var bundle = new $scope.data.stateless.JSZip()
+            var bundle = new JSZip()
               , bundleFolderName = "metapolator-export-" + get_timestamp()
               , bundle_filename = bundleFolderName + ".zip"
               , bundleFolder = bundle.folder(bundleFolderName)
@@ -141,20 +148,23 @@ define([
             var glyphs_for_cache = Array()
               , instances_for_export = Array()
               ;
-            angular.forEach($scope.data.families, function(family) {
-                angular.forEach(family.instances, function(instance) {
-                    if (instance.exportFont){
+
+            for (var i = 0; i < $scope.model.instanceSequences.length; i++) {
+                var sequence = $scope.model.instanceSequences[i];
+                for (var j = 0; j < sequence.children.length; j++) {
+                    var instance = sequence.children[j];
+                    if (instance.exportFont) {
                         instances_for_export.push(instance);
-                        var model = $scope.data.stateful.project.open(instance.name)
+                        var model = project.open(instance.name)
                           , glyphs = model.query('master#' + instance.name).children
-                          , i, j
+                          , k, l
                           ;
-                        for (i=0,j=glyphs.length; i<j; i++){
-                            glyphs_for_cache.push([model, glyphs[i]]);
+                        for (k=0,l=glyphs.length; k<l; k++){
+                            glyphs_for_cache.push([model, glyphs[k]]);
                         }
                     }
-                });
-            });
+                }
+            }
     
             var current_glyph = 0
               , total_glyphs = glyphs_for_cache.length
@@ -176,7 +186,7 @@ define([
                 $("#progress-bar-label").html("");
                 $("#progress-bar-blob-download").css("display", "block");
                 $("#progress-bar-blob-download").children("a").html(text).click(function(){
-                    $scope.data.stateless.saveAs(blob, filename);
+                    saveAs(blob, filename);
                     resetProgressBar();
                     //delete bundle_data;
                 });
@@ -214,7 +224,7 @@ define([
                       , filename = targetDirName + ".zip"
                       ;
                     var precision = -1 //no rounding
-                      , zipped_data = $scope.data.stateful.project.getZippedInstance(
+                      , zipped_data = project.getZippedInstance(
                                        instance.name, targetDirName, precision, "uint8array")
                       ;
                     bundleFolder.file(filename, zipped_data, {binary:true});
@@ -226,13 +236,12 @@ define([
                 } else {
                     bundle_data = bundle.generate({type:"blob"});
                     setDownloadBlobLink(bundle_filename, bundle_data, bundle_filename);
-                    export_is_running = false;
+                    $scope.export_is_running = false;
                 }
             }
     
             $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
         };
-        */
 
         // angular-ui sortable
         $scope.sortableOptions = {
