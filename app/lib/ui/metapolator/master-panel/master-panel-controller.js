@@ -90,9 +90,32 @@ define([
             return name + " copy";
         }
         
-        $scope.importUfo = function () {
-            var message = "Want to load your own UFO?<br><br>Show us you want this by buying a T shirt:<br><ul><li><a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a></li><li><a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a></li>";
-            dialog.openDialogScreen(message, false, false, true);
+        $scope.handleUFOimportFiles = function(element) {
+            var ufozipfile = element.files[0]
+              , reader = new FileReader()
+              ;
+            dialog.openDialogScreen("Importing UFO ZIP...", true);
+            reader.onload = function(e) {
+                var importedMasters = project.importZippedUFOMasters(e.target.result)
+                  , i, l
+                  ;
+
+                for (i=0, l=importedMasters.length; i<l; i++){
+                    project.open(importedMasters[i]);
+                }
+
+                $scope.importUfo_dialog_close();
+                dialog.closeDialogScreen();
+            };
+            reader.readAsArrayBuffer(ufozipfile);
+        };
+
+        $scope.importUfo_dialog_open = function() {
+            $("#importufo_dialog").css("display", "block");
+        };
+
+        $scope.importUfo_dialog_close = function() {
+            $("#importufo_dialog").css("display", "none");
         };
         
         $scope.addMasterToDesignSpace = function (master) {

@@ -578,6 +578,10 @@ define([
      *          └── master3.ufo
      */
     _p.importZippedUFOMasters = function(blob) {
+        // The blob we got, MUST contain at least one file with the .ufo.zip suffix.
+        // For now, we'll only load the first one.
+
+        // First step is to instantiate an InMemory I/O module:
         var mem_io = new InMemory()
           , importedMasters = []
           , dirs, baseDir, names, name
@@ -585,39 +589,70 @@ define([
           , sourceUFODir, glyphs, masterName
           ;
 
+        // Then we unpack there the original blob:
         zipUtil.unpack(false, blob, mem_io, "");
 
-        dirs = mem_io.readDir(false, "/");
-        baseDir = dirs[0];
-        names = mem_io.readDir(false, baseDir);
+        // We'll list all entries from the top-level dir
+        var entries = mem_io.readDir(false, "/");
 
+        //===DEBUG== List entries:
+        console.log("===DEBUG== List entries: ", entries);
 
-        for (n=0, l=names.length; n<l; n++) {
-            name = names[n];
-            UFOZip = baseDir + name;
-            another_blob = mem_io.readFile(false, UFOZip);
-            zipUtil.unpack(false, another_blob, mem_io, baseDir);
+        // And we'll look for zipped ufo files for decompression:
+        var e, l;
+        for (e=0, l=entries.length; e<l; e++){
+            var suffix = ".ufo.zip"
+              , name = entries[e]
+              ;
+            //if the filename ends with the .ufo.zip suffix:
+            if (name.indexOf(suffix, name.length - suffix.length) !== -1){
+
+                //===DEBUG== List the ufo we found:
+                console.log("===DEBUG== List the ufo we found: ", name);
+
+                var instance_to_load = entries[e];
+
+                //Here we decompress the data of the ufo.zip file we found:
+                var another_blob = mem_io.readFile(false, instance_to_load);
+                zipUtil.unpack(false, another_blob, mem_io, "/");
+            }
         }
 
-        names = mem_io.readDir(false, baseDir);
-        for (n=0, l=names.length; n<l; n++){
-            name = names[n];
-            if (name[name.length-1]=='/'){
-                // This sourceUFODir name may be wrong in some cases.
-                //   We need a more robust implementation.
-                //   The current implementation works only for
-                //   the UFO packing scheme described above.
-                sourceUFODir = baseDir + name.split("/")[0];
-                glyphs = undefined;
-                masterName = name.split(".ufo/")[0];
+        // Now we'll list all in-memory filesystem entries again
+        // looking for UFO folders which may have been extracted from 
+        // one of the ufo.zip files or could even be already available since the
+        // decompression of the original zip container.
+        entries = mem_io.readDir(false, "/");
+
+        //===DEBUG== List entries again:
+        console.log("===DEBUG== Second Listing of entries: ", entries);
+
+        for (e=0, l=entries.length; e<l; e++){
+            var name = entries[e]
+              , suffix = '.ufo/'
+              ;
+            // If we identify this entry as an UFO dir, then we import it:
+            if (name.indexOf(suffix, name.length - suffix.length) !== -1){
+                var sourceUFODir = name.split("/")[0]
+                  , glyphs = undefined
+                  ;
+
+                //===DEBUG== print the ufo dir that we found:
+                console.log("===DEBUG== We found this UFO: ", sourceUFODir);
 
                 //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
                 //       Metapolator dislikes spaces in master names as well as anything that has a meaning
                 //       in a selector/cps. (.#>:(){}) etc.
+                var masterName = name.split(suffix)[0];
                 masterName = masterName.split(' ').join('_');
+
+                //===DEBUG== print the ufo dir that we found:
+                console.log("===DEBUG== Importing this master: ", masterName);
 
                 this['import'](masterName, sourceUFODir, glyphs, mem_io);
                 importedMasters.push(masterName);
+                break; //here we're stopping right after finding the first ufo.zip
+                       //In the future we may continue to load more instances at once
             }
         }
 
