@@ -99,6 +99,7 @@ the example font named `Canola`:
 
     $ bin/metapolator serve -p examples/Canola-min
 
+
 You might need to delete the `.git` in `Canola-min` directory. See
 https://github.com/metapolator/metapolator/issues/634
 
