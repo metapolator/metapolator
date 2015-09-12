@@ -97,4 +97,9 @@ The graphical user interface will be visible. Note that `myfont` doesn't contain
 glyphs. But we confirmed that the GUI works! Stop te server (Ctrl + C) and try 
 the example font named `Canola`:
 
-    $ bin/metapolator serve -p examples/Canola
+    $ bin/metapolator serve -p examples/Canola-min
+
+You might need to delete the `.git` in `Canola-min` directory. See
+https://github.com/metapolator/metapolator/issues/634
+
+    $ rm -r examples/Canola-min/.git
