@@ -71,7 +71,7 @@ Test:
 Start Metapolator
 -----------------
 
-Metapolator is both a command line interface and a graphical user interface.
+Metapolator is both a command line interface and a graphical user interface
 `metapolator` lives in bin. For all possible commands:
 
     $ bin/metapolator help
@@ -97,4 +97,4 @@ The graphical user interface will be visible. Note that `myfont` doesn't contain
 glyphs. But we confirmed that the GUI works! Stop te server (Ctrl + C) and try 
 the example font named `Canola`:
 
-    $ bin/metapolator serve -p 8080 examples/Canola-min
+    $ bin/metapolator serve -p examples/Canola
