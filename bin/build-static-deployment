@@ -57,7 +57,7 @@ echo "Exporting $APP"
 
 
 mkdir "$TARGET" \
-    && cp -a "$PROJECT/." "$TARGET/project" \
+    && rsync -vvap "$PROJECT/" "$TARGET/project/"\
     && cp "$SOURCE/README.md" "$TARGET" \
     && cp "$SOURCE/LICENSE.txt" "$TARGET";
 
