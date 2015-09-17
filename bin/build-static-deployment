@@ -54,12 +54,13 @@ esac
 
 echo "Exporting $APP"
 
-
-
 mkdir "$TARGET" \
     && rsync -vvap "$PROJECT/" "$TARGET/project/"\
     && cp "$SOURCE/README.md" "$TARGET" \
-    && cp "$SOURCE/LICENSE.txt" "$TARGET";
+    && cp "$SOURCE/LICENSE.txt" "$TARGET" \
+    || echo "ERROR: failed copying resources." \
+    && exit 1 ;
+
 
 
 if test $lessfile != 0; then
