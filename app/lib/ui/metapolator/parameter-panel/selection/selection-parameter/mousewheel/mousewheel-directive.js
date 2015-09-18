@@ -1,21 +1,17 @@
 define([], function() {
     "use strict";
     function mousewheelDirective() {
-        console.log('mousewheelDirective');
         return function (scope, element, attr, ctrl) {
-            element.bind('DOMMouseScroll mousewheel onmousewheel', function(event) {
+            element.bind('DOMMouseScroll mousewheel', function(event) {
                 scope.$apply(function () {
-                    console.log('apply func');
-                    scope.$eval(attr.mouseWheel);
-//                    if (event.originalEvent.detail > 0) {
-//                        // Add `up` to attrs.
-//                        console.log('up');
-//                        scope.$eval(attr.mouseWheel);
-//                    } else if (event.originalEvent.detail > 0) {
-//                        // Add `down` to attrs.
-//                        console.log('down');
-//                        scope.$eval(attr.mouseWheel);
-//                    }
+                  // We just set a keyCode on the event
+                  // So scrolling is actually arrow up and down.
+                  if (event.originalEvent.detail > 0 || event.originalEvent.wheelDelta > 0) {
+                    event.keyCode = 38;
+                  } else {
+                    event.keyCode = 40;
+                  }
+                  scope.$eval(attr.mtkMousewheel, {$event:event});
                 });
             });
         };
