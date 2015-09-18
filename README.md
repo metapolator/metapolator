@@ -18,7 +18,7 @@ But if you'd like that, check out [metaflop.com](http://www.metaflop.com)
 
 ### Install
 
-Metapolator is not yet released, but if you'd like to try it out and are comfortable using development tools, please see our [developer installation instructions](https://github.com/metapolator/metapolator/wiki/installation) on our wiki.
+Metapolator is not yet released, but if you'd like to try it out and are comfortable using development tools, please see the INSTALL.md.
 
 Our user community is actively involved in development through discussions [Google+](https://plus.google.com/communities/110027004108709154749)
 
