@@ -1040,45 +1040,44 @@
 
 /**************** parameters ************************/
 
-    
         #inspector {
         }
-        
+
             .inspector-branche {
                 margin-left: 16px;
                 display: block;
             }
-            
+
             .inspector-header {
                 color: #224DB3;
             }
-            
+
             .inspector-inactive {
                 color: #aaa;
                 margin-left: 17px;
             }
-            
+
             arrow {
                 cursor: pointer;
                 color: #555;
             }
-            
+
             arrow::before {
                 content: "►";
             }
-            
+
             arrow.open::before {
                 content: "▼";
             }
-            
+
     #parameters-selection{
         width: 100%;
     }
-    
+
     .parameter-level {
         overflow: auto;
     }
-        
+
         .parameters-selection-head {
             width: calc(100% - 24px);
             height: 24px;
@@ -1086,7 +1085,7 @@
             border-right: 2px solid #eee;
             padding: 6px 0 0 6px;
         }
-        
+
         .parameters-add {
             width: 24px;
             height: 24px;
@@ -1095,25 +1094,25 @@
             text-align: center;
             cursor: default;
         }
-        
+
         .parameters-selection-body  {
             width: 100%;
             overflow: auto;
             background: #515151;
             padding: 10px 0;
         }
-        
+
             .parameters-selection-body {
                 background: #eee;
                 color: #515151;
             }
-        
+
             .parameter-row {
                 clear: both;
                 width: 100%;
                 cursor: default;
             }
-            
+
                 .parameter-row input {
                     background: transparent;
                     padding: 6px 4px;
@@ -1128,54 +1127,82 @@
                         background: #fff;
                         color: #000;
                     }
-        
+
+                .parameter-key, .parameter-operator {
+                    display: inline-block;
+                    padding: 8px 4px;
+                    float: left;
+                }
+
                 .parameter-key {
                     width: 40%;
-                    display: inline-block;
                     text-align: right;
-                    padding: 4px;
-                    float: left;
+                    clear: both;
                 }
-                
+
                 .parameter-operator {
                     width: 10%;
-                    display: inline-block;
                     text-align: center;
-                    padding: 4px;
-                    float: left;
                 }
-                
+
                 .operator-value {
                     width: 50%;
                     display: inline-block;
                     padding: 0;
                     float: left;
                     padding-right: 5px;
+                    margin-top: 0;
                 }
-                
+
                     .operator-value input {
                         background: transparent;
-                        width: 100%;
+                        width: calc(100% - 30px);
                         border: 0;
-                        line-height: 1em;
+                        line-height: 1.2em;
+                        padding: 4px;
                     }
-                    
+
                         .operator-value input.range-input {
-                            width: 40%;
+                            calc(40% - 30px);
                         }
-                        
+
                         .range-left {
                             text-align: right;
                         }
-                    
+
                     .calculated-value {
                         width: 40%;
                         text-align: right;
                         display: inline-block;
                     }
 
+                    .operator-value .buttons {
+                        display: inline-block;
+                        width: 19px;
+                        height: 19px;
+                    }
+                    .operator-value a {
+                        text-decoration: none;
+                        width: 19px;
+                        height: 10px;
+                        display:block;
+                        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAATCAMAAADLVI+CAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpCMDYxRjhFNUI5RkUxMUU0ODQ3MUZBNEI0REFGREY3OSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpCMDYxRjhFNkI5RkUxMUU0ODQ3MUZBNEI0REFGREY3OSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkIwNjFGOEUzQjlGRTExRTQ4NDcxRkE0QjREQUZERjc5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkIwNjFGOEU0QjlGRTExRTQ4NDcxRkE0QjREQUZERjc5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+8vkAtwAAAFdQTFRF4uLi+fn5vLy88PDwzMzMU1NT9vb27u7u1dXVtLS0Li4ucHBwCQkJMjIyMDAwCAgIWVlZz8/Pzs7O6+vr7e3tm5ubqqqqsbGxq6ur5+fn7Ozs9PT0ra2tgj7kngAAAJhJREFUeNqU0ssWgyAMRdGowUcLGsBn2///zuoAl9wMWs94QzIIRc95Ia5i8mSlMBZ5o5eF8hYhBlXUbEBRa24zp5nVzDmHzFqLzLnkTmZtcjd2q6E3mxbaHz51Dx1xA73YdNBnH1pBDZsS6k7WH+VsOAJWJXX5Lakrq3o9dCg1+2u3X8xvwLYgE7BJKAa4Xh9ndb3zV4ABALdKDTNFPtJRAAAAAElFTkSuQmCC');
+                    }
+                    .operator-value .up {
+                        margin-top: 5px;
+                    }
+                    .operator-value .down {
+                        height: 9px;
+                        background-position: 0 -10px;
+                    }
+                    .operator-value a:active {
+                        background-position: -19px 0;
+                    }
+                    .operator-value a.down:active {
+                        background-position: -19px -10px;
+                    }
 
-        
+
     #parameters-control-panel {
         display: block;
         position: fixed;
@@ -1184,8 +1211,8 @@
         background: #eee;
         padding: 8px;
         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
-    } 
-    
+    }
+
     .single-panel {
         display: block;
         position: fixed;
@@ -1195,48 +1222,52 @@
         padding: 8px;
         box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
     }
-    
+
         #control-panel-parameters {
             width: 65%;
             padding-right: 2px;
             display: inline-block;
             float: left;
-        }       
+        }
+
+            .control-panel-parameter{
+                width: calc(100% - 2px);
+            }
 
         #control-panel-operators {
             width: 35%;
             display: inline-block;
             float: left;
-        }  
-            
+        }
+
             .control-panel-operator {
                 width: 100%;
                 text-align: center;
             }
-            
+
             .control-panel-button {
                 background: #515151;
                 color: #eee;
                 padding: 8px 8px 5px 8px;
-                margin-bottom: 2px; 
+                margin-bottom: 2px;
                 cursor: default;
             }
-            
+
                 .control-panel-button.selected, .control-panel-button.push-button-down {
                     background: #F01616;
-                    
+
                 }
-            
+
             .control-panel-cancel {
                 clear: both;
                 text-align: center;
                 font-weight: 700;
             }
-            
+
     .selected-parameter {
         background: #F01616;
     }
-            
+
         
 
 

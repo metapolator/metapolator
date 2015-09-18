@@ -763,3 +763,28 @@ app.directive('explore', function($document) {
     };
 });
 
+app.directive('mouseWheelUp', function () {
+    return function (scope, element, attrs) {
+        element.bind("DOMMouseScroll mousewheel onmousewheel", function(event) {
+            event.preventDefault();
+            if (event.originalEvent.detail > 0) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.mouseWheelUp);
+                });
+            }
+        });
+    };
+});
+
+app.directive('mouseWheelDown', function () {
+    return function (scope, element, attrs) {
+        element.bind("DOMMouseScroll mousewheel onmousewheel", function(event) {
+            event.preventDefault();
+            if (event.originalEvent.detail < 0) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.mouseWheelDown);
+                });
+            }
+        });
+    };
+});

@@ -225,7 +225,9 @@ app.controller("parametersController", function($scope, sharedScope) {
         var step = thisParameter.step;
         var decimals = thisParameter.decimals;
         if (keyEvent != "blur") {
-            keyEvent.preventDefault();
+            if (keyEvent.preventDefault) {
+                keyEvent.preventDefault();
+            }
             if (keyEvent.shiftKey) {
                 step = step * 10;
             }
@@ -236,6 +238,16 @@ app.controller("parametersController", function($scope, sharedScope) {
             }
         }
         return currentValue;
+    };
+
+    $scope.changeValueUp = function(parameterName, operator, value, elementType, range, keyEvent) {
+      keyEvent.keyCode = 38;
+      $scope.changeValue(parameterName, operator, value, elementType, range, keyEvent);
+    };
+
+    $scope.changeValueDown = function(parameterName, operator, value, elementType, range, keyEvent) {
+      keyEvent.keyCode = 40;
+      $scope.changeValue(parameterName, operator, value, elementType, range, keyEvent);
     };
 
     $scope.changeValue = function(parameterName, operator, value, elementType, range, keyEvent) {
