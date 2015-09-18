@@ -1,6 +1,6 @@
 define([
     'angular'
-  , './mousewheel-directive.js'
+  , './mousewheel-directive'
 ], function (
     angular
   , directive
