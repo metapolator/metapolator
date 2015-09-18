@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="quotesinglbase" format="2"><advance width="237"/><unicode hex="201A"/><outline><contour><point x="65" y="-99" type="move"/><point x="100.33297999999999" y="-38.667269999999995"/><point x="135.66702" y="21.667269999999995"/><point x="171" y="82" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="endash" format="2"><advance width="681"/><unicode hex="2013"/><outline><contour><point x="591" y="272" type="move"/><point x="424.335" y="272"/><point x="257.665" y="272"/><point x="91" y="272" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

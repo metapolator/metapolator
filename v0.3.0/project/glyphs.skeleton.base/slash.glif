@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="slash" format="2"><advance width="509"/><unicode hex="002F"/><outline><contour><point x="55" y="-68" type="move"/><point x="196.99858" y="235.99696"/><point x="339.00142" y="540.00304"/><point x="481" y="844" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

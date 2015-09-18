@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="fraction" format="2"><advance width="590"/><unicode hex="2044"/><outline><contour><point x="92.5" y="0" type="move"/><point x="234.49858" y="283.99716"/><point x="376.50142" y="568.00284"/><point x="518.5" y="852" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

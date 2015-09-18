@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="bar" format="2"><advance width="290"/><unicode hex="007C"/><outline><contour><point x="140" y="-300" type="move"/><point x="140" y="66.66300000000001"/><point x="140" y="433.337"/><point x="140" y="800" type="curve" name="stem"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

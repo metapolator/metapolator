@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<glyph name="underscore" format="2"><advance width="857"/><unicode hex="005F"/><outline><contour><point x="85" y="-200" type="move"/><point x="312.33106" y="-200"/><point x="539.66894" y="-200"/><point x="767" y="-200" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

@@ -7,8 +7,12 @@ glyph, point > center, contour > p, component  {
     heightFactor: master:HeightF * glyph:HeightF;
 }
 
-point > left, point > right, contour > p {
-    weightFactor: master:WeightF * glyph:WeightF * penstroke:WeightF * WeightF;
+point > left, point > right {
+   point: parent;
+}
+
+point > left, point > right {
+    weightFactor: master:WeightF * glyph:WeightF * penstroke:WeightF * point:WeightF;
 }
 
 master {
@@ -29,6 +33,6 @@ penstroke {
     WeightF: 1;
 }
 
-point > left, point > right, contour > p {
+point {
     WeightF: 1;
 }
