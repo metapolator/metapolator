@@ -1,11 +1,17 @@
 define([
     'jquery'
+  , 'jszip'
+  , 'filesaver'
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
+  , 'metapolator/project/MetapolatorProject'
 ], function(
     $
+  , JSZip
+  , saveAs
   , instanceTools
   , dialog
+  , project
 ) {
     "use strict";
     function InstancePanelController($scope, $timeout, project) {
@@ -86,6 +92,119 @@ define([
         };
         
         //export fonts
+
+        var ExportObject = (function() {
+            function ExportObject(instance, fileFormat) {
+                var retval
+                  , getGenerator
+                  ;
+                this.fileFormat = fileFormat || "UFO";
+                this.instance = instance;
+
+                if (this.fileFormat == "UFO"){
+                    getGenerator = project.getUFOExportGenerator.bind(project);
+                } else if (this.fileFormat == "OTF"){
+                    getGenerator = project.getOTFExportGenerator.bind(project);
+                }
+                retval = getGenerator(
+                    instance.name
+                  , this.getFileName()
+                  , /* precision: */ -1
+                );
+                this.generator = retval[0];
+                this.io = retval[1];
+            }
+
+            var _p = ExportObject.prototype;
+            _p.constructor = ExportObject;
+
+            _p.getFileName = function() {
+                switch (this.fileFormat){
+                    case "UFO":
+                        return this.instance.displayName + ".ufo";
+                    case "OTF":
+                        return this.instance.displayName + ".otf";
+                }
+            };
+
+            _p.pruneGenerator = function() {
+                if (this.generator)
+                    delete this.generator;
+            }
+
+            return ExportObject;
+        })();
+
+        var ProgressBar = (function() {
+            function ProgressBar(barElement, labelElement, updateDelay) {
+                this.bar = barElement;
+                this.label = labelElement;
+                this.updateDelay = updateDelay;
+                this.reset();
+            }
+
+            var _p = ProgressBar.prototype;
+            _p.constructor = ProgressBar;
+
+            _p.set = function(width, text) {
+                this.bar.animate({"opacity": 1, "width": width + "%"}, this.updateDelay);
+                if (text)
+                    this.label.html(text);
+            };
+
+            _p.reset = function() {
+                this.bar.animate( {"opacity": 0, "width": 0}
+                                , /*duration:*/ 0); // (that means "do it immediately!")
+                this.label.html("");
+            };
+
+            _p.complete = function(){
+                this.bar.animate( {"width": "100%", "opacity": 1}
+                                , this.updateDelay);
+                this.label.html("");
+            };
+
+            return ProgressBar;
+        })();
+
+        var InstanceExportProgressBar = (function(Parent) {
+            function InstanceExportProgressBar(barElement, labelElement, updateDelay) {
+                Parent.call(this, barElement, labelElement, updateDelay);
+            }
+
+            var _p = InstanceExportProgressBar.prototype = Object.create(Parent.prototype);
+            _p.constructor = InstanceExportProgressBar;
+
+            function exportingGlyphMessage (data, instanceIndex, totalInstances) {
+                var msg
+                  , instanceName = data['target_name']
+                  , currentGlyph = data['current_glyph'] + 1 //humans start counting from 1.
+                  , totalGlyphs = data['total_glyphs']
+                  , glyphId = data['glyph_id']
+                  ;
+                msg = "Calculating '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
+                msg += " of '" + instanceName + "' (" + (instanceIndex+1) + " of " + totalInstances + ")";
+                return msg;
+            }
+
+            function calculateGlyphsProgress (data, instanceIndex, totalInstances) {
+                var percentage
+                  , currentGlyph = data['current_glyph']
+                  , totalGlyphs = data['total_glyphs']
+                  ;
+                percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
+                return percentage;
+            }
+
+            _p.setData = function(index, totalInstances, data) {
+                var text = exportingGlyphMessage(data, index, totalInstances)
+                  , width = calculateGlyphsProgress(data, index, totalInstances)
+                  ;
+                this.set(width, text);
+            };
+
+            return InstanceExportProgressBar;
+        })(ProgressBar);
         
         $scope.instancesForExport = function () {
             for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
@@ -99,140 +218,123 @@ define([
             } 
             return false;
         };
-
-        /*
-
-        $scope.export_is_running = false;
         
+        function getTimestamp(){
+            var year, month, day, hours, minutes, seconds
+              , date = new Date()
+              ;
+            function zeroPadding(value){
+                return value < 10 ? "0" + String(value) : String(value);
+            }
+            year = zeroPadding(date.getFullYear());
+            month = zeroPadding(date.getMonth() + 1); //getMonth() returns a zero-based value: 0=January, 11=December
+            day = zeroPadding(date.getDate());
+            hours = zeroPadding(date.getHours());
+            minutes = zeroPadding(date.getMinutes());
+            seconds = zeroPadding(date.getSeconds());
+
+            return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
+        }
+
+        function setDownloadBlobLink(text, blob, filename, progress) {
+            var download = $("#blob_download");
+            if (progress)
+                progress.complete();
+
+            download.css("display", "block");
+            download.children("a").html(text).click(function(){
+                saveAs(blob, filename);
+                if (progress)
+                    progress.reset();
+                download.css("display", "none").children("a").unbind("click");
+            });
+        }
+
+        $scope.exportIsRunning = false;
+        function generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress) {
+            var bundle = new JSZip()
+              , bundleFolderName = "metapolator-export-" + getTimestamp()
+              , bundleFileName = bundleFolderName + ".zip"
+              , bundleFolder = bundle.folder(bundleFolderName)
+              , totalInstances = exportObjects.length
+              ;
+            function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress, resolve, reject){
+                if (exportObjects.length==0){
+                    resolve(true);
+                    return;
+                }
+
+                var text
+                  , percentage
+                  , index = totalInstances - exportObjects.length
+                  , obj = exportObjects[exportObjects.length - 1]
+                  , it = obj.generator.next()
+                  , data, name
+                  ;
+                if (!it.done){
+                    if (progress){
+                        it['target_data'] = obj.getFileName();
+                        progress.setData(index, totalInstances, it.value);
+                    }
+                } else {
+                    exportObjects.pop();
+
+                    if (obj.fileFormat == "UFO"){
+                        data = project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
+                        name = obj.getFileName() + ".zip";
+                    } else {
+                        /* obj.fileFormat == "OTF" */
+                        data = obj.io.readFile(false, obj.getFileName());
+                        name = obj.getFileName();
+                    }
+                    bundleFolder.file(name, data, {binary:true});
+                }
+                $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress, resolve, reject)
+                       , UI_UPDATE_TIMESLICE);
+            }
+
+            // note how the first three args are bound, new Promise will call the bound function with
+            // the two missing args `resolve` and `reject`
+            return new Promise(
+                _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress)
+            ).then(function(){
+                return [bundleFileName, bundle.generate({type:"blob"})];
+            });
+        }
+
         $scope.exportFonts = function() {
             //Do not trigger the export routine if no instance is selected for export,
             //otherwise it would result in an empty ZIP file.
             if (!$scope.instancesForExport())
                 return;
-    
+
             //Also avoid triggering a new export while we're still not finished
-            if ($scope.export_is_running)
+            if ($scope.exportIsRunning)
                 return;
 
-            $scope.export_is_running = true;
-            resetProgressBar();
-            
-            function get_timestamp(){
-                var year, month, day, hours, minutes, seconds
-                  , date = new Date()
-                  ;
-                year = zero_padding(date.getFullYear());
-                month = zero_padding(date.getMonth());
-                day = zero_padding(date.getDate());
-                hours = zero_padding(date.getHours());
-                minutes = zero_padding(date.getMinutes());
-                seconds = zero_padding(date.getSeconds());
-    
-                return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
-            }
-    
-            var bundle = new $scope.data.stateless.JSZip()
-              , bundleFolderName = "metapolator-export-" + get_timestamp()
-              , bundle_filename = bundleFolderName + ".zip"
-              , bundleFolder = bundle.folder(bundleFolderName)
-              , bundle_data
-              ;
-              
-            var glyphs_for_cache = Array()
-              , instances_for_export = Array()
-              ;
-            angular.forEach($scope.data.families, function(family) {
-                angular.forEach(family.instances, function(instance) {
+            var exportObjects = Array();
+            for (var i = 0; i < $scope.model.instanceSequences.length; i++) {
+                var sequence = $scope.model.instanceSequences[i];
+                for (var j = 0; j < sequence.children.length; j++) {
+                    var instance = sequence.children[j];
                     if (instance.exportFont){
-                        instances_for_export.push(instance);
-                        var model = $scope.data.stateful.project.open(instance.name)
-                          , glyphs = model.query('master#' + instance.name).children
-                          , i, j
-                          ;
-                        for (i=0,j=glyphs.length; i<j; i++){
-                            glyphs_for_cache.push([model, glyphs[i]]);
-                        }
+                        exportObjects.push(new ExportObject(instance, "OTF"));
+                        exportObjects.push(new ExportObject(instance, "UFO"));
                     }
-                });
-            });
-    
-            var current_glyph = 0
-              , total_glyphs = glyphs_for_cache.length
-              , current_instance = 0
-              , total_instances = instances_for_export.length
-              , UI_UPDATE_TIMESLICE = 50 // msecs
-              , CPS_phase_percentage = 50 //The other 50% of the time is estimated to be spent packing
-                                          //the instances and the final zip file.
-              ;
-              
-            function setProgress(width, text) {
-                $("#progress-bar").animate({"opacity": 1, "width": width + "%"}, UI_UPDATE_TIMESLICE);
-                if (text)
-                    $("#progress-bar-label").html(text);
-            }
-    
-            function setDownloadBlobLink(text, blob, filename) {
-                $("#progress-bar").animate({"width": "100%", "opacity": 1},  UI_UPDATE_TIMESLICE);
-                $("#progress-bar-label").html("");
-                $("#progress-bar-blob-download").css("display", "block");
-                $("#progress-bar-blob-download").children("a").html(text).click(function(){
-                    $scope.data.stateless.saveAs(blob, filename);
-                    resetProgressBar();
-                    //delete bundle_data;
-                });
-            }
-            
-            function resetProgressBar() {
-                $("#progress-bar").animate({"opacity": 0, "width": 0}, 0); // (that means "do it immediately!")
-                $("#progress-bar-label").html("");
-                $("#progress-bar-blob-download").css("display", "none").children("a").unbind("click");
-            }
-              
-            function exportFont_compute_CPS_chunk(){
-                if (current_glyph < total_glyphs){
-                    var value = glyphs_for_cache[current_glyph++]
-                      , model = value[0]
-                      , glyph = value[1]
-                      , text
-                      ;
-                    // TODO model.getComputedStyle(glyph) basically does nothing, so @graphicore will make this actually do something
-                    model.getComputedStyle(glyph);
-                    text = total_glyphs + " glyphs in " + total_instances + " instances to export, calculating glyph #" + current_glyph;
-                    setProgress(CPS_phase_percentage * (current_glyph+1) / total_glyphs, text);
-                    $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
-                } else {
-                    text = total_instances + " instances to export in .ufo.zip format, zipping instance #" + (current_instance+1) + " (can take a while)";
-                    setProgress(CPS_phase_percentage, text);
-                    $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
                 }
             }
-            
-            function exportFont_pack_instance_chunk(){
-                if (current_instance < total_instances){
-                    var instance = instances_for_export[current_instance++]
-                      , targetDirName = instance.displayName + ".ufo"
-                      , filename = targetDirName + ".zip"
-                      ;
-                    var precision = -1 //no rounding
-                      , zipped_data = $scope.data.stateful.project.getZippedInstance(
-                                       instance.name, targetDirName, precision, "uint8array")
-                      ;
-                    bundleFolder.file(filename, zipped_data, {binary:true});
-                    var text;
-                    if (current_instance == total_instances)
-                        text = "Packing all " + total_instances + " instances into a final .zip (can take a while)";
-                    setProgress(CPS_phase_percentage + (100 - CPS_phase_percentage) * (current_instance+1) / total_instances);
-                    $timeout(exportFont_pack_instance_chunk, UI_UPDATE_TIMESLICE);
-                } else {
-                    bundle_data = bundle.generate({type:"blob"});
-                    setDownloadBlobLink(bundle_filename, bundle_data, bundle_filename);
-                    export_is_running = false;
-                }
+
+            $scope.exportIsRunning = true;
+            const UI_UPDATE_TIMESLICE = 50; // msecs
+            var progress = new InstanceExportProgressBar( $("#progressbar")
+                                                        , $("#progresslabel")
+                                                        , UI_UPDATE_TIMESLICE );
+            function finalizeExport(result) {
+                setDownloadBlobLink(result[0], result[1], result[0], progress);
+                $scope.exportIsRunning = false;
             }
-    
-            $timeout(exportFont_compute_CPS_chunk, UI_UPDATE_TIMESLICE);
+            generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress).then(finalizeExport);
         };
-        */
 
         // angular-ui sortable
         $scope.sortableOptions = {
