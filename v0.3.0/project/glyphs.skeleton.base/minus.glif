@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="minus" format="2"><advance width="473"/><unicode hex="2212"/><outline><contour><point x="437" y="324" type="move"/><point x="306.66796999999997" y="324"/><point x="176.33203" y="324"/><point x="46" y="324" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

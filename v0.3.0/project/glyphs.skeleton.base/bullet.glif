@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="bullet" format="2"><advance width="318"/><unicode hex="2022"/><outline><contour><point x="137.5" y="294.5" type="move"/><point x="152.5" y="279"/><point x="171.5" y="260"/><point x="186.5" y="245" type="curve"/></contour></outline><lib><dict><key>com.typemytype.robofont.layerData</key><dict/><key>com.typemytype.robofont.mark</key><array><real>1</real><real>1</real><real>0</real><real>1</real></array></dict></lib></glyph>

@@ -1,2 +1,2 @@
-# Canola-min
-Project folder for Metapolator with minimal set of the Canola font (for UI development purpose)
+# Canola
+Project folder for Metapolator with the Canola font
