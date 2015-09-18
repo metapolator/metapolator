@@ -8,7 +8,10 @@
         <div class="parameter-operator panel-zone" ng-class="{'selected-parameter': selection.panel === model.parent.level + '-operator'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.sign}}</div>
         <div class="operator-value">
             <span ng-if="!operator.range">
-                <input ng-model="operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> 
+                <input ng-model="operator.low.current"
+                       ng-blur="changeValue(model, operator, operator.low, $event)"
+                       ng-keydown="changeValue(model, operator, operator.low, $event)"
+                       mtk-mousewheel="changeValue(model, operator, operator.low, $event)">
             </span>
             <span ng-if="operator.range"> 
                 <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> to

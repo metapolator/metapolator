@@ -52,7 +52,7 @@ define([
                 event.dataTransfer.effectAllowed = 'move';
             }
 
-            // Because on a succesful drop the element is removed from the
+            // Because on a successful drop the element is removed from the
             // DOM, when performing a move at least. Then we never
             // receive a dragend event. Thus cleaning up must happen here
             // and in the drop handler.
