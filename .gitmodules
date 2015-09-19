@@ -7,3 +7,6 @@
 [submodule "examples/Canola-min"]
 	path = examples/Canola-min
 	url = https://github.com/metapolator/Canola-min
+[submodule "examples/Canola-full"]
+	path = examples/Canola-full
+	url = git@github.com:metapolator/Canola-full.git
