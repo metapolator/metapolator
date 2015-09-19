@@ -8,15 +8,16 @@ define([
         $scope.selection = selection;
 
         $scope.changeValue = function(parameter, operator, value, event) {
-            var thisValue = null;
+            var thisValue = manageInputValue(value, parameter, operator, event);
+            // Update the input
+            operator.low.current = thisValue;
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 // Write the value in all models of all elements within selection
                 var element = $scope.model.parent.elements[i];
-                // Evaluate the input event
-                thisValue = managedInputValue(value, parameter, operator, event);
                 // if there is a range, we have to find the value for this element within the range
                 if (operator.range) {
-                    thisValue = getRangeValue(element, parameter, operator);
+                    // TODO: pass in the high value.
+                    // operator.high.current = manageInputValue(value, parameter, operator, event);
                 }
                 // set the value of each element in the selection
                 // if there is not yet a parameter, we create it + cpsRule
@@ -81,7 +82,7 @@ define([
             return newValue;
         }
 
-        function managedInputValue(value, parameter, operator, event) {
+        function manageInputValue(value, parameter, operator, event) {
             // Adjust the value based increment `step` and `event` key
             var currentValue = value.current
               , step = parameter.base.step;
@@ -90,7 +91,6 @@ define([
                 currentValue = parseFloat(currentValue.replace(',', '.'));
             }
             if (!isNumeric(currentValue)) {
-                console.log('1');
                 return value.fallback;
             }
             // Shift is 'BIG' Big increments
