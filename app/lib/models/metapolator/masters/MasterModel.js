@@ -70,6 +70,26 @@ define([
             }
         }
     };
-    
+
+    _p.getAllOffspringElements = function() {
+        var elements = []
+          , levelElements = [this]
+          , tempElements = [];
+        while (levelElements.length > 0) {
+            for (var i = 0, l = levelElements.length; i < l; i++) {
+                if (levelElements[i].children) {
+                    for (var j = 0, jl = levelElements[i].children.length; j < jl; j++) {
+                        var child = levelElements[i].children[j];
+                        elements.push(child);
+                        tempElements.push(child);
+                    }
+                }
+            }
+            levelElements = tempElements;
+            tempElements = [];
+        }
+        return elements;
+    };
+
     return MasterModel;
 });
