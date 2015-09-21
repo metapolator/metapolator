@@ -7,37 +7,31 @@ define([
     function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.selection = selection;
 
-        $scope.changeValue = function(parameter, operator, value, keyEvent) {
-            if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
-                var thisValue = null
-                  , operatorId = operator.id;
-                  
-                for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
-                    // Write the value in all models of all elements within selection
-                    var element = $scope.model.parent.elements[i]
-                      , effectiveLevel
-                      , effectedElements;
-                    // if there is a range, we have to find the value for this element within the range
-                    if (operator.range) {
-                        thisValue = getRangeValue(element, parameter, operator);
-                    } else {
-                        thisValue = managedInputValue(value, parameter, operator, keyEvent);
-                    }
-                    // set the value of each element in the selection
-                    // if there is not yet a parameter, we create it + cpsRule
-                    // if there is not yet a operator, we create it
-                    var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
-                      , thisOperator = thisParameter.checkIfHasOperator(operator);
-                    thisOperator.setValue(thisValue);
-                    // the changed operator method checks the effects for the effective value (whether it is
-                    // at the local level or down in the tree) and writes CPS if needed
-                    thisParameter.changedOperator(thisOperator);
-                    updateLevel(parameter.base.effectiveLevel, parameter);
+        $scope.changeValue = function(parameter, operator, value, event) {
+            var thisValue = manageInputValue(value, parameter, operator, event);
+            // Update the input
+            operator.low.current = thisValue;
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                // Write the value in all models of all elements within selection
+                var element = $scope.model.parent.elements[i];
+                // if there is a range, we have to find the value for this element within the range
+                if (operator.range) {
+                    // TODO: pass in the high value.
+                    // operator.high.current = manageInputValue(value, parameter, operator, event);
                 }
-                resetRange(operator);
+                // set the value of each element in the selection
+                // if there is not yet a parameter, we create it + cpsRule
+                // if there is not yet a operator, we create it
+                var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
+                  , thisOperator = thisParameter.checkIfHasOperator(operator);
+                thisOperator.setValue(thisValue);
+                // the changed operator method checks the effects for the effective value (whether it is
+                // at the local level or down in the tree) and writes CPS if needed
+                thisParameter.changedOperator(thisOperator);
+                updateLevel(parameter.base.effectiveLevel, parameter);
             }
         };
-        
+
         function updateLevel(changedLevel, parameter) {
             // update the effectedValue selection for the changed level
             var selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
@@ -50,13 +44,13 @@ define([
         function resetRange(operator) {
             if (operator.range) {
                 // update the range boundaries after setting each element,
-                // so the new value of a (inbetween range) element
+                // so the new value of a (in between range) element
                 // gets the right myPosition relative to the new boundaries
                 operator.low.old = operator.low.current;
                 operator.high.old = operator.high.current;
             }
         }
-        
+
         function getRangeValue (element, parameter, operator) {
             var scale = null
               , myPosition = null
@@ -87,38 +81,45 @@ define([
             }
             return newValue;
         }
-        
-        function managedInputValue (value, parameter, operator, keyEvent) {
+
+        function manageInputValue(value, parameter, operator, event) {
+            // Adjust the value based increment `step` and `event` key
             var currentValue = value.current
-              , step
-              , decimals;
-            // Not a number: use the fallback value.
-            if (isNaN(currentValue) || currentValue === "") {
-                currentValue = value.fallback;
-            }
-            if ( typeof (currentValue) == "string") {
+              , step = parameter.base.step;
+            if (typeof (currentValue) === "string") {
+                // Try to make a number out of the string.
                 currentValue = parseFloat(currentValue.replace(',', '.'));
             }
-            step = parameter.step;
-            decimals = parameter.decimals;
-            if (keyEvent != "blur") {
-                keyEvent.preventDefault();
-                if (keyEvent.shiftKey) {
-                    step = step * 10;
-                }
-                if (keyEvent.keyCode == 38) {
-                    currentValue = round(parseFloat(currentValue) + step, decimals);
-                } else if (keyEvent.keyCode == 40) {
-                    currentValue = round(parseFloat(currentValue) - step, decimals);
-                }
+            if (!isNumeric(currentValue)) {
+                return value.fallback;
+            }
+            // Shift is 'BIG' Big increments
+            if (event.shiftKey) {
+                step = step * 10;
+            }
+            // Ctrl is 'control'. Small increments
+            if (event.ctrlKey) {
+                step = step * 0.1;
+            }
+            // Arrow up or scroll up.
+            if (event.keyCode === 38) {
+                currentValue = currentValue + step;
+            }
+            // Arrow down or scroll down.
+            if (event.keyCode === 40) {
+                currentValue = currentValue - step;
             }
             return currentValue;
         }
-        
+
+        function isNumeric(n) {
+            // Returns true if n is a number.
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+
         function round(value, decimals) {
             return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
         }
-
 
         $scope.toggleParameterPanel = function(parameter, event) {
             if(selection.panel.level === $scope.model.parent.level && selection.panel.type === 'parameter') {
