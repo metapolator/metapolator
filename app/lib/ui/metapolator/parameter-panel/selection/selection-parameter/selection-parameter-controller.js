@@ -10,7 +10,7 @@ define([
         $scope.changeValue = function(parameter, operator, value, event) {
             var thisValue = manageInputValue(value, parameter, operator, event);
             // Update the input
-            operator.low.current = thisValue;
+            operator.low.current = round(thisValue, parameter.base.decimals);
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 // Write the value in all models of all elements within selection
                 var element = $scope.model.parent.elements[i];
@@ -88,7 +88,7 @@ define([
               , step = parameter.base.step;
             if (typeof (currentValue) === "string") {
                 // Try to make a number out of the string.
-                currentValue = parseFloat(currentValue.replace(',', '.'));
+                currentValue = parseFloat(currentValue.replace(/,/g, '.'));
             }
             if (!isNumeric(currentValue)) {
                 return value.fallback;
@@ -97,8 +97,8 @@ define([
             if (event.shiftKey) {
                 step = step * 10;
             }
-            // Ctrl is 'control'. Small increments
-            if (event.ctrlKey) {
+            // Ctrl and Alt give 'control'.
+            if (event.ctrlKey || event.altKey) {
                 step = step * 0.1;
             }
             // Arrow up or scroll up.
