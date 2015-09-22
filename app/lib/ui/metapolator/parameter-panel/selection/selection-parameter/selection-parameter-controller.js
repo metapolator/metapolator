@@ -88,7 +88,7 @@ define([
               , step = parameter.base.step;
             if (typeof (currentValue) === "string") {
                 // Try to make a number out of the string.
-                currentValue = eval(currentValue.replace(',', '.'));
+                currentValue = parseFloat(currentValue.replace(/,/g, '.'));
             }
             if (!isNumeric(currentValue)) {
                 return value.fallback;
@@ -97,8 +97,8 @@ define([
             if (event.shiftKey) {
                 step = step * 10;
             }
-            // Ctrl is 'control'. Small increments
-            if (event.ctrlKey) {
+            // Ctrl and Alt give 'control'.
+            if (event.ctrlKey || event.altKey) {
                 step = step * 0.1;
             }
             // Arrow up or scroll up.
