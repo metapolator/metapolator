@@ -2,7 +2,6 @@ define([
     'metapolator/errors'
   , './_ValueToken'
   , './OperatorToken'
-  , './Stack'
   , './BracketToken'
   , './StringToken'
   , './SelectorToken'
@@ -12,7 +11,6 @@ define([
     errors
   , _ValueToken
   , OperatorToken
-  , Stack
   , BracketToken
   , StringToken
   , SelectorToken
@@ -40,7 +38,7 @@ define([
 
         this._bracketOperators = {};
         this._negateOperator = undefined;
-        this._finalizeMethod = undefined;
+        this._StackConstructor = undefined;
     }
 
     var _p = Parser.prototype
@@ -158,13 +156,8 @@ define([
         return result;
     };
 
-    /**
-     * The method is passed from Parser.parse to new Stack and then run in
-     * Stack.execute, with the result of the stack execution and getAPI as
-     * arguments.
-     */
-    _p.setFinalizeMethod = function(method) {
-        this._finalizeMethod = method;
+    _p.setStackConstructor = function(ctor){
+        this._StackConstructor = ctor;
     };
 
     _p.setBracketOperator = function(bracketLiteral, operatorLiteral) {
@@ -644,11 +637,13 @@ define([
      * immediately, contrary to beeing compiled when first used.
      */
     _p.parse = function(string, selectorEngine) {
+        if(!this._StackConstructor)
+            throw new CPSFormulaError('StackConstructor is missing. Run engine.setStackConstructor before running engine.parse.');
         var tokens = this.tokenize(string, selectorEngine);
         tokens = this.infixToPostfix(tokens);
         if(!tokens.length)
             throw new CPSFormulaError('The input string did not produce any instructions.');
-        return new Stack(tokens, this._finalizeMethod);
+        return new this._StackConstructor(tokens);
     };
 
     return Parser;

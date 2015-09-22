@@ -18,10 +18,9 @@ define([
       ;
 
 
-    function Stack(postfixStack, finalizeMethod) {
+    function Stack(postfixStack) {
         // raises CPSFormulaError
         this._check(postfixStack);
-        this._finalizeMethod = finalizeMethod;
         var sig;
         this._signature = sig = this._makeSignature(postfixStack);
         this._stack = this._unwrap(postfixStack);
@@ -34,6 +33,9 @@ define([
     _p.toString = function() {
         return this._stack.join('|');
     };
+
+    // define via inheritance
+    _p._finalizeMethod = null;
 
     Object.defineProperty(_p, 'items', {
         get: function(){ return this._stack.slice(); }
