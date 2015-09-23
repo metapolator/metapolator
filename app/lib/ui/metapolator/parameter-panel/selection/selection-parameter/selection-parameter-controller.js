@@ -233,4 +233,4 @@ define([
     var _p = SelectionParameterController.prototype;
 
     return SelectionParameterController;
-}); 
+});
