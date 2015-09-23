@@ -25,7 +25,7 @@ define([
                     val = val[1]
                 }
             }
-            if (isNumeric(val)) {
+            if (isNumeric(val) && isFinite(val)) {
                 val = evaluateEvent(val, parameter, event);
                 if (val != value.fallback) {
                     operator.low.current = round(val, parameter.base.decimals);
