@@ -19,7 +19,7 @@ define([
                 val = evaluateMathExpression(val);
                 if (val[0]) {
                     alert(val[0]);
-                    throw errors.Input(val[0]);
+                    throw new errors.Input(val[0]);
                 }
                 else {
                     val = val[1]
