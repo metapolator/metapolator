@@ -67,7 +67,7 @@ define(function() {
     makeError('Receiver', undefined , new errors.Event());
     // UI = user interface
     makeError('UI', undefined , new errors.Event());
-    makeError('Input', undefined , new errors.Error());
+    makeError('UIInput', undefined , new errors.UI());
     // When the ui-setup was done wrong
     makeError('UISetup', undefined , new errors.UI());
 
