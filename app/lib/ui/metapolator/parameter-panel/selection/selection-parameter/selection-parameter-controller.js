@@ -9,6 +9,8 @@ define([
     , mathEngine
 ) {
     "use strict";
+    var CPSError = errors.CPS,
+        UIInputError = errors.UIInput;
 
     function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.selection = selection;
@@ -19,7 +21,7 @@ define([
                 val = evaluateMathExpression(val);
                 if (val[0]) {
                     alert(val[0]);
-                    throw new errors.UIInput(val[0]);
+                    throw new UIInputError(val[0]);
                 }
                 else {
                     val = val[1]
@@ -106,7 +108,6 @@ define([
             return newValue;
         }
 
-        var CPSError = errors.CPS;
         function evaluateMathExpression(input) {
             var result, message;
             try {
