@@ -11,7 +11,8 @@
                 <input ng-model="operator.low.current"
                        ng-blur="changeValue(model, operator, operator.low, $event)"
                        ng-keydown="changeValue(model, operator, operator.low, $event)"
-                       mtk-mousewheel="changeValue(model, operator, operator.low, $event)">
+                       mtk-mousewheel="changeValue(model, operator, operator.low, $event)"
+                       mtk-enter="changeValue(model, operator, operator.low, $event)">
             </span>
             <span ng-if="operator.range"> 
                 <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> to

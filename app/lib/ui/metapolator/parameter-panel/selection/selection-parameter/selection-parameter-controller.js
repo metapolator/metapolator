@@ -17,7 +17,8 @@ define([
 
         $scope.changeValue = function(parameter, operator, value, event) {
             var val = value.current;
-            if (typeof val === "string" && event.type === 'blur') {
+            if (typeof val === "string" && (event.type === 'blur' || event.which === 13)) {
+                // String and blur or enter event.
                 val = evaluateMathExpression(val);
                 if (val[0]) {
                     alert(val[0]);
