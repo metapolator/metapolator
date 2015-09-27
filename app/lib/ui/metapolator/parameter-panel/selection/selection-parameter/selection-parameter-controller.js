@@ -17,11 +17,12 @@ define([
 
         $scope.changeValue = function(parameter, operator, value, event) {
             var val = value.current;
+            event.target.classList.remove('error');  // TODO: This needs design
             if (typeof val === "string" && (event.type === 'blur' || event.which === 13)) {
                 // String and blur or enter event.
                 val = evaluateMathExpression(val);
                 if (val[0]) {
-                    alert(val[0]);
+                    event.target.classList.add('error');  // TODO: This needs design
                     throw new UIInputError(val[0]);
                 }
                 else {
@@ -30,9 +31,11 @@ define([
             }
             if (isNumeric(val) && isFinite(val)) {
                 val = evaluateEvent(val, parameter, event);
-                if (val != value.fallback) {
-                    operator.low.current = round(val, parameter.base.decimals);
+                val = round(val, parameter.base.decimals);
+                if (val !== value.fallback) {
+                    operator.low.current = val;
                     updateCPS(val, parameter, operator);
+                    value.fallback = val;
                 }
             }
         };
