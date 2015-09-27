@@ -10,7 +10,7 @@
             <span ng-if="!operator.range">
                 <input ng-model="operator.low.current"
                        ng-blur="changeValue(model, operator, operator.low, $event)"
-                       ng-keydown="changeValue(model, operator, operator.low, $event)"
+                       ng-keyup="changeValue(model, operator, operator.low, $event)"
                        mtk-mousewheel="changeValue(model, operator, operator.low, $event)"
                        mtk-enter="changeValue(model, operator, operator.low, $event)">
             </span>
