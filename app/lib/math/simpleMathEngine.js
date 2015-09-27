@@ -104,7 +104,7 @@ define([
         if(invalid.length)
             throw new CPSFormulaError('The math expression contains invalid tokens: ' + invalid.join(', '));
         return Stack.prototype._check.call(this, stack);
-    }
+    };
 
     /**
      * This method is applied in Stack.execute, with the result of the stack execution.
