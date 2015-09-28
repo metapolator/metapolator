@@ -74,6 +74,16 @@ define([
             return this.addOperator(changedOperator.base, id, level);
         }
     };
+
+    _p.checkIfHasNonLocalOperators = function() {
+        for (var i = 0, l = this.operators.length; i < l; i++) {
+            var operator = this.operators[i];
+            if (!operator.base.effectiveLocal) {
+                return true;
+            }
+        }
+        return false;
+    };
     
     _p.addOperator = function(baseOperator, id, level) {
         var operator = new OperatorModel(baseOperator, id, this);
@@ -97,7 +107,6 @@ define([
             for (var i = self.operators.length - 1; i >= 0; i--) {
                 var thisOperator = self.operators[i].name;
                 if (tempArray.indexOf(thisOperator) > -1) {
-                    console.log('!');
                     return true;
                 }
                 tempArray.push(thisOperator);

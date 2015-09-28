@@ -28,7 +28,7 @@ function(
 
     _p.writeValueInCPSfile = function(factor, parameter) {
         var parameterCollection
-          , cpsRule;
+            , cpsRule;
         // && prevent removing hardcoded cps rule
         if (factor === 1 && this.level !== 'master') {
             this._removeParameter(parameter);
@@ -39,7 +39,7 @@ function(
             parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile);
             cpsRule = parameterCollection.getItem(this.ruleIndex);
             var parameterDict = cpsRule.parameters
-              , setParameter = cpsAPITools.setParameter;
+                , setParameter = cpsAPITools.setParameter;
             setParameter(parameterDict, parameter.base.cpsKey, factor);
             //console.log(cpsRule.toString());
         }
@@ -52,8 +52,8 @@ function(
             // if the factor equals 1 and the element already has an index, that means the cps rule is unnecessary
             // so we remove the property in the rule
             var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-              , ruleIndex = this.ruleIndex
-              , cpsRule = parameterCollection.getItem(ruleIndex);
+                , ruleIndex = this.ruleIndex
+                , cpsRule = parameterCollection.getItem(ruleIndex);
             cpsRule.parameters.erase(parameter.base.cpsKey);
             // if this is the last property in the rule, we remove the rule itself
             // therefor we have to rewrite all the rule indexes of this master
@@ -151,7 +151,7 @@ function(
     // cps functions
     _p.updateEffectiveValue = function(baseParameter, writeCPS) {
         var elementParameter = this.getParameterByName(baseParameter.name);
-        elementParameter.updateEffectiveValue(writeCPS);  
+        elementParameter.updateEffectiveValue(writeCPS);
     };
     
     _p.findParentsFactor = function(baseParameter) {
@@ -185,8 +185,8 @@ function(
                 var thisLevelElement = thisLevelElements[i];
                 for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
                     var childElement = thisLevelElement.children[j];
-                    // skip the unmeasured glyphs
-                    if (childElement.level !== 'glyph' || childElement.measured) {
+                    // skip the not yet ever displayed glyphs
+                    if (childElement.level !== 'glyph' || childElement.displayed) {
                         tempArray.push(childElement);
                     }
                 }
@@ -219,6 +219,14 @@ function(
             for (var i = 0, l = this.children.length; i < l; i++) {
                 var child = this.children[i];
                 child.setMaster(master);
+            }
+        }
+        // restore the links to the master and to the element in the cloned parameters
+        if (this.parameters) {
+            for (var j = 0, jl = this.parameters.length; j < jl; j++) {
+                var parameter = this.parameters[j];
+                parameter.master = master;
+                parameter.element = this;
             }
         }
     };

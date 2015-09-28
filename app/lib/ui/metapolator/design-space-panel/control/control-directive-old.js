@@ -82,27 +82,27 @@ define([
                     buildData();
                     removeAll();
                     starttime = Date.now();
-                    console.log("start: " + starttime);
                     drawAll();
-                    console.log("end: " + (Date.now() - starttime));
                 }
                 
                 function buildData() {
-                    var nrOfInstances = 0;
+                    var nrOfInstances = 0
+                      , current
+                      , thisSlack;
                     designSpace = scope.model;
                     for (var i = scope.instancePanel.sequences.length - 1; i >= 0; i--) {
                         var sequence = scope.instancePanel.sequences[i];
                         for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                             var instance = sequence.children[j];
                             if (instance == scope.instancePanel.currentInstance) {
-                                var current = true;
+                                current = true;
                             } else {
-                                var current = false;
+                                current = false;
                             }
-                            if (j == designSpace.slack) {
-                                var thisSlack = true;
+                            if (j === designSpace.slack) {
+                                thisSlack = true;
                             } else {
-                                var thisSlack = false;
+                                thisSlack = false;
                             }
                             if (instance.designSpace == designSpace) {
                                 for (var k = 0, l = instance.axes.length; k < l; k++) {

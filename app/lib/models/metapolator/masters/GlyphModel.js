@@ -13,6 +13,7 @@ define([
         this.type = 'master';
         this.name = name;
         this.edit = false;
+        this.displayed = false;
         this.master = parent;
         this.parent = parent;
         this.children = [];
@@ -41,8 +42,34 @@ define([
         this.children.push(penstroke);
         return penstroke;
     };
-    
-    _p.measureGlyph = function () {
+
+    // handling measuring and cps writing only for displayed glyphs
+
+    _p.checkIfIsDisplayed = function() {
+        if (!this.displayed) {
+            // if a glyph is never displayed before it can have been measured
+            // (because measure info is shared among cloned masters)
+            if (!this._isMeasured()) {
+                this._measureGlyph();
+            }
+            // if this is the first display, it possibly needs to catch up
+            // on its cps (when its master has non-local operators (like plus and mines)
+            this._catchUpCPS();
+        }
+    };
+
+    _p._isMeasured = function() {
+        // find the original master (cloned masters shared this info with each other)
+        var glyph = this._getOriginalGlyph();
+        return glyph.measured;
+    };
+
+    _p._getOriginalGlyph = function() {
+        var originalMaster = this.parent.originalMaster;
+        return originalMaster.findGlyphByName(this.name);
+    };
+
+    _p._measureGlyph = function () {
         for (var i = selection.baseParameters.length - 1; i >= 0; i--) {
             // get all the elements for the specific parameter. Eg: 'weight' has
             // its effecitve level at point level, so for weight the effected
@@ -66,8 +93,27 @@ define([
             }
 
         }
-        this.measured = true;
-    };    
+        this._getOriginalGlyph().measured = true;
+    };
+
+    _p._catchUpCPS = function() {
+        // if there are parent elements (can only be the master) with parameters with a 'non-local effective operator'
+        // (like + and -), we need to write local cps to compensate for that
+        for (var i = 0, l = this.parent.parameters.length; i < l; i++) {
+            var parameter = this.parent.parameters[i];
+            if (parameter.checkIfHasNonLocalOperators()) {
+                // find all elements down the tree that are effected (at the effective level)
+                var effectedElements = this.getEffectedElements(parameter.base.effectiveLevel);
+                for (var j = 0, jl = effectedElements.length; j < jl; j++) {
+                    var effectedElement = effectedElements[j]
+                        , elementParameter = effectedElement.getParameterByName(parameter.base.name);
+                    // update the effective value + the true argument means its going to write cps
+                    elementParameter.updateEffectiveValue(true);
+                }
+            }
+        }
+        this.displayed = true;
+    };
     
     return GlyphModel;
 });
