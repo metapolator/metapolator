@@ -29,7 +29,8 @@ function(
     _p.writeValueInCPSfile = function(factor, parameter) {
         var parameterCollection
           , cpsRule;
-        if (factor === 1) {
+        // && prevent removing hardcoded cps rule
+        if (factor === 1 && this.level !== 'master') {
             this._removeParameter(parameter);
         } else {
             if (!this.ruleIndex) {
