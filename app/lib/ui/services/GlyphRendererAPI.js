@@ -234,6 +234,8 @@ define([
     };
 
     _p._applySVGViewBox = function(svg, viewBox) {
+        // Viewbox min width can't be less than 0.
+        viewBox[2] = Math.max(0, viewBox[2]);
         svg.setAttribute('viewBox', viewBox.join(' '));
         if(!svg.parentElement || this._options.noParentSizing)
             return;
