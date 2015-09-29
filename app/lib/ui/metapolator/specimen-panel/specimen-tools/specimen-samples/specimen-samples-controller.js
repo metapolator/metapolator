@@ -5,7 +5,7 @@ define([], function() {
 
         $scope.samples = [[{
             name : "[Enter your own text]",
-            text : "Met"
+            text : "Metapolator"
         }], [{
             name : "3 Pangrams",
             text : "Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog. Bright vixens jump dozy fowl quack."
