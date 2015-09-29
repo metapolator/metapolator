@@ -25,7 +25,7 @@ define([
         this.master = this;
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
-        this.ruleIndex = 3;
+        this.ruleIndex = null;
 
         this.setInitialParameters();
     }
