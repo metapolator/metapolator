@@ -11,13 +11,14 @@ define([
                 /*jshint validthis: true*/
                 this.setter = null;
                 if(this.newHeight === null) return;
-                this.element.style.height = this.newHeight + 'px';
+                this.element.style.height = this.newHeight + '%';
                 this.newHeight = null;
             }
 
             function changeHeight(event) {
                 /*jshint validthis: true*/
-                this.newHeight = this.startY - event.screenY + this.startHeight;
+                var height = this.startY - event.screenY + this.startHeight;
+                this.newHeight = height/document.documentElement.clientHeight * 100;
                 if(!this.setter)
                     this.setter = document.defaultView.requestAnimationFrame(setHeight.bind(this));
             }
