@@ -41,6 +41,7 @@ define([
                 var i,l,j
                     , containers = element[0].getElementsByClassName('container')[0].children
                     , container, child
+                    , childTags = new Set(['mtk-cps-rule', 'mtk-cps-property-dict'])
                     ;
                 for(i=0,l=containers.length;i<l;i++) {
                     container = containers[i];
@@ -49,12 +50,12 @@ define([
                     // DOM layout
                     for(j=container.children.length-1;j>=0;j--) {
                         child = container.children[j];
-                        if(child.tagName.toLowerCase() !== 'mtk-cps-rule')
+                        if(!childTags.has(child.tagName.toLowerCase()))
                             continue;
-                        // there's just one child
                         angular.element(child)
                            .isolateScope()
                            .updateUsedNames(usedNamesSet);
+                        // there's just one child per container
                         break;
                     }
                 }

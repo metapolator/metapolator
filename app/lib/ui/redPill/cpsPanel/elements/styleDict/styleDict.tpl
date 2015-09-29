@@ -1,5 +1,11 @@
 <div>{{ctrl.element.particulars}}</div>
 <ol class="container">
+<li>
+    element properties
+    <mtk-cps-property-dict
+        cps-property-dict="ctrl.element.properties"
+        ></mtk-cps-property-dict>
+</li>
 <li ng-repeat="item in ctrl.items track by $index + ':' + item[1].nodeID">
     <div ng-repeat="traceItem in item[2].slice().reverse()  track by $index"
         ng-switch="traceItem.constructor.name"
