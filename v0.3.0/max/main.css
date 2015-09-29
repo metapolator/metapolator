@@ -72,6 +72,10 @@
 .control-panel-button.push-button-down {
   background: #f85c37;
 }
+input.error,
+input:focus.error {
+  color: #a82422;
+}
 .parameter-selection-head {
   width: 100%;
   height: 30px;

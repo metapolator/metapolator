@@ -34152,6 +34152,7 @@ define('metapolator/errors',[],function() {
     makeError('Receiver', undefined , new errors.Event());
     // UI = user interface
     makeError('UI', undefined , new errors.Event());
+    makeError('UIInput', undefined , new errors.UI());
     // When the ui-setup was done wrong
     makeError('UISetup', undefined , new errors.UI());
 
@@ -35365,7 +35366,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken',[
     return OperatorToken;
 });
 
-define('metapolator/models/CPS/dataTypes/formulae/parsing/NumberToken',[
+define('metapolator/models/CPS/dataTypes/formulae/parsing/BracketToken',[
     'metapolator/errors'
   , './_ValueToken'
 ], function(
@@ -35375,25 +35376,45 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/NumberToken',[
     "use strict";
 
     /**
-     * Literal is a string representing a number.
-     * Value is the result of applying parseFloat on literal.
-     *
-     * value should never be NaN. If this ever happens I strongly recommend
-     * to improve the reqular expression of CPS/dataTypes/formulae/parsing
+     * Literal is a string, one of '(' , ')', '[', ']'
+     * There is no value, the parser interpretes this kind of token
+     * by using its literal
      */
-    function NumberToken(literal) {
+    function BracketToken(literal) {
         Parent.call(this, literal, 0, 0);
-        this._value = parseFloat(this.literal);
+
+        var counterparts = {
+                '(': ')'
+              , ')': '('
+              , '[': ']'
+              , ']': '['
+        };
+
+        Object.defineProperty(this, 'opening', {
+            value: '(['.indexOf(this.literal) !== -1
+          , enumerable: true
+        });
+
+        Object.defineProperty(this, 'closing', {
+            value: !this.opening
+          , enumerable: true
+        });
+
+        Object.defineProperty(this, 'counterpart', {
+            value: counterparts[this.literal]
+          , enumerable: true
+        });
     }
 
-    var _p = NumberToken.prototype = Object.create(Parent.prototype);
-    _p.constructor = NumberToken;
+    var _p = BracketToken.prototype = Object.create(Parent.prototype);
+    _p.constructor = BracketToken;
 
-    _p.getValue = function() {
-        return this._value;
+    _p.matches = function(val) {
+        return val === this.counterpart;
     };
 
-    return NumberToken;
+
+    return BracketToken;
 });
 
 define('metapolator/models/CPS/dataTypes/formulae/parsing/StringToken',[
@@ -40045,192 +40066,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/SelectorToken',[
     return SelectorToken;
 });
 
-define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
-    'metapolator/errors'
-  , './_ValueToken'
-  , './NumberToken'
-  , './StringToken'
-  , './SelectorToken'
-], function(
-    errors
-  , _ValueToken
-  , NumberToken
-  , StringToken
-  , SelectorToken
-) {
-    "use strict";
-
-    var CPSFormulaError = errors.CPSFormula
-      , stackCache = Object.create(null)
-      ;
-
-
-    function Stack(postfixStack, finalizeMethod) {
-        // raises CPSFormulaError
-        this._check(postfixStack);
-        this._finalizeMethod = finalizeMethod;
-        var sig;
-        this._signature = sig = this._makeSignature(postfixStack);
-        this._stack = this._unwrap(postfixStack);
-
-        this.execute = stackCache[sig] || (stackCache[sig] = this._compile(postfixStack));
-        // this.execute = this._compile();
-    }
-
-    var _p = Stack.prototype;
-    _p.toString = function() {
-        return this._stack.join('|');
-    };
-
-    Object.defineProperty(_p, 'items', {
-        get: function(){ return this._stack.slice(); }
-    });
-
-    _p._unwrap = function(stack) {
-        var result = [], i,l, token;
-        for(i=0,l=stack.length;i<l;i++) {
-            token = stack[i];
-            result.push((token instanceof NumberToken || token instanceof StringToken
-                                                      || token instanceof SelectorToken
-                ? token.getValue()
-                : token
-                ));
-        }
-        return result;
-    };
-
-    _p._makeSignature = function (stack) {
-        var i,l, result = [], c=0;
-        for(i=0,l=stack.length;i<l;i++) {
-            if(stack[i] instanceof _ValueToken)
-                c++;
-            else {
-                if(c) {
-                    result.push('c', c);
-                    c = 0;
-                }
-                result.push('e', stack[i].consumes);
-            }
-        }
-        if(c) result.push('c', c);
-        if(this._finalizeMethod) result.push('f');
-        return result.join('');
-    };
-
-    _p._makeDebugMessageStackDetails = function(stack){
-        var commands = stack.slice()
-         , stck = []
-         , i=0
-         ;
-        for(;i<commands.length;i++) {
-            if(commands[i] instanceof _ValueToken)
-                stck.push(commands[i]);
-             else {
-                stck.push('[result of '+commands[i].literal + '('+stck.splice(-commands[i].consumes)+')]');
-            }
-        }
-        return stck.join(' | ');
-    };
-
-    _p._check = function(stack) {
-        var i=0, stackLen = 0;
-        for(; i<stack.length;i++) {
-            stackLen -= stack[i].consumes;
-            if(stackLen < 0)
-                throw new CPSFormulaError('Stack underflow at ('+i+') a '
-                    + stack[i] + ' in ' + stack.join('|') + '. '
-                    + 'This means an operator consumes more items than '
-                    + 'there are on the stack.\n'
-                    + 'Execution hints:\n'
-                    + this._makeDebugMessageStackDetails(stack));
-            stackLen += stack[i].ejects;
-        }
-
-        if(stackLen > 1)
-            throw new CPSFormulaError('Stack too crowded. A stack must '
-                        + 'eventually resolve to 1 item, the result. This '
-                        + 'stack has still ' + stackLen + ' items.\n'
-                        + 'Stack in postfix notation:\n'
-                        +  stack.join(' |\n')
-                        + '\nExecution hints:\n'
-                        + this._makeDebugMessageStackDetails(stack));
-    };
-
-    _p._compile = function(_stack) {
-        /*jshint evil:true*/
-        var i, l
-          , args
-          , stack = []
-          , resultCounter = 0
-          , resultName = 'commands[0]'
-          , body = [
-               '"use strict";'
-              , 'var commands = this._stack;'
-          ];
-        for(i=0,l=this._stack.length;i<l;i++) {
-            if(_stack[i] instanceof _ValueToken)
-                stack.push('commands[' + i +']');
-            else {
-                args = [];
-                Array.prototype.push.apply(args
-                                , stack.splice(-_stack[i].consumes));
-                resultName = 'r'+ (resultCounter++);
-                body.push('var '+resultName+' = commands['+ i +'].execute(getAPI, ['+ args.join(',') +']);');
-                stack.push(resultName);
-            }
-        }
-        // return the last result
-        if(this._finalizeMethod)
-            body.push('return this._finalizeMethod(' + resultName + ', getAPI);');
-        else
-            body.push('return '+ resultName + ';');
-        return new Function('getAPI', body.slice(1).join('\n'));
-    };
-
-    // This is replaced with a compiled version on initialisation.
-    // It remains here because the algorithm is more obvious.
-    _p.execute = function(getAPI) {
-        var commands = this._stack.slice()
-          , stack = []
-          , args
-          , i = 0
-          , result
-          , returned
-          ;
-
-        for(;i<commands.length;i++) {
-            if(commands[i] instanceof _ValueToken)
-                stack.push(commands[i]);
-            else {
-                args = [getAPI];
-                Array.prototype.push.apply(args
-                                , stack.splice(-commands[i].consumes));
-                // commands always return only one element currently
-                returned = commands[i].execute.apply(commands[i], args);
-                stack.push( returned );
-            }
-        }
-
-        // stack.length should be 1 at this point
-        if(stack.length === 0)
-            throw new CPSFormulaError('No result: stack is empty after '
-                            + 'execution. ' +  this._stack.join('|'));
-        if(stack.length > 1)
-            throw new CPSFormulaError('Too many results, stack contains '
-                            +'more than one item after execution: '
-                            + this._stack.join('|'));
-
-        result = stack.pop();
-        return (this._finalizeMethod
-            ?  this._finalizeMethod(result, getAPI)
-            : result
-        );
-    };
-
-    return Stack;
-});
-
-define('metapolator/models/CPS/dataTypes/formulae/parsing/BracketToken',[
+define('metapolator/models/CPS/dataTypes/formulae/parsing/NumberToken',[
     'metapolator/errors'
   , './_ValueToken'
 ], function(
@@ -40240,52 +40076,31 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/BracketToken',[
     "use strict";
 
     /**
-     * Literal is a string, one of '(' , ')', '[', ']'
-     * There is no value, the parser interpretes this kind of token
-     * by using its literal
+     * Literal is a string representing a number.
+     * Value is the result of applying parseFloat on literal.
+     *
+     * value should never be NaN. If this ever happens I strongly recommend
+     * to improve the reqular expression of CPS/dataTypes/formulae/parsing
      */
-    function BracketToken(literal) {
+    function NumberToken(literal) {
         Parent.call(this, literal, 0, 0);
-
-        var counterparts = {
-                '(': ')'
-              , ')': '('
-              , '[': ']'
-              , ']': '['
-        };
-
-        Object.defineProperty(this, 'opening', {
-            value: '(['.indexOf(this.literal) !== -1
-          , enumerable: true
-        });
-
-        Object.defineProperty(this, 'closing', {
-            value: !this.opening
-          , enumerable: true
-        });
-
-        Object.defineProperty(this, 'counterpart', {
-            value: counterparts[this.literal]
-          , enumerable: true
-        });
+        this._value = parseFloat(this.literal);
     }
 
-    var _p = BracketToken.prototype = Object.create(Parent.prototype);
-    _p.constructor = BracketToken;
+    var _p = NumberToken.prototype = Object.create(Parent.prototype);
+    _p.constructor = NumberToken;
 
-    _p.matches = function(val) {
-        return val === this.counterpart;
+    _p.getValue = function() {
+        return this._value;
     };
 
-
-    return BracketToken;
+    return NumberToken;
 });
 
 define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
     'metapolator/errors'
   , './_ValueToken'
   , './OperatorToken'
-  , './Stack'
   , './BracketToken'
   , './StringToken'
   , './SelectorToken'
@@ -40295,7 +40110,6 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
     errors
   , _ValueToken
   , OperatorToken
-  , Stack
   , BracketToken
   , StringToken
   , SelectorToken
@@ -40323,7 +40137,7 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
 
         this._bracketOperators = {};
         this._negateOperator = undefined;
-        this._finalizeMethod = undefined;
+        this._StackConstructor = undefined;
     }
 
     var _p = Parser.prototype
@@ -40441,13 +40255,8 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
         return result;
     };
 
-    /**
-     * The method is passed from Parser.parse to new Stack and then run in
-     * Stack.execute, with the result of the stack execution and getAPI as
-     * arguments.
-     */
-    _p.setFinalizeMethod = function(method) {
-        this._finalizeMethod = method;
+    _p.setStackConstructor = function(ctor){
+        this._StackConstructor = ctor;
     };
 
     _p.setBracketOperator = function(bracketLiteral, operatorLiteral) {
@@ -40927,14 +40736,203 @@ define('metapolator/models/CPS/dataTypes/formulae/parsing/Parser',[
      * immediately, contrary to beeing compiled when first used.
      */
     _p.parse = function(string, selectorEngine) {
+        if(!this._StackConstructor)
+            throw new CPSFormulaError('StackConstructor is missing. Run engine.setStackConstructor before running engine.parse.');
         var tokens = this.tokenize(string, selectorEngine);
         tokens = this.infixToPostfix(tokens);
         if(!tokens.length)
             throw new CPSFormulaError('The input string did not produce any instructions.');
-        return new Stack(tokens, this._finalizeMethod);
+        return new this._StackConstructor(tokens);
     };
 
     return Parser;
+});
+
+define('metapolator/models/CPS/dataTypes/formulae/parsing/Stack',[
+    'metapolator/errors'
+  , './_ValueToken'
+  , './NumberToken'
+  , './StringToken'
+  , './SelectorToken'
+], function(
+    errors
+  , _ValueToken
+  , NumberToken
+  , StringToken
+  , SelectorToken
+) {
+    "use strict";
+
+    var CPSFormulaError = errors.CPSFormula
+      , stackCache = Object.create(null)
+      ;
+
+
+    function Stack(postfixStack) {
+        // raises CPSFormulaError
+        this._check(postfixStack);
+        var sig;
+        this._signature = sig = this._makeSignature(postfixStack);
+        this._stack = this._unwrap(postfixStack);
+
+        this.execute = stackCache[sig] || (stackCache[sig] = this._compile(postfixStack));
+        // this.execute = this._compile();
+    }
+
+    var _p = Stack.prototype;
+    _p.toString = function() {
+        return this._stack.join('|');
+    };
+
+    // define via inheritance
+    _p._finalizeMethod = null;
+
+    Object.defineProperty(_p, 'items', {
+        get: function(){ return this._stack.slice(); }
+    });
+
+    _p._unwrap = function(stack) {
+        var result = [], i,l, token;
+        for(i=0,l=stack.length;i<l;i++) {
+            token = stack[i];
+            result.push((token instanceof NumberToken || token instanceof StringToken
+                                                      || token instanceof SelectorToken
+                ? token.getValue()
+                : token
+                ));
+        }
+        return result;
+    };
+
+    _p._makeSignature = function (stack) {
+        var i,l, result = [], c=0;
+        for(i=0,l=stack.length;i<l;i++) {
+            if(stack[i] instanceof _ValueToken)
+                c++;
+            else {
+                if(c) {
+                    result.push('c', c);
+                    c = 0;
+                }
+                result.push('e', stack[i].consumes);
+            }
+        }
+        if(c) result.push('c', c);
+        if(this._finalizeMethod) result.push('f');
+        return result.join('');
+    };
+
+    _p._makeDebugMessageStackDetails = function(stack){
+        var commands = stack.slice()
+         , stck = []
+         , i=0
+         ;
+        for(;i<commands.length;i++) {
+            if(commands[i] instanceof _ValueToken)
+                stck.push(commands[i]);
+             else {
+                stck.push('[result of '+commands[i].literal + '('+stck.splice(-commands[i].consumes)+')]');
+            }
+        }
+        return stck.join(' | ');
+    };
+
+    _p._check = function(stack) {
+        var i=0, stackLen = 0;
+        for(; i<stack.length;i++) {
+            stackLen -= stack[i].consumes;
+            if(stackLen < 0)
+                throw new CPSFormulaError('Stack underflow at ('+i+') a '
+                    + stack[i] + ' in ' + stack.join('|') + '. '
+                    + 'This means an operator consumes more items than '
+                    + 'there are on the stack.\n'
+                    + 'Execution hints:\n'
+                    + this._makeDebugMessageStackDetails(stack));
+            stackLen += stack[i].ejects;
+        }
+
+        if(stackLen > 1)
+            throw new CPSFormulaError('Stack too crowded. A stack must '
+                        + 'eventually resolve to 1 item, the result. This '
+                        + 'stack has still ' + stackLen + ' items.\n'
+                        + 'Stack in postfix notation:\n'
+                        +  stack.join(' |\n')
+                        + '\nExecution hints:\n'
+                        + this._makeDebugMessageStackDetails(stack));
+    };
+
+    _p._compile = function(_stack) {
+        /*jshint evil:true*/
+        var i, l
+          , args
+          , stack = []
+          , resultCounter = 0
+          , resultName = 'commands[0]'
+          , body = [
+               '"use strict";'
+              , 'var commands = this._stack;'
+          ];
+        for(i=0,l=this._stack.length;i<l;i++) {
+            if(_stack[i] instanceof _ValueToken)
+                stack.push('commands[' + i +']');
+            else {
+                args = [];
+                Array.prototype.push.apply(args
+                                , stack.splice(-_stack[i].consumes));
+                resultName = 'r'+ (resultCounter++);
+                body.push('var '+resultName+' = commands['+ i +'].execute(getAPI, ['+ args.join(',') +']);');
+                stack.push(resultName);
+            }
+        }
+        // return the last result
+        if(this._finalizeMethod)
+            body.push('return this._finalizeMethod(' + resultName + ', getAPI);');
+        else
+            body.push('return '+ resultName + ';');
+        return new Function('getAPI', body.slice(1).join('\n'));
+    };
+
+    // This is replaced with a compiled version on initialisation.
+    // It remains here because the algorithm is more obvious.
+    _p.execute = function(getAPI) {
+        var commands = this._stack.slice()
+          , stack = []
+          , args
+          , i = 0
+          , result
+          , returned
+          ;
+
+        for(;i<commands.length;i++) {
+            if(commands[i] instanceof _ValueToken)
+                stack.push(commands[i]);
+            else {
+                args = [getAPI];
+                Array.prototype.push.apply(args
+                                , stack.splice(-commands[i].consumes));
+                // commands always return only one element currently
+                returned = commands[i].execute.apply(commands[i], args);
+                stack.push( returned );
+            }
+        }
+
+        // stack.length should be 1 at this point
+        if(stack.length === 0)
+            throw new CPSFormulaError('No result: stack is empty after '
+                            + 'execution. ' +  this._stack.join('|'));
+        if(stack.length > 1)
+            throw new CPSFormulaError('Too many results, stack contains '
+                            +'more than one item after execution: '
+                            + this._stack.join('|'));
+
+        result = stack.pop();
+        return (this._finalizeMethod
+            ?  this._finalizeMethod(result, getAPI)
+            : result
+        );
+    };
+
+    return Stack;
 });
 
 if(typeof Proxy === 'function')
@@ -42564,11 +42562,9 @@ define('metapolator/math/hobby',[
 define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
     'metapolator/errors'
   , './parsing/Parser'
+  , './parsing/Stack'
   , './parsing/OperatorToken'
   , './parsing/NameToken'
-  , './parsing/SelectorToken'
-  , './parsing/StringToken'
-  , './parsing/NumberToken'
   , './parsing/_Token'
   , 'metapolator/models/CPS/elements/SelectorList'
   , 'metapolator/models/MOM/_Node'
@@ -42579,11 +42575,9 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
 ], function(
     errors
   , Parser
+  , Stack
   , Operator
   , NameToken
-  , SelectorToken
-  , StringToken
-  , NumberToken
   , _Token
   , SelectorList
   , _MOMNode
@@ -42925,14 +42919,19 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
                                             return transform.Identity;})
     );
 
+
+    function CPSStack(postfixStack) {
+        Stack.call(this, postfixStack);
+    }
+    var _p = CPSStack.prototype = Object.create(Stack.prototype);
+    _p.constructor = CPSStack;
+
     /**
-     * FIXME: I'm not sure where to put this functionality. Also, note
-     * that OperatorToken._convertTokenToValue does something similar.
+     * This method is applied in Stack.execute, with the result of the stack execution.
      *
-     * This method is passed from Parser to new Stack and then run in
-     * Stack.execute, with the result of the stack execution.
+     * OperatorToken._convertTokenToValue does something similar.
      */
-    engine.setFinalizeMethod(function(result, getAPI) {
+    _p._finalizeMethod = function(result, getAPI) {
         if(result instanceof NameToken)
             return getAPI.get(result.getValue());
         else if(result instanceof SelectorList) {
@@ -42949,9 +42948,11 @@ define('metapolator/models/CPS/dataTypes/formulae/formulaEngine',[
             throw new CPSFormulaError('It is not allowed for a stack to '
                 + 'resolve into a _Token, but this Stack did: ' + result);
         return result;
-    });
+    };
+
     engine.setBracketOperator('[', '__get__');
     engine.setNegateOperator('-', 'negate');
+    engine.setStackConstructor(CPSStack);
     return engine;
 });
 
@@ -44413,46 +44414,194 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-directive
     return selectionDirective;
 });
 
-define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter-controller',[
-    'metapolator/ui/metapolator/ui-tools/selectionTools'
+define('metapolator/math/simpleMathEngine',[
+    'metapolator/errors'
+  , 'metapolator/models/CPS/dataTypes/formulae/parsing/Parser'
+  , 'metapolator/models/CPS/dataTypes/formulae/parsing/OperatorToken'
+  , 'metapolator/models/CPS/dataTypes/formulae/parsing/Stack'
+  , 'metapolator/models/CPS/dataTypes/formulae/parsing/NumberToken'
 ], function(
-    selection
+    errors
+  , Parser
+  , Operator
+  , Stack
+  , NumberToken
 ) {
     "use strict";
+
+    var ValueError = errors.Value
+      , CPSFormulaError = errors.CPSFormula
+      , engine
+      ;
+
+    /**
+     * This defines the operators that are usable in simplae math expressions
+     *
+     * see the reference of new Operator for a description of its arguments.
+     *
+     * usage: engine.parse(CPSParameterValueString) returns a Stack
+     */
+    engine = new Parser(
+        /**
+         * When a value is negated using the minus sign, this operator is
+         * inserted instead of the minus sign. It can also be used directly.
+         *
+         * The parser should detect cases where the minus sign is not a
+         * subtraction, but a negation:
+         *
+         * -5 => negate 5
+         * -(5 + name) => negate (5 + name)
+         * 5 + -name => 5 + negate name
+         * 5 + - name => 5 + negate name
+         * name * - 5 => name * negate name
+         *
+         */
+        new Operator('negate', false, 60, 0, 1, [
+            // 'number' as an argument is not needed nor happening
+            // because something like -123 will be parsed as a negative
+            // number directly. This is because "Vector 12 -8" would
+            // otherwise be tokenized as "Vector 12 subtract 8", because
+            // we have no other indication of splitting.
+            // the operator is left in place, so this: --123 could be done
+            // and would result in `negate -123`
+            ['number', function(a){ return -a; }]
+        ])
+          /**
+           * add
+           */
+      , new Operator('+', true, 10, 1, 1, [
+            ['number' , 'number', function(a, b){ return a + b; }]
+        ])
+        /**
+         * subtract
+         */
+      , new Operator('-', true, 10, 1, 1, [
+            ['number' , 'number', function(a, b){ return a - b; }]
+        ])
+        /**
+         * multiply
+         */
+      , new Operator('*', true, 20, 1, 1, [
+           ['number' , 'number', function(a, b){ return a * b; }]
+        ])
+        /**
+         * divide
+         */
+      , new Operator('/', true, 20, 1, 1, [
+            ['number' , 'number', function(a, b){ return a / b; }]
+        ])
+        /**
+         * pow
+         */
+      , new Operator('^', true, 30, 1, 1, [
+            ['number' , 'number', function(a, b){ return Math.pow(a, b); }]
+        ])
+      , new Operator('min', true, 40, 0, 2, [
+            ['number' , 'number', function(a, b){ return Math.min(a, b); }]
+        ])
+      , new Operator('max', true, 40, 0, 2, [
+            ['number' , 'number', function(a, b){ return Math.max(a, b); }]
+      ])
+    );
+
+    function SimpleMathStack(postfixStack) {
+        Stack.call(this, postfixStack);
+    }
+    var _p = SimpleMathStack.prototype = Object.create(Stack.prototype);
+    _p.constructor = SimpleMathStack;
+
+    _p._check = function(stack) {
+        var i, l, invalid=[];
+        for(i=0,l=stack.length;i<l;i++) {
+            // whitelisting allowed tokens
+            if(!(stack[i] instanceof NumberToken || stack[i] instanceof Operator))
+                invalid.push(stack[i]);
+        }
+        if(invalid.length)
+            throw new CPSFormulaError('The math expression contains invalid tokens: ' + invalid.join(', '));
+        return Stack.prototype._check.call(this, stack);
+    };
+
+    /**
+     * This method is applied in Stack.execute, with the result of the stack execution.
+     *
+     * OperatorToken._convertTokenToValue does something similar.
+     */
+    _p._finalizeMethod = function(result, getAPI) {
+        if(typeof result != 'number')
+            throw new CPSFormulaError('The math expression did not yield in a number. Got instead: ' + result);
+        return result;
+    };
+
+    engine.setNegateOperator('-', 'negate');
+    engine.setStackConstructor(SimpleMathStack);
+    return engine;
+});
+
+define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter-controller',[
+      'metapolator/ui/metapolator/ui-tools/selectionTools'
+    , 'metapolator/errors'
+    , 'metapolator/math/simpleMathEngine'
+
+], function(
+      selection
+    , errors
+    , mathEngine
+) {
+    "use strict";
+    var CPSError = errors.CPS,
+        UIInputError = errors.UIInput;
+
     function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.selection = selection;
 
-        $scope.changeValue = function(parameter, operator, value, keyEvent) {
-            if (keyEvent == "blur" || keyEvent.keyCode == 13 || keyEvent.keyCode == 38 || keyEvent.keyCode == 40) {
-                var thisValue = null
-                  , operatorId = operator.id;
-                  
-                for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
-                    // Write the value in all models of all elements within selection
-                    var element = $scope.model.parent.elements[i]
-                      , effectiveLevel
-                      , effectedElements;
-                    // if there is a range, we have to find the value for this element within the range
-                    if (operator.range) {
-                        thisValue = getRangeValue(element, parameter, operator);
-                    } else {
-                        thisValue = managedInputValue(value, parameter, operator, keyEvent);
-                    }
-                    // set the value of each element in the selection
-                    // if there is not yet a parameter, we create it + cpsRule
-                    // if there is not yet a operator, we create it
-                    var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
-                      , thisOperator = thisParameter.checkIfHasOperator(operator);
-                    thisOperator.setValue(thisValue);
-                    // the changed operator method checks the effects for the effective value (whether it is
-                    // at the local level or down in the tree) and writes CPS if needed
-                    thisParameter.changedOperator(thisOperator);
-                    updateLevel(parameter.base.effectiveLevel, parameter);
+        $scope.changeValue = function(parameter, operator, value, event) {
+            var val = value.current;
+            event.target.classList.remove('error');  // TODO: This needs design
+            if (typeof val === "string" && (event.type === 'blur' || event.which === 13)) {
+                // String and blur or enter event.
+                val = evaluateMathExpression(val);
+                if (val[0]) {
+                    event.target.classList.add('error');  // TODO: This needs design
+                    throw new UIInputError(val[0]);
                 }
-                resetRange(operator);
+                else {
+                    val = val[1]
+                }
+            }
+            if (isNumeric(val) && isFinite(val)) {
+                val = evaluateEvent(val, parameter, event);
+                val = round(val, parameter.base.decimals);
+                if (val !== value.fallback) {
+                    operator.low.current = val;
+                    updateCPS(val, parameter, operator);
+                    value.fallback = val;
+                }
             }
         };
-        
+
+        function updateCPS(value, parameter, operator) {
+            for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
+                // Write the value in all models of all elements within selection
+                var element = $scope.model.parent.elements[i];
+                // if there is a range, we have to find the value for this element within the range
+                if (operator.range) {
+                    // TODO: pass in the high value.
+                    // operator.high.current = manageInputValue(value, parameter, operator, event);
+                }
+                // set the value of each element in the selection
+                // if there is not yet a parameter, we create it + cpsRule
+                // if there is not yet a operator, we create it
+                var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
+                  , thisOperator = thisParameter.checkIfHasOperator(operator);
+                thisOperator.setValue(value);
+                // the changed operator method checks the effects for the effective value (whether it is
+                // at the local level or down in the tree) and writes CPS if needed
+                thisParameter.changedOperator(thisOperator);
+                updateLevel(parameter.base.effectiveLevel, parameter);
+            }
+        }
+
         function updateLevel(changedLevel, parameter) {
             // update the effectedValue selection for the changed level
             var selectionParameter = selection.selection[changedLevel].getParameterByName(parameter.base.name);
@@ -44465,13 +44614,13 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
         function resetRange(operator) {
             if (operator.range) {
                 // update the range boundaries after setting each element,
-                // so the new value of a (inbetween range) element
+                // so the new value of a (in between range) element
                 // gets the right myPosition relative to the new boundaries
                 operator.low.old = operator.low.current;
                 operator.high.old = operator.high.current;
             }
         }
-        
+
         function getRangeValue (element, parameter, operator) {
             var scale = null
               , myPosition = null
@@ -44482,13 +44631,13 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
               , newHigh = parseFloat(operator.high.current)
               , currentValue = null;
             // find current value of the specific element
-            var elementParameter = element.getParameterByName(parameter.name); 
+            var elementParameter = element.getParameterByName(parameter.name);
             if (!elementParameter) {
-               currentValue = operator.standardValue; 
+               currentValue = operator.standardValue;
             } else {
                 var elementOperator = elementParameter.getOperatorByName(operator.name);
                 if (!elementOperator) {
-                    currentValue = operator.standardValue; 
+                    currentValue = operator.standardValue;
                 } else {
                     currentValue = elementOperator.value;
                 }
@@ -44502,38 +44651,59 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
             }
             return newValue;
         }
-        
-        function managedInputValue (value, parameter, operator, keyEvent) {
-            var currentValue = value.current
-              , step
-              , decimals;
-            // Not a number: use the fallback value.
-            if (isNaN(currentValue) || currentValue === "") {
-                currentValue = value.fallback;
-            }
-            if ( typeof (currentValue) == "string") {
-                currentValue = parseFloat(currentValue.replace(',', '.'));
-            }
-            step = parameter.step;
-            decimals = parameter.decimals;
-            if (keyEvent != "blur") {
-                keyEvent.preventDefault();
-                if (keyEvent.shiftKey) {
-                    step = step * 10;
+
+        function evaluateMathExpression(input) {
+            var result, message;
+            try {
+                result = mathEngine.parse(input.replace(/,/g, '.')).execute();
+            } catch (e) {
+                if(!(e instanceof CPSError)) {
+                    throw e; // re-raise, so that we can fix it
                 }
-                if (keyEvent.keyCode == 38) {
-                    currentValue = round(parseFloat(currentValue) + step, decimals);
-                } else if (keyEvent.keyCode == 40) {
-                    currentValue = round(parseFloat(currentValue) - step, decimals);
-                }
+                // inform the user if this is possible via the ui
+                // or do whatever you do when the input was bad
+                message = e.message;
+                // Temp. We should have proper feedback.
             }
-            return currentValue;
+            // NOTE: result can still be: `Infinity`, `-Infinity`, `NaN`  because that's reasonable for math
+            // check with:
+            if(message)
+                return [message, null];
+            if(!isFinite(result))
+                return ['Math result is not finite.', null];
+            return [null, result];
         }
-        
+
+        function evaluateEvent(value, parameter, event) {
+            // Evaluate the key combinations that alter the current value.
+            var step = parameter.base.step;
+            // Shift is 'BIG' increments
+            if (event.shiftKey) {
+                step = step * 10;
+            }
+            // Ctrl and alt give 'control'. Small increments.
+            if (event.ctrlKey || event.altKey) {
+                step = step * 0.1;
+            }
+            // Arrow up or scroll up.
+            if (event.keyCode === 38) {
+                value = value + step;
+            }
+            // Arrow down or scroll down.
+            if (event.keyCode === 40) {
+                value = value - step;
+            }
+            return value;
+        }
+
+        function isNumeric(n) {
+            // Returns true if n is a number.
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+
         function round(value, decimals) {
             return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
         }
-
 
         $scope.toggleParameterPanel = function(parameter, event) {
             if(selection.panel.level === $scope.model.parent.level && selection.panel.type === 'parameter') {
@@ -44608,9 +44778,11 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
     var _p = SelectionParameterController.prototype;
 
     return SelectionParameterController;
-}); 
+});
 
-define('require/text!metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter.tpl',[],function () { return '<div class="operator-row" ng-repeat="operator in model.operators track by $index">\n    <div ng-if="operator.name !== \'effectiveValue\'">\n        <div ng-click="toggleParameterPanel(model, $event)"\n             class="parameter-key panel-zone"\n             ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-parameter\' && model.base.name === panel.selectedParameter.base.name}">\n                <span ng-if="$index == 0">{{model.base.name}}</span>\n        </div>\n        <div class="parameter-operator panel-zone" ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-operator\'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.sign}}</div>\n        <div class="operator-value">\n            <span ng-if="!operator.range">\n                <input ng-model="operator.low.current" ng-blur="changeValue(model, operator, operator.low, \'blur\')" ng-keyup=""> \n            </span>\n            <span ng-if="operator.range"> \n                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(model, operator, operator.low, \'blur\')" ng-keyup=""> to\n                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current"  ng-blur="changeValue(model, operator, operator.high, \'blur\')" ng-keyup="">\n            </span>\n        </div>\n    </div>\n</div> \n<div ng-if="model.effectiveValue" class="operator-row">\n    <div class="parameter-key">{{model.base.name}}</div>\n    <div class="parameter-operator effective-icon">&#10171;</div>\n    <div class="operator-value operator-value-effective">\n        <span ng-if="!model.effectiveValue.range">{{model.effectiveValue.low}}</span>\n        <span ng-if="model.effectiveValue.range">{{model.effectiveValue.low}} to {{model.effectiveValue.high}}</span>\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'parameter\' && model.base.name === selection.panel.parameter.base.name"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="parameter in selection.baseParameters"\n         ng-class="{\'selected\': parameter.name === selection.panel.parameter.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeParameter(parameter)">{{parameter.name}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeParameter()">\n        Remove\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'operator\'"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="operator in selection.baseOperators"\n         ng-class="{\'selected\': operator.name === selection.panel.operator.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeOperator(operator)">{{operator.sign}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeOperator()">\n        Remove\n    </div>\n</div>';});
+
+
+define('require/text!metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter.tpl',[],function () { return '<div class="operator-row" ng-repeat="operator in model.operators track by $index">\n    <div ng-if="operator.name !== \'effectiveValue\'">\n        <div ng-click="toggleParameterPanel(model, $event)"\n             class="parameter-key panel-zone"\n             ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-parameter\' && model.base.name === panel.selectedParameter.base.name}">\n                <span ng-if="$index == 0">{{model.base.name}}</span>\n        </div>\n        <div class="parameter-operator panel-zone" ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-operator\'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.sign}}</div>\n        <div class="operator-value">\n            <span ng-if="!operator.range">\n                <input ng-model="operator.low.current"\n                       ng-blur="changeValue(model, operator, operator.low, $event)"\n                       ng-keyup="changeValue(model, operator, operator.low, $event)"\n                       mtk-mousewheel="changeValue(model, operator, operator.low, $event)"\n                       mtk-enter="changeValue(model, operator, operator.low, $event)">\n            </span>\n            <span ng-if="operator.range"> \n                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(model, operator, operator.low, \'blur\')" ng-keyup=""> to\n                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current"  ng-blur="changeValue(model, operator, operator.high, \'blur\')" ng-keyup="">\n            </span>\n        </div>\n    </div>\n</div> \n<div ng-if="model.effectiveValue" class="operator-row">\n    <div class="parameter-key">{{model.base.name}}</div>\n    <div class="parameter-operator effective-icon">&#10171;</div>\n    <div class="operator-value operator-value-effective">\n        <span ng-if="!model.effectiveValue.range">{{model.effectiveValue.low}}</span>\n        <span ng-if="model.effectiveValue.range">{{model.effectiveValue.low}} to {{model.effectiveValue.high}}</span>\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'parameter\' && model.base.name === selection.panel.parameter.base.name"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="parameter in selection.baseParameters"\n         ng-class="{\'selected\': parameter.name === selection.panel.parameter.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeParameter(parameter)">{{parameter.name}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeParameter()">\n        Remove\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'operator\'"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="operator in selection.baseOperators"\n         ng-class="{\'selected\': operator.name === selection.panel.operator.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeOperator(operator)">{{operator.sign}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeOperator()">\n        Remove\n    </div>\n</div>';});
 
 define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter-directive',[
     'require/text!./selection-parameter.tpl'
@@ -44633,17 +44805,85 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
     return selectionParameterDirective;
 });
 
+define('metapolator/ui/metapolator/directive/mousewheel/mousewheel-directive',[], function() {
+    "use strict";
+    function mousewheelDirective() {
+        return function (scope, element, attr, ctrl) {
+            element.bind('DOMMouseScroll mousewheel', function(event) {
+                scope.$apply(function () {
+                  // We just set a keyCode on the event
+                  // So scrolling is actually arrow up and down.
+                  if (event.originalEvent.detail > 0 || event.originalEvent.wheelDelta > 0) {
+                    event.keyCode = 40;
+                  } else {
+                    event.keyCode = 38;
+                  }
+                  scope.$eval(attr.mtkMousewheel, {$event:event});
+                });
+            });
+        };
+    }
+    mousewheelDirective.$inject = [];
+    return mousewheelDirective;
+});
+
+define('metapolator/ui/metapolator/directive/mousewheel/mousewheel',[
+    'angular'
+  , './mousewheel-directive'
+], function (
+    angular
+  , directive
+) {
+  "use strict";
+  return angular.module('mtk.mousewheel', [])
+    .directive('mtkMousewheel', directive);
+});
+
+define('metapolator/ui/metapolator/directive/enter/enter-directive',[], function() {
+    "use strict";
+    function enterDirective() {
+        return function (scope, element, attrs) {
+            element.bind('keydown keypress', function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.ngEnter, {$event:event});
+                    });
+                event.preventDefault();
+                }
+            });
+        };
+    }
+    enterDirective.$inject = [];
+    return enterDirective;
+});
+
+define('metapolator/ui/metapolator/directive/enter/enter',[
+    'angular'
+  , './enter-directive'
+], function (
+    angular
+  , directive
+) {
+  "use strict";
+  return angular.module('mtk.enter', [])
+    .directive('mtkEnter', directive);
+});
+
 define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter',[
     'angular'
   , './selection-parameter-controller'
   , './selection-parameter-directive'
+  , '../../../directive/mousewheel/mousewheel'
+  , '../../../directive/enter/enter'
 ], function(
     angular
   , Controller
   , directive
+  , mousewheelModule
+  , enterModule
 ) {
     "use strict";
-    return angular.module('mtk.selectionParameter', [])
+    return angular.module('mtk.selectionParameter', [mousewheelModule.name, enterModule.name])
            .controller('SelectionParameterController', Controller)
            .directive('mtkSelectionParameter', directive)
            ;
@@ -47393,7 +47633,7 @@ define('metapolator/ui/metapolator/glyph/glyph-controller',[], function() {
 }); 
 define('metapolator/ui/metapolator/glyph/glyph-directive',[
 ], function() {
-    "use strict";
+    'use strict';
     function glyphDirective() {
         return {
             restrict: 'E'
@@ -47408,30 +47648,32 @@ define('metapolator/ui/metapolator/glyph/glyph-directive',[
                 // add css classes for breaks and spaces
                   , parentElement = element.parent()
                   , svg;
-                if (glyphName === "space") {
-                    parentElement.addClass("space-character");
-                } else if (glyphName === "*n") {
+                if (glyphName === 'space') {
+                    parentElement.addClass('space-character');
+                } else if (glyphName === '*n') {
                     // no-glyph is used by the specimenRubberband, to ignore these when making a selection
-                    element.addClass("no-glyph");
-                    parentElement.addClass("line-break");
-                } else if (glyphName === "*p") {
-                    element.addClass("no-glyph");
-                    parentElement.addClass("paragraph-break");
-                } else if (glyphName === "*specimenbreak") {
-                    element.addClass("no-glyph");
-                    parentElement.addClass("specimen-break");
+                    element.addClass('no-glyph');
+                    parentElement.addClass('line-break');
+                } else if (glyphName === '*p') {
+                    element.addClass('no-glyph');
+                    parentElement.addClass('paragraph-break');
+                } else if (glyphName === '*specimenbreak') {
+                    element.addClass('no-glyph');
+                    parentElement.addClass('specimen-break');
                 } 
                 
                 // this is to ignore the fake glyphs, like specimenbreak etc. Their object
                 // doesn't have a level (only a name)
                 if (scope.model.level) {
                     // measure the glyph upon first rendering
-                    if (scope.model.type === "master") {
-                        if (!scope.model.measured) {
-                            scope.model.measureGlyph();
+                    if (scope.model.type === 'master') {
+                        scope.model.checkIfIsDisplayed();
+                    } else if (scope.model.type === 'instance') {
+                        // for instances we have to check its master(s) and check the corresponding glyph(s)
+                        var masterGlyphs = scope.model.getMasterGlyphs(scope.model.name);
+                        for (var i = masterGlyphs.length - 1; i >= 0; i--) {
+                            masterGlyphs[i].checkIfIsDisplayed();
                         }
-                    } else if (scope.model.type === "instance") {
-                        scope.checkBaseMasters(scope.model);
                     }
 
                     masterName = scope.model.getMasterName();
@@ -76422,6 +76664,16 @@ define('metapolator/models/metapolator/masters/ParameterModel',[
             return this.addOperator(changedOperator.base, id, level);
         }
     };
+
+    _p.checkIfHasNonLocalOperators = function() {
+        for (var i = 0, l = this.operators.length; i < l; i++) {
+            var operator = this.operators[i];
+            if (!operator.base.effectiveLocal) {
+                return true;
+            }
+        }
+        return false;
+    };
     
     _p.addOperator = function(baseOperator, id, level) {
         var operator = new OperatorModel(baseOperator, id, this);
@@ -76445,7 +76697,6 @@ define('metapolator/models/metapolator/masters/ParameterModel',[
             for (var i = self.operators.length - 1; i >= 0; i--) {
                 var thisOperator = self.operators[i].name;
                 if (tempArray.indexOf(thisOperator) > -1) {
-                    console.log('!');
                     return true;
                 }
                 tempArray.push(thisOperator);
@@ -76715,22 +76966,64 @@ function(
     };
 
     _p.writeValueInCPSfile = function(factor, parameter) {
-        // todo if factor === 1 && no value set for this parameter yet: don't write (this means it is the initial meausring when loading the project
-        // if factor === 1 && value already set: remove this out of the parameterCollection
-        this._checkIfHasRule();
-        var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-          , cpsRule = parameterCollection.getItem(this.ruleIndex)
-          , parameterDict = cpsRule.parameters
-          , setParameter = cpsAPITools.setParameter;
-        setParameter(parameterDict, parameter.base.cpsKey, factor);
-        console.log(parameterCollection.toString());
+        var parameterCollection
+            , cpsRule;
+        // && prevent removing hardcoded cps rule
+        if (factor === 1 && this.level !== 'master') {
+            this._removeParameter(parameter);
+        } else {
+            if (!this.ruleIndex) {
+                this._addRule();
+            }
+            parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile);
+            cpsRule = parameterCollection.getItem(this.ruleIndex);
+            var parameterDict = cpsRule.parameters
+                , setParameter = cpsAPITools.setParameter;
+            setParameter(parameterDict, parameter.base.cpsKey, factor);
+            //console.log(cpsRule.toString());
+        }
     };
 
-    _p._checkIfHasRule = function() {
+    _p._removeParameter = function(parameter) {
+        // if there is no rule index yet, that means cps writing was triggered but it was by
+        // a 'change' from 1 to 1. We might better catch this behaviour already at the input field.
+        if (this.ruleIndex) {
+            // if the factor equals 1 and the element already has an index, that means the cps rule is unnecessary
+            // so we remove the property in the rule
+            var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
+                , ruleIndex = this.ruleIndex
+                , cpsRule = parameterCollection.getItem(ruleIndex);
+            cpsRule.parameters.erase(parameter.base.cpsKey);
+            // if this is the last property in the rule, we remove the rule itself
+            // therefor we have to rewrite all the rule indexes of this master
+            if (cpsRule.parameters.keys().length === 0) {
+                this._removeRule(parameterCollection, ruleIndex);
+            }
+        }
+    };
+
+    _p._addRule = function() {
         if (!this.ruleIndex) {
             var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-                , l = parameterCollection.length;
+              , l = parameterCollection.length;
             this.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, this.getSelector());
+        }
+    };
+
+    _p._removeRule = function(parameterCollection, currentRuleIndex) {
+        parameterCollection.splice(currentRuleIndex, 1);
+        this.ruleIndex = null;
+        this._updateRuleIndexes(currentRuleIndex);
+    };
+
+    _p._updateRuleIndexes = function(currentRuleIndex) {
+        var allElementsOfMaster = this.master.getAllOffspringElements();
+        for (var i = 0, l = allElementsOfMaster.length; i < l; i++) {
+            // for every element with a rule index greater than the just deleted one
+            var element = allElementsOfMaster[i];
+            if (element.ruleIndex && element.ruleIndex > currentRuleIndex) {
+                element.ruleIndex -= 1;
+            }
         }
     };
     
@@ -76797,7 +77090,7 @@ function(
     // cps functions
     _p.updateEffectiveValue = function(baseParameter, writeCPS) {
         var elementParameter = this.getParameterByName(baseParameter.name);
-        elementParameter.updateEffectiveValue(writeCPS);  
+        elementParameter.updateEffectiveValue(writeCPS);
     };
     
     _p.findParentsFactor = function(baseParameter) {
@@ -76831,8 +77124,8 @@ function(
                 var thisLevelElement = thisLevelElements[i];
                 for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {
                     var childElement = thisLevelElement.children[j];
-                    // skip the unmeasured glyphs
-                    if (childElement.level !== 'glyph' || childElement.measured) {
+                    // skip the not yet ever displayed glyphs
+                    if (childElement.level !== 'glyph' || childElement.displayed) {
                         tempArray.push(childElement);
                     }
                 }
@@ -76865,6 +77158,14 @@ function(
             for (var i = 0, l = this.children.length; i < l; i++) {
                 var child = this.children[i];
                 child.setMaster(master);
+            }
+        }
+        // restore the links to the master and to the element in the cloned parameters
+        if (this.parameters) {
+            for (var j = 0, jl = this.parameters.length; j < jl; j++) {
+                var parameter = this.parameters[j];
+                parameter.master = master;
+                parameter.element = this;
             }
         }
     };
@@ -76923,7 +77224,7 @@ define('metapolator/models/metapolator/masters/PointModel',[
     var _p = PointModel.prototype = Object.create(Parent.prototype);
 
     _p.getSelector = function() {
-        return "master#" + this.master.name + " " + "glyph#" + this.parent.parent.name + " > " + this.parent.name + " > " + this.name;
+        return "master#" + this.master.name + " " + "glyph#" + this.parent.parent.name + " > " + this.parent.name + " > " + this.name + " > right" ;
     };
 
     return PointModel;
@@ -76984,6 +77285,7 @@ define('metapolator/models/metapolator/masters/GlyphModel',[
         this.type = 'master';
         this.name = name;
         this.edit = false;
+        this.displayed = false;
         this.master = parent;
         this.parent = parent;
         this.children = [];
@@ -77012,8 +77314,34 @@ define('metapolator/models/metapolator/masters/GlyphModel',[
         this.children.push(penstroke);
         return penstroke;
     };
-    
-    _p.measureGlyph = function () {
+
+    // handling measuring and cps writing only for displayed glyphs
+
+    _p.checkIfIsDisplayed = function() {
+        if (!this.displayed) {
+            // if a glyph is never displayed before it can have been measured
+            // (because measure info is shared among cloned masters)
+            if (!this._isMeasured()) {
+                this._measureGlyph();
+            }
+            // if this is the first display, it possibly needs to catch up
+            // on its cps (when its master has non-local operators (like plus and mines)
+            this._catchUpCPS();
+        }
+    };
+
+    _p._isMeasured = function() {
+        // find the original master (cloned masters shared this info with each other)
+        var glyph = this._getOriginalGlyph();
+        return glyph.measured;
+    };
+
+    _p._getOriginalGlyph = function() {
+        var originalMaster = this.parent.originalMaster;
+        return originalMaster.findGlyphByName(this.name);
+    };
+
+    _p._measureGlyph = function () {
         for (var i = selection.baseParameters.length - 1; i >= 0; i--) {
             // get all the elements for the specific parameter. Eg: 'weight' has
             // its effecitve level at point level, so for weight the effected
@@ -77037,8 +77365,27 @@ define('metapolator/models/metapolator/masters/GlyphModel',[
             }
 
         }
-        this.measured = true;
-    };    
+        this._getOriginalGlyph().measured = true;
+    };
+
+    _p._catchUpCPS = function() {
+        // if there are parent elements (can only be the master) with parameters with a 'non-local effective operator'
+        // (like + and -), we need to write local cps to compensate for that
+        for (var i = 0, l = this.parent.parameters.length; i < l; i++) {
+            var parameter = this.parent.parameters[i];
+            if (parameter.checkIfHasNonLocalOperators()) {
+                // find all elements down the tree that are effected (at the effective level)
+                var effectedElements = this.getEffectedElements(parameter.base.effectiveLevel);
+                for (var j = 0, jl = effectedElements.length; j < jl; j++) {
+                    var effectedElement = effectedElements[j]
+                        , elementParameter = effectedElement.getParameterByName(parameter.base.name);
+                    // update the effective value + the true argument means its going to write cps
+                    elementParameter.updateEffectiveValue(true);
+                }
+            }
+        }
+        this.displayed = true;
+    };
     
     return GlyphModel;
 });
@@ -77062,6 +77409,7 @@ define('metapolator/models/metapolator/masters/MasterModel',[
         this.edit = true;
         this.ag = "Ag";
         this.parent = parent;
+        this.originalMaster = this;
         this.children = [];
 
         // cps properties
@@ -77069,7 +77417,7 @@ define('metapolator/models/metapolator/masters/MasterModel',[
         this.master = this;
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
-        this.ruleIndex = 4;
+        this.ruleIndex = null;
 
         this.setInitialParameters();
     }
@@ -77115,7 +77463,27 @@ define('metapolator/models/metapolator/masters/MasterModel',[
             }
         }
     };
-    
+
+    _p.getAllOffspringElements = function() {
+        var elements = []
+          , levelElements = [this]
+          , tempElements = [];
+        while (levelElements.length > 0) {
+            for (var i = 0, l = levelElements.length; i < l; i++) {
+                if (levelElements[i].children) {
+                    for (var j = 0, jl = levelElements[i].children.length; j < jl; j++) {
+                        var child = levelElements[i].children[j];
+                        elements.push(child);
+                        tempElements.push(child);
+                    }
+                }
+            }
+            levelElements = tempElements;
+            tempElements = [];
+        }
+        return elements;
+    };
+
     return MasterModel;
 });
 
@@ -77326,6 +77694,18 @@ define('metapolator/models/metapolator/instances/GlyphModel',[
 
     _p.getMasterName = function() {
         return this.parent.name;
+    };
+
+    // this returns the glyphs - from the master this instance is based upon -
+    // with the same name as this glyph
+    _p.getMasterGlyphs = function(glyphName) {
+        var glyphs = [];
+        for (var i = this.parent.axes.length - 1; i >= 0; i--) {
+            var axis =  this.parent.axes[i]
+              , master = axis.master;
+            glyphs.push(master.findGlyphByName(this.name));
+        }
+        return glyphs;
     };
     
     
@@ -78046,6 +78426,8 @@ define('metapolator/ui/services/GlyphRendererAPI',[
     };
 
     _p._applySVGViewBox = function(svg, viewBox) {
+        // Viewbox min width can't be less than 0.
+        viewBox[2] = Math.max(0, viewBox[2]);
         svg.setAttribute('viewBox', viewBox.join(' '));
         if(!svg.parentElement || this._options.noParentSizing)
             return;
