@@ -416,12 +416,12 @@ define([
      * Subscribes to propertyDict and property changes and updates
      */
     _p._buildIndex = function() {
-        assert(this._dict === null, 'Index alreay initializes, run invalidateRules to purge it.');
+        assert(this._dict === null, 'Index already initialized, run invalidateRules to purge it.');
         var i, l, j, ll, keys, key, parameters, subscriberID;
         this._loadRules();
         this._dict = Object.create(null);
         for(i=0,l=this._rules.length;i<l;i++) {
-            parameters = this._rules[i].parameters;
+            parameters = this._rules[i][1].parameters;
 
             subscriberID = parameters.on('add', [this, '_parameterAddHandler'], i);
             this._dictSubscriptions.push([parameters, subscriberID]);
@@ -552,7 +552,7 @@ define([
                         + 'to the new one, but it is.\n index: ' + newRuleIndex
                         + ' key: ' + key
                         + ' channel: ' + channelKey);
-        this._setDictValue(this._rules[newRuleIndex].parameters, key, newRuleIndex);
+        this._setDictValue(this._rules[newRuleIndex][1].parameters, key, newRuleIndex);
     };
 
     _p._setDictValue = function(parameters, key, parametersIndex) {
@@ -578,7 +578,7 @@ define([
         var i, l, parameters;
         this._unsetDictValue(key);
         for(i=0,l=this._rules.length;i<l;i++) {
-            parameters = this._rules[i].parameters;
+            parameters = this._rules[i][1].parameters;
             if(!parameters.has(key))
                 continue;
             this._setDictValue(parameters, key, i);
