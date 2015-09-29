@@ -1,16 +1,46 @@
 define([
-    'metapolator/ui/metapolator/ui-tools/selectionTools'
+      'metapolator/ui/metapolator/ui-tools/selectionTools'
+    , 'metapolator/errors'
+    , 'metapolator/math/simpleMathEngine'
+
 ], function(
-    selection
+      selection
+    , errors
+    , mathEngine
 ) {
     "use strict";
+    var CPSError = errors.CPS,
+        UIInputError = errors.UIInput;
+
     function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.selection = selection;
 
         $scope.changeValue = function(parameter, operator, value, event) {
-            var thisValue = manageInputValue(value, parameter, operator, event);
-            // Update the input
-            operator.low.current = thisValue;
+            var val = value.current;
+            event.target.classList.remove('error');  // TODO: This needs design
+            if (typeof val === "string" && (event.type === 'blur' || event.which === 13)) {
+                // String and blur or enter event.
+                val = evaluateMathExpression(val);
+                if (val[0]) {
+                    event.target.classList.add('error');  // TODO: This needs design
+                    throw new UIInputError(val[0]);
+                }
+                else {
+                    val = val[1]
+                }
+            }
+            if (isNumeric(val) && isFinite(val)) {
+                val = evaluateEvent(val, parameter, event);
+                val = round(val, parameter.base.decimals);
+                if (val !== value.fallback) {
+                    operator.low.current = val;
+                    updateCPS(val, parameter, operator);
+                    value.fallback = val;
+                }
+            }
+        };
+
+        function updateCPS(value, parameter, operator) {
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 // Write the value in all models of all elements within selection
                 var element = $scope.model.parent.elements[i];
@@ -24,13 +54,13 @@ define([
                 // if there is not yet a operator, we create it
                 var thisParameter = element.checkIfHasParameter(parameter.base, $scope.model.parent.level)
                   , thisOperator = thisParameter.checkIfHasOperator(operator);
-                thisOperator.setValue(thisValue);
+                thisOperator.setValue(value);
                 // the changed operator method checks the effects for the effective value (whether it is
                 // at the local level or down in the tree) and writes CPS if needed
                 thisParameter.changedOperator(thisOperator);
                 updateLevel(parameter.base.effectiveLevel, parameter);
             }
-        };
+        }
 
         function updateLevel(changedLevel, parameter) {
             // update the effectedValue selection for the changed level
@@ -61,13 +91,13 @@ define([
               , newHigh = parseFloat(operator.high.current)
               , currentValue = null;
             // find current value of the specific element
-            var elementParameter = element.getParameterByName(parameter.name); 
+            var elementParameter = element.getParameterByName(parameter.name);
             if (!elementParameter) {
-               currentValue = operator.standardValue; 
+               currentValue = operator.standardValue;
             } else {
                 var elementOperator = elementParameter.getOperatorByName(operator.name);
                 if (!elementOperator) {
-                    currentValue = operator.standardValue; 
+                    currentValue = operator.standardValue;
                 } else {
                     currentValue = elementOperator.value;
                 }
@@ -82,34 +112,48 @@ define([
             return newValue;
         }
 
-        function manageInputValue(value, parameter, operator, event) {
-            // Adjust the value based increment `step` and `event` key
-            var currentValue = value.current
-              , step = parameter.base.step;
-            if (typeof (currentValue) === "string") {
-                // Try to make a number out of the string.
-                currentValue = parseFloat(currentValue.replace(',', '.'));
+        function evaluateMathExpression(input) {
+            var result, message;
+            try {
+                result = mathEngine.parse(input.replace(/,/g, '.')).execute();
+            } catch (e) {
+                if(!(e instanceof CPSError)) {
+                    throw e; // re-raise, so that we can fix it
+                }
+                // inform the user if this is possible via the ui
+                // or do whatever you do when the input was bad
+                message = e.message;
+                // Temp. We should have proper feedback.
             }
-            if (!isNumeric(currentValue)) {
-                return value.fallback;
-            }
-            // Shift is 'BIG' Big increments
+            // NOTE: result can still be: `Infinity`, `-Infinity`, `NaN`  because that's reasonable for math
+            // check with:
+            if(message)
+                return [message, null];
+            if(!isFinite(result))
+                return ['Math result is not finite.', null];
+            return [null, result];
+        }
+
+        function evaluateEvent(value, parameter, event) {
+            // Evaluate the key combinations that alter the current value.
+            var step = parameter.base.step;
+            // Shift is 'BIG' increments
             if (event.shiftKey) {
                 step = step * 10;
             }
-            // Ctrl is 'control'. Small increments
-            if (event.ctrlKey) {
+            // Ctrl and alt give 'control'. Small increments.
+            if (event.ctrlKey || event.altKey) {
                 step = step * 0.1;
             }
             // Arrow up or scroll up.
             if (event.keyCode === 38) {
-                currentValue = currentValue + step;
+                value = value + step;
             }
             // Arrow down or scroll down.
             if (event.keyCode === 40) {
-                currentValue = currentValue - step;
+                value = value - step;
             }
-            return currentValue;
+            return value;
         }
 
         function isNumeric(n) {
@@ -194,4 +238,5 @@ define([
     var _p = SelectionParameterController.prototype;
 
     return SelectionParameterController;
-}); 
+});
+

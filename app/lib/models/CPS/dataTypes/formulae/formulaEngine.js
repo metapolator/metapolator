@@ -1,11 +1,9 @@
 define([
     'metapolator/errors'
   , './parsing/Parser'
+  , './parsing/Stack'
   , './parsing/OperatorToken'
   , './parsing/NameToken'
-  , './parsing/SelectorToken'
-  , './parsing/StringToken'
-  , './parsing/NumberToken'
   , './parsing/_Token'
   , 'metapolator/models/CPS/elements/SelectorList'
   , 'metapolator/models/MOM/_Node'
@@ -16,11 +14,9 @@ define([
 ], function(
     errors
   , Parser
+  , Stack
   , Operator
   , NameToken
-  , SelectorToken
-  , StringToken
-  , NumberToken
   , _Token
   , SelectorList
   , _MOMNode
@@ -362,14 +358,19 @@ define([
                                             return transform.Identity;})
     );
 
+
+    function CPSStack(postfixStack) {
+        Stack.call(this, postfixStack);
+    }
+    var _p = CPSStack.prototype = Object.create(Stack.prototype);
+    _p.constructor = CPSStack;
+
     /**
-     * FIXME: I'm not sure where to put this functionality. Also, note
-     * that OperatorToken._convertTokenToValue does something similar.
+     * This method is applied in Stack.execute, with the result of the stack execution.
      *
-     * This method is passed from Parser to new Stack and then run in
-     * Stack.execute, with the result of the stack execution.
+     * OperatorToken._convertTokenToValue does something similar.
      */
-    engine.setFinalizeMethod(function(result, getAPI) {
+    _p._finalizeMethod = function(result, getAPI) {
         if(result instanceof NameToken)
             return getAPI.get(result.getValue());
         else if(result instanceof SelectorList) {
@@ -386,8 +387,10 @@ define([
             throw new CPSFormulaError('It is not allowed for a stack to '
                 + 'resolve into a _Token, but this Stack did: ' + result);
         return result;
-    });
+    };
+
     engine.setBracketOperator('[', '__get__');
     engine.setNegateOperator('-', 'negate');
+    engine.setStackConstructor(CPSStack);
     return engine;
 });
