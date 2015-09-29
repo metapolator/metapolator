@@ -97,6 +97,13 @@ define([
             clone.setClass(k);
     };
 
+    _p.walkTreeDepthFirst = function(callback) {
+        var i,l;
+        callback(this);
+        for(i=0,l=this.children.length;i<l;i++)
+            this.children[i].walkTreeDepthFirst(callback);
+    }
+
     emitterMixin(_p, emitterMixinSetup);
 
     Object.defineProperty(_p, 'MOMType', {
