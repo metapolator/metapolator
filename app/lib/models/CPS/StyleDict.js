@@ -400,14 +400,23 @@ define([
     };
 
     _p._loadRules = function(force) {
-        if(this._rules === null || force)
-            //this call is most expensive
-            this._rules = this._controller.getRulesForElement(this.element);
+        var rules;
+        if(this._rules === null || force) {
+            //FIXME: duck typing, in the future the naming will all be
+            // properties instead of parameters. Then a rule and the element
+            // will both provide the `properties` interface.
+            // also, "rules" is not exactly right here, when we also have the
+            // element.properties in here.
+            this._rules = rules = [[null, {parameters: this.element.properties}, null]];
+            Array.prototype.push.apply(rules,
+                        //this call is most expensive
+                        this._controller.getRulesForElement(this.element));
+        }
     };
 
-    _p.getRules = function(rules) {
+    _p.getRules = function(includeElementProperties) {
         if(!this._dict) this._buildIndex();
-        return this._rules.slice();
+        return this._rules.slice(includeElementProperties ? 0 : 1);
     };
 
     /**

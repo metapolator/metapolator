@@ -3,11 +3,13 @@ define([
   , '../_BaseModel'
   , 'metapolator/models/CPS/whitelistProxies'
   , 'metapolator/models/emitterMixin'
+  , 'metapolator/models/CPS/elements/ParameterDict'
 ], function(
     errors
   , Parent
   , whitelistProxies
   , emitterMixin
+  , ParameterDict
 ) {
     "use strict";
 
@@ -48,6 +50,16 @@ define([
         this._id = null;
         this._classes = Object.create(null);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+
+        // this has higher precedence than any rule loaded by CPS
+        // and it is unique to this _Node.
+        // DOM Elements have element.style, this is analogous
+        Object.defineProperty(this, 'properties', {
+            value: new ParameterDict([], '*element properties*')
+          , enumerable: true
+        });
+
+
         this._changeSubscriptions = null;
         emitterMixin.init(this, emitterMixinSetup);
 
