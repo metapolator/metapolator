@@ -8,7 +8,12 @@
             </div>
             <mtk-horizontal-divider></mtk-horizontal-divider>
             <div class="semi-panel without-border">
-                <div class="under-construction"></div>
+                <div class="under-construction">
+                    <div class="bottom-text">
+                        Coming Soon:<br>More Parameters<br><br>
+                        Want more parameters, including point parameters for fine-tuning? Support the project and buy a T shirt (<a title="Support the project and buy a T shirt (USA)" href="http://teespring.com/metapolator-beta-0-3-0" target="_blank" class="newtab">USA</a>, <a title="Support the project and buy a T shirt (Worldwide)" href="http://metapolator.spreadshirt.com" target="_blank" class="newtab">Worldwide</a>)
+                    </div>
+                </div>
             </div>
         </mtk-panel>
         
@@ -17,7 +22,36 @@
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[2].share / totalPanelParts) + '* 100%)'}">
-            <mtk-master-panel class="panel without-border" mtk-model="model"></mtk-master-panel>
+            <div class="semi-panel">
+                <mtk-master-panel class="panel without-border" mtk-model="model"></mtk-master-panel>
+            </div>
+            <mtk-horizontal-divider></mtk-horizontal-divider>
+            <div class="semi-panel without-border">
+                <div class="under-construction">
+                    <div class="bottom-text">
+                        Coming Soon:<br>Adjustment Masters<br><br>
+                        <!-- Pinterest -->
+                        <a href="//www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" ><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
+                        <!-- Facebook -->
+                        <div class="fb-share-button" data-href="https://metapolator.com/purple-pill/" data-layout="button_count"></div>
+                        <!-- Twitter -->
+                        <a class="twitter-share-button"
+                           href="https://twitter.com/share"
+                           data-url="https://metapolator.com/purple-pill/"
+                           data-via="metapolator">
+                            Tweet
+                        </a>
+                        <!-- G+ -->
+                        <div class="g-plusone" data-size="medium"></div>
+                        <div style="display:inline">
+                            <!-- Github Star -->
+                            <iframe src="https://ghbtns.com/github-btn.html?user=metapolator&repo=metapolator&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+                            <!-- Github Watch -->
+                            <iframe src="https://ghbtns.com/github-btn.html?user=metapolator&repo=metapolator&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[3].share / totalPanelParts) + '* 100%)'}">
@@ -39,7 +73,8 @@
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[6].share / totalPanelParts) + '* 100%)'}">
-            <mtk-metadata-panel class="panel without-border" mtk-model=""></mtk-metadata-panel>
+            <mtk-metadata-panel class="panel without-border" mtk-model="">
+            </mtk-metadata-panel>
         </mtk-panel>
     </mtk-landscape>
 </mtk-pagewrap>
