@@ -1,10 +1,12 @@
 define([
-    'webAPI/document'
+    'jquery'
+  , 'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
   , 'metapolator/ui/services/GlyphRendererAPI'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
-    document
+    $
+  , document
   , AppModel
   , GlyphRendererAPI
   , selection
