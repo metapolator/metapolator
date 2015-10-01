@@ -1,10 +1,12 @@
 define([
-    'webAPI/document'
+    'jquery'
+  , 'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
   , 'metapolator/ui/services/GlyphRendererAPI'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
-    document
+    $
+  , document
   , AppModel
   , GlyphRendererAPI
   , selection
@@ -35,6 +37,8 @@ define([
         // see ui/app-controller.js
         this.angularApp.constant('registerFrontend', this._registerFrontend.bind(this));
         this.angularApp.constant('metapolatorModel', this.model);
+        //
+        this._hideSplashscreen();
     }
 
     var _p = Metapolator.prototype;
@@ -87,6 +91,10 @@ define([
         }
         selection.injectSequences(this.model.masterSequences);
         selection.updateSelection('master');
+    };
+
+    _p._hideSplashscreen = function() {
+        $('#splashscreen').hide(100);
     };
 
     return Metapolator;

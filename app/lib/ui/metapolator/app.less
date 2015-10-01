@@ -15,6 +15,7 @@
 @import "divider/horizontal-divider/horizontal-divider";
 @import "divider/vertical-divider/vertical-divider";
 
+
 @font-face {
     font-family: 'icons';
     src: url('assets/fonts/mp_icons.otf');
@@ -57,7 +58,7 @@ html {
   font-family: "seanSansNarrow";
   font-weight: 700;
   font-size: 12px;
-  line-height: 12px;
+  line-height: 15px;
   color: @mtk-color-2;
 }
 
@@ -283,4 +284,54 @@ mtk-panel.without-body {
 .dialog-button-false:hover {
     background: #c9302c;
     border: 1px solid #ac2925;
+}
+
+// splashscreen
+
+#splashscreen {
+    display: block;
+    position: fixed;
+    border-radius: 6px;
+    z-index: 1001;
+    left: ~'calc(50% - 400px)';
+    top: 50px;
+    width: 800px;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    font-size: 14px;
+    padding: 40px 40px 100px 40px;
+}
+
+#splash-left {
+    width: 30%;
+    float: left;
+}
+
+#splash-logo {
+    width: 130px;
+    display: block;
+    height: auto;
+}
+
+#splash-right {
+    width: 70%;
+    float: left;
+}
+
+#splash-right h1 {
+    font-size: 32px;
+    margin-bottom: 0;
+}
+
+#splash-right h2 {
+    font-weight: 100;
+    font-size: 22px;
+}
+
+#splash-right p {
+    margin-top: 50px;
+}
+
+#splash-right p + p {
+    margin-top: 10px;
 }
