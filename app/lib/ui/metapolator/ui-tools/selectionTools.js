@@ -54,7 +54,7 @@ define([
         }, {
             order : 1
           , name : 'divide'
-          , sign : '÷'
+          , sign : '∕'
           , standardValue : 1
           , type : 'stack'
           , usesUnit : false
