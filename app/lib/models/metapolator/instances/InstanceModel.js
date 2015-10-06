@@ -184,6 +184,19 @@ define([
             this.parent.children[l - 1].setCurrent();
         }
     };
+
+    _p.measureAllGlyphs = function() {
+        for (var i = 0, l = this.children.length; i < l; i++) {
+            // get the corresponding glyph(s) of the master(s) for each glyph of this instance
+            var instanceGlyph = this.children[i]
+              , masterGlyphs =  instanceGlyph.getMasterGlyphs();
+            for (var j = 0, jl = masterGlyphs.length; j < jl; j++) {
+                var masterGlyph = masterGlyphs[j];
+                // if it isn't displayed before, it is measured and catches up cps if needed
+                masterGlyph.checkIfIsDisplayed();
+            }
+        }
+    };
     
     return InstanceModel;
 });

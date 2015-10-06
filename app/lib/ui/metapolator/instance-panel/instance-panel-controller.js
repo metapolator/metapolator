@@ -319,6 +319,7 @@ define([
                 for (var j = 0; j < sequence.children.length; j++) {
                     var instance = sequence.children[j];
                     if (instance.exportFont){
+                        instance.measureAllGlyphs();
                         exportObjects.push(new ExportObject(instance, 'OTF'));
                         exportObjects.push(new ExportObject(instance, 'UFO'));
                     }

@@ -26,7 +26,7 @@ define([
 
     // this returns the glyphs - from the master this instance is based upon -
     // with the same name as this glyph
-    _p.getMasterGlyphs = function(glyphName) {
+    _p.getMasterGlyphs = function() {
         var glyphs = [];
         for (var i = this.parent.axes.length - 1; i >= 0; i--) {
             var axis =  this.parent.axes[i]
