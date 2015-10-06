@@ -13,7 +13,7 @@ define([
   , dialog
   , project
 ) {
-    "use strict";
+    'use strict';
     function InstancePanelController($scope, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
@@ -68,7 +68,7 @@ define([
                 }
             }
             if (n === 1) {
-                var message = "Delete instance? This also deletes the design space '" + designSpace.name + "'.";
+                var message = 'Delete instance? This also deletes the design space ' + designSpace.name + '.';
                 dialog.confirm(message, function(result){
                     if (result) {
                         instance.remove();
@@ -98,12 +98,12 @@ define([
                 var retval
                   , getGenerator
                   ;
-                this.fileFormat = fileFormat || "UFO";
+                this.fileFormat = fileFormat || 'UFO';
                 this.instance = instance;
 
-                if (this.fileFormat == "UFO"){
+                if (this.fileFormat == 'UFO'){
                     getGenerator = project.getUFOExportGenerator.bind(project);
-                } else if (this.fileFormat == "OTF"){
+                } else if (this.fileFormat == 'OTF'){
                     getGenerator = project.getOTFExportGenerator.bind(project);
                 }
                 retval = getGenerator(
@@ -120,17 +120,17 @@ define([
 
             _p.getFileName = function() {
                 switch (this.fileFormat){
-                    case "UFO":
-                        return this.instance.displayName + ".ufo";
-                    case "OTF":
-                        return this.instance.displayName + ".otf";
+                    case 'UFO':
+                        return this.instance.displayName + '.ufo';
+                    case 'OTF':
+                        return this.instance.displayName + '.otf';
                 }
             };
 
             _p.pruneGenerator = function() {
                 if (this.generator)
                     delete this.generator;
-            }
+            };
 
             return ExportObject;
         })();
@@ -147,21 +147,21 @@ define([
             _p.constructor = ProgressBar;
 
             _p.set = function(width, text) {
-                this.bar.animate({"opacity": 1, "width": width + "%"}, this.updateDelay);
+                this.bar.animate({'opacity': 1, 'width': width + '%'}, this.updateDelay);
                 if (text)
                     this.label.html(text);
             };
 
             _p.reset = function() {
-                this.bar.animate( {"opacity": 0, "width": 0}
-                                , /*duration:*/ 0); // (that means "do it immediately!")
-                this.label.html("");
+                this.bar.animate( {'opacity': 0, 'width': 0}
+                                , /*duration:*/ 0); // (that means 'do it immediately!')
+                this.label.html('');
             };
 
             _p.complete = function(){
-                this.bar.animate( {"width": "100%", "opacity": 1}
+                this.bar.animate( {'width': '100%', 'opacity': 1}
                                 , this.updateDelay);
-                this.label.html("");
+                this.label.html('');
             };
 
             return ProgressBar;
@@ -177,20 +177,20 @@ define([
 
             function exportingGlyphMessage (data, instanceIndex, totalInstances) {
                 var msg
-                  , instanceName = data['target_name']
-                  , currentGlyph = data['current_glyph'] + 1 //humans start counting from 1.
-                  , totalGlyphs = data['total_glyphs']
-                  , glyphId = data['glyph_id']
+                  , instanceName = data.target_name
+                  , currentGlyph = data.current_glyph + 1 //humans start counting from 1.
+                  , totalGlyphs = data.total_glyphs
+                  , glyphId = data.glyph_id
                   ;
-                msg = "Calculating '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
-                msg += " of '" + instanceName + "' (" + (instanceIndex+1) + " of " + totalInstances + ")";
+                msg = 'Calculating ' + glyphId + ' (' + currentGlyph + ' of ' + totalGlyphs + ')';
+                msg += ' of ' + instanceName + ' (' + (instanceIndex + 1) + ' of ' + totalInstances + ')';
                 return msg;
             }
 
             function calculateGlyphsProgress (data, instanceIndex, totalInstances) {
                 var percentage
-                  , currentGlyph = data['current_glyph']
-                  , totalGlyphs = data['total_glyphs']
+                  , currentGlyph = data.current_glyph
+                  , totalGlyphs = data.total_glyphs
                   ;
                 percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
                 return percentage;
@@ -224,7 +224,7 @@ define([
               , date = new Date()
               ;
             function zeroPadding(value){
-                return value < 10 ? "0" + String(value) : String(value);
+                return value < 10 ? '0' + String(value) : String(value);
             }
             year = zeroPadding(date.getFullYear());
             month = zeroPadding(date.getMonth() + 1); //getMonth() returns a zero-based value: 0=January, 11=December
@@ -233,33 +233,34 @@ define([
             minutes = zeroPadding(date.getMinutes());
             seconds = zeroPadding(date.getSeconds());
 
-            return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
+            return [year, month, day].join('') + '-' + [hours, minutes, seconds].join('');
         }
 
         function setDownloadBlobLink(text, blob, filename, progress) {
-            var download = $("#blob_download");
+            var download = $('#blob_download');
             if (progress)
                 progress.complete();
 
-            download.css("display", "block");
-            download.children("a").html(text).click(function(){
+            download.css('display', 'block');
+            download.children('a').html(text).click(function(){
                 saveAs(blob, filename);
                 if (progress)
                     progress.reset();
-                download.css("display", "none").children("a").unbind("click");
+                download.css('display', 'none').children('a').unbind('click');
             });
         }
 
         $scope.exportIsRunning = false;
+
         function generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress) {
             var bundle = new JSZip()
-              , bundleFolderName = "metapolator-export-" + getTimestamp()
-              , bundleFileName = bundleFolderName + ".zip"
+              , bundleFolderName = 'metapolator-export-' + getTimestamp()
+              , bundleFileName = bundleFolderName + '.zip'
               , bundleFolder = bundle.folder(bundleFolderName)
               , totalInstances = exportObjects.length
               ;
             function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress, resolve, reject){
-                if (exportObjects.length==0){
+                if (exportObjects.length === 0){
                     resolve(true);
                     return;
                 }
@@ -273,17 +274,17 @@ define([
                   ;
                 if (!it.done){
                     if (progress){
-                        it['target_data'] = obj.getFileName();
+                        it.target_data = obj.getFileName();
                         progress.setData(index, totalInstances, it.value);
                     }
                 } else {
                     exportObjects.pop();
 
-                    if (obj.fileFormat == "UFO"){
-                        data = project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
-                        name = obj.getFileName() + ".zip";
+                    if (obj.fileFormat == 'UFO'){
+                        data = project.getZipFromIo(false, obj.io, obj.getFileName(), 'uint8array');
+                        name = obj.getFileName() + '.zip';
                     } else {
-                        /* obj.fileFormat == "OTF" */
+                        /* obj.fileFormat == 'OTF' */
                         data = obj.io.readFile(false, obj.getFileName());
                         name = obj.getFileName();
                     }
@@ -298,7 +299,7 @@ define([
             return new Promise(
                 _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress)
             ).then(function(){
-                return [bundleFileName, bundle.generate({type:"blob"})];
+                return [bundleFileName, bundle.generate({type:'blob'})];
             });
         }
 
@@ -312,22 +313,22 @@ define([
             if ($scope.exportIsRunning)
                 return;
 
-            var exportObjects = Array();
+            var exportObjects = [];
             for (var i = 0; i < $scope.model.instanceSequences.length; i++) {
                 var sequence = $scope.model.instanceSequences[i];
                 for (var j = 0; j < sequence.children.length; j++) {
                     var instance = sequence.children[j];
                     if (instance.exportFont){
-                        exportObjects.push(new ExportObject(instance, "OTF"));
-                        exportObjects.push(new ExportObject(instance, "UFO"));
+                        exportObjects.push(new ExportObject(instance, 'OTF'));
+                        exportObjects.push(new ExportObject(instance, 'UFO'));
                     }
                 }
             }
 
             $scope.exportIsRunning = true;
             const UI_UPDATE_TIMESLICE = 50; // msecs
-            var progress = new InstanceExportProgressBar( $("#progressbar")
-                                                        , $("#progresslabel")
+            var progress = new InstanceExportProgressBar( $('#progressbar')
+                                                        , $('#progresslabel')
                                                         , UI_UPDATE_TIMESLICE );
             function finalizeExport(result) {
                 setDownloadBlobLink(result[0], result[1], result[0], progress);
@@ -345,25 +346,25 @@ define([
         // hover functions
         $scope.mouseoverInstance = function(instance) {
             // Dim slider diamonds
-            var svgCurrent = $(".design-space-diamond.instance-" + instance.name);
-            $(".design-space-diamond").not(svgCurrent).each(function() {
+            var svgCurrent = $('.design-space-diamond.instance-' + instance.name);
+            $('.design-space-diamond').not(svgCurrent).each(function() {
                 $(this).css({ opacity: 0.1 });
             });
             // Dim specimen text
             if (instance.display || instance === $scope.model.currentInstance) {
                 // here is 'master' used for syncing with master reasons
-                var textCurrent = $(".specimen-field-instance ul li.master-" + instance.name);
-                $(".specimen-field-instance ul li").not(textCurrent).each(function() {
-                    $(this).addClass("dimmed");
+                var textCurrent = $('.specimen-field-instance ul li.master-' + instance.name);
+                $('.specimen-field-instance ul li').not(textCurrent).each(function() {
+                    $(this).addClass('dimmed');
                 });
             }
         };
     
         $scope.mouseleaveInstance = function() {
             // Restore slider diamonds
-            $(".design-space-diamond").css("opacity", "");
+            $('.design-space-diamond').css('opacity', '');
             // Restore specimen text
-            $(".specimen-field-instance ul li").removeClass("dimmed");
+            $('.specimen-field-instance ul li').removeClass('dimmed');
         };
     }
 
