@@ -69,7 +69,7 @@
         </mtk-panel>
         
         <mtk-panel class="without-body" ng-style="{'width': 'calc(' + (panels[5].share / totalPanelParts) + '* 100%)'}">
-            <mtk-font-export-panel class="panel without-border" mtk-model="model.instancePanel"></mtk-font-export-panel>
+            <mtk-font-export-panel class="panel without-border" mtk-model="model.instanceSequences"></mtk-font-export-panel>
         </mtk-panel>
         
         <mtk-panel ng-style="{'width': 'calc(' + (panels[6].share / totalPanelParts) + '* 100%)'}">
