@@ -111,7 +111,6 @@ define([
                 myPosition = (currentValue - oldLow) / scale;
                 newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.base.decimals);
             }
-            console.log(newValue);
             return newValue;
         }
 
