@@ -15,10 +15,10 @@ define([
     function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.selection = selection;
 
-        $scope.changeValue = function(parameter, operator, value, event) {
-            var val = value.current;
+        $scope.changeValue = function(parameter, operator, rangeExtreme, event) {
+            var val = operator[rangeExtreme].current;
             event.target.classList.remove('error');  // TODO: This needs design
-            if (typeof val === "string" && (event.type === 'blur' || event.which === 13)) {
+            if (typeof val === 'string' && (event.type === 'blur' || event.which === 13)) {
                 // String and blur or enter event.
                 val = evaluateMathExpression(val);
                 if (val[0]) {
@@ -26,16 +26,16 @@ define([
                     throw new UIInputError(val[0]);
                 }
                 else {
-                    val = val[1]
+                    val = val[1];
                 }
             }
             if (isNumeric(val) && isFinite(val)) {
                 val = evaluateEvent(val, parameter, event);
                 val = round(val, parameter.base.decimals);
-                if (val !== value.fallback) {
-                    operator.low.current = val;
+                if (val !== operator[rangeExtreme].fallback) {
+                    operator[rangeExtreme].current = val;
                     updateCPS(val, parameter, operator);
-                    value.fallback = val;
+                    operator[rangeExtreme].fallback = val;
                 }
             }
         };
@@ -46,8 +46,7 @@ define([
                 var element = $scope.model.parent.elements[i];
                 // if there is a range, we have to find the value for this element within the range
                 if (operator.range) {
-                    // TODO: pass in the high value.
-                    // operator.high.current = manageInputValue(value, parameter, operator, event);
+                    value = getRangeValue(element, parameter, operator);
                 }
                 // set the value of each element in the selection
                 // if there is not yet a parameter, we create it + cpsRule
@@ -81,34 +80,38 @@ define([
             }
         }
 
-        function getRangeValue (element, parameter, operator) {
-            var scale = null
-              , myPosition = null
-              , newValue = null
-              , oldLow = parseFloat(operator.low.old)
-              , oldHigh = parseFloat(operator.high.old)
-              , newLow = parseFloat(operator.low.current)
-              , newHigh = parseFloat(operator.high.current)
-              , currentValue = null;
+        function getRangeValue(element, parameter, operator) {
+            var scale
+              , myPosition
+              , oldLow = operator.low.fallback
+              , oldHigh = operator.high.fallback
+              , newLow = operator.low.current
+              , newHigh = operator.high.current
+              , currentValue
+              , newValue
             // find current value of the specific element
-            var elementParameter = element.getParameterByName(parameter.name);
+              , elementParameter = element.getParameterByName(parameter.base.name);
             if (!elementParameter) {
-               currentValue = operator.standardValue;
+                // not every element in the selection has necessarily already the parameter
+               currentValue = operator.base.standardValue;
             } else {
-                var elementOperator = elementParameter.getOperatorByName(operator.name);
+                // same goes for the operator
+                var elementOperator = elementParameter.findOperator(operator.base, operator.id);
                 if (!elementOperator) {
-                    currentValue = operator.standardValue;
+                    currentValue = operator.base.standardValue;
                 } else {
                     currentValue = elementOperator.value;
                 }
             }
-            if (oldLow == newLow && oldHigh == newHigh) {
+            if (oldLow === newLow && oldHigh === newHigh) {
+                // nothing's changed
                 newValue = currentValue;
             } else {
                 scale = oldHigh - oldLow;
                 myPosition = (currentValue - oldLow) / scale;
-                newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.decimals);
+                newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.base.decimals);
             }
+            console.log(newValue);
             return newValue;
         }
 

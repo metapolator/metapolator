@@ -9,14 +9,24 @@
         <div class="operator-value">
             <span ng-if="!operator.range">
                 <input ng-model="operator.low.current"
-                       ng-blur="changeValue(model, operator, operator.low, $event)"
-                       ng-keyup="changeValue(model, operator, operator.low, $event)"
-                       mtk-mousewheel="changeValue(model, operator, operator.low, $event)"
-                       mtk-enter="changeValue(model, operator, operator.low, $event)">
+                       ng-blur="changeValue(model, operator, 'low', $event)"
+                       ng-keyup="changeValue(model, operator, 'low', $event)"
+                       mtk-mousewheel="changeValue(model, operator, 'low', $event)"
+                       mtk-enter="changeValue(model, operator, 'low', $event)">
             </span>
             <span ng-if="operator.range"> 
-                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(model, operator, operator.low, 'blur')" ng-keyup=""> to
-                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current"  ng-blur="changeValue(model, operator, operator.high, 'blur')" ng-keyup="">
+                <input class="range-input range-left"
+                       ng-model="operator.low.current"
+                       ng-blur="changeValue(model, operator, 'low', $event)"
+                       ng-keyup="changeValue(model, operator, 'low', $event)"
+                       mtk-mousewheel="changeValue(model, operator, 'low', $event)"
+                       mtk-enter="changeValue(model, operator, 'low', $event)"> to
+                <input class="range-input"
+                       ng-model="operator.high.current"
+                       ng-blur="changeValue(model, operator,'high', $event)"
+                       ng-keyup="changeValue(model, operator, 'high', $event)"
+                       mtk-mousewheel="changeValue(model, operator, 'high', $event)"
+                       mtk-enter="changeValue(model, operator, 'high', $event)">
             </span>
         </div>
     </div>
