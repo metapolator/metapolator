@@ -45,11 +45,18 @@ define([
                             copiedCPSstring = copyCPSString(master);
                             registerMaster(clone, copiedCPSstring);
                             master.edit = false;
+                            // a clone could have stacked parameters, if there are any
+                            // they are not registered as such, becuase the parameters
+                            // arent created in a regular way. So to be safe we
+                            // destack the clones parameters standard.
+                            for (var k = 0, kl = clone.parameters.length; k < kl; k++) {
+                                clone.parameters[k].destackOperators();
+                            }
                             clones.push(clone);
                         }
                     }
-                    for (var k = 0, kl = clones.length; k < kl; k++) {
-                        sequence.add(clones[k]);
+                    for (var m = 0, ml = clones.length; m < ml; m++) {
+                        sequence.add(clones[m]);
                     }
                 }
                 selection.updateSelection('master');
