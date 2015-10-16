@@ -11,12 +11,6 @@ define([
 
     function RuleDirective() {
         function link(scope, element, attrs, controller) {
-            element.bind('click', helpers.handlerDecorator(scope,
-                            controller.cancelNewPropertyHandler, true, true));
-
-            scope.$on('newPropertyRequest', helpers.handlerDecorator(scope,
-                            controller.initNewPropertyHandler, true, true));
-
             scope.updateUsedNames = function(usedNamesSet) {
                 var i,l,children = element[0].children, child, scope;
                 for(i=0,l=children.length;i<l;i++) {

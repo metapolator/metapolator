@@ -31,7 +31,7 @@ define([
     var _p = StyleDictController.prototype;
 
     _p._resetItems = function(){
-        this.items = this._styleDict.getRules();
+        this.items = this._styleDict.getRules(false);
     };
 
     _p.__updateNames = function() {

@@ -1,4 +1,7 @@
 {
+    "undef": true,
+    // is useful but not as a default "unused": true,
+    "globals": {"define": false, "require": false},
     "laxcomma": true,
     "laxbreak": true
 }

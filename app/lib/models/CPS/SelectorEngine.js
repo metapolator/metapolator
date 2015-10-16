@@ -244,7 +244,7 @@ define([
                     // anyways
                     specificity = complexSelectors[j].specificity.slice();
                     specificity.push(i);
-                    matchingRules.push([specificity, namespacedRule[1]]);
+                    matchingRules.push([specificity, namespacedRule]);
                     break;
                 }
             }

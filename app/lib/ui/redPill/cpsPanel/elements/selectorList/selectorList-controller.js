@@ -115,7 +115,7 @@ define([
             // valid: *:a(0) as: *:a
             // an unkown pseudo-class should create a message not be silently
             // discarded!
-            console.log('valid:', this.$scope.selectorList, 'as: '+ selectorList);
+            console.warn('valid:', this.$scope.selectorList, 'as: '+ selectorList);
             // update ...
             this._updateSelectorList(selectorList);
         }

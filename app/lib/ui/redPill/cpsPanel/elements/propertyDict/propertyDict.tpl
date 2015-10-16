@@ -37,7 +37,7 @@
 
             ></mtk-cps-generic>
     </li>
-    <li ng-if="$parent.newProperty" >
+    <li ng-if="newProperty" >
         new <mtk-cps-new-property
             cps-property-dict="controller.cpsPropertyDict"
         ></mtk-cps-new-property>

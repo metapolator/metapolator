@@ -154,8 +154,24 @@ define([
             element[0].addEventListener('dragover', dropHelper.dragoverHandler);
             element[0].addEventListener('drop', dropHelper.dropHandler);
 
+            // new property:
+            function initNewProperty() {
+                // open a new-property interface
+                scope.newProperty = true;
+            }
+            function cancelNewProperty() {
+                // if a new-property is open: close it
+                scope.newProperty = false;
+            }
+            var finalizeNewProperty = cancelNewProperty;
+
+            scope.newProperty = false;
+            scope.$on('finalizeNewProperty', finalizeNewProperty);
+            scope.$on('newPropertyRequest', helpers.handlerDecorator(scope,
+                                    initNewProperty, true, true));
             angular.element(container).on('dblclick', helpers.handlerDecorator(scope,
                             scope.$emit.bind(scope, 'newPropertyRequest'), true, false));
+
         }
 
         return {

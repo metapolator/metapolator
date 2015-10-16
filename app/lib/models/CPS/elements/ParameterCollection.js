@@ -161,8 +161,9 @@ define([
     };
 
     _p._getRules = function () {
-        var i, l
+        var i, l, j, ll
           , rules = []
+          , itemRules, itemRule
           , item
           , callback = [this, '_structuralChangeHandler']
           , ruleChannel = 'selector-change'
@@ -176,7 +177,16 @@ define([
                 // 0: array of namespaces, initially empty
                 // 1: the instance of Rule
                 // thus: [selectorList, rule, [_Collections where this rule is embeded]]
-                rules.push([ item.getSelectorList(), item]);//, [this] ]);
+                // TOOD: instead of using arrays here it may be very helpful to make
+                // a stateful "namespacedRule" or "locatedRule" or so interface,
+                // could help the js engine to make better optimizations. Also
+                // it would be more explicit, especially with these first and
+                // last arguements here and how it is copied all the time
+                // that is annoying to follow if one doesn't know how it all
+                // plays together.
+                // finally, that also MAY help implementing the clustered
+                // getMatchingRules method in SelectorEngine
+                rules.push([ item.getSelectorList(), item, [this] ]);
             }
             else if(item instanceof ParameterCollection) {
                 this._subscribe(item, collectionChannel, callback);
@@ -189,7 +199,19 @@ define([
                 // NOTE: That requires each rule item to be copied!
                 // i.e. items.rules[i].slice(); otherwise the change is
                 // stored in the cache of `item` and that breaks things!
-                Array.prototype.push.apply(rules, item.rules);
+                itemRules = item.rules;
+                for(j=0,ll=itemRules.length;j<ll;j++) {
+                    // That locatedRule would have an interface to do this
+                    // copy here, probably via a factory or so.
+                    // rules.push(itemRules[j].addTrace(this))
+                    itemRule = itemRules[j].slice()
+                    itemRule[2] = itemRules[j][2].slice()
+                    itemRule[2].push(this);
+                    rules.push(itemRule)
+                }
+                // without adding this as third argument, the following is enough
+                // Then, AtNamespaceCollection needs to copy the rule item, howewer!
+                // Array.prototype.push.apply(rules, item.rules);
             }
         }
         return rules;

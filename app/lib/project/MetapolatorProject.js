@@ -523,11 +523,30 @@ define([
         return this._cache.masters[masterName];
     };
 
+    _p._loadElementProperties = function(propertiesFile, momMaster) {
+        // get the rules ...
+        var parameterCollection = this.ruleController.getRule(false, propertiesFile)
+          , allRules = parameterCollection.rules
+          , newProperties
+          , rules
+          ;
+
+        function setProperties(element) {
+            /*jshint validthis: true*/
+            rules = this._controller._selectorEngine.getMatchingRules(allRules, element);
+            if(!rules[0]) return;
+            newProperties = rules[0][1].parameters.items;
+            element.properties.splice(0, element.properties.length, newProperties);
+        }
+        momMaster.walkTreeDepthFirst(setProperties.bind(this));
+    };
+
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
             , skeleton = this._data.masters[masterName].skeleton
+            , propertiesFile = this._data.masters[masterName].propertiesFile
             , sourceMOM
             , momMaster
             ;
@@ -541,6 +560,9 @@ define([
             momMaster = sourceMOM.clone();
 
             momMaster.id = masterName;
+
+            if(propertiesFile)
+                this._loadElementProperties(propertiesFile, momMaster);
             this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
