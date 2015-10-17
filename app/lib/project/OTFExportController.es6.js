@@ -68,6 +68,7 @@ define([
           , renderer = {
                   penstroke: glyphBasics.renderPenstrokeOutline
                 , contour: glyphBasics.renderContour
+                , component: glyphBasics.renderComponent
             }
         // We need to get the name  model into the closure, because `this` will be used otherwise
         // NOTE: I believe we could get rid of the model argument by refactoring glyphBasics a bit

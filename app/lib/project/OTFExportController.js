@@ -524,6 +524,7 @@ define([
                 model = this._project.open(this._masterName), master = model.query('master#' + this._masterName), glyphs = master.children, total = 0, otf_glyphs = [], renderer = {
                           penstroke: glyphBasics.renderPenstrokeOutline
                         , contour: glyphBasics.renderContour
+                        , component: glyphBasics.renderComponent
                     }, drawFunc = function(async, segmentPen) {
                         /*jshint validthis:true*/
                         // we are going to bind the MOM glyph to `this`

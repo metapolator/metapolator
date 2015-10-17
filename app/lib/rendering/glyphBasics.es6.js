@@ -171,6 +171,13 @@ function()
         pen.endPath();
     }
 
+    function renderComponent ( pen, model, component ) {
+        var glyphName = component.baseGlyphName
+          , transformation = model.getComputedStyle(component).get( 'transformation' )
+          ;
+        pen.addComponent( glyphName, transformation );
+    }
+
     function renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
@@ -202,11 +209,8 @@ function()
             var item, glyphName, transformation, i,l, children = glyph.children;
             for (i=0,l=children.length;i<l;i++) {
                 item = children[i];
-                if( item.type === 'component' ) {
-                    glyphName = item.baseGlyphName;
-                    transformation = model.getComputedStyle(item).get( 'transformation' );
-                    pen.addComponent( glyphName, transformation );
-                }
+                if(renderer.component && item.type === 'component' )
+                    renderer.component(pen, model, item);
                 else if(renderer.contour && item.type === 'contour' )
                     yield renderer.contour( pen, model, item );
                 else if(renderer.penstroke && item.type === 'penstroke')
@@ -224,6 +228,7 @@ function()
     return {
         renderPenstrokeOutline: renderPenstrokeOutline
       , renderContour: renderContour
+      , renderComponent: renderComponent
       , renderPenstrokeCenterline: renderPenstrokeCenterline
       , drawGlyphToPointPen: drawGlyphToPointPen
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator

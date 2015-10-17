@@ -632,6 +632,13 @@ function()
         pen.endPath();
     }
 
+    function renderComponent ( pen, model, component ) {
+        var glyphName = component.baseGlyphName
+          , transformation = model.getComputedStyle(component).get( 'transformation' )
+          ;
+        pen.addComponent( glyphName, transformation );
+    }
+
     function renderPenstrokeCenterline( pen, model, penstroke ) {
         var points = penstroke.children
           , point
@@ -669,46 +676,44 @@ function()
                     i=0,l=children.length;
                 case 2:
                     if (!(i < l)) {
-                        context$3$0.next = 21;
+                        context$3$0.next = 19;
                         break;
                     }
 
                     item = children[i];
 
-                    if (!(item.type === 'component')) {
-                        context$3$0.next = 10;
+                    if (!(renderer.component && item.type === 'component')) {
+                        context$3$0.next = 8;
                         break;
                     }
 
-                    glyphName = item.baseGlyphName;
-                    transformation = model.getComputedStyle(item).get( 'transformation' );
-                    pen.addComponent( glyphName, transformation );
-                    context$3$0.next = 18;
+                    renderer.component(pen, model, item);
+                    context$3$0.next = 16;
                     break;
-                case 10:
+                case 8:
                     if (!(renderer.contour && item.type === 'contour')) {
-                        context$3$0.next = 15;
+                        context$3$0.next = 13;
                         break;
                     }
 
-                    context$3$0.next = 13;
+                    context$3$0.next = 11;
                     return renderer.contour( pen, model, item );
-                case 13:
-                    context$3$0.next = 18;
+                case 11:
+                    context$3$0.next = 16;
                     break;
-                case 15:
+                case 13:
                     if (!(renderer.penstroke && item.type === 'penstroke')) {
-                        context$3$0.next = 18;
+                        context$3$0.next = 16;
                         break;
                     }
 
-                    context$3$0.next = 18;
+                    context$3$0.next = 16;
                     return renderer.penstroke( pen, model, item );
-                case 18:
+                case 16:
                     i++;
                     context$3$0.next = 2;
                     break;
-                case 21:
+                case 19:
                 case "end":
                     return context$3$0.stop();
                 }
@@ -726,6 +731,7 @@ function()
     return {
         renderPenstrokeOutline: renderPenstrokeOutline
       , renderContour: renderContour
+      , renderComponent: renderComponent
       , renderPenstrokeCenterline: renderPenstrokeCenterline
       , drawGlyphToPointPen: drawGlyphToPointPen
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator

@@ -547,6 +547,7 @@ define([
                   , {
                           penstroke: glyphBasics.renderPenstrokeOutline
                         , contour: glyphBasics.renderContour
+                        , component: glyphBasics.renderComponent
                     }
                   , model, glyph);
 

@@ -19,6 +19,7 @@ define([
       , renderer =  {
             penstroke: glyphBasics.renderPenstrokeOutline
           , contour: glyphBasics.renderContour
+          , component: glyphBasics.renderComponent
         }
       , draw = glyphBasics.drawGlyphToPointPen
       ;
