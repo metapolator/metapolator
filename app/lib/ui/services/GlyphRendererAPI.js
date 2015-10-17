@@ -24,24 +24,27 @@ define([
       , draw = glyphBasics.drawGlyphToPointPen
       ;
 
-    function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {
-        SVGPen.call(this, path, glyphSet);
-        this._data = data;
-        this._glyphRendererAPI = glyphRendererAPI;
-    }
-    var _pp = EnhancedSVGPen.prototype = Object.create(SVGPen.prototype);
-    _pp.constructor = EnhancedSVGPen;
+    var EnhancedSVGPen = (function(parent) {
+        function EnhancedSVGPen(data, glyphRendererAPI, path, glyphSet) {
+            parent.call(this, path, glyphSet);
+            this._data = data;
+            this._glyphRendererAPI = glyphRendererAPI;
+        }
+        var _p = EnhancedSVGPen.prototype = Object.create(SVGPen.prototype);
+        _p.constructor = EnhancedSVGPen;
 
-    _pp.addComponent = function(glyphName, transformation, kwargs /*optional, object*/) {
-        var data = this._data
-          , masterName = data.MOM.master.id
-          , use = this._glyphRendererAPI.get(masterName, glyphName, 'use')
-          , key = this._glyphRendererAPI.getKey(masterName, glyphName)
-          ;
-        use.setAttribute('transform', 'matrix(' +  Array.prototype.join.call(transformation, ',') + ')');
-        data.components.push(key);
-        data.svg.appendChild(use);
-    };
+        _p.addComponent = function(glyphName, transformation, kwargs /*optional, object*/) {
+            var data = this._data
+              , masterName = data.MOM.master.id
+              , use = this._glyphRendererAPI.get(masterName, glyphName, 'use')
+              , key = this._glyphRendererAPI.getKey(masterName, glyphName)
+              ;
+            use.setAttribute('transform', 'matrix(' +  Array.prototype.join.call(transformation, ',') + ')');
+            data.components.push(key);
+            data.svg.appendChild(use);
+        };
+        return EnhancedSVGPen;
+    })(SVGPen);
 
     function GlyphRendererAPI(document, controller, options /* default: undefined*/) {
         this._doc = document;
@@ -70,6 +73,7 @@ define([
 
     var _p = GlyphRendererAPI.prototype;
     _p.constructor = GlyphRendererAPI;
+
 
     _p.getKey = function(masterName, glyphName) {
         return masterName + ' ' + glyphName;
@@ -107,7 +111,7 @@ define([
     };
 
     _p._renderGlyph = function(data) {
-        /*global clearTimeout*/
+        /*global clearTimeout console*/
         var path = this._doc.createElementNS(svgns, 'path')
           , svgPen = new EnhancedSVGPen(data, this, path, {})
           , pen = new PointToSegmentPen(svgPen)
@@ -276,7 +280,7 @@ define([
 
     _p._setSVGTransformation = function(use, transformation) {
         use.setAttribute('transform', 'matrix(' +  transformation + ')');
-    }
+    };
 
     _p._setSVGViewBox = function(data, svg) {
         var viewBox = this._getViewBox(data);
