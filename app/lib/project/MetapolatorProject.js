@@ -7,11 +7,9 @@ define([
   , 'ufojs/errors'
   , 'obtain/obtain'
   , 'ufojs/plistLib/main'
-  , 'ufojs/plistLib/IntObject'
   , './ProjectMaster'
   , './parameters/registry'
   , './parameters/outputConverter'
-  , 'metapolator/models/MOM/Univers'
   , 'metapolator/models/Controller'
   , 'metapolator/models/CPS/RuleController'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
@@ -21,6 +19,7 @@ define([
   , 'yaml'
   , 'io/zipUtil'
   , 'io/InMemory'
+  , './ufoDefaults'
 ], function(
     errors
   , log
@@ -30,11 +29,9 @@ define([
   , ufoErrors
   , obtain
   , plistLib
-  , IntObject
   , ProjectMaster
   , parameterRegistry
   , defaultParameters
-  , Univers
   , ModelController
   , RuleController
   , GlyphSet
@@ -44,13 +41,12 @@ define([
   , yaml
   , zipUtil
   , InMemory
+  , ufoDefaults
 ) {
     "use strict";
 
-    var metainfoV3 = {
-            creator: 'org.ufojs.lib'
-          , formatVersion: new IntObject(3)
-        }
+    var metainfoV3 = ufoDefaults.metainfoV3
+      , minimalFontinfo = ufoDefaults.minimalFontinfo
       , ProjectError = errors.Project
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
@@ -818,7 +814,6 @@ define([
             if(error instanceof IONoEntryError) {
                 // this is legal, we have no fontinfo
                 this._log.warning('No fontinfo found, fallback to minimal (builtin) fontinfo.');
-                // FIXME: 'minimalFontinfo' is not defined
                 return minimalFontinfo;
             }
             throw error;
