@@ -89,7 +89,7 @@ function()
      *          on6.left in out on5.left
      *              => out in 8
      */
-    function renderPenstrokeOutline ( pen, model, penstroke ) {
+    function renderPenstrokeOutline ( pen, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -105,13 +105,13 @@ function()
         pen.beginPath();
         // first draw the right side
         for(i=0,l=points.length; i<l; i++) {
-            point = model.getComputedStyle(points[i].right);
+            point = points[i].right.getComputedStyle();
             if(i === 0) {
                 // this reproduces the starting terminal
-                prePoint = model.getComputedStyle(points[0].left);
+                prePoint = points[0].left.getComputedStyle();
                 terminal = 'start';
             } else {
-                prePoint = model.getComputedStyle(points[i-1].right);
+                prePoint = points[i-1].right.getComputedStyle();
                 terminal = false;
             }
             ctrls = getControlsFromStyle(prePoint, point, terminal);
@@ -121,11 +121,11 @@ function()
         }
         // draw the left side
         for(i=l-1; i>=0; i--) {
-            point = model.getComputedStyle(points[i].left);
+            point = points[i].left.getComputedStyle();
             if(i === l-1) {
                 // this reproduces the ending terminal
                 terminal = 'end';
-                prePoint = model.getComputedStyle(points[i].right);
+                prePoint = points[i].right.getComputedStyle();
             }
             else {
                 terminal = false;
@@ -133,7 +133,7 @@ function()
                 // end to the beginning. This reverses the point order
                 // for getComputedStyle
                 prePoint = point;
-                point = model.getComputedStyle(points[i+1].left);
+                point = points[i+1].left.getComputedStyle();
             }
             ctrls = getControlsFromStyle(prePoint, point, terminal);
             if(!terminal) {
@@ -149,7 +149,7 @@ function()
         pen.endPath();
     }
 
-    function renderContour ( pen, model, contour ) {
+    function renderContour ( pen, contour ) {
         var points = contour.children
           , point
           , segmentType
@@ -163,7 +163,7 @@ function()
 
         pen.beginPath();
         for(i=0, l=points.length;i<l;i++) {
-            point = model.getComputedStyle(points[i]);
+            point = points[i].getComputedStyle();
             /* yield*/ pen.addPoint(point.get('in').valueOf(), undefined, undefined, undefined);
             /* yield*/ pen.addPoint(point.get('on').valueOf(), segmentType, undefined, undefined);
             /* yield*/ pen.addPoint(point.get('out').valueOf(), undefined, undefined, undefined);
@@ -171,14 +171,14 @@ function()
         pen.endPath();
     }
 
-    function renderComponent ( pen, model, component ) {
+    function renderComponent ( pen, component ) {
         var glyphName = component.baseGlyphName
-          , transformation = model.getComputedStyle(component).get( 'transformation' )
+          , transformation = component.getComputedStyle().get( 'transformation' )
           ;
         pen.addComponent( glyphName, transformation );
     }
 
-    function renderPenstrokeCenterline( pen, model, penstroke ) {
+    function renderPenstrokeCenterline( pen, penstroke ) {
         var points = penstroke.children
           , point
           , prePoint
@@ -188,10 +188,10 @@ function()
         // center line
         pen.beginPath();
         for(i=0,l=points.length;i<l;i++) {
-            point = model.getComputedStyle(points[i].center);
+            point = points[i].center.getComputedStyle();
             if(i !== 0) {
                 segmentType = 'curve';
-                prePoint = model.getComputedStyle(points[i-1].center);
+                prePoint = points[i-1].center.getComputedStyle();
                 ctrls = getControlsFromStyle(prePoint, point);
                 /* yield */ pen.addPoint(ctrls[0].valueOf(), undefined, undefined, undefined);
                 /* yield */ pen.addPoint(ctrls[1].valueOf(), undefined, undefined, undefined);
@@ -204,33 +204,62 @@ function()
         pen.endPath();
     }
 
-    function drawGlyphToPointPenGenerator ( renderer, model, glyph, pen) {
+    function applyGlyphGenerator ( renderer, glyph, consumer ) {
         function* generator() {
-            var item, glyphName, transformation, i,l, children = glyph.children;
+            var item, glyphName, transformation, i,l,type, children = glyph.children;
             for (i=0,l=children.length;i<l;i++) {
                 item = children[i];
-                if(renderer.component && item.type === 'component' )
-                    renderer.component(pen, model, item);
-                else if(renderer.contour && item.type === 'contour' )
-                    yield renderer.contour( pen, model, item );
-                else if(renderer.penstroke && item.type === 'penstroke')
-                    yield renderer.penstroke( pen, model, item );
+                type = item.type;
+                if(type in renderer)
+                    yield renderer[type](consumer, item);
             }
         }
         return generator();
     }
 
-    function drawGlyphToPointPen (renderer, model, glyph, pen ) {
-        var gen = drawGlyphToPointPenGenerator(renderer, model, glyph, pen);
+    function applyGlyph ( renderer, glyph, consumer ) {
+        var gen = drawGlyphToPointPenGenerator( renderer, glyph, consumer );
         while(!(gen.next().done));
     }
+
+    /**
+     * Legacy exports, don't use these names in new code and rewrite
+     * old uses of these names.
+     *
+     * Just learned that we dont always need to pass pens to applyGlyphGenerator
+     * it depends much more on the renderer object that was passed.
+     */
+    var drawGlyphToPointPenGenerator = applyGlyphGenerator
+      , drawGlyphToPointPen = applyGlyph
+      ;
+
+    /**
+     * This renders the glyph as normal outlines to a PointPen
+     * it's a convenience API, don't be afraid to make your own renderer
+     */
+    var outlinesRenderer =  {
+        penstroke: renderPenstrokeOutline
+      , contour: renderContour
+      , component: renderComponent
+    };
+
+    /**
+     * A convenience API, use like this: drawPoints(glyph, pointPen);
+     */
+    var drawPoints = applyGlyph.bind(null, outlinesRenderer);
 
     return {
         renderPenstrokeOutline: renderPenstrokeOutline
       , renderContour: renderContour
       , renderComponent: renderComponent
       , renderPenstrokeCenterline: renderPenstrokeCenterline
+      , applyGlyphGenerator: applyGlyphGenerator
+      , applyGlyph: applyGlyph
+      , outlinesRenderer: outlinesRenderer
+      , drawPoints: drawPoints
+        // legacy use applyGlyph instead
       , drawGlyphToPointPen: drawGlyphToPointPen
+        // legacy use applyGlyphGenerator instead
       , drawGlyphToPointPenGenerator: drawGlyphToPointPenGenerator
-    }
+    };
 });

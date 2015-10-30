@@ -16,12 +16,7 @@ define([
       , ValueError = errors.Value
       , svgns = 'http://www.w3.org/2000/svg'
       , xlinkns = 'http://www.w3.org/1999/xlink'
-      , renderer =  {
-            penstroke: glyphBasics.renderPenstrokeOutline
-          , contour: glyphBasics.renderContour
-          , component: glyphBasics.renderComponent
-        }
-      , draw = glyphBasics.drawGlyphToPointPen
+      , draw = glyphBasics.drawOutlines
       ;
 
     var EnhancedSVGPen = (function(parent) {
@@ -91,14 +86,14 @@ define([
         }
         // for each new reference we need to revoke one old reference less
         for(i=0,l=newComponents.length;i<l;i++) {
-            k = oldComponents[i];
+            k = newComponents[i];
             x = old[k];
             // no need to revoke k
             if(x === undefined) continue;
             x -= 1;
             if(x === 0) {
                 // no need to revoke k anymore
-                old[k] = undefined;
+                delete old[k];
                 continue;
             }
             old[k] = x;
@@ -115,7 +110,7 @@ define([
         var path = this._doc.createElementNS(svgns, 'path')
           , svgPen = new EnhancedSVGPen(data, this, path, {})
           , pen = new PointToSegmentPen(svgPen)
-          , oldComponents = data.components
+          , oldComponents
           , matrix
           , moveUp
           , fontinfo
@@ -126,9 +121,11 @@ define([
         }
         while(data.svg.lastChild)
             data.svg.removeChild(data.svg.lastChild);
+
+        oldComponents = data.components;
         data.components = [];
         try {
-            draw(renderer, this._controller, data.MOM, pen);
+            draw(data.MOM, pen);
         }
         catch(e) {
             // FIXME:

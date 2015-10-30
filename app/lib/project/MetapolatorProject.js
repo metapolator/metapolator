@@ -565,6 +565,7 @@ define([
                 this._loadElementProperties(propertiesFile, momMaster);
             this._controller.addMaster(momMaster, master._cpsFile);
         }
+        // FIXME: I think it would be much more useful to return the master MOM Node
         return this._controller;
     };
 
@@ -582,46 +583,44 @@ define([
      */
     _p.importZippedUFOMasters = function(blob) {
         var mem_io = new InMemory()
-          , importedMasters = Array()
+          , importedMasters = []
+          , dirs, baseDir, names, name
+          , n, l, UFOZip, another_blob
+          , sourceUFODir, glyphs, masterName
           ;
 
         zipUtil.unpack(false, blob, mem_io, "");
 
-        var dirs = mem_io.readDir(false, "/")
-          , baseDir = dirs[0]
-          , names = mem_io.readDir(false, baseDir)
-          , n, l
-          ;
+        dirs = mem_io.readDir(false, "/");
+        baseDir = dirs[0];
+        names = mem_io.readDir(false, baseDir);
 
-        for (n=0, l=names.length; n<l; n++){
-            var name = names[n]
-              , UFOZip = baseDir + name
-              , another_blob
-              ;
 
+        for (n=0, l=names.length; n<l; n++) {
+            name = names[n];
+            UFOZip = baseDir + name;
             another_blob = mem_io.readFile(false, UFOZip);
             zipUtil.unpack(false, another_blob, mem_io, baseDir);
         }
 
         names = mem_io.readDir(false, baseDir);
         for (n=0, l=names.length; n<l; n++){
-            var name = names[n];
+            name = names[n];
             if (name[name.length-1]=='/'){
                 // This sourceUFODir name may be wrong in some cases.
                 //   We need a more robust implementation.
                 //   The current implementation works only for
                 //   the UFO packing scheme described above.
-                var sourceUFODir = baseDir + name.split("/")[0]
-                  , glyphs = undefined
-                  , masterName = name.split(".ufo/")[0]
-                  ;
+                sourceUFODir = baseDir + name.split("/")[0];
+                glyphs = undefined;
+                masterName = name.split(".ufo/")[0];
 
                 //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
                 //       Metapolator dislikes spaces in master names as well as anything that has a meaning
                 //       in a selector/cps. (.#>:(){}) etc.
                 masterName = masterName.split(' ').join('_');
 
-                this.import(masterName, sourceUFODir, glyphs, mem_io);
+                this['import'](masterName, sourceUFODir, glyphs, mem_io);
                 importedMasters.push(masterName);
             }
         }
@@ -629,10 +628,11 @@ define([
         return importedMasters;
     };
 
-    _p.import = function(masterName, sourceUFODir, glyphs, io) {
+    // import is a 'reserved word' :-/
+    _p['import'] = function(masterName, sourceUFODir, glyphs, io) {
         var importer = new ImportController( io || this._io, this._log, this,
                                              masterName, sourceUFODir);
-        importer.import(glyphs);
+        importer['import'](glyphs);
 
         this._importGroupsFile(sourceUFODir, false);
         this._importFontInfoFile(sourceUFODir, false);
@@ -712,9 +712,15 @@ define([
                                this.fontinfoFileName, this.fontinfoFile );
     };
 
+    _p.getMOMMaster = function(masterName) {
+        this.open(masterName);
+        return this._controller.query('master#' + masterName);
+    };
+
     _p.getUFOExportGenerator = function ( masterName, dirName, precision) {
         var io = new InMemory()
-          , exportController = new UFOExportController(io, this, masterName, dirName, precision)
+          , master = this.getMOMMaster(masterName)
+          , exportController = new UFOExportController(io, master, dirName, precision)
           , generator = exportController.exportGenerator()
           ;
         return [generator, io];
@@ -722,41 +728,48 @@ define([
 
     _p.getOTFExportGenerator = function ( masterName, targetName, precision) {
         var io = new InMemory()
-          , exportController = new OTFExportController(io, this, masterName, targetName, precision)
+          , master = this.getMOMMaster(masterName)
+          , exportController = new OTFExportController(io, master, targetName, precision)
           , generator = exportController.exportGenerator()
           ;
         return [generator, io];
-    }
+    };
 
     _p.exportInstance = function(masterName, targetFileName, precision) {
-        if (targetFileName.slice(-8) === '.ufo.zip'){
+        if (targetFileName.slice(-8) === '.ufo.zip') {
             var zipped = this.getZippedInstance(masterName, targetFileName.slice(0,-4), precision, 'nodebuffer');
             this._io.writeFile(false, targetFileName, zipped);
         } else if (targetFileName.slice(-4) === '.otf'){
-            var otf = this.getOTFInstance(masterName, this);
+            var otf = this.getOTFInstance(masterName);
             this._io.writeFile(false, targetFileName, otf);
         } else {
-            new UFOExportController(this._io, this, masterName, targetFileName, precision).doExport();
+            this.exportUFOInstance(masterName, targetFileName, precision);
         }
     };
 
+    _p.exportUFOInstance = function(masterName, targetFileName, precision) {
+        var master = this.getMOMMaster(masterName);
+        new UFOExportController(this._io, master, targetFileName, precision).doExport();
+    };
+
     _p.getZippedInstance = function(masterName, targetDirName, precision, dataType) {
-        var mem_io = new InMemory();
-        new UFOExportController(mem_io, this, masterName, targetDirName, precision).doExport();
+        var master = this.getMOMMaster(masterName)
+          , mem_io = new InMemory()
+          ;
+        new UFOExportController(mem_io, master, targetDirName, precision).doExport();
         return zipUtil.encode(false, mem_io, targetDirName, dataType);
     };
 
     _p.getZipFromIo = zipUtil.encode;
 
-    _p.getOTFInstance = function(masterName, project) {
-        var model = project.open(masterName)
-          , master = model.query('master#' + masterName)
+    _p.getOTFInstance = function(masterName) {
+        var master = this.getMOMMaster(masterName)
           , targetName = masterName + ".otf"
           , mem_io = new InMemory()
           , precision = -1
           ;
-        new OTFExportController(mem_io, project, masterName, targetName, precision).do_export();
-        return new Buffer(Int8Array(mem_io.readFile(false, targetName)));
+        new OTFExportController(mem_io, master, targetName, precision).do_export();
+        return new Buffer(new Int8Array(mem_io.readFile(false, targetName)));
     };
 
     _p._getGlyphClassesReverseLookup = function() {
@@ -805,6 +818,7 @@ define([
             if(error instanceof IONoEntryError) {
                 // this is legal, we have no fontinfo
                 this._log.warning('No fontinfo found, fallback to minimal (builtin) fontinfo.');
+                // FIXME: 'minimalFontinfo' is not defined
                 return minimalFontinfo;
             }
             throw error;
