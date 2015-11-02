@@ -18,18 +18,18 @@ But if you'd like that, check out [metaflop.com](http://www.metaflop.com)
 
 ### Install
 
-Metapolator is not yet released, but if you'd like to try it out and are comfortable using development tools, please see our [developer installation instructions](https://github.com/metapolator/metapolator/wiki/installation) on our wiki.
+Metapolator is not yet released, but if you'd like to try it out and are comfortable using development tools, please see our developer installation instructions in [INSTALL.md](INSTALL.md).
 
 Our user community is actively involved in development through discussions [Google+](https://plus.google.com/communities/110027004108709154749)
 
 #### License
 
-This project is licensed by the authors (listed in <https://github.com/metapolator/metapolator/blob/master/AUTHORS>) under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html) and your contributions are welcome via Github at <https://github.com/metapolator/metapolator>
+This project is licensed by the [authors](AUTHORS) under the [GNU General Public License v3.0](http://www.gnu.org/copyleft/gpl.html) and your contributions are welcome via Github at <https://github.com/metapolator/metapolator>
 
 #### Thanks
 
 Thanks to the developers, especailly Simon Egli for founding the project, Lasse Fister (@graphicore) for technical leadership, Peter Sikking (NL) for Interaction Architecture, and all current and past past contributors. 
-See https://github.com/metapolator/metapolator/blob/master/CONTRIBUTORS for a complete list.
+See [CONTRIBUTORS](CONTRIBUTORS) for a complete list.
 
 Thanks to [metaflop](http://www.metaflop.com) for inspiration and [prototypo](http://www.prototypo.io) for exploring this territory in another direction with the same ideals!
 
