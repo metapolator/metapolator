@@ -136,6 +136,12 @@ define([
               , enumerable: false
               , configurable: false
             });
+            Object.defineProperty(channel, 'length', {
+                value: 0
+              , writable: true
+              , enumerable: false
+              , configurable: false
+            });
         }
         return channel;
     }
@@ -144,6 +150,7 @@ define([
         var channel = _getChannel(state, channelKey)
           , subscriberID = channel.idCounter++
           ;
+        channel.length += 1;
         channel[subscriberID] = subscription;
         return subscriberID;
     }
@@ -155,6 +162,9 @@ define([
                     + '"' + channelKey + '" with subscriberID: "' + subscriberID + '".');
             }
         delete channel[subscriberID];
+        channel.length -= 1;
+        if(channel.length === 0)
+            delete state[channelKey];
     }
     function __trigger(state, channelKey, eventData) {
         var channel = state[channelKey]
