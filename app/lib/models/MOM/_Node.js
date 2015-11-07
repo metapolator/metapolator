@@ -226,6 +226,13 @@ define([
         return name in this._classes;
     };
 
+    Object.defineProperty(_p, 'classes', {
+        get: function(){
+            return Object.keys(this._classes);
+        }
+      , enumerable: true
+    });
+
     _p.toString = function() { return ['<', this.MOMType, '>'].join('');};
 
     _p.isMOMNode = function(item) {
