@@ -22,7 +22,7 @@
     "use strict";
 
 
-    var CPSRecursionError = errors.CPSRecursion;
+    var CPSRecursionKeyError = errors.CPSRecursionKey;
 
     registerSuite({
         name: 'CPS StyleDict',
@@ -50,14 +50,13 @@
                 master = makeMasterFixture('master_'+ i, ['a']);
                 modelController.addMaster(master, 'recursive_cps_'+i);
             }
-            i=0;
-            for(;i<failingSelectors.length;i++) {
+            for(i=0;i<failingSelectors.length;i++) {
                 elementStyle = modelController.query(failingSelectors[i])
                                               .getComputedStyle();
-                // fails with CPSRecursionError
+                // fails with CPSRecursionKeyError
                 assert.throws(
                     elementStyle.get.bind(elementStyle, 'on')
-                  , CPSRecursionError
+                  , CPSRecursionKeyError
                 );
             }
         }
