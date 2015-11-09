@@ -2,13 +2,19 @@ define([
     'jquery'
   , 'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
-  , 'metapolator/ui/services/GlyphRendererAPI'
+  , 'metapolator/rendering/glyphBasics'
+  , 'metapolator/rendering/dataTransformationCaches/DrawPointsProvider'
+  , 'metapolator/rendering/dataTransformationCaches/BBoxProvider'
+  , 'metapolator/ui/services/GlyphUIService'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
     $
   , document
   , AppModel
-  , GlyphRendererAPI
+  , glyphBasics
+  , DrawPointsProvider
+  , BBoxProvider
+  , GlyphUIService
   , selection
 ) {
     "use strict";
@@ -24,14 +30,20 @@ define([
         this.project.masters.forEach(this.project.open, this.project);
         this._loadMOMmasters();
 
-        this.glyphRendererAPI = new GlyphRendererAPI(document, project.controller);
+
+        this.drawPointsOutlineProvider = new DrawPointsProvider(glyphBasics.outlinesRenderer);
+        // this will be used for for https://github.com/metapolator/metapolator/issues/587
+        this.bBoxService = new BBoxProvider(this.drawPointsOutlineProvider);
+        this.glyphUIService = new GlyphUIService(document, this.drawPointsOutlineProvider);
+
         // FIXME: this is the MOM/CPS model, rename? The name is inherited
         // from the Red Pill, but since we are going to have more models this
         // could get a more distinct name. Should be renamed in the Red Pill as
         // well, if we do so.
+        // Maybe momModel?
         this.angularApp.constant('modelController', this.project.controller);
         this.angularApp.constant('project', this.project);
-        this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
+        this.angularApp.constant('glyphUIService', this.glyphUIService);
 
         // will be called on angular.bootstrap
         // see ui/app-controller.js
