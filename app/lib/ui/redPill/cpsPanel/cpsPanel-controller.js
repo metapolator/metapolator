@@ -14,22 +14,23 @@ define([
         this._modelController = modelController;
         this._ruleController = ruleController;
 
-        this.displayModes = ['cps-collection', 'cps-style'];
-        $scope.displayMode = this.displayModes[1];
+        this.displayModes = {'cps-collection': 'CPS File', 'cps-style': 'Computed Style-Dictionary'};
+        $scope.displayMode = Object.keys(this.displayModes)[0];
 
         $scope.cpsFile = null;
         $scope.cpsFileOptions = [];
         $scope.collection = null;
 
-        $scope.elementSelector = 'left'; //null
-        $scope.styleElement = null;
+        $scope.elementSelector = null; //null
+        // this is a one element array. ng-repeat handles the destruction
+        // for us when we replace the containing mom-node
+        $scope.styleElement = [];
 
-
+        $scope.$on('drilldown-mom', this._showStyleDictHandler.bind(this));
         this._waiting = null;
     }
     CpsPanelController.$inject = ['$scope', 'ModelController', 'ruleController'];
     var _p = CpsPanelController.prototype;
-
 
     // This is handling one PropertyCollection at a time.
     // Also it provides display and update facilities for StyleDicts
@@ -149,28 +150,47 @@ define([
         catch(error) {
             if(!(error instanceof CPSError))
                 throw error;
-            console.warn('selector "' + selector + '" did not parse:', error.message);
         }
         return null;
     };
 
     _p._changeElement = function(element) {
-        this.$scope.styleElement = element;
+        this.$scope.styleElement = element ? [element] : [];
         this.$scope.$apply();
-    }
+    };
+
+    _p._switchStyleDictElement = function(element) {
+        if(this.$scope.styleElement[0] === element)
+            return;
+        // force to unload the current element
+        this.$scope.styleElement = element ? [element] : [];
+    };
 
     _p.changeSelector = function() {
         // select one element (query, not query all)
         // then set scope.styleElement = result
+        var element = this._selectFirst(this.$scope.elementSelector) || undefined;
+        this._switchStyleDictElement(element);
+    };
 
-        var element = this._selectFirst(this.$scope.elementSelector) || null;
-        if(this.$scope.styleElement === element)
-            return;
-        // force to unload the current element
-        this.$scope.styleElement = null;
-        // later, load the new one
-        setTimeout(this._changeElement.bind(this, element));
+    _p._showStyleDictHandler = function(event, momElement) {
+        var selector = [momElement], item = momElement;
+        while(item.parent && item.parent.type !== 'univers') {
+            selector.push(item.parent);
+            item = item.parent;
+        }
 
+        // TODO: maybe this is a better generated selector as 'particulars'
+        selector = selector.map(function(item){
+                        return item.type +':i('+item.index+')'; })
+                    .reverse()
+                    .join(' ');
+        // good: setting this does not trigger changeSelector
+        this.$scope.elementSelector = selector;//momElement.particulars;
+
+        this.$scope.displayMode = 'cps-style';
+        this._switchStyleDictElement(momElement);
+        this.$scope.$apply();
     };
 
     return CpsPanelController;

@@ -21,7 +21,7 @@ define([
     function makeLabelText(momNode) {
         var label = [
                 momNode.type
-              , ':i('+ momNode.parent.find(momNode) +')'
+              , ':i('+ momNode.index +')'
           ]
           , classes = momNode.classes
           , i, l

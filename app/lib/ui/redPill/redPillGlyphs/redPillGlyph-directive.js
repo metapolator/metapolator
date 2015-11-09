@@ -1,10 +1,10 @@
 define([], function() {
     "use strict";
 
-    function redPillGlyphDirective(gyphLayersService) {
+    function redPillGlyphDirective(glyphUIService) {
         function link(scope, element, attrs, controller) {
             var glyph = scope.mtkGlyphElement
-              , glyphLayers
+              , glyphInterface
               , domElement = element[0]
               ;
             function changeHandler(_ownData, _channel, viewBox) {
@@ -44,19 +44,19 @@ define([], function() {
                     glyphInterface.hideControls();
             });
 
-            element.append(glyphLayers.element);
+            element.append(glyphInterface.element);
 
             element.on('$destroy', function() {
-                glyphLayers.destroy();
+                glyphInterface.destroy();
             });
         }
         return {
             restrict: 'E'
           , link: link
-          , scope: { mtkGlyphElement: '=' }
+          , scope: { mtkGlyphElement: '=', mtkGlyphControlsVisible: '='}
         };
     }
 
-    redPillGlyphDirective.$inject = ['gyphLayersService'];
+    redPillGlyphDirective.$inject = ['glyphUIService'];
     return redPillGlyphDirective;
 });
