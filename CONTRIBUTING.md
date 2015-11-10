@@ -1,15 +1,30 @@
 # How To Contribute To Metapolator
 
-We're looking forward to accepting your contributions to this project, from a community idea to a code contribution that is implemented and shipping in the product.
-Here are a few tips to make it happen:
+The Metapolator project welcomes new contributors.
+
+We're looking forward to accepting your contributions to this project, from idea to a code contribution that is implemented and shipping in the product.
+When we do, you'll be added to the _contributors_ Github team and given commit-access to the project. 
+
+## Code of Conduct
+
+This Code of Conduct is adapted from [Node's CoC](https://github.com/nodejs/node/blob/master/CONTRIBUTING.md#code-of-conduct).
+
+* We are committed to providing a friendly, safe and welcoming environment for all, regardless of gender, sexual orientation, disability, ethnicity, religion, or similar personal characteristic.
+* Please avoid using that might detract from a friendly, safe and welcoming environment for all.
+* Please be kind and courteous. There's no need to be mean or rude.
+* Respect that people have differences of opinion and that every design or implementation choice carries a trade-off and numerous costs. There is seldom a right answer.
+* Please keep unstructured critique to a minimum. If you have solid ideas you want to experiment with, make a fork and see how it works.
+* We will exclude you from interaction if you insult, demean or harass anyone. That is not welcome behavior. We interpret the term "harassment" as including the definition in the [Citizen Code of Conduct](http://citizencodeofconduct.org/); if you have any lack of clarity about what might be included in that concept, please read their definition. In particular, we don't tolerate behavior that excludes people in socially marginalized groups.
+* Private harassment is also unacceptable. No matter who you are, if you feel you have been or are being harassed or made uncomfortable by a community member, please contact Lasse Fister or Dave Crossland immediately with a capture (log, photo, email) of the harassment if possible. Whether you're a regular contributor or a newcomer, we care about making this community a safe place for you and we've got your back.
+* Likewise any spamming, trolling, flaming, baiting or other attention-stealing behavior is not welcome.
 
 ### 1\. Discuss! 
 
 First step is to propose what you want to do, so that other members of the community can help your ideas fit into the architecture and schedule of the project.
 
-If you just have an idea, chat with us in our [G+ Community Page](https://plus.google.com/communities/110027004108709154749)
+If you have an idea or question, chat with us on our [G+ Community Page](https://plus.google.com/communities/110027004108709154749). Discussion of non-technical topics like licensing, trademarks or any other high-level project questions are best done here.
 
-If you have a concrete set of tasks already formed, [file an issue](https://guides.github.com/features/issues/) outlining them. 
+If you have a concrete set of development tasks already formed, [file an issue](https://guides.github.com/features/issues/) outlining them. 
 
 We have a detailed interaction architecture plan (on [our wiki](https://github.com/metapolator/metapolator/wiki/interaction-design)), and [milestones](https://github.com/metapolator/metapolator/milestones) that we are following to build this product. 
 So it is possible that if you run ahead, your ideas could go to waste if they don't fit smoothly into the project. 
@@ -34,9 +49,110 @@ Please see our Code Style guidelines, below.
 
 When your prototype is ready to consider for inclusion in the next release, make a [pull request](https://help.github.com/articles/using-pull-requests/).
 
+#### Step 1: Fork
+
+Fork the project [on GitHub](https://github.com/metapolator/metapolator) and check out your copy locally.
+
+```text
+$ git clone git@github.com:username/metapolator.git;
+$ cd metapolator;
+$ git remote add upstream git://github.com/metapolator/metapolator.git;
+```
+
+For developing new features and bug fixes, the `master` branch should be pulled and built upon.
+
+#### Step 2: Branch and Commit
+
+Create a feature branch and start hacking:
+
+```text
+$ git checkout -b my-feature-branch -t origin/master
+```
+
+Make sure git knows your name and email address before committing anything:
+
+```text
+$ git config --global user.name "J. Random User"
+$ git config --global user.email "j.random.user@example.com"
+```
+
+Writing good commit logs is important. 
+A commit log should describe what changed and why. 
+Follow these guidelines when writing one:
+
+1. The first line should be 50 characters or less and contain a short description of the change prefixed with the name of the changed subsystem (e.g. "net: add localAddress and localPort to Socket")
+2. Keep the second line blank
+3. Wrap all other lines at 72 columns
+
+A good commit log can look something like this:
+
+```
+subsystem: explaining the commit in one line
+
+Body of commit message is a few lines of text, explaining things
+in more detail, possibly giving some background about the issue
+being fixed, etc. etc.
+
+The body of the commit message can be several paragraphs, and
+please do proper word-wrap and keep columns shorter than about
+72 characters or so. That way `git log` will show things
+nicely even when it is indented.
+```
+
+The header line should be meaningful; it is what other people see when they
+run `git shortlog` or `git log --oneline`.
+
+Check the output of `git log --oneline files_that_you_changed` to find out
+what subsystem (or subsystems) your changes touch.
+
+#### Step 4: Rebase
+
+Use `git rebase` (not `git merge`) to sync your work from time to time.
+
+```text
+$ git fetch upstream
+$ git rebase upstream/master
+```
+
+#### Step 5: Test
+
+Bug fixes and features **should come with tests**. 
+Add your tests in the `app/tests/` directory. 
+Look at other tests to see how they should be structured (license boilerplate, common includes, etc)
+
+Run the tests as standard with npm:
+
+```text
+$ git clone --depth=50 https://github.com/metapolator/metapolator.git metapolator/metapolator
+$ cd metapolator/metapolator
+$ git submodule init
+$ git submodule update
+$ nvm install 0.10
+$ npm install 
+$ npm test
+```
+
+#### Step 6: Push and Pull Request
+
+```text
+$ git push origin my-feature-branch
+```
+
+Go to https://github.com/yourusername/metapolator and select your feature branch, then click the 'Pull Request' button and fill out the form.
+
+Pull requests are usually reviewed within a few days. 
+If there are comments to address, apply your changes in a separate commit and push that to your feature branch. 
+Post a comment in the pull request afterwards; GitHub does not send out notifications when you add commits.
+
+By making a contribution to the project, you certify that:
+
+1. The contribution was created in whole or in part by me and Ihave the right to submit it under the open source license indicated in the file; or
+2. The contribution is based upon previous work that, to the best of my knowledge, is covered under an appropriate open source license and I have the right under that license to submit that work with modifications, whether created in whole or in part by me, under the same open source license (unless I am permitted to submit under a different license), as indicated in the file; or
+3. The contribution was provided directly to me by some other person who certified (a), (b) or (c) and I have not modified it.
+
 ### 4\. Credit!
 
-After your contribution is included, you will be listed in the CONTRIBUTORS and/or AUTHORS files. 
+After your pull request is merged, you should be listed in the CONTRIBUTORS and/or AUTHORS files. 
 CONTRIBUTORS is the official list of people who can contribute (and typically have contributed) code to this repository, while the AUTHORS file lists the copyright holders.
 
 # Coding Style and Substance
@@ -476,6 +592,6 @@ Hence temporarily there's a script `es6to5` in the top-level directory which sho
 
 ## Further Reading
 
-The contribution guide of nodejs covers most aspects of what we do pretty well: <http://nodejs.org/documentation/contributing/>
+The contribution guide of nodejs covers most aspects of what we do pretty well: <https://nodejs.org/en/docs/>
 
 There's also a textbook guide to collaborative libre licensed projects at <http://producingoss.com>
