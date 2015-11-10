@@ -2,14 +2,23 @@
 @import 'global.cps';
 
 /* set up this masters parameters */
-@dictionary {
-    glyph, point > center, contour > p {
-        widthFactor: 0.7;
-    }
-    point > left, point > right, contour > p {
-        weightFactor: 1.5;
-    }
+glyph, point > center, contour > p {
+    widthFactor: 0.7;
 }
+glyph, point > left, point > right, contour > p {
+    weightFactor: 1.5;
+}
+
+
+/* A quick, rough fix for a better spacing. A per glyph solution
+ * (or a well behaving formula) would yield in a better result.
+ * This is only to not make it worse than it has to be.
+ */
+glyph {
+    extraWidth: 180;
+    advanceWidth: base:advanceWidth * widthFactor + extraWidth;
+}
+
 
 @namespace("
   glyph#dvI penstroke#bubble point
@@ -634,6 +643,10 @@
     }
 }
 
+
+glyph#m {
+    extraWidth: 280;
+}
 @namespace(glyph#m) {
     @dictionary {
         point > center {
@@ -708,7 +721,7 @@
 @namespace(glyph#e) {
     @dictionary {
         point > center {
-            extraX: 77;
+            extraX: 97;
             xTranslate: extraX;
         }
     }
@@ -788,7 +801,7 @@
     @dictionary {
         point > center {
             xTranslate: extraX;
-            extraX: 77;
+            extraX: 97;
         }
         point.horizontal > left {
             horizontalInnerTension: 2.7;

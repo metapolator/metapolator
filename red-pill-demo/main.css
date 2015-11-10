@@ -323,11 +323,12 @@ mtk-text-editor label select {
 html {
   font-family: monospace;
   background-color: #cccccc;
-  overflow-y: scroll;
+  overflow-y: hidden;
+  height: 100%;
 }
 body {
   margin: 0;
-  padding: 0 3em;
+  padding: 0;
 }
 .compatibility-info {
   background: orange;
@@ -345,8 +346,8 @@ body.dependencies-ready .compatibility-info {
 red-pill {
   display: none;
 }
-body.dependencies-ready red-pill {
-  display: block;
+body.dependencies-ready {
+  height: 100%;
 }
 red-pill label {
   display: block;
@@ -356,8 +357,6 @@ red-pill label select {
 }
 red-pill {
   color: black;
-  border: 1px solid #000000;
-  padding: 0.5em;
   background: white;
 }
 mtk-red-pill-glyphs {
@@ -379,28 +378,81 @@ mtk-red-pill-glyphs > label > * {
 }
 mtk-red-pill-glyph {
   display: block;
-  border: 1px solid #000000;
-  margin-left: 0.5em;
-  margin-bottom: 0.5em;
-  overflow: auto;
-  background: white;
+  overflow: visible;
+  height: 100%;
+  position: relative;
 }
-mtk-red-pill-glyph svg g.layer-centerline {
+mtk-red-pill-glyph span.particulars {
+  position: absolute;
+  display: inline-block;
+  white-space: nowrap;
+  top: 0
+        left: 0;
+  width: 0;
+  overflow: hidden;
+  background: #ffffe0;
+}
+mtk-red-pill-glyph svg {
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  height: 100%;
+}
+mtk-red-pill-glyph svg use.layer-centerline {
   fill: none;
   stroke: lime;
+  stroke-width: 1;
+}
+mtk-red-pill-glyph svg use.layer-base {
+  fill: rgba(0, 0, 0, 0.5);
+  paint-order: stroke;
+  stroke: Wheat;
+  stroke-width: 2;
+}
+mtk-red-pill-glyph svg use.layer-meta {
+  fill: rgba(255, 0, 0, 0.6);
+  paint-order: stroke;
+  stroke: blue;
   stroke-width: 0.5;
 }
-mtk-red-pill-glyph svg g.layer-outline {
-  fill: black;
-  stroke: white;
-  stroke-width: 0.5;
-  /* disabled for now, we should have a switch for this in the ui */
-  stroke: none;
+mtk-red-pill-glyph svg g.layer-shapes {
+  fill: rgba(0, 0, 0, 0.5);
+}
+mtk-red-pill-glyph svg g.layer-shapes use.type-contour,
+mtk-red-pill-glyph svg g.layer-shapes use.type-penstroke {
+  marker-start: url('/markers.svg#direction-indicator');
+}
+mtk-red-pill-glyph svg g.layer-shapes use {
+  cursor: pointer;
+}
+mtk-red-pill-glyph svg g.layer-shapes use:hover {
+  fill: rgba(0, 30, 0, 0.45);
+  paint-order: stroke;
+}
+mtk-red-pill-glyph svg g.layer-pointlike {
+  fill: rgba(255, 20, 20, 0.6);
+  paint-order: stroke;
+  stroke: red;
+  stroke-width: 1px;
+  cursor: pointer;
+}
+mtk-red-pill-glyph svg g.layer-pointlike > *:hover {
+  fill: rgba(100, 0, 0, 0.6);
+  stroke: orange;
+  stroke-width: 3px;
 }
 mtk-red-pill-glyph svg g.component {
   fill: #333;
   opacity: 0.9;
   stroke: none;
+}
+mtk-red-pill-glyph:hover span.particulars {
+  width: auto;
+  z-index: 100;
+  /* this must hide again when the mouse is over it
+      , otherwise elements beneath are not reachable
+    */
+}
+mtk-red-pill-glyph:hover span.particulars :hover {
+  display: none;
 }
 mtk-red-pill-glyphs ol {
   white-space: normal;
@@ -409,16 +461,325 @@ mtk-red-pill-glyphs ol {
 mtk-red-pill-glyphs li {
   display: inline-block;
   vertical-align: top;
-  width: 33.333%;
 }
-red-pill .children {
-  white-space: nowrap;
+red-pill {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-red-pill .children mtk-text-editor {
+red-pill > * {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: auto;
+}
+red-pill mtk-text-editor {
   width: 450px;
 }
-red-pill .children mtk-red-pill-glyphs,
-red-pill .children mtk-text-editor {
+red-pill mtk-red-pill-glyphs,
+red-pill mtk-text-editor {
   display: inline-block;
   vertical-align: top;
+}
+mtk-cps-panel {
+  max-height: 100%;
+  height: 50%;
+  /* todo: this should have a drag handle control */
+  flex-grow: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  /* used as drag indicator */
+  /**
+     * These properties are defined but more specific properties are used
+     */
+}
+mtk-cps-panel > .draghandle {
+  cursor: ns-resize;
+}
+mtk-cps-panel indicator {
+  display: block;
+  max-width: 250px;
+  position: relative;
+  outline: 1px solid grey;
+  z-index: 10;
+}
+mtk-cps-panel mtk-cps-collection.root,
+mtk-cps-panel .mtl-cps-style-dict-container {
+  display: block;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow-y: scroll;
+}
+mtk-cps-panel mtk-cps-style {
+  display: block;
+  background: red;
+}
+mtk-cps-panel mtk-cps-rule {
+  display: block;
+}
+mtk-cps-panel mtk-cps-property-dict::before {
+  content: '{';
+  vertical-align: bottom;
+}
+mtk-cps-panel mtk-cps-property-dict::after {
+  content: '}';
+  display: block;
+}
+mtk-cps-panel mtk-cps-new-selector-list > div {
+  display: inline-block;
+  text-align: center;
+}
+mtk-cps-panel mtk-cps-new-rule mtk-cps-new-selector-list::after {
+  content: '{}';
+}
+mtk-cps-panel mtk-cps-property-dict {
+  display: inline;
+}
+mtk-cps-panel mtk-cps-property-dict ol {
+  /*important, that we can detect double clicks when the list is
+             empty. Double click is used to add a new-property interface.
+             */
+  min-height: .5em;
+  display: block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  font-size: .9em;
+}
+mtk-cps-panel mtk-cps-property-dict ol li {
+  padding-left: 1em;
+}
+mtk-cps-panel mtk-cps-comment {
+  display: inline-block;
+  color: darkslategray;
+  vertical-align: top;
+}
+mtk-cps-panel mtk-cps-comment span {
+  display: inline-block;
+}
+mtk-cps-panel mtk-cps-comment span.format-standard {
+  white-space: pre;
+  font-family: monospace;
+}
+mtk-cps-panel mtk-cps-comment span.format-standard::before {
+  content: '/*';
+}
+mtk-cps-panel mtk-cps-comment span.format-standard::after {
+  content: '*/';
+}
+mtk-cps-panel mtk-cps-comment span.format-markdown {
+  font-family: sans-serif;
+}
+mtk-cps-panel mtk-cps-property,
+mtk-cps-panel mtk-cps-new-property,
+mtk-cps-panel mtk-cps-selector-list,
+mtk-cps-panel mtk-cps-comment,
+mtk-cps-panel mtk-cps-import-collection,
+mtk-cps-panel mtk-cps-new-item {
+  line-height: 1.2em;
+  /* this is also hardcoded in the template of the textarea! */
+  display: inline-block;
+  border-bottom: 2px solid transparent;
+}
+mtk-cps-panel mtk-cps-property .input,
+mtk-cps-panel mtk-cps-new-property .input,
+mtk-cps-panel mtk-cps-selector-list .input,
+mtk-cps-panel mtk-cps-comment .input,
+mtk-cps-panel mtk-cps-import-collection .input,
+mtk-cps-panel mtk-cps-new-item .input,
+mtk-cps-panel mtk-cps-property .display,
+mtk-cps-panel mtk-cps-new-property .display,
+mtk-cps-panel mtk-cps-selector-list .display,
+mtk-cps-panel mtk-cps-comment .display,
+mtk-cps-panel mtk-cps-import-collection .display,
+mtk-cps-panel mtk-cps-new-item .display {
+  vertical-align: top;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+mtk-cps-panel mtk-cps-property .display,
+mtk-cps-panel mtk-cps-new-property .display,
+mtk-cps-panel mtk-cps-selector-list .display,
+mtk-cps-panel mtk-cps-comment .display,
+mtk-cps-panel mtk-cps-import-collection .display,
+mtk-cps-panel mtk-cps-new-item .display {
+  background: white;
+}
+mtk-cps-panel mtk-cps-property .input,
+mtk-cps-panel mtk-cps-new-property .input,
+mtk-cps-panel mtk-cps-selector-list .input,
+mtk-cps-panel mtk-cps-comment .input,
+mtk-cps-panel mtk-cps-import-collection .input,
+mtk-cps-panel mtk-cps-new-item .input {
+  background: lightyellow;
+  resize: none;
+}
+mtk-cps-panel mtk-cps-property .property-name,
+mtk-cps-panel mtk-cps-new-property .property-name,
+mtk-cps-panel mtk-cps-selector-list .property-name,
+mtk-cps-panel mtk-cps-comment .property-name,
+mtk-cps-panel mtk-cps-import-collection .property-name,
+mtk-cps-panel mtk-cps-new-item .property-name {
+  color: midnightblue;
+}
+mtk-cps-panel mtk-cps-property .property-value,
+mtk-cps-panel mtk-cps-new-property .property-value,
+mtk-cps-panel mtk-cps-selector-list .property-value,
+mtk-cps-panel mtk-cps-comment .property-value,
+mtk-cps-panel mtk-cps-import-collection .property-value,
+mtk-cps-panel mtk-cps-new-item .property-value {
+  color: darkgreen;
+}
+mtk-cps-panel mtk-cps-property .selectorlist,
+mtk-cps-panel mtk-cps-new-property .selectorlist,
+mtk-cps-panel mtk-cps-selector-list .selectorlist,
+mtk-cps-panel mtk-cps-comment .selectorlist,
+mtk-cps-panel mtk-cps-import-collection .selectorlist,
+mtk-cps-panel mtk-cps-new-item .selectorlist {
+  color: maroon;
+}
+mtk-cps-panel mtk-cps-property .display.selectorlist,
+mtk-cps-panel mtk-cps-new-property .display.selectorlist,
+mtk-cps-panel mtk-cps-selector-list .display.selectorlist,
+mtk-cps-panel mtk-cps-comment .display.selectorlist,
+mtk-cps-panel mtk-cps-import-collection .display.selectorlist,
+mtk-cps-panel mtk-cps-new-item .display.selectorlist {
+  min-width: 3em;
+  /* need space to click for a new selectorlist */
+}
+mtk-cps-panel mtk-cps-property .display.property-value,
+mtk-cps-panel mtk-cps-new-property .display.property-value,
+mtk-cps-panel mtk-cps-selector-list .display.property-value,
+mtk-cps-panel mtk-cps-comment .display.property-value,
+mtk-cps-panel mtk-cps-import-collection .display.property-value,
+mtk-cps-panel mtk-cps-new-item .display.property-value,
+mtk-cps-panel mtk-cps-property .display.selectorlist,
+mtk-cps-panel mtk-cps-new-property .display.selectorlist,
+mtk-cps-panel mtk-cps-selector-list .display.selectorlist,
+mtk-cps-panel mtk-cps-comment .display.selectorlist,
+mtk-cps-panel mtk-cps-import-collection .display.selectorlist,
+mtk-cps-panel mtk-cps-new-item .display.selectorlist {
+  display: inline-block;
+  white-space: pre;
+}
+mtk-cps-panel mtk-cps-property > div,
+mtk-cps-panel mtk-cps-new-property > div,
+mtk-cps-panel mtk-cps-selector-list > div,
+mtk-cps-panel mtk-cps-comment > div,
+mtk-cps-panel mtk-cps-import-collection > div,
+mtk-cps-panel mtk-cps-new-item > div {
+  display: inline-block;
+  position: relative;
+}
+mtk-cps-panel mtk-cps-property .invalid:after,
+mtk-cps-panel mtk-cps-new-property .invalid:after,
+mtk-cps-panel mtk-cps-selector-list .invalid:after,
+mtk-cps-panel mtk-cps-comment .invalid:after,
+mtk-cps-panel mtk-cps-import-collection .invalid:after,
+mtk-cps-panel mtk-cps-new-item .invalid:after {
+  content: "\26A0  invalid property \26A0";
+  font-family: sans-serif;
+  color: red;
+  white-space: nowrap;
+  cursor: help;
+}
+mtk-cps-panel mtk-cps-property.shadowed span.property-name,
+mtk-cps-panel mtk-cps-property.shadowed span.property-value {
+  color: gray;
+  text-decoration: line-through;
+}
+mtk-cps-panel mtk-cps-new-item {
+  display: block;
+}
+mtk-cps-panel *.dragging {
+  background: white;
+  opacity: .5;
+}
+mtk-cps-panel *.dragging mtk-cps-toolbutton {
+  display: none;
+}
+mtk-cps-panel mtk-cps-toolbar {
+  position: relative;
+}
+mtk-cps-panel mtk-cps-toolbar > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+}
+mtk-cps-panel mtk-cps-collection-li {
+  background-color: rgba(100, 155, 50, 0.05);
+  display: block;
+  padding-left: 1em;
+}
+mtk-cps-panel mtk-cps-namespace-collection > mtk-cps-selector-list::before,
+mtk-cps-panel mtk-cps-new-namespace-collection > mtk-cps-selector-list::before,
+mtk-cps-panel mtk-cps-namespace-collection > mtk-cps-new-selector-list::before,
+mtk-cps-panel mtk-cps-new-namespace-collection > mtk-cps-new-selector-list::before {
+  content: "@namespace (";
+}
+mtk-cps-panel mtk-cps-namespace-collection > mtk-cps-selector-list,
+mtk-cps-panel mtk-cps-new-namespace-collection > mtk-cps-selector-list,
+mtk-cps-panel mtk-cps-namespace-collection > mtk-cps-new-selector-list,
+mtk-cps-panel mtk-cps-new-namespace-collection > mtk-cps-new-selector-list {
+  /*eliminates a pesky space between the element and the ::after*/
+  display: inline-flex;
+}
+mtk-cps-panel mtk-cps-namespace-collection > mtk-cps-selector-list::after,
+mtk-cps-panel mtk-cps-new-namespace-collection > mtk-cps-selector-list::after,
+mtk-cps-panel mtk-cps-namespace-collection > mtk-cps-new-selector-list::after,
+mtk-cps-panel mtk-cps-new-namespace-collection > mtk-cps-new-selector-list::after {
+  content: ") {";
+}
+mtk-cps-panel mtk-cps-namespace-collection::after,
+mtk-cps-panel mtk-cps-new-namespace-collection::after {
+  content: "}";
+}
+mtk-cps-panel mtk-cps-namespace-collection::after {
+  display: block;
+}
+mtk-cps-panel mtk-drag-handle,
+mtk-cps-panel mtk-cps-toolbutton {
+  display: inline-block;
+  padding: 0;
+  margin-right: .2em;
+  border: none;
+  background: none;
+  overflow: hidden;
+  width: 1em;
+  height: 1.2em;
+  vertical-align: top;
+  color: #ccc;
+  cursor: default;
+  font-family: sans-serif;
+}
+mtk-cps-panel mtk-drag-handle::before,
+mtk-cps-panel mtk-cps-toolbutton::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+mtk-cps-panel mtk-drag-handle:hover,
+mtk-cps-panel mtk-cps-toolbutton:hover {
+  color: #000;
+}
+mtk-cps-panel mtk-drag-handle::before {
+  content: "\2B0D";
+}
+mtk-cps-panel mtk-drag-handle {
+  cursor: grab;
+}
+mtk-cps-panel .tool-delete:hover,
+mtk-cps-panel .tool-cancel:hover {
+  color: #f00;
+}
+mtk-cps-panel .tool-cancel::before,
+mtk-cps-panel .tool-delete::before {
+  content: "\2717";
 }

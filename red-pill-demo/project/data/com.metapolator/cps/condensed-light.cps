@@ -6,7 +6,7 @@
     glyph, point > center, contour > p  {
         widthFactor: 0.5;
     }
-    point > left, point > right, contour > p {
+    glyph, point > left, point > right, contour > p {
         weightFactor:  .2;
     }
 }
@@ -538,7 +538,7 @@
             out: _out + Vector 7 0;
         }
     }
-    @namespace("penstroke#leftBowl) {
+    @namespace("penstroke#leftBowl") {
         point.horizontal.top > left {
             outTension: 1.7;
         }
@@ -546,7 +546,7 @@
             inTension: 1.7;
         }
     }
-    @namespace("penstroke#rightBowl) {
+    @namespace("penstroke#rightBowl") {
         point.horizontal.top > left {
             inTension: 1.7;
         }

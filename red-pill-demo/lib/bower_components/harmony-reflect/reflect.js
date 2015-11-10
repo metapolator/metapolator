@@ -1129,8 +1129,8 @@ Validator.prototype = {
    *
    * The trap should return an iterator.
    *
-   * We convert the iterator to an array as current implementations expect
-   * enumerate to still return an array of strings.
+   * However, as implementations of pre-direct proxies still expect enumerate
+   * to return an array of strings, we convert the iterator into an array.
    */
   enumerate: function() {
     var trap = this.getTrap("enumerate");
@@ -1354,10 +1354,12 @@ Object.preventExtensions = function(subject) {
   }
 };
 Object.seal = function(subject) {
-  return setIntegrityLevel(subject, "sealed");
+  setIntegrityLevel(subject, "sealed");
+  return subject;
 };
 Object.freeze = function(subject) {
-  return setIntegrityLevel(subject, "frozen");
+  setIntegrityLevel(subject, "frozen");
+  return subject;
 };
 Object.isExtensible = Object_isExtensible = function(subject) {
   var vHandler = directProxies.get(subject);
@@ -1712,7 +1714,7 @@ var Reflect = global.Reflect = {
   deleteProperty: function(target, name) {
     var handler = directProxies.get(target);
     if (handler !== undefined) {
-      return handler.deleteProperty(target, name);
+      return handler.delete(name);
     }
     
     var desc = Object.getOwnPropertyDescriptor(target, name);
@@ -1885,12 +1887,16 @@ var Reflect = global.Reflect = {
   },*/
   enumerate: function(target) {
     var handler = directProxies.get(target);
+    var result;
     if (handler !== undefined) {
-      return handler.enumerate(handler.target);
+      // handler.enumerate should return an iterator directly, but the
+      // iterator gets converted to an array for backward-compat reasons,
+      // so we must re-iterate over the array
+      result = handler.enumerate(handler.target);
+    } else {
+      result = [];
+      for (var name in target) { result.push(name); };      
     }
-
-    var result = [];
-    for (var name in target) { result.push(name); };
     var l = +result.length;
     var idx = 0;
     return {
@@ -1996,4 +2002,5 @@ if (typeof exports !== 'undefined') {
   });
 }
 
-}(typeof exports !== 'undefined' ? global : this)); // function-as-module pattern
+// function-as-module pattern
+}(typeof exports !== 'undefined' ? global : this));

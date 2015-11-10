@@ -1387,7 +1387,6 @@
             p {
                 _bottomXReference: stem[S"point.top"];
                 _bottomY: horizontalStroke[S"point.crossbar right"]:on:y;
-                _on:
             }
         }
         p {

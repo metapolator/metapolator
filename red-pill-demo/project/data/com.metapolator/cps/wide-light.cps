@@ -6,9 +6,17 @@
     glyph, point > center, contour > p {
         widthFactor: 1.3;
     }
-    point > left, point > right, contour > p {
+    glyph, point > left, point > right, contour > p {
         weightFactor: 0.2;
     }
+}
+
+/* A quick, rough fix for a better spacing. A per glyph solution
+ * (or a well behaving formula) would yield in a better result.
+ * This is only to not make it worse than it has to be.
+ */
+glyph {
+    advanceWidth: base:advanceWidth * widthFactor - 70;
 }
 
 @namespace("

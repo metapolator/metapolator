@@ -6,7 +6,7 @@
     glyph, point > center, contour > p  {
         widthFactor: 1.3;
     }
-    point > left, point > right, contour > p {
+    glyph, point > left, point > right, contour > p {
         weightFactor: 1.5;
     }
 }

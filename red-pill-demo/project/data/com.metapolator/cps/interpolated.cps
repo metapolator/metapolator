@@ -6,8 +6,8 @@
     baseMaster2: S"master#wl";
     baseMaster3: S"master#ceb";
     baseMaster4: S"master#web";
-    proportion1: .25;
-    proportion2: .25;
-    proportion3: .25;
-    proportion4: .25;
+    proportion1: 0.5;
+    proportion2: 0.5;
+    proportion3: 0.5;
+    proportion4: 0.5;
 }

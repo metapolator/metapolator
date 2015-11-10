@@ -68,5 +68,7 @@
     <string>x.glif</string>
     <key>z</key>
     <string>z.glif</string>
+    <key>space</key>
+    <string>space.glif</string>
   </dict>
 </plist>

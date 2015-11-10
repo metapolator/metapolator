@@ -14,6 +14,7 @@ point > right {
 
 /* define  higher level parameters, override in your master */
 @dictionary {
+    glyph,
     point > left,
     point > right,
     p {

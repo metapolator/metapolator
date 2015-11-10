@@ -36,6 +36,8 @@
       <point x="152" y="319.706"/>
       <point x="172" y="307" type="curve"/>
     </contour>
+    <component base="b" xScale=".2" yScale=".3" yOffset="100"/>
+    <component base="c" xScale=".2" yScale=".2" />
   </outline>
   <lib>
     <dict>
