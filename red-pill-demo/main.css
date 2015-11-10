@@ -418,7 +418,7 @@ mtk-red-pill-glyph svg g.layer-shapes {
 }
 mtk-red-pill-glyph svg g.layer-shapes use.type-contour,
 mtk-red-pill-glyph svg g.layer-shapes use.type-penstroke {
-  marker-start: url('/markers.svg#direction-indicator');
+  marker-start: url('lib/ui/redPill/assets/markers.svg#direction-indicator');
 }
 mtk-red-pill-glyph svg g.layer-shapes use {
   cursor: pointer;
