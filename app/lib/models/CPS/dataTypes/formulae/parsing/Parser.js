@@ -401,9 +401,9 @@ define([
             // A splitting token was not found.
             if(splitExpected === true)
                 throw new CPSFormulaError('A splitting token was expected '
-                                + 'after: '+ tokens[tokens.length-1])+ ' '
+                                + 'after: '+ tokens[tokens.length-1] + ' '
                                 + 'but it was not found in: '
-                                + string.substr(i);
+                                + string.substr(i));
 
             // From here we expect to find a not splitting token
             // the token after that must be splitting
