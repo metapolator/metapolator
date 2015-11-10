@@ -59996,8 +59996,8 @@ define('metapolator/ui/services/GlyphUIService',[
                 right = point.right.getComputedStyle();
 
                 posCenter = center.get('on', false);
-                if(i!==0) posIn = center.get('in', false);
-                if(i!==l-1) posOut = center.get('out', false);
+                posIn = center.get('in', false);
+                posOut = center.get('out', false);
 
                 posLeft = left.get('on', false);
                 posInL = left.get('in', false);
