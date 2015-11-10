@@ -592,6 +592,4 @@ Hence temporarily there's a script `es6to5` in the top-level directory which sho
 
 ## Further Reading
 
-The contribution guide of nodejs covers most aspects of what we do pretty well: <https://nodejs.org/en/docs/>
-
-There's also a textbook guide to collaborative libre licensed projects at <http://producingoss.com>
+A great guide to collaborative libre licensed projects is at <http://producingoss.com>
