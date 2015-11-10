@@ -73,7 +73,7 @@ define([
         {
             fileName: ['importing', 'sourceName', function(importing, sourceName) {
                 if(sourceName in importing)
-                throw new CPSRecursionError(sourceName + ' @imports itself: '
+                    throw new CPSRecursionError(sourceName + ' @imports itself: '
                                     + Object.keys(importing).join(' » '));
                 importing[sourceName] = true;
                 return this._getFilePath(sourceName);
