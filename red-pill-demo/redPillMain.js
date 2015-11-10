@@ -86552,6 +86552,7 @@ define("redPillMain", function(){});
 
 requirejs.config({
     baseUrl: 'lib'
+  , waitSeconds: 7
   , paths: {
         'require/domReady': 'bower_components/requirejs-domready/domReady'
       , 'require/text': 'bower_components/requirejs-text/text'
