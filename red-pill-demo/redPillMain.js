@@ -86481,7 +86481,7 @@ if(window.demoMode) {
             io: io
           , fsEvents: fsEvents
             // fill the InMemory io module with the contents from disk
-          , promise: ioREST.copyRecursive(false, 'project', io, 'project') && false
+          , promise: ioREST.copyRecursive(true, 'project', io, 'project')
           // used to be true, but at the moment it's badly integrated and the
           // dev tool is more important
           , loadTextEditor: false
@@ -86552,7 +86552,6 @@ define("redPillMain", function(){});
 
 requirejs.config({
     baseUrl: 'lib'
-  , waitSeconds: 0
   , paths: {
         'require/domReady': 'bower_components/requirejs-domready/domReady'
       , 'require/text': 'bower_components/requirejs-text/text'
