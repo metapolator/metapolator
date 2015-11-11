@@ -33324,7 +33324,7 @@ define('metapolator/ui/metapolator/ui-tools/selectionTools',[
         }, {
             order : 1
           , name : 'divide'
-          , sign : '÷'
+          , sign : '∕'
           , standardValue : 1
           , type : 'stack'
           , usesUnit : false
@@ -34025,7 +34025,7 @@ define('require/text',['module'], function (module) {
 });
 
 
-define('require/text!metapolator/ui/metapolator/app.tpl',[],function () { return '<mtk-menubar mtk-model="model" ng-mouseup="releaseLocalMenu($event)"></mtk-menubar>\n\n<mtk-pagewrap ng-mouseup="releaseLocalMenu($event)">\n    <mtk-landscape class="transition" ng-style="{\'width\': \'calc(\' + (totalPanelParts / 16) + \'* 100%)\', \'left\': getLandscapeLeft()}">\n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[0].share / totalPanelParts) + \'* 100%)\'}">\n            <div class="semi-panel">\n                <mtk-parameter-panel class="panel"></mtk-parameter-panel>\n            </div>\n            <mtk-horizontal-divider></mtk-horizontal-divider>\n            <div class="semi-panel without-border">\n                <div class="under-construction"></div>\n            </div>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[1].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-specimen-panel class="panel" mtk-model="model.masterSequences" mtk-type="\'master\'" mtk-rubberband="true" mtk-glyphrange="true"></mtk-specimen-panel>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[2].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-master-panel class="panel without-border" mtk-model="model"></mtk-master-panel>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[3].share / totalPanelParts) + \'* 100%)\'}">\n            <div class="semi-panel">\n                <mtk-design-space-panel class="panel without-border" mtk-model="model"></mtk-design-space-panel>\n            </div>\n            <mtk-horizontal-divider></mtk-horizontal-divider>\n            <div class="semi-panel">\n                <mtk-specimen-panel class="panel" mtk-model="model.instanceSequences" mtk-type="\'instance\'" mtk-rubberband="false" mtk-glyphrange="false"></mtk-specimen-panel>\n            </div>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[4].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-instance-panel class="panel without-border" mtk-model="model"></mtk-instance-panel>\n        </mtk-panel>\n        \n        <mtk-panel class="without-body" ng-style="{\'width\': \'calc(\' + (panels[5].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-font-export-panel class="panel without-border" mtk-model="model.instancePanel"></mtk-font-export-panel>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[6].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-metadata-panel class="panel without-border" mtk-model=""></mtk-metadata-panel>\n        </mtk-panel>\n    </mtk-landscape>\n</mtk-pagewrap>\n\n<mtk-vertical-divider mtk-total-parts="totalParts" mtk-dividers="dividers" mtk-panels="panels" ng-repeat="divider in dividers" divider="{{$index}}" ng-if="divider.view === model.viewState"></mtk-vertical-divider>';});
+define('require/text!metapolator/ui/metapolator/app.tpl',[],function () { return '<mtk-menubar mtk-model="model" ng-mouseup="releaseLocalMenu($event)"></mtk-menubar>\n\n<mtk-pagewrap ng-mouseup="releaseLocalMenu($event)">\n    <mtk-landscape class="transition" ng-style="{\'width\': \'calc(\' + (totalPanelParts / 16) + \'* 100%)\', \'left\': getLandscapeLeft()}">\n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[0].share / totalPanelParts) + \'* 100%)\'}">\n            <div class="semi-panel">\n                <mtk-parameter-panel class="panel"></mtk-parameter-panel>\n            </div>\n            <mtk-horizontal-divider></mtk-horizontal-divider>\n            <div class="semi-panel without-border">\n                <div class="under-construction">\n                    <div class="bottom-text">\n                        Coming Soon:<br>More Parameters<br><br>\n                        Want more parameters, including point parameters for fine-tuning? Support the project and buy a T shirt (<a title="Support the project and buy a T shirt (USA)" href="http://teespring.com/metapolator-beta-0-3-0" target="_blank" class="newtab">USA</a>, <a title="Support the project and buy a T shirt (Worldwide)" href="http://metapolator.spreadshirt.com" target="_blank" class="newtab">Worldwide</a>)\n                    </div>\n                </div>\n            </div>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[1].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-specimen-panel class="panel" mtk-model="model.masterSequences" mtk-type="\'master\'" mtk-rubberband="true" mtk-glyphrange="true"></mtk-specimen-panel>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[2].share / totalPanelParts) + \'* 100%)\'}">\n            <div class="semi-panel">\n                <mtk-master-panel class="panel without-border" mtk-model="model"></mtk-master-panel>\n            </div>\n            <mtk-horizontal-divider></mtk-horizontal-divider>\n            <div class="semi-panel without-border">\n                <div class="under-construction">\n                    <div class="bottom-text">\n                        Coming Soon:<br>Adjustment Masters<br><br>\n                        <!-- Pinterest -->\n                        <a href="//www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" ><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>\n                        <!-- Facebook -->\n                        <div class="fb-share-button" data-href="https://metapolator.com/purple-pill/" data-layout="button_count"></div>\n                        <!-- Twitter -->\n                        <a class="twitter-share-button"\n                           href="https://twitter.com/share"\n                           data-url="https://metapolator.com/purple-pill/"\n                           data-via="metapolator">\n                            Tweet\n                        </a>\n                        <!-- G+ -->\n                        <div class="g-plusone" data-size="medium"></div>\n                        <div style="display:inline">\n                            <!-- Github Star -->\n                            <iframe src="https://ghbtns.com/github-btn.html?user=metapolator&repo=metapolator&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>\n                            <!-- Github Watch -->\n                            <iframe src="https://ghbtns.com/github-btn.html?user=metapolator&repo=metapolator&type=watch&count=true&v=2" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[3].share / totalPanelParts) + \'* 100%)\'}">\n            <div class="semi-panel">\n                <mtk-design-space-panel class="panel without-border" mtk-model="model"></mtk-design-space-panel>\n            </div>\n            <mtk-horizontal-divider></mtk-horizontal-divider>\n            <div class="semi-panel">\n                <mtk-specimen-panel class="panel" mtk-model="model.instanceSequences" mtk-type="\'instance\'" mtk-rubberband="false" mtk-glyphrange="false"></mtk-specimen-panel>\n            </div>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[4].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-instance-panel class="panel without-border" mtk-model="model"></mtk-instance-panel>\n        </mtk-panel>\n        \n        <mtk-panel class="without-body" ng-style="{\'width\': \'calc(\' + (panels[5].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-font-export-panel class="panel without-border" mtk-model="model.instanceSequences"></mtk-font-export-panel>\n        </mtk-panel>\n        \n        <mtk-panel ng-style="{\'width\': \'calc(\' + (panels[6].share / totalPanelParts) + \'* 100%)\'}">\n            <mtk-metadata-panel class="panel without-border" mtk-model="">\n            </mtk-metadata-panel>\n        </mtk-panel>\n    </mtk-landscape>\n</mtk-pagewrap>\n\n<mtk-vertical-divider mtk-total-parts="totalParts" mtk-dividers="dividers" mtk-panels="panels" ng-repeat="divider in dividers" divider="{{$index}}" ng-if="divider.view === model.viewState"></mtk-vertical-divider>';});
 
 define('metapolator/ui/metapolator/app-directive',['require/text!./app.tpl'], function(template) {
     "use strict";
@@ -38675,8 +38675,9 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
     };
 
     _p._getRules = function () {
-        var i, l
+        var i, l, j, ll
           , rules = []
+          , itemRules, itemRule
           , item
           , callback = [this, '_structuralChangeHandler']
           , ruleChannel = 'selector-change'
@@ -38690,7 +38691,16 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
                 // 0: array of namespaces, initially empty
                 // 1: the instance of Rule
                 // thus: [selectorList, rule, [_Collections where this rule is embeded]]
-                rules.push([ item.getSelectorList(), item]);//, [this] ]);
+                // TOOD: instead of using arrays here it may be very helpful to make
+                // a stateful "namespacedRule" or "locatedRule" or so interface,
+                // could help the js engine to make better optimizations. Also
+                // it would be more explicit, especially with these first and
+                // last arguements here and how it is copied all the time
+                // that is annoying to follow if one doesn't know how it all
+                // plays together.
+                // finally, that also MAY help implementing the clustered
+                // getMatchingRules method in SelectorEngine
+                rules.push([ item.getSelectorList(), item, [this] ]);
             }
             else if(item instanceof ParameterCollection) {
                 this._subscribe(item, collectionChannel, callback);
@@ -38703,7 +38713,19 @@ define('metapolator/models/CPS/elements/ParameterCollection',[
                 // NOTE: That requires each rule item to be copied!
                 // i.e. items.rules[i].slice(); otherwise the change is
                 // stored in the cache of `item` and that breaks things!
-                Array.prototype.push.apply(rules, item.rules);
+                itemRules = item.rules;
+                for(j=0,ll=itemRules.length;j<ll;j++) {
+                    // That locatedRule would have an interface to do this
+                    // copy here, probably via a factory or so.
+                    // rules.push(itemRules[j].addTrace(this))
+                    itemRule = itemRules[j].slice()
+                    itemRule[2] = itemRules[j][2].slice()
+                    itemRule[2].push(this);
+                    rules.push(itemRule)
+                }
+                // without adding this as third argument, the following is enough
+                // Then, AtNamespaceCollection needs to copy the rule item, howewer!
+                // Array.prototype.push.apply(rules, item.rules);
             }
         }
         return rules;
@@ -41041,16 +41063,639 @@ define('metapolator/models/CPS/whitelistProxies',[
     };
 });
 
+define('metapolator/models/CPS/elements/Parameter',[
+    './_Node'
+], function(
+    Parent
+) {
+    "use strict";
+    /**
+     * A Parameter: name and value
+     *
+     * This is essentially immutable, to change it replace it with a new
+     * Parameter via its parent (ParameterDict).
+     */
+    function Parameter(parameterName, parameterValue, source, lineNo) {
+        Parent.call(this, source, lineNo);
+        this._value = parameterValue;
+
+        Object.defineProperties(this, {
+            'name': {
+                value: parameterName.name
+              , enumerable: true
+            }
+          , 'value': {
+                value: parameterValue
+              , enumerable: true
+            }
+          , 'invalid': {
+                value: parameterValue.invalid
+              , enumerable: true
+          }
+        });
+
+        // Use this for cases where the Parameter should be identified
+        // this represents the value of this parameter, don't use it
+        // for representation. Note: toString is similar, but used
+        // for serialization, not for comparison. The implementation of
+        // this could change to be just a checksum.
+        // Probably only "immutable" cps-nodes will have a `hash` property.
+        // In turn only mutable cps-nodes will have a nodeID.
+        Object.defineProperty(this, 'hash', {
+            value: [this.name, ': ', this._value].join('')
+          , enumerable: true
+        });
+    }
+    var _p = Parameter.prototype = Object.create(Parent.prototype);
+    _p.constructor = Parameter;
+
+    _p.toString = function() {
+        return [this.name, ': ', this._value,';'].join('');
+    };
+
+    Object.defineProperty(_p, 'message', {
+        get: function(){ return this._value.message; }
+    });
+
+    return Parameter;
+});
+
+define('metapolator/models/CPS/elements/ParameterDict',[
+    'metapolator/errors'
+  , 'metapolator/models/emitterMixin'
+  , './_Node'
+  , './GenericCPSNode'
+  , './Parameter'
+  , './Comment'
+], function(
+    errors
+  , emitterMixin
+  , Parent
+  , GenericCPSNode
+  , Parameter
+  , Comment
+) {
+    "use strict";
+
+    /*jshint sub:true*/
+
+    var ValueError = errors.Value
+      , KeyError = errors.Key
+      , AssertionError = errors.Assertion
+      , propertyChangeEmitterSetup
+      ;
+
+    // TODO:
+    // Make this an ordered dict. Ordered to keep the comments where
+    // they belong. Dict for access to the Parameters themselves!
+    // There is the possibility to declare two parameters of the same
+    // name. We merge multiply defined Parameter like so:
+    // the last one wins, the other previous ones are not available via
+    // keys, the index interface would work.
+    // If this is not fancy enough we can still think of another approach.
+
+    propertyChangeEmitterSetup = {
+          stateProperty: '_propertyChannels'
+        , onAPI: 'onPropertyChange'
+        , offAPI: 'offPropertyChange'
+        , triggerAPI: '_triggerPropertyChange'
+    };
+
+    /**
+     * A dictionary of parameters and a list of parameters, comments and
+     * GenericCPSNodes
+     *
+     * channels for the on/off interface:
+     *
+     * "add" data: key
+     *      A new active property was added.
+     * "change" data: key
+     *      An active property was changed, there is a new value at key.
+     * "delete" data: key
+     *      There used to be an active property for key, but there is
+     *      no active property for key anymore.
+     * "erase" data:key
+     *      All active, inactive and invalid properties for key have been
+     *      removed. This is preceded by "delete" if there used to be
+     *      an active property for key. See "delete"
+     *
+     * "update"
+     *      This indicated that the data of this ParameterDict has changed.
+     *      This is a very general event, that even covers insertions or
+     *      removals of comments or shadowed or invalid parameters. The
+     *      purpose is that a UI element that displays all parameterDict.items
+     *      can be update its state.
+     *
+     * Channels named after the active key/property-names are available
+     * via the onPropertyChange/offPropertyChange interface.
+     * They fire on "add", "delete", "change" for the respective key.
+     */
+
+    function ParameterDict(items, source, lineNo) {
+        Parent.call(this, source, lineNo);
+        this._items = items.slice();
+        this._dict = undefined;
+        this._keys = null;
+        this._indexes = Object.create(null);
+        emitterMixin.init(this, propertyChangeEmitterSetup);
+    }
+
+    var _p = ParameterDict.prototype = Object.create(Parent.prototype);
+    _p.constructor = ParameterDict;
+
+    emitterMixin(_p, propertyChangeEmitterSetup);
+
+    _p.toString = function() {
+        var prepared = this._items.map(function(item) {
+            if(!item)
+                return '';
+            if(item instanceof GenericCPSNode)
+                return ['    ', item, ';'].join('');
+            return '    ' + item;
+        });
+
+        prepared.unshift('{');
+        prepared.push('}');
+        return prepared.join('\n');
+    };
+
+    function _isValidParameter(item) {
+        return (item instanceof Parameter && !item.invalid);
+    }
+
+    Object.defineProperty(_p, 'items', {
+        get: function() {
+            return this._items.slice();
+        }
+    });
+
+    _p._getItemValue = function(index) {
+        // NOTE: index must be in this._dict, then it can be guaranteed
+        // that this._items[index] has a value.
+        return this._items[index].value;
+    };
+
+    /**
+     * dictionary of active items:
+     * {
+     *      key: itemValue
+     * }
+     */
+    Object.defineProperty(_p, 'dict', {
+        get: function() {
+            if(!this._dict)
+                this._buildIndex();
+            var result = Object.create(null), k, dict = this._dict;
+            for(k in dict)
+                result[k] = this._getItemValue(dict[k]);
+            return result;
+        }
+    });
+
+    Object.defineProperty(_p, 'length', {
+        get: function(){ return this._items.length; }
+    });
+
+    _p._buildIndex = function() {
+        var items = this._items
+          , item
+          , i, key, dict, keys, indexes
+          ;
+        this._dict = dict = Object.create(null);
+        this._keys = keys = [];
+        this._indexes = indexes = Object.create(null);
+        // searching backwards, because the last item with key === name has
+        // the highest precedence
+        for(i=items.length-1;i>=0;i--) {
+            item = items[i];
+            if(!(item instanceof Parameter))
+                // filter out unwanted stuff (and maybe other stuff if that happens)
+                // comments, valid and invalid parameters are expected yet
+                continue;
+            key = item.name;
+
+            // this._indexes contains invalid parameters, so we can erase them
+            if(!indexes[key]) indexes[key] = [];
+            // Keep the order so that the lowest index comes first
+            // Thus the active index for will always be the last one!
+            indexes[key].unshift(i);
+
+            if(item.invalid)
+                continue;
+            if(!(key in dict)) {
+                dict[key] = i;
+                keys.push(key);
+            }
+        }
+    };
+
+    // START helpers for _p.splice
+    _p._getInsertedDict = function (insertions, canonicalStartIndex) {
+        var insertedDict = Object.create(null)
+          , i, l, item, key, insertedIndexes
+          ;
+
+        for(i=0,l=insertions.length;i<l;i++) {
+            item = insertions[i];
+            if(!(item instanceof Parameter))
+                continue;
+            key = item.name;
+            insertedIndexes = insertedDict[key];
+            if(!insertedIndexes)
+                insertedDict[key] = insertedIndexes = [];
+            insertedIndexes.push(i + canonicalStartIndex);
+        }
+        return insertedDict;
+    };
+
+    _p._updateIndexes = function(indexes, canonicalStartIndex, removedRangeEnd, changeRate, insertedIndexes) {
+        var start = null
+          , removedCount = 0
+          , insertedCount = insertedIndexes.length
+          , i, length, index
+          , erase = false
+          , args
+          ;
+        length = indexes.length;
+
+        // the last index must be bigger than canonicalStartIndex
+        if(length && indexes[length-1] >= canonicalStartIndex) {
+            for(i=0;i<length;i++) {
+                index = indexes[i];
+                if(index < canonicalStartIndex)
+                    continue;
+                // index >= canonicalStartIndex
+                if(start === null)
+                    // if there were removals and/or insertions
+                    // this is the first affected item
+                    start = i;
+
+                if(index < removedRangeEnd)
+                    removedCount += 1;
+                else // index >= removedRangeEnd
+                    indexes[i] = index + changeRate;
+            }
+        }
+
+        if(start === null) {
+            if(insertedCount)
+                Array.prototype.push.apply(indexes, insertedIndexes);
+            return false; // not erased
+        }
+
+        if(start === 0 && insertedCount === 0 && removedCount === indexes.length)
+            return true; // erased
+
+        args = [start, removedCount];
+        Array.prototype.push.apply(args, insertedIndexes);
+        Array.prototype.splice.apply(indexes, args);
+        return false; // not erased
+    };
+
+    _p._getActiveIndex = function(key) {
+        var indexes = this._indexes[key]
+          , i, index;
+        for(i=indexes.length-1;i>=0;i--) {
+            index = indexes[i];
+            if(!this._items[index].invalid)
+                return index;
+        }
+        return -1;
+    };
+
+    _p._updateDict = function(key, canonicalStartIndex, removedRangeEnd, changeRate) {
+        var index = this._dict[key]
+          , active = this._getActiveIndex(key)
+          ;
+
+        if(active === -1)
+            return 'delete';
+
+        if(index >= canonicalStartIndex) {
+            if(index < removedRangeEnd)
+                // a delete for now, may become a change
+                index = -1;
+            else // index >= removedRangeEnd
+                index += changeRate;
+        }
+
+        if(active !== index) {
+            this._dict[key] = active;
+            return 'change';
+        }
+        // No event: maybe an updated index number, but it's the same item
+        this._dict[key] = index;
+        return null;
+    };
+
+    /**
+     * Calculate the start index where Array.prototype.splice really starts.
+     *
+     * > start:
+     * > Index at which to start changing the array. If greater than the
+     * > length of the array, actual starting index will be set to the
+     * > length of the array. If negative, will begin that many elements
+     * > from the end.
+     *
+     *  Not in that documentation, if negative after length-start: start = 0
+     */
+    _p._getCanonicalStartIndex = function(start, length) {
+        if(start >= length)
+            return length;
+        if(start < 0)
+            return Math.max(0, length - start);
+        return start;
+    };
+
+    function _checkItem(item) {
+        return (item instanceof Comment || _isValidParameter(item));
+    }
+
+    _p._triggerEvents = function(events) {
+        var event, keys, i,l;
+        for(event in events) {
+            keys = events[event];
+
+            // first trigger the propertyChange family, it's less confusing
+            // for listeners when they don't get a propertyChange 'add' event
+            // after having added the property already because of the normal on channel
+            // FIXME: can there be a reasonable rule, like is it always better to
+            // _triggerPropertyChange before _trigger or so?
+
+            // Don't trigger PropertyChange for "erase"
+            // because erase doesn't change property values. If that happens,
+            // "delete" is also being triggered
+            if(event !== 'erase')
+                for(i=0,l=keys.length;i<l;i++)
+                    this._triggerPropertyChange(keys[i], event);
+
+            this._trigger(event, keys);
+        }
+    };
+
+    _p._splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
+        if(!this._dict)
+            this._buildIndex();
+
+        var insertions = _insertions instanceof Array
+            ? _insertions
+            : (_insertions === undefined
+                    ? []
+                    : [_insertions]
+              )
+          , removals
+          , args
+          , i, l
+          , item
+          , events = Object.create(null)
+          , oldLength = this._items.length
+          , insertionsLength = insertions.length
+          , removalsLength
+          ;
+        for(i=0,l=insertionsLength;i<l; i++)
+            if(!_checkItem(insertions[i]))
+                throw new ValueError('Trying to insert an invalid item: '
+                                        + '"'+insertions[i]+'"'
+                                        + (insertions[i].message ? ' message: "' + insertions[i].message+'"' : ''));
+
+        args = [startIndex, deleteCount];
+        Array.prototype.push.apply(args, insertions);
+        removals = Array.prototype.splice.apply(this._items, args);
+        removalsLength = removals.length;
+
+        if(insertionsLength === 0 && removalsLength === 0)
+            return [null, 0, 0];
+
+        for(i=0;i<removalsLength;i++)
+            // FIXME: apparently in a move action, this destroy would have the wrong semantics
+            // is this used in the StyleDict?
+            // it is important that the *immutable* Parameters don't get unusable
+            // by this!
+            removals[i].destroy();
+
+        // update the existing indexes: this._dict and this.__indexes
+        // record the event's
+
+        var changeRate = insertionsLength - removalsLength
+          , canonicalStartIndex = this._getCanonicalStartIndex(startIndex, oldLength)
+          , removedRangeEnd = canonicalStartIndex + removalsLength
+          , insertedDict = this._getInsertedDict(insertions, canonicalStartIndex)
+          , key, active, insertedIndexes, indexes
+          , createdKeys = []
+          , erase, event
+          ;
+
+        for(key in insertedDict) {
+            if(!(key in this._indexes))
+                createdKeys.push(key);
+        }
+
+        // update the existing entries in this._indexes
+        for(key in this._indexes) {
+            indexes = this._indexes[key];
+            insertedIndexes = insertedDict[key] || [];
+            erase = this._updateIndexes(indexes, canonicalStartIndex
+                            , removedRangeEnd, changeRate, insertedIndexes);
+            if(!erase) continue;
+
+            delete this._indexes[key];
+            if(!events['erase']) events['erase'] = [];
+            events['erase'].push(key);
+        }
+
+        // update the existing entries in this._dict
+        for(key in this._dict) {
+            event = key in this._indexes
+                ? this._updateDict(key, canonicalStartIndex, removedRangeEnd, changeRate)
+                // it is no more in this._indexes so this is a delete
+                : 'delete'
+                ;
+            if(!event) continue;
+
+            if(event === 'delete')
+                delete this._dict[key];
+
+            if(!events[event]) events[event] = [];
+            events[event].push(key);
+        }
+
+        // insert new entries into this._dict and this._indexes
+        for(i=0,l=createdKeys.length;i<l;i++) {
+            key = createdKeys[i];
+            this._indexes[key] = insertedDict[key];
+            active = this._getActiveIndex(key);
+
+            if(active === -1) continue;
+
+            this._dict[key] = active;
+            if(!events['add']) events['add'] = [];
+            events['add'].push(key);
+        }
+
+        if('add' in events || 'delete' in events)
+            // mark for update
+            this._keys = null;
+
+        this._triggerEvents(events);
+        return [startIndex, removalsLength, insertionsLength, removals];
+    };
+
+    _p.splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
+        var result = this._splice(startIndex, deleteCount, _insertions);
+        if(result[1] || result[2])
+            this._trigger('update');
+        return result;
+    };
+
+    /**
+     * replace or add
+     * override the active item or create new entry
+     *
+     * emits: "add", "change" or nothing
+     */
+    _p.setParameter = function(item) {
+        var key = item.name
+          , items = this._items
+          , index
+          , eventName
+          , event = Object.create(null)
+          , old
+          ;
+        if(!_isValidParameter(item))
+            throw new ValueError('Trying to set an invalid property: ' + item);
+        if(!this.has(key)) {
+            eventName = 'add';
+            index = items.length;
+            items.push(item);
+            if(!this._indexes[key])
+                this._indexes[key] = [index];
+            else
+                this._indexes[key].push(index);
+            this._dict[key] = index;
+            this._keys.push(key);
+        }
+        else {
+            eventName = 'change';
+            index = this._dict[key];
+            old = items[index];
+            items[index] = item;
+        }
+        // emit events
+        if(old) old.destroy();
+
+        event[eventName] = [key];
+        this._triggerEvents(event);
+        this._trigger('update');
+    };
+
+    /**
+     * Remove all items with key as name (valid, invalid, active, inactive)
+     * return number of removed items
+     *
+     * emits: ["delete", "erase"], "erase" or nothing
+     */
+    _p.erase = function(key) {
+        var deleteCount, total, i, length, index, indexes;
+        if(!this._indexes) this._buildIndex();
+
+        deleteCount = 0;
+        total = 0;
+        while(key in this._indexes) {
+            indexes = this._indexes[key];
+            length = indexes.length;
+            if(length === 0)
+                throw new AssertionError('There MUST NOT be a key without any index');
+            deleteCount = 1;
+            index = indexes[0];
+            // find all indexes that follow directly after index
+            // because they can be removed with the same splice
+            for(i=1;i<length;i++) {
+                if(indexes[i] === index + deleteCount)
+                    deleteCount++;
+            }
+            // NOTE: this uses _splice, because the update event should
+            // be triggert only once at the end of an action (or as seldom as possible)
+            this._splice(index, deleteCount);
+            total += deleteCount;
+        }
+        if(total)
+            this._trigger('update');
+        return total;
+    };
+
+    /**
+     * Remove/delete the currently active item for key.
+     * May make another valid parameter with the same name active,
+     * if there is any.
+     *
+     * emits: "change" or "delete" or noting
+     */
+    _p.removeCurrentActiveParameter = function(key) {
+        if(!this.has(key))
+            return 0;
+        // delete the currently active item for key
+        var index = this._dict[key];
+
+        this.splice(index, 1);
+        return 1;
+    };
+
+    /**
+     * NOTE: In an async environment this will likely create a race condition.
+     */
+    _p.keys = function() {
+        if(!this._dict)
+            this._buildIndex();
+        else if(!this._keys)
+            this._keys = Object.keys(this._dict);
+        return this._keys.slice();
+    };
+
+    _p.get = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        if(!(key in this._dict))
+            throw new KeyError('Key "'+key+'" not in ParameterDict.');
+        return this._getItemValue(this._dict[key]);
+    };
+
+    _p.getItem = function(index) {
+        return this._items[index];
+    };
+
+    /**
+     * NOTE: In an async environment this will likely create a race condition.
+     */
+    _p.has = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        return key in this._dict;
+    };
+
+    /**
+     * NOTE: In an async environment this will likely create a race condition.
+     */
+    _p.find = function(key) {
+        if(!this._dict)
+            this._buildIndex();
+        return this._indexes[key].slice() || [];
+    };
+
+    return ParameterDict;
+});
+
 define('metapolator/models/MOM/_Node',[
     'metapolator/errors'
   , '../_BaseModel'
   , 'metapolator/models/CPS/whitelistProxies'
   , 'metapolator/models/emitterMixin'
+  , 'metapolator/models/CPS/elements/ParameterDict'
 ], function(
     errors
   , Parent
   , whitelistProxies
   , emitterMixin
+  , ParameterDict
 ) {
     "use strict";
 
@@ -41091,6 +41736,16 @@ define('metapolator/models/MOM/_Node',[
         this._id = null;
         this._classes = Object.create(null);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
+
+        // this has higher precedence than any rule loaded by CPS
+        // and it is unique to this _Node.
+        // DOM Elements have element.style, this is analogous
+        Object.defineProperty(this, 'properties', {
+            value: new ParameterDict([], '*element properties*')
+          , enumerable: true
+        });
+
+
         this._changeSubscriptions = null;
         emitterMixin.init(this, emitterMixinSetup);
 
@@ -41127,6 +41782,13 @@ define('metapolator/models/MOM/_Node',[
         for(var k in this._classes)
             clone.setClass(k);
     };
+
+    _p.walkTreeDepthFirst = function(callback) {
+        var i,l;
+        callback(this);
+        for(i=0,l=this.children.length;i<l;i++)
+            this.children[i].walkTreeDepthFirst(callback);
+    }
 
     emitterMixin(_p, emitterMixinSetup);
 
@@ -43425,627 +44087,6 @@ define('metapolator/models/CPS/elements/ParameterValue',[
     return ParameterValue;
 });
 
-define('metapolator/models/CPS/elements/Parameter',[
-    './_Node'
-], function(
-    Parent
-) {
-    "use strict";
-    /**
-     * A Parameter: name and value
-     *
-     * This is essentially immutable, to change it replace it with a new
-     * Parameter via its parent (ParameterDict).
-     */
-    function Parameter(parameterName, parameterValue, source, lineNo) {
-        Parent.call(this, source, lineNo);
-        this._value = parameterValue;
-
-        Object.defineProperties(this, {
-            'name': {
-                value: parameterName.name
-              , enumerable: true
-            }
-          , 'value': {
-                value: parameterValue
-              , enumerable: true
-            }
-          , 'invalid': {
-                value: parameterValue.invalid
-              , enumerable: true
-          }
-        });
-
-        // Use this for cases where the Parameter should be identified
-        // this represents the value of this parameter, don't use it
-        // for representation. Note: toString is similar, but used
-        // for serialization, not for comparison. The implementation of
-        // this could change to be just a checksum.
-        // Probably only "immutable" cps-nodes will have a `hash` property.
-        // In turn only mutable cps-nodes will have a nodeID.
-        Object.defineProperty(this, 'hash', {
-            value: [this.name, ': ', this._value].join('')
-          , enumerable: true
-        });
-    }
-    var _p = Parameter.prototype = Object.create(Parent.prototype);
-    _p.constructor = Parameter;
-
-    _p.toString = function() {
-        return [this.name, ': ', this._value,';'].join('');
-    };
-
-    Object.defineProperty(_p, 'message', {
-        get: function(){ return this._value.message; }
-    });
-
-    return Parameter;
-});
-
-define('metapolator/models/CPS/elements/ParameterDict',[
-    'metapolator/errors'
-  , 'metapolator/models/emitterMixin'
-  , './_Node'
-  , './GenericCPSNode'
-  , './Parameter'
-  , './Comment'
-], function(
-    errors
-  , emitterMixin
-  , Parent
-  , GenericCPSNode
-  , Parameter
-  , Comment
-) {
-    "use strict";
-
-    /*jshint sub:true*/
-
-    var ValueError = errors.Value
-      , KeyError = errors.Key
-      , AssertionError = errors.Assertion
-      , propertyChangeEmitterSetup
-      ;
-
-    // TODO:
-    // Make this an ordered dict. Ordered to keep the comments where
-    // they belong. Dict for access to the Parameters themselves!
-    // There is the possibility to declare two parameters of the same
-    // name. We merge multiply defined Parameter like so:
-    // the last one wins, the other previous ones are not available via
-    // keys, the index interface would work.
-    // If this is not fancy enough we can still think of another approach.
-
-    propertyChangeEmitterSetup = {
-          stateProperty: '_propertyChannels'
-        , onAPI: 'onPropertyChange'
-        , offAPI: 'offPropertyChange'
-        , triggerAPI: '_triggerPropertyChange'
-    };
-
-    /**
-     * A dictionary of parameters and a list of parameters, comments and
-     * GenericCPSNodes
-     *
-     * channels for the on/off interface:
-     *
-     * "add" data: key
-     *      A new active property was added.
-     * "change" data: key
-     *      An active property was changed, there is a new value at key.
-     * "delete" data: key
-     *      There used to be an active property for key, but there is
-     *      no active property for key anymore.
-     * "erase" data:key
-     *      All active, inactive and invalid properties for key have been
-     *      removed. This is preceded by "delete" if there used to be
-     *      an active property for key. See "delete"
-     *
-     * "update"
-     *      This indicated that the data of this ParameterDict has changed.
-     *      This is a very general event, that even covers insertions or
-     *      removals of comments or shadowed or invalid parameters. The
-     *      purpose is that a UI element that displays all parameterDict.items
-     *      can be update its state.
-     *
-     * Channels named after the active key/property-names are available
-     * via the onPropertyChange/offPropertyChange interface.
-     * They fire on "add", "delete", "change" for the respective key.
-     */
-
-    function ParameterDict(items, source, lineNo) {
-        Parent.call(this, source, lineNo);
-        this._items = items.slice();
-        this._dict = undefined;
-        this._keys = null;
-        this._indexes = Object.create(null);
-        emitterMixin.init(this, propertyChangeEmitterSetup);
-    }
-
-    var _p = ParameterDict.prototype = Object.create(Parent.prototype);
-    _p.constructor = ParameterDict;
-
-    emitterMixin(_p, propertyChangeEmitterSetup);
-
-    _p.toString = function() {
-        var prepared = this._items.map(function(item) {
-            if(!item)
-                return '';
-            if(item instanceof GenericCPSNode)
-                return ['    ', item, ';'].join('');
-            return '    ' + item;
-        });
-
-        prepared.unshift('{');
-        prepared.push('}');
-        return prepared.join('\n');
-    };
-
-    function _isValidParameter(item) {
-        return (item instanceof Parameter && !item.invalid);
-    }
-
-    Object.defineProperty(_p, 'items', {
-        get: function() {
-            return this._items.slice();
-        }
-    });
-
-    _p._getItemValue = function(index) {
-        // NOTE: index must be in this._dict, then it can be guaranteed
-        // that this._items[index] has a value.
-        return this._items[index].value;
-    };
-
-    /**
-     * dictionary of active items:
-     * {
-     *      key: itemValue
-     * }
-     */
-    Object.defineProperty(_p, 'dict', {
-        get: function() {
-            if(!this._dict)
-                this._buildIndex();
-            var result = Object.create(null), k, dict = this._dict;
-            for(k in dict)
-                result[k] = this._getItemValue(dict[k]);
-            return result;
-        }
-    });
-
-    Object.defineProperty(_p, 'length', {
-        get: function(){ return this._items.length; }
-    });
-
-    _p._buildIndex = function() {
-        var items = this._items
-          , item
-          , i, key, dict, keys, indexes
-          ;
-        this._dict = dict = Object.create(null);
-        this._keys = keys = [];
-        this._indexes = indexes = Object.create(null);
-        // searching backwards, because the last item with key === name has
-        // the highest precedence
-        for(i=items.length-1;i>=0;i--) {
-            item = items[i];
-            if(!(item instanceof Parameter))
-                // filter out unwanted stuff (and maybe other stuff if that happens)
-                // comments, valid and invalid parameters are expected yet
-                continue;
-            key = item.name;
-
-            // this._indexes contains invalid parameters, so we can erase them
-            if(!indexes[key]) indexes[key] = [];
-            // Keep the order so that the lowest index comes first
-            // Thus the active index for will always be the last one!
-            indexes[key].unshift(i);
-
-            if(item.invalid)
-                continue;
-            if(!(key in dict)) {
-                dict[key] = i;
-                keys.push(key);
-            }
-        }
-    };
-
-    // START helpers for _p.splice
-    _p._getInsertedDict = function (insertions, canonicalStartIndex) {
-        var insertedDict = Object.create(null)
-          , i, l, item, key, insertedIndexes
-          ;
-
-        for(i=0,l=insertions.length;i<l;i++) {
-            item = insertions[i];
-            if(!(item instanceof Parameter))
-                continue;
-            key = item.name;
-            insertedIndexes = insertedDict[key];
-            if(!insertedIndexes)
-                insertedDict[key] = insertedIndexes = [];
-            insertedIndexes.push(i + canonicalStartIndex);
-        }
-        return insertedDict;
-    };
-
-    _p._updateIndexes = function(indexes, canonicalStartIndex, removedRangeEnd, changeRate, insertedIndexes) {
-        var start = null
-          , removedCount = 0
-          , insertedCount = insertedIndexes.length
-          , i, length, index
-          , erase = false
-          , args
-          ;
-        length = indexes.length;
-
-        // the last index must be bigger than canonicalStartIndex
-        if(length && indexes[length-1] >= canonicalStartIndex) {
-            for(i=0;i<length;i++) {
-                index = indexes[i];
-                if(index < canonicalStartIndex)
-                    continue;
-                // index >= canonicalStartIndex
-                if(start === null)
-                    // if there were removals and/or insertions
-                    // this is the first affected item
-                    start = i;
-
-                if(index < removedRangeEnd)
-                    removedCount += 1;
-                else // index >= removedRangeEnd
-                    indexes[i] = index + changeRate;
-            }
-        }
-
-        if(start === null) {
-            if(insertedCount)
-                Array.prototype.push.apply(indexes, insertedIndexes);
-            return false; // not erased
-        }
-
-        if(start === 0 && insertedCount === 0 && removedCount === indexes.length)
-            return true; // erased
-
-        args = [start, removedCount];
-        Array.prototype.push.apply(args, insertedIndexes);
-        Array.prototype.splice.apply(indexes, args);
-        return false; // not erased
-    };
-
-    _p._getActiveIndex = function(key) {
-        var indexes = this._indexes[key]
-          , i, index;
-        for(i=indexes.length-1;i>=0;i--) {
-            index = indexes[i];
-            if(!this._items[index].invalid)
-                return index;
-        }
-        return -1;
-    };
-
-    _p._updateDict = function(key, canonicalStartIndex, removedRangeEnd, changeRate) {
-        var index = this._dict[key]
-          , active = this._getActiveIndex(key)
-          ;
-
-        if(active === -1)
-            return 'delete';
-
-        if(index >= canonicalStartIndex) {
-            if(index < removedRangeEnd)
-                // a delete for now, may become a change
-                index = -1;
-            else // index >= removedRangeEnd
-                index += changeRate;
-        }
-
-        if(active !== index) {
-            this._dict[key] = active;
-            return 'change';
-        }
-        // No event: maybe an updated index number, but it's the same item
-        this._dict[key] = index;
-        return null;
-    };
-
-    /**
-     * Calculate the start index where Array.prototype.splice really starts.
-     *
-     * > start:
-     * > Index at which to start changing the array. If greater than the
-     * > length of the array, actual starting index will be set to the
-     * > length of the array. If negative, will begin that many elements
-     * > from the end.
-     *
-     *  Not in that documentation, if negative after length-start: start = 0
-     */
-    _p._getCanonicalStartIndex = function(start, length) {
-        if(start >= length)
-            return length;
-        if(start < 0)
-            return Math.max(0, length - start);
-        return start;
-    };
-
-    function _checkItem(item) {
-        return (item instanceof Comment || _isValidParameter(item));
-    }
-
-    _p._triggerEvents = function(events) {
-        var event, keys, i,l;
-        for(event in events) {
-            keys = events[event];
-
-            // first trigger the propertyChange family, it's less confusing
-            // for listeners when they don't get a propertyChange 'add' event
-            // after having added the property already because of the normal on channel
-            // FIXME: can there be a reasonable rule, like is it always better to
-            // _triggerPropertyChange before _trigger or so?
-
-            // Don't trigger PropertyChange for "erase"
-            // because erase doesn't change property values. If that happens,
-            // "delete" is also being triggered
-            if(event !== 'erase')
-                for(i=0,l=keys.length;i<l;i++)
-                    this._triggerPropertyChange(keys[i], event);
-
-            this._trigger(event, keys);
-        }
-    };
-
-    _p._splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
-        if(!this._dict)
-            this._buildIndex();
-
-        var insertions = _insertions instanceof Array
-            ? _insertions
-            : (_insertions === undefined
-                    ? []
-                    : [_insertions]
-              )
-          , removals
-          , args
-          , i, l
-          , item
-          , events = Object.create(null)
-          , oldLength = this._items.length
-          , insertionsLength = insertions.length
-          , removalsLength
-          ;
-        for(i=0,l=insertionsLength;i<l; i++)
-            if(!_checkItem(insertions[i]))
-                throw new ValueError('Trying to insert an invalid item: '
-                                        + '"'+insertions[i]+'"'
-                                        + (insertions[i].message ? ' message: "' + insertions[i].message+'"' : ''));
-
-        args = [startIndex, deleteCount];
-        Array.prototype.push.apply(args, insertions);
-        removals = Array.prototype.splice.apply(this._items, args);
-        removalsLength = removals.length;
-
-        if(insertionsLength === 0 && removalsLength === 0)
-            return [null, 0, 0];
-
-        for(i=0;i<removalsLength;i++)
-            // FIXME: apparently in a move action, this destroy would have the wrong semantics
-            // is this used in the StyleDict?
-            // it is important that the *immutable* Parameters don't get unusable
-            // by this!
-            removals[i].destroy();
-
-        // update the existing indexes: this._dict and this.__indexes
-        // record the event's
-
-        var changeRate = insertionsLength - removalsLength
-          , canonicalStartIndex = this._getCanonicalStartIndex(startIndex, oldLength)
-          , removedRangeEnd = canonicalStartIndex + removalsLength
-          , insertedDict = this._getInsertedDict(insertions, canonicalStartIndex)
-          , key, active, insertedIndexes, indexes
-          , createdKeys = []
-          , erase, event
-          ;
-
-        for(key in insertedDict) {
-            if(!(key in this._indexes))
-                createdKeys.push(key);
-        }
-
-        // update the existing entries in this._indexes
-        for(key in this._indexes) {
-            indexes = this._indexes[key];
-            insertedIndexes = insertedDict[key] || [];
-            erase = this._updateIndexes(indexes, canonicalStartIndex
-                            , removedRangeEnd, changeRate, insertedIndexes);
-            if(!erase) continue;
-
-            delete this._indexes[key];
-            if(!events['erase']) events['erase'] = [];
-            events['erase'].push(key);
-        }
-
-        // update the existing entries in this._dict
-        for(key in this._dict) {
-            event = key in this._indexes
-                ? this._updateDict(key, canonicalStartIndex, removedRangeEnd, changeRate)
-                // it is no more in this._indexes so this is a delete
-                : 'delete'
-                ;
-            if(!event) continue;
-
-            if(event === 'delete')
-                delete this._dict[key];
-
-            if(!events[event]) events[event] = [];
-            events[event].push(key);
-        }
-
-        // insert new entries into this._dict and this._indexes
-        for(i=0,l=createdKeys.length;i<l;i++) {
-            key = createdKeys[i];
-            this._indexes[key] = insertedDict[key];
-            active = this._getActiveIndex(key);
-
-            if(active === -1) continue;
-
-            this._dict[key] = active;
-            if(!events['add']) events['add'] = [];
-            events['add'].push(key);
-        }
-
-        if('add' in events || 'delete' in events)
-            // mark for update
-            this._keys = null;
-
-        this._triggerEvents(events);
-        return [startIndex, removalsLength, insertionsLength, removals];
-    };
-
-    _p.splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
-        var result = this._splice(startIndex, deleteCount, _insertions);
-        if(result[1] || result[2])
-            this._trigger('update');
-        return result;
-    };
-
-    /**
-     * replace or add
-     * override the active item or create new entry
-     *
-     * emits: "add", "change" or nothing
-     */
-    _p.setParameter = function(item) {
-        var key = item.name
-          , items = this._items
-          , index
-          , eventName
-          , event = Object.create(null)
-          , old
-          ;
-        if(!_isValidParameter(item))
-            throw new ValueError('Trying to set an invalid property: ' + item);
-        if(!this.has(key)) {
-            eventName = 'add';
-            index = items.length;
-            items.push(item);
-            if(!this._indexes[key])
-                this._indexes[key] = [index];
-            else
-                this._indexes[key].push(index);
-            this._dict[key] = index;
-            this._keys.push(key);
-        }
-        else {
-            eventName = 'change';
-            index = this._dict[key];
-            old = items[index];
-            items[index] = item;
-        }
-        // emit events
-        if(old) old.destroy();
-
-        event[eventName] = [key];
-        this._triggerEvents(event);
-        this._trigger('update');
-    };
-
-    /**
-     * Remove all items with key as name (valid, invalid, active, inactive)
-     * return number of removed items
-     *
-     * emits: ["delete", "erase"], "erase" or nothing
-     */
-    _p.erase = function(key) {
-        var deleteCount, total, i, length, index, indexes;
-        if(!this._indexes) this._buildIndex();
-
-        deleteCount = 0;
-        total = 0;
-        while(key in this._indexes) {
-            indexes = this._indexes[key];
-            length = indexes.length;
-            if(length === 0)
-                throw new AssertionError('There MUST NOT be a key without any index');
-            deleteCount = 1;
-            index = indexes[0];
-            // find all indexes that follow directly after index
-            // because they can be removed with the same splice
-            for(i=1;i<length;i++) {
-                if(indexes[i] === index + deleteCount)
-                    deleteCount++;
-            }
-            // NOTE: this uses _splice, because the update event should
-            // be triggert only once at the end of an action (or as seldom as possible)
-            this._splice(index, deleteCount);
-            total += deleteCount;
-        }
-        if(total)
-            this._trigger('update');
-        return total;
-    };
-
-    /**
-     * Remove/delete the currently active item for key.
-     * May make another valid parameter with the same name active,
-     * if there is any.
-     *
-     * emits: "change" or "delete" or noting
-     */
-    _p.removeCurrentActiveParameter = function(key) {
-        if(!this.has(key))
-            return 0;
-        // delete the currently active item for key
-        var index = this._dict[key];
-
-        this.splice(index, 1);
-        return 1;
-    };
-
-    /**
-     * NOTE: In an async environment this will likely create a race condition.
-     */
-    _p.keys = function() {
-        if(!this._dict)
-            this._buildIndex();
-        else if(!this._keys)
-            this._keys = Object.keys(this._dict);
-        return this._keys.slice();
-    };
-
-    _p.get = function(key) {
-        if(!this._dict)
-            this._buildIndex();
-        if(!(key in this._dict))
-            throw new KeyError('Key "'+key+'" not in ParameterDict.');
-        return this._getItemValue(this._dict[key]);
-    };
-
-    _p.getItem = function(index) {
-        return this._items[index];
-    };
-
-    /**
-     * NOTE: In an async environment this will likely create a race condition.
-     */
-    _p.has = function(key) {
-        if(!this._dict)
-            this._buildIndex();
-        return key in this._dict;
-    };
-
-    /**
-     * NOTE: In an async environment this will likely create a race condition.
-     */
-    _p.find = function(key) {
-        if(!this._dict)
-            this._buildIndex();
-        return this._indexes[key].slice() || [];
-    };
-
-    return ParameterDict;
-});
-
 define('metapolator/models/CPS/elements/AtImportCollection',[
     'metapolator/errors'
   , './ParameterCollection'
@@ -44555,27 +44596,33 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
     function SelectionParameterController($scope, metapolatorModel, project) {
         $scope.selection = selection;
 
-        $scope.changeValue = function(parameter, operator, value, event) {
-            var val = value.current;
+        $scope.changeValue = function(parameter, operator, rangeExtreme, event) {
+            var val = operator[rangeExtreme].current;
             event.target.classList.remove('error');  // TODO: This needs design
-            if (typeof val === "string" && (event.type === 'blur' || event.which === 13)) {
-                // String and blur or enter event.
-                val = evaluateMathExpression(val);
-                if (val[0]) {
-                    event.target.classList.add('error');  // TODO: This needs design
-                    throw new UIInputError(val[0]);
+            // prevent range overlapping
+            if (operator.range && operator.high.current < operator.low.current) {
+                event.target.classList.add('error');  // TODO: This needs design
+                throw new UIInputError('Overlapping of range values.');
+            } else {
+                if (typeof val === 'string' && (event.type === 'blur' || event.which === 13)) {
+                    // String and blur or enter event.
+                    val = evaluateMathExpression(val);
+                    if (val[0]) {
+                        event.target.classList.add('error');  // TODO: This needs design
+                        throw new UIInputError(val[0]);
+                    }
+                    else {
+                        val = val[1];
+                    }
                 }
-                else {
-                    val = val[1]
-                }
-            }
-            if (isNumeric(val) && isFinite(val)) {
-                val = evaluateEvent(val, parameter, event);
-                val = round(val, parameter.base.decimals);
-                if (val !== value.fallback) {
-                    operator.low.current = val;
-                    updateCPS(val, parameter, operator);
-                    value.fallback = val;
+                if (isNumeric(val) && isFinite(val)) {
+                    val = evaluateEvent(val, parameter, event);
+                    val = round(val, parameter.base.decimals);
+                    if (val !== operator[rangeExtreme].fallback) {
+                        operator[rangeExtreme].current = val;
+                        updateCPS(val, parameter, operator);
+                        operator[rangeExtreme].fallback = val;
+                    }
                 }
             }
         };
@@ -44586,8 +44633,7 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
                 var element = $scope.model.parent.elements[i];
                 // if there is a range, we have to find the value for this element within the range
                 if (operator.range) {
-                    // TODO: pass in the high value.
-                    // operator.high.current = manageInputValue(value, parameter, operator, event);
+                    value = getRangeValue(element, parameter, operator);
                 }
                 // set the value of each element in the selection
                 // if there is not yet a parameter, we create it + cpsRule
@@ -44616,38 +44662,50 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
                 // update the range boundaries after setting each element,
                 // so the new value of a (in between range) element
                 // gets the right myPosition relative to the new boundaries
-                operator.low.old = operator.low.current;
-                operator.high.old = operator.high.current;
+                operator.low.fallback = operator.low.current;
+                operator.high.fallback = operator.high.current;
             }
         }
 
-        function getRangeValue (element, parameter, operator) {
-            var scale = null
-              , myPosition = null
-              , newValue = null
-              , oldLow = parseFloat(operator.low.old)
-              , oldHigh = parseFloat(operator.high.old)
-              , newLow = parseFloat(operator.low.current)
-              , newHigh = parseFloat(operator.high.current)
-              , currentValue = null;
+        function getRangeValue(element, parameter, operator) {
+            var scale
+              , myPosition
+              , oldLow = operator.low.fallback
+              , oldHigh = operator.high.fallback
+              , newLow = operator.low.current
+              , newHigh = operator.high.current
+              , currentValue
+              , newValue
             // find current value of the specific element
-            var elementParameter = element.getParameterByName(parameter.name);
+              , elementParameter = element.getParameterByName(parameter.base.name);
             if (!elementParameter) {
-               currentValue = operator.standardValue;
+                // not every element in the selection has necessarily already the parameter
+               currentValue = operator.base.standardValue;
             } else {
-                var elementOperator = elementParameter.getOperatorByName(operator.name);
+                // same goes for the operator
+                var elementOperator = elementParameter.findOperator(operator.base, operator.id);
                 if (!elementOperator) {
-                    currentValue = operator.standardValue;
+                    currentValue = operator.base.standardValue;
                 } else {
                     currentValue = elementOperator.value;
                 }
             }
-            if (oldLow == newLow && oldHigh == newHigh) {
+            if (oldLow === newLow && oldHigh === newHigh) {
+                // nothing's changed
                 newValue = currentValue;
             } else {
                 scale = oldHigh - oldLow;
-                myPosition = (currentValue - oldLow) / scale;
-                newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.decimals);
+                // in the rare event of starting with a legal range, changing step by step one of the 2 values
+                // until high and low are the same (this in itself is allowed), the next step will provide a
+                // scale of 0.
+                if (scale !== 0) {
+                    myPosition = (currentValue - oldLow) / scale;
+                    newValue = round(((newHigh - newLow) * myPosition + newLow), parameter.base.decimals);
+                } else {
+                    // TODO: arrange the events in this situation
+                    newValue = newLow;
+                }
+
             }
             return newValue;
         }
@@ -44782,7 +44840,7 @@ define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter
 
 
 
-define('require/text!metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter.tpl',[],function () { return '<div class="operator-row" ng-repeat="operator in model.operators track by $index">\n    <div ng-if="operator.name !== \'effectiveValue\'">\n        <div ng-click="toggleParameterPanel(model, $event)"\n             class="parameter-key panel-zone"\n             ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-parameter\' && model.base.name === panel.selectedParameter.base.name}">\n                <span ng-if="$index == 0">{{model.base.name}}</span>\n        </div>\n        <div class="parameter-operator panel-zone" ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-operator\'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.sign}}</div>\n        <div class="operator-value">\n            <span ng-if="!operator.range">\n                <input ng-model="operator.low.current"\n                       ng-blur="changeValue(model, operator, operator.low, $event)"\n                       ng-keyup="changeValue(model, operator, operator.low, $event)"\n                       mtk-mousewheel="changeValue(model, operator, operator.low, $event)"\n                       mtk-enter="changeValue(model, operator, operator.low, $event)">\n            </span>\n            <span ng-if="operator.range"> \n                <input class="range-input range-left" ng-model="operator.low.current" ng-init="operator.low.old = operator.low.current" ng-blur="changeValue(model, operator, operator.low, \'blur\')" ng-keyup=""> to\n                <input class="range-input" ng-model="operator.high.current" ng-init="operator.high.old = operator.high.current"  ng-blur="changeValue(model, operator, operator.high, \'blur\')" ng-keyup="">\n            </span>\n        </div>\n    </div>\n</div> \n<div ng-if="model.effectiveValue" class="operator-row">\n    <div class="parameter-key">{{model.base.name}}</div>\n    <div class="parameter-operator effective-icon">&#10171;</div>\n    <div class="operator-value operator-value-effective">\n        <span ng-if="!model.effectiveValue.range">{{model.effectiveValue.low}}</span>\n        <span ng-if="model.effectiveValue.range">{{model.effectiveValue.low}} to {{model.effectiveValue.high}}</span>\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'parameter\' && model.base.name === selection.panel.parameter.base.name"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="parameter in selection.baseParameters"\n         ng-class="{\'selected\': parameter.name === selection.panel.parameter.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeParameter(parameter)">{{parameter.name}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeParameter()">\n        Remove\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'operator\'"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="operator in selection.baseOperators"\n         ng-class="{\'selected\': operator.name === selection.panel.operator.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeOperator(operator)">{{operator.sign}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeOperator()">\n        Remove\n    </div>\n</div>';});
+define('require/text!metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter.tpl',[],function () { return '<div class="operator-row" ng-repeat="operator in model.operators track by $index">\n    <div ng-if="operator.name !== \'effectiveValue\'">\n        <div ng-click="toggleParameterPanel(model, $event)"\n             class="parameter-key panel-zone"\n             ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-parameter\' && model.base.name === panel.selectedParameter.base.name}">\n                <span ng-if="$index == 0">{{model.base.name}}</span>\n        </div>\n        <div class="parameter-operator panel-zone" ng-class="{\'selected-parameter\': selection.panel === model.parent.level + \'-operator\'}" ng-click="toggleOperatorPanel(model, operator, $event)">{{operator.base.sign}}</div>\n        <div class="operator-value">\n            <span ng-if="!operator.range">\n                <input ng-model="operator.low.current"\n                       ng-blur="changeValue(model, operator, \'low\', $event)"\n                       ng-keyup="changeValue(model, operator, \'low\', $event)"\n                       mtk-mousewheel="changeValue(model, operator, \'low\', $event)"\n                       mtk-enter="changeValue(model, operator, \'low\', $event)">\n            </span>\n            <span ng-if="operator.range"> \n                <input class="range-input range-left"\n                       ng-model="operator.low.current"\n                       ng-blur="changeValue(model, operator, \'low\', $event)"\n                       ng-keyup="changeValue(model, operator, \'low\', $event)"\n                       mtk-mousewheel="changeValue(model, operator, \'low\', $event)"\n                       mtk-enter="changeValue(model, operator, \'low\', $event)"> to\n                <input class="range-input"\n                       ng-model="operator.high.current"\n                       ng-blur="changeValue(model, operator,\'high\', $event)"\n                       ng-keyup="changeValue(model, operator, \'high\', $event)"\n                       mtk-mousewheel="changeValue(model, operator, \'high\', $event)"\n                       mtk-enter="changeValue(model, operator, \'high\', $event)">\n            </span>\n        </div>\n    </div>\n</div> \n<div ng-if="model.effectiveValue" class="operator-row">\n    <div class="parameter-key">{{model.base.name}}</div>\n    <div class="parameter-operator effective-icon">&#10171;</div>\n    <div class="operator-value operator-value-effective">\n        <span ng-if="!model.effectiveValue.range">{{model.effectiveValue.low}}</span>\n        <span ng-if="model.effectiveValue.range">{{model.effectiveValue.low}} to {{model.effectiveValue.high}}</span>\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'parameter\' && model.base.name === selection.panel.parameter.base.name"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="parameter in selection.baseParameters"\n         ng-class="{\'selected\': parameter.name === selection.panel.parameter.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeParameter(parameter)">{{parameter.name}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeParameter()">\n        Remove\n    </div>\n</div>\n\n<div class="single-panel control-panel"\n     ng-if="selection.panel.level === model.parent.level && selection.panel.type === \'operator\'"\n     ng-style="{\'left\': selection.panel.left + \'px\', \'top\': selection.panel.top + \'px\'}">\n    <div ng-repeat="operator in selection.baseOperators"\n         ng-class="{\'selected\': operator.name === selection.panel.operator.base.name}"\n         class="control-panel-parameter control-panel-button push-button"\n         ng-mousedown="changeOperator(operator)">{{operator.sign}}</div>\n    <div class="control-panel-cancel control-panel-button push-button" ng-mousedown="removeOperator()">\n        Remove\n    </div>\n</div>';});
 
 define('metapolator/ui/metapolator/parameter-panel/selection/selection-parameter/selection-parameter-directive',[
     'require/text!./selection-parameter.tpl'
@@ -44844,6 +44902,10 @@ define('metapolator/ui/metapolator/directive/enter/enter-directive',[], function
     function enterDirective() {
         return function (scope, element, attrs) {
             element.bind('keydown keypress', function (event) {
+                // Stop the cursor from bouncing around.
+                if (event.which === 38) {
+                    event.preventDefault();
+                }
                 if (event.which === 13) {
                     scope.$apply(function () {
                         scope.$eval(attrs.ngEnter, {$event:event});
@@ -47364,11 +47426,18 @@ define('metapolator/ui/metapolator/master-panel/master-panel-controller',[
                             copiedCPSstring = copyCPSString(master);
                             registerMaster(clone, copiedCPSstring);
                             master.edit = false;
+                            // a clone could have stacked parameters, if there are any
+                            // they are not registered as such, becuase the parameters
+                            // arent created in a regular way. So to be safe we
+                            // destack the clones parameters standard.
+                            for (var k = 0, kl = clone.parameters.length; k < kl; k++) {
+                                clone.parameters[k].destackOperators();
+                            }
                             clones.push(clone);
                         }
                     }
-                    for (var k = 0, kl = clones.length; k < kl; k++) {
-                        sequence.add(clones[k]);
+                    for (var m = 0, ml = clones.length; m < ml; m++) {
+                        sequence.add(clones[m]);
                     }
                 }
                 selection.updateSelection('master');
@@ -62864,7 +62933,7 @@ define('metapolator/models/CPS/SelectorEngine',[
                     // anyways
                     specificity = complexSelectors[j].specificity.slice();
                     specificity.push(i);
-                    matchingRules.push([specificity, namespacedRule[1]]);
+                    matchingRules.push([specificity, namespacedRule]);
                     break;
                 }
             }
@@ -63618,14 +63687,23 @@ define('metapolator/models/CPS/StyleDict',[
     };
 
     _p._loadRules = function(force) {
-        if(this._rules === null || force)
-            //this call is most expensive
-            this._rules = this._controller.getRulesForElement(this.element);
+        var rules;
+        if(this._rules === null || force) {
+            //FIXME: duck typing, in the future the naming will all be
+            // properties instead of parameters. Then a rule and the element
+            // will both provide the `properties` interface.
+            // also, "rules" is not exactly right here, when we also have the
+            // element.properties in here.
+            this._rules = rules = [[null, {parameters: this.element.properties}, null]];
+            Array.prototype.push.apply(rules,
+                        //this call is most expensive
+                        this._controller.getRulesForElement(this.element));
+        }
     };
 
-    _p.getRules = function(rules) {
+    _p.getRules = function(includeElementProperties) {
         if(!this._dict) this._buildIndex();
-        return this._rules.slice();
+        return this._rules.slice(includeElementProperties ? 0 : 1);
     };
 
     /**
@@ -63634,12 +63712,12 @@ define('metapolator/models/CPS/StyleDict',[
      * Subscribes to propertyDict and property changes and updates
      */
     _p._buildIndex = function() {
-        assert(this._dict === null, 'Index alreay initializes, run invalidateRules to purge it.');
+        assert(this._dict === null, 'Index already initialized, run invalidateRules to purge it.');
         var i, l, j, ll, keys, key, parameters, subscriberID;
         this._loadRules();
         this._dict = Object.create(null);
         for(i=0,l=this._rules.length;i<l;i++) {
-            parameters = this._rules[i].parameters;
+            parameters = this._rules[i][1].parameters;
 
             subscriberID = parameters.on('add', [this, '_parameterAddHandler'], i);
             this._dictSubscriptions.push([parameters, subscriberID]);
@@ -63770,7 +63848,7 @@ define('metapolator/models/CPS/StyleDict',[
                         + 'to the new one, but it is.\n index: ' + newRuleIndex
                         + ' key: ' + key
                         + ' channel: ' + channelKey);
-        this._setDictValue(this._rules[newRuleIndex].parameters, key, newRuleIndex);
+        this._setDictValue(this._rules[newRuleIndex][1].parameters, key, newRuleIndex);
     };
 
     _p._setDictValue = function(parameters, key, parametersIndex) {
@@ -63796,7 +63874,7 @@ define('metapolator/models/CPS/StyleDict',[
         var i, l, parameters;
         this._unsetDictValue(key);
         for(i=0,l=this._rules.length;i<l;i++) {
-            parameters = this._rules[i].parameters;
+            parameters = this._rules[i][1].parameters;
             if(!parameters.has(key))
                 continue;
             this._setDictValue(parameters, key, i);
@@ -64074,7 +64152,10 @@ define('metapolator/models/CPS/elements/AtNamespaceCollection',[
             // e.g. via _structuralChangeHandler. So, the second call to
             // a not cleared child collection performs namespace.multiply
             // a second time on the same rules item.
-            rules[i] = [namespace.multiply(rules[i][0]), rules[i][1]];
+            //rules[i] = [namespace.multiply(rules[i][0]), rules[i][1], rules[i][2]];
+
+            // The copy is not needed at the moment because now ParameterCollection._getRules
+            rules[i][0] = namespace.multiply(rules[i][0])
         }
         return rules;
     };
@@ -75284,11 +75365,30 @@ define('metapolator/project/MetapolatorProject',[
         return this._cache.masters[masterName];
     };
 
+    _p._loadElementProperties = function(propertiesFile, momMaster) {
+        // get the rules ...
+        var parameterCollection = this.ruleController.getRule(false, propertiesFile)
+          , allRules = parameterCollection.rules
+          , newProperties
+          , rules
+          ;
+
+        function setProperties(element) {
+            /*jshint validthis: true*/
+            rules = this._controller._selectorEngine.getMatchingRules(allRules, element);
+            if(!rules[0]) return;
+            newProperties = rules[0][1].parameters.items;
+            element.properties.splice(0, element.properties.length, newProperties);
+        }
+        momMaster.walkTreeDepthFirst(setProperties.bind(this));
+    };
+
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
             var master = this.getMaster(masterName)
             , skeleton = this._data.masters[masterName].skeleton
+            , propertiesFile = this._data.masters[masterName].propertiesFile
             , sourceMOM
             , momMaster
             ;
@@ -75302,6 +75402,9 @@ define('metapolator/project/MetapolatorProject',[
             momMaster = sourceMOM.clone();
 
             momMaster.id = masterName;
+
+            if(propertiesFile)
+                this._loadElementProperties(propertiesFile, momMaster);
             this._controller.addMaster(momMaster, master._cpsFile);
         }
         return this._controller;
@@ -75576,7 +75679,7 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
   , dialog
   , project
 ) {
-    "use strict";
+    'use strict';
     function InstancePanelController($scope, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
@@ -75631,7 +75734,7 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
                 }
             }
             if (n === 1) {
-                var message = "Delete instance? This also deletes the design space '" + designSpace.name + "'.";
+                var message = 'Delete instance? This also deletes the design space ' + designSpace.name + '.';
                 dialog.confirm(message, function(result){
                     if (result) {
                         instance.remove();
@@ -75661,12 +75764,12 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
                 var retval
                   , getGenerator
                   ;
-                this.fileFormat = fileFormat || "UFO";
+                this.fileFormat = fileFormat || 'UFO';
                 this.instance = instance;
 
-                if (this.fileFormat == "UFO"){
+                if (this.fileFormat == 'UFO'){
                     getGenerator = project.getUFOExportGenerator.bind(project);
-                } else if (this.fileFormat == "OTF"){
+                } else if (this.fileFormat == 'OTF'){
                     getGenerator = project.getOTFExportGenerator.bind(project);
                 }
                 retval = getGenerator(
@@ -75683,17 +75786,17 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
 
             _p.getFileName = function() {
                 switch (this.fileFormat){
-                    case "UFO":
-                        return this.instance.displayName + ".ufo";
-                    case "OTF":
-                        return this.instance.displayName + ".otf";
+                    case 'UFO':
+                        return this.instance.displayName + '.ufo';
+                    case 'OTF':
+                        return this.instance.displayName + '.otf';
                 }
             };
 
             _p.pruneGenerator = function() {
                 if (this.generator)
                     delete this.generator;
-            }
+            };
 
             return ExportObject;
         })();
@@ -75710,21 +75813,21 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
             _p.constructor = ProgressBar;
 
             _p.set = function(width, text) {
-                this.bar.animate({"opacity": 1, "width": width + "%"}, this.updateDelay);
+                this.bar.animate({'opacity': 1, 'width': width + '%'}, this.updateDelay);
                 if (text)
                     this.label.html(text);
             };
 
             _p.reset = function() {
-                this.bar.animate( {"opacity": 0, "width": 0}
-                                , /*duration:*/ 0); // (that means "do it immediately!")
-                this.label.html("");
+                this.bar.animate( {'opacity': 0, 'width': 0}
+                                , /*duration:*/ 0); // (that means 'do it immediately!')
+                this.label.html('');
             };
 
             _p.complete = function(){
-                this.bar.animate( {"width": "100%", "opacity": 1}
+                this.bar.animate( {'width': '100%', 'opacity': 1}
                                 , this.updateDelay);
-                this.label.html("");
+                this.label.html('');
             };
 
             return ProgressBar;
@@ -75740,20 +75843,20 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
 
             function exportingGlyphMessage (data, instanceIndex, totalInstances) {
                 var msg
-                  , instanceName = data['target_name']
-                  , currentGlyph = data['current_glyph'] + 1 //humans start counting from 1.
-                  , totalGlyphs = data['total_glyphs']
-                  , glyphId = data['glyph_id']
+                  , instanceName = data.target_name
+                  , currentGlyph = data.current_glyph + 1 //humans start counting from 1.
+                  , totalGlyphs = data.total_glyphs
+                  , glyphId = data.glyph_id
                   ;
-                msg = "Calculating '" + glyphId + "' (" + currentGlyph + " of " + totalGlyphs + ")"
-                msg += " of '" + instanceName + "' (" + (instanceIndex+1) + " of " + totalInstances + ")";
+                msg = 'Calculating ' + glyphId + ' (' + currentGlyph + ' of ' + totalGlyphs + ')';
+                msg += ' of ' + instanceName + ' (' + (instanceIndex + 1) + ' of ' + totalInstances + ')';
                 return msg;
             }
 
             function calculateGlyphsProgress (data, instanceIndex, totalInstances) {
                 var percentage
-                  , currentGlyph = data['current_glyph']
-                  , totalGlyphs = data['total_glyphs']
+                  , currentGlyph = data.current_glyph
+                  , totalGlyphs = data.total_glyphs
                   ;
                 percentage = 100.0 * (instanceIndex + (currentGlyph/totalGlyphs)) / totalInstances;
                 return percentage;
@@ -75787,7 +75890,7 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
               , date = new Date()
               ;
             function zeroPadding(value){
-                return value < 10 ? "0" + String(value) : String(value);
+                return value < 10 ? '0' + String(value) : String(value);
             }
             year = zeroPadding(date.getFullYear());
             month = zeroPadding(date.getMonth() + 1); //getMonth() returns a zero-based value: 0=January, 11=December
@@ -75796,33 +75899,34 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
             minutes = zeroPadding(date.getMinutes());
             seconds = zeroPadding(date.getSeconds());
 
-            return [year, month, day].join("") + "-" + [hours, minutes, seconds].join("");
+            return [year, month, day].join('') + '-' + [hours, minutes, seconds].join('');
         }
 
         function setDownloadBlobLink(text, blob, filename, progress) {
-            var download = $("#blob_download");
+            var download = $('#blob_download');
             if (progress)
                 progress.complete();
 
-            download.css("display", "block");
-            download.children("a").html(text).click(function(){
+            download.css('display', 'block');
+            download.children('a').html(text).click(function(){
                 saveAs(blob, filename);
                 if (progress)
                     progress.reset();
-                download.css("display", "none").children("a").unbind("click");
+                download.css('display', 'none').children('a').unbind('click');
             });
         }
 
         $scope.exportIsRunning = false;
+
         function generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress) {
             var bundle = new JSZip()
-              , bundleFolderName = "metapolator-export-" + getTimestamp()
-              , bundleFileName = bundleFolderName + ".zip"
+              , bundleFolderName = 'metapolator-export-' + getTimestamp()
+              , bundleFileName = bundleFolderName + '.zip'
               , bundleFolder = bundle.folder(bundleFolderName)
               , totalInstances = exportObjects.length
               ;
             function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress, resolve, reject){
-                if (exportObjects.length==0){
+                if (exportObjects.length === 0){
                     resolve(true);
                     return;
                 }
@@ -75836,17 +75940,17 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
                   ;
                 if (!it.done){
                     if (progress){
-                        it['target_data'] = obj.getFileName();
+                        it.target_data = obj.getFileName();
                         progress.setData(index, totalInstances, it.value);
                     }
                 } else {
                     exportObjects.pop();
 
-                    if (obj.fileFormat == "UFO"){
-                        data = project.getZipFromIo(false, obj.io, obj.getFileName(), "uint8array");
-                        name = obj.getFileName() + ".zip";
+                    if (obj.fileFormat == 'UFO'){
+                        data = project.getZipFromIo(false, obj.io, obj.getFileName(), 'uint8array');
+                        name = obj.getFileName() + '.zip';
                     } else {
-                        /* obj.fileFormat == "OTF" */
+                        /* obj.fileFormat == 'OTF' */
                         data = obj.io.readFile(false, obj.getFileName());
                         name = obj.getFileName();
                     }
@@ -75861,7 +75965,7 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
             return new Promise(
                 _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress)
             ).then(function(){
-                return [bundleFileName, bundle.generate({type:"blob"})];
+                return [bundleFileName, bundle.generate({type:'blob'})];
             });
         }
 
@@ -75875,22 +75979,23 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
             if ($scope.exportIsRunning)
                 return;
 
-            var exportObjects = Array();
+            var exportObjects = [];
             for (var i = 0; i < $scope.model.instanceSequences.length; i++) {
                 var sequence = $scope.model.instanceSequences[i];
                 for (var j = 0; j < sequence.children.length; j++) {
                     var instance = sequence.children[j];
                     if (instance.exportFont){
-                        exportObjects.push(new ExportObject(instance, "OTF"));
-                        exportObjects.push(new ExportObject(instance, "UFO"));
+                        instance.measureAllGlyphs();
+                        exportObjects.push(new ExportObject(instance, 'OTF'));
+                        exportObjects.push(new ExportObject(instance, 'UFO'));
                     }
                 }
             }
 
             $scope.exportIsRunning = true;
             const UI_UPDATE_TIMESLICE = 50; // msecs
-            var progress = new InstanceExportProgressBar( $("#progressbar")
-                                                        , $("#progresslabel")
+            var progress = new InstanceExportProgressBar( $('#progressbar')
+                                                        , $('#progresslabel')
                                                         , UI_UPDATE_TIMESLICE );
             function finalizeExport(result) {
                 setDownloadBlobLink(result[0], result[1], result[0], progress);
@@ -75908,25 +76013,25 @@ define('metapolator/ui/metapolator/instance-panel/instance-panel-controller',[
         // hover functions
         $scope.mouseoverInstance = function(instance) {
             // Dim slider diamonds
-            var svgCurrent = $(".design-space-diamond.instance-" + instance.name);
-            $(".design-space-diamond").not(svgCurrent).each(function() {
+            var svgCurrent = $('.design-space-diamond.instance-' + instance.name);
+            $('.design-space-diamond').not(svgCurrent).each(function() {
                 $(this).css({ opacity: 0.1 });
             });
             // Dim specimen text
             if (instance.display || instance === $scope.model.currentInstance) {
                 // here is 'master' used for syncing with master reasons
-                var textCurrent = $(".specimen-field-instance ul li.master-" + instance.name);
-                $(".specimen-field-instance ul li").not(textCurrent).each(function() {
-                    $(this).addClass("dimmed");
+                var textCurrent = $('.specimen-field-instance ul li.master-' + instance.name);
+                $('.specimen-field-instance ul li').not(textCurrent).each(function() {
+                    $(this).addClass('dimmed');
                 });
             }
         };
     
         $scope.mouseleaveInstance = function() {
             // Restore slider diamonds
-            $(".design-space-diamond").css("opacity", "");
+            $('.design-space-diamond').css('opacity', '');
             // Restore specimen text
-            $(".specimen-field-instance ul li").removeClass("dimmed");
+            $('.specimen-field-instance ul li').removeClass('dimmed');
         };
     }
 
@@ -76065,8 +76170,8 @@ define('metapolator/ui/metapolator/font-export-panel/font-export-panel-controlle
         this.$scope.name = 'fontExport';
         
         $scope.checkAll = function(setting) {
-            for (var i = $scope.model.sequences.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.sequences[i];
+            for (var i = $scope.model.length - 1; i >= 0; i--) {
+                var sequence = $scope.model[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     instance.exportFont = setting;
@@ -76135,7 +76240,7 @@ define('metapolator/ui/metapolator/metadata-panel/metadata-panel-controller',[],
     return MetadataPanelController;
 }); 
 
-define('require/text!metapolator/ui/metapolator/metadata-panel/metadata-panel.tpl',[],function () { return '<div class="under-construction"></div>\n<div id="progress-bar-container">\n    <div id="progressbar">&nbsp;</div>\n    <div id="progresslabel">&nbsp;</div>\n    <div id="blob_download" style="display:none">Export Complete:&nbsp;<a href="#"></a></div>\n</div>\n';});
+define('require/text!metapolator/ui/metapolator/metadata-panel/metadata-panel.tpl',[],function () { return '<div class="under-construction">\n    <div class="bottom-text">\n        <form id="export-paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">Want new features?<br> <a title="Give financial support via Paypal" href="javascript:{}" onclick="document.getElementById(\'export-paypal\').submit(); return false;">Donate</a> and we\'ll make it happen<input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="CMQZM2FJDP4VA"></form><br><br>\n        Coming Soon:<br>Edit Metadata\n    </div>\n\n</div>\n<div id="progress-bar-container">\n    <div id="progressbar">&nbsp;</div>\n    <div id="progresslabel">&nbsp;</div>\n    <div id="blob_download" style="display:none">Export Complete:&nbsp;<a href="#"></a></div>\n</div>';});
 
 define('metapolator/ui/metapolator/metadata-panel/metadata-panel-directive',[
     'require/text!./metadata-panel.tpl'
@@ -77224,7 +77329,7 @@ define('metapolator/models/metapolator/masters/PointModel',[
     var _p = PointModel.prototype = Object.create(Parent.prototype);
 
     _p.getSelector = function() {
-        return "master#" + this.master.name + " " + "glyph#" + this.parent.parent.name + " > " + this.parent.name + " > " + this.name + " > right" ;
+        return "master#" + this.master.name + " " + "glyph#" + this.parent.parent.name + " > " + this.parent.name + " > " + this.name;
     };
 
     return PointModel;
@@ -77698,7 +77803,7 @@ define('metapolator/models/metapolator/instances/GlyphModel',[
 
     // this returns the glyphs - from the master this instance is based upon -
     // with the same name as this glyph
-    _p.getMasterGlyphs = function(glyphName) {
+    _p.getMasterGlyphs = function() {
         var glyphs = [];
         for (var i = this.parent.axes.length - 1; i >= 0; i--) {
             var axis =  this.parent.axes[i]
@@ -77931,6 +78036,19 @@ define('metapolator/models/metapolator/instances/InstanceModel',[
             this.parent.currentInstance = null;
         } else {
             this.parent.children[l - 1].setCurrent();
+        }
+    };
+
+    _p.measureAllGlyphs = function() {
+        for (var i = 0, l = this.children.length; i < l; i++) {
+            // get the corresponding glyph(s) of the master(s) for each glyph of this instance
+            var instanceGlyph = this.children[i]
+              , masterGlyphs =  instanceGlyph.getMasterGlyphs();
+            for (var j = 0, jl = masterGlyphs.length; j < jl; j++) {
+                var masterGlyph = masterGlyphs[j];
+                // if it isn't displayed before, it is measured and catches up cps if needed
+                masterGlyph.checkIfIsDisplayed();
+            }
         }
     };
     
@@ -78546,12 +78664,14 @@ define('metapolator/ui/services/GlyphRendererAPI',[
 });
 
 define('metapolator/Metapolator',[
-    'webAPI/document'
+    'jquery'
+  , 'webAPI/document'
   , 'metapolator/models/metapolator/AppModel'
   , 'metapolator/ui/services/GlyphRendererAPI'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 ], function(
-    document
+    $
+  , document
   , AppModel
   , GlyphRendererAPI
   , selection
