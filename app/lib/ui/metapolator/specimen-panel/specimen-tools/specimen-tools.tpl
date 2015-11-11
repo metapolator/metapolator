@@ -3,7 +3,7 @@
 </div>
 
 <div class="specimen-tool-set">
-    <mtk-size-input class="specimen-tool" mtk-model="model.sizes"></mtk-size-input>
+    <mtk-size-input class="specimen-tool" mtk-model="model.sizes" mtk-type="model.type"></mtk-size-input>
     <mtk-size-rope class="specimen-tool" mtk-model="model.sizes" mtk-type="model.type"></mtk-size-rope>
     <mtk-line-height class="specimen-tool" mtk-model="model.sizes"></mtk-line-height>
 </div>
