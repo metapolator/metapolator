@@ -19,7 +19,7 @@ define([
                 var dS = 8, 
                     state = {
                         svg : d3.select(element[0]).append('svg').attr('width', 2 * dS + 2).attr('height', 2 * dS + 2),
-                        diamondShape : dS + ',0 ' + 2 * dS + ',' + dS + ' ' + dS + ',' + 2 * dS + ' 0,' + dS,
+                        diamondShape : (dS + 1) + ',1 ' + (2 * dS + 1) + ',' + (dS + 1) + ' ' + (dS + 1) + ',' + (2 * dS + 1) + ' 1,' + (dS + 1),
                         templayer : {
                             created: false,
                             element : $('<div class="templayer"></div>')[0],
