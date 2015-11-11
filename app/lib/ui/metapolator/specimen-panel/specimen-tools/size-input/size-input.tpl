@@ -1,1 +1,1 @@
-<input class="specimen-tools-size-input" ng-model="model.fontSize">
+<input class="specimen-tools-size-input" ng-model="model.fontSize" ng-change="handleSVGbox()">

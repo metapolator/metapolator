@@ -8,6 +8,7 @@ define(['require/text!./size-input.tpl'], function(template) {
           , template : template
           , scope : {
                 model : '=mtkModel'
+              , type : '=mtkType'
             }
         };
     }
