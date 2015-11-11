@@ -45059,7 +45059,7 @@ define('metapolator/ui/metapolator/specimen-panel/specimen-tools/specimen-tools-
 });
 
 
-define('require/text!metapolator/ui/metapolator/specimen-panel/specimen-tools/specimen-tools.tpl',[],function () { return '<div class="specimen-tool-set">\n    <mtk-specimen-samples class="specimen-tool" mtk-model="model.mixer" mtk-glyphRange="model.glyphRange"></mtk-specimen-samples>\n</div>\n\n<div class="specimen-tool-set">\n    <mtk-size-input class="specimen-tool" mtk-model="model.sizes"></mtk-size-input>\n    <mtk-size-rope class="specimen-tool" mtk-model="model.sizes" mtk-type="model.type"></mtk-size-rope>\n    <mtk-line-height class="specimen-tool" mtk-model="model.sizes"></mtk-line-height>\n</div>\n\n<div class="specimen-tool-set">\n    <mtk-mixer class="specimen-tool" mtk-model="model.mixer"></mtk-mixer>\n</div>\n\n<div class="specimen-tool-set specimen-tool-set-right">\n    <mtk-font-by class="specimen-tool" mtk-model="model.mixer"></mtk-font-by>\n</div>\n';});
+define('require/text!metapolator/ui/metapolator/specimen-panel/specimen-tools/specimen-tools.tpl',[],function () { return '<div class="specimen-tool-set">\n    <mtk-specimen-samples class="specimen-tool" mtk-model="model.mixer" mtk-glyphRange="model.glyphRange"></mtk-specimen-samples>\n</div>\n\n<div class="specimen-tool-set">\n    <mtk-size-input class="specimen-tool" mtk-model="model.sizes" mtk-type="model.type"></mtk-size-input>\n    <mtk-size-rope class="specimen-tool" mtk-model="model.sizes" mtk-type="model.type"></mtk-size-rope>\n    <mtk-line-height class="specimen-tool" mtk-model="model.sizes"></mtk-line-height>\n</div>\n\n<div class="specimen-tool-set">\n    <mtk-mixer class="specimen-tool" mtk-model="model.mixer"></mtk-mixer>\n</div>\n\n<div class="specimen-tool-set specimen-tool-set-right">\n    <mtk-font-by class="specimen-tool" mtk-model="model.mixer"></mtk-font-by>\n</div>\n';});
 
 define('metapolator/ui/metapolator/specimen-panel/specimen-tools/specimen-tools-directive',['require/text!./specimen-tools.tpl'], function(template) {
     "use strict";
@@ -45318,7 +45318,7 @@ define('metapolator/ui/metapolator/specimen-panel/specimen-tools/size-rope/size-
                 var dS = 8, 
                     state = {
                         svg : d3.select(element[0]).append('svg').attr('width', 2 * dS + 2).attr('height', 2 * dS + 2),
-                        diamondShape : dS + ',0 ' + 2 * dS + ',' + dS + ' ' + dS + ',' + 2 * dS + ' 0,' + dS,
+                        diamondShape : (dS + 1) + ',1 ' + (2 * dS + 1) + ',' + (dS + 1) + ' ' + (dS + 1) + ',' + (2 * dS + 1) + ' 1,' + (dS + 1),
                         templayer : {
                             created: false,
                             element : $('<div class="templayer"></div>')[0],
@@ -45450,6 +45450,14 @@ define('metapolator/ui/metapolator/specimen-panel/specimen-tools/size-input/size
     "use strict";
     function SizeInputController($scope) {
         this.$scope = $scope;
+
+        $scope.handleSVGbox = function() { // FIXME Make this DRY: same function in size-rope-controller
+            var ul = document.getElementsByClassName("specimen-ul-" + $scope.type)[0];
+            var children = ul.children;
+            for (var i = 0, l = children.length; i < l; i++) {
+                children[i].firstElementChild.style.width = "auto";
+            }
+        };
     }
 
 
@@ -45460,7 +45468,7 @@ define('metapolator/ui/metapolator/specimen-panel/specimen-tools/size-input/size
 });
 
 
-define('require/text!metapolator/ui/metapolator/specimen-panel/specimen-tools/size-input/size-input.tpl',[],function () { return '<input class="specimen-tools-size-input" ng-model="model.fontSize">';});
+define('require/text!metapolator/ui/metapolator/specimen-panel/specimen-tools/size-input/size-input.tpl',[],function () { return '<input class="specimen-tools-size-input" ng-model="model.fontSize" ng-change="handleSVGbox()">';});
 
 define('metapolator/ui/metapolator/specimen-panel/specimen-tools/size-input/size-input-directive',['require/text!./size-input.tpl'], function(template) {
     "use strict";
@@ -45472,6 +45480,7 @@ define('metapolator/ui/metapolator/specimen-panel/specimen-tools/size-input/size
           , template : template
           , scope : {
                 model : '=mtkModel'
+              , type : '=mtkType'
             }
         };
     }
