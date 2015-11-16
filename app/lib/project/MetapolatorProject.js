@@ -20,6 +20,7 @@ define([
   , 'io/zipUtil'
   , 'io/InMemory'
   , './ufoDefaults'
+  , 'io/Mounting'
 ], function(
     errors
   , log
@@ -42,6 +43,7 @@ define([
   , zipUtil
   , InMemory
   , ufoDefaults
+  , MountingIO
 ) {
     "use strict";
 
@@ -52,8 +54,10 @@ define([
       , IONoEntryError = ufoErrors.IONoEntry
       ;
 
-    function MetapolatorProject(io, baseDir, fsEvents) {
-        this._io = io;
+    function MetapolatorProject(io, baseDir, fsEvents, cpsLibIo) {
+        this._projectIo = io;
+        this._cpsLibIo = cpsLibIo;
+
         this._data = {
             masters: {}
         };
@@ -64,6 +68,19 @@ define([
         };
 
         this.baseDir = baseDir || '.';
+        if(cpsLibIo) {
+            // I'm keeping the conditional here, so that the project can bring
+            // it's own cps/lib. However, this is just a temporary backwards
+            // compatibility thing. A project should rather not use the
+            // cps/lib directory.
+            // NOTE: the mount call completeley hides everything that would
+            // be at project/data/ ... /cps/lib otherwise.
+            this._io = new MountingIO(this._projectIo);
+            this._io.mount(cpsLibIo.io, this.cpsDir + '/lib', cpsLibIo.pathOffset);
+        }
+        else
+            this._io = io;
+
         this._fsEvents = fsEvents;
         this._updateChangedRuleHandlers = null;
         if(this._fsEvents) {
@@ -73,7 +90,7 @@ define([
         }
 
         Object.defineProperty(this, 'ruleController', {
-            value: new RuleController(io, parameterRegistry, this.cpsDir)
+            value: new RuleController(this._io, parameterRegistry, this.cpsDir)
         });
 
         this._controller = new ModelController(this.ruleController);
@@ -97,11 +114,17 @@ define([
         get: function(){ return this.dataDir + '/cps';}
     });
 
+    Object.defineProperty(_p, 'cpsGeneratedDirName', {
+        get: function(){ return 'generated';}
+    });
+
     Object.defineProperty(_p, 'cpsOutputConverterFile', {
-        get: function(){ return 'centreline-skeleton-to-symmetric-outline.cps'; }
+        // name as used in @import
+        get: function(){ return this.cpsGeneratedDirName + '/centreline-skeleton-to-symmetric-outline.cps'; }
     });
 
     Object.defineProperty(_p, 'cpsGlobalFile', {
+        // name as used in @import
         get: function(){ return 'global.cps'; }
     });
 
@@ -115,7 +138,6 @@ define([
     Object.defineProperty(_p, 'fontinfoFileName', {
         value: 'fontinfo.plist'
     });
-
 
     Object.defineProperty(_p, 'groupsFile', {
         get: function(){ return this.baseDir+'/' + this.groupsFileName; }
@@ -268,6 +290,7 @@ define([
 
         // create dir this.dataDir/cps
         this._io.mkDir(false, this.cpsDir);
+        this._io.mkDir(false, this.cpsDir + '/' + this.cpsGeneratedDirName);
 
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
@@ -583,7 +606,7 @@ define([
 
         // First step is to instantiate an InMemory I/O module:
         var mem_io = new InMemory()
-          , importedMasters = []
+          , importedMasters = new Array()
           , dirs, baseDir, names, name
           , n, l, UFOZip, another_blob
           , sourceUFODir, glyphs, masterName
@@ -619,7 +642,7 @@ define([
         }
 
         // Now we'll list all in-memory filesystem entries again
-        // looking for UFO folders which may have been extracted from 
+        // looking for UFO folders which may have been extracted from
         // one of the ufo.zip files or could even be already available since the
         // decompression of the original zip container.
         entries = mem_io.readDir(false, "/");

@@ -57,7 +57,9 @@ echo "Exporting $APP"
 
 
 mkdir "$TARGET" \
-    && rsync -vvap "$PROJECT/" "$TARGET/project/"\
+    && rsync -vvap "$PROJECT/" "$TARGET/project/" \
+    && mkdir -p "$TARGET/lib" \
+    && rsync -vvap "$SOURCE/app/lib/cpsLib" "$TARGET/lib" \
     && cp "$SOURCE/README.md" "$TARGET" \
     && cp "$SOURCE/LICENSE.txt" "$TARGET"
 
@@ -130,18 +132,21 @@ done
 # into returning a HTTP 200 status code
 # To read the dir, our file system abstraction would expect a \n separated list of
 # directory contents, where directories end with a slash "/"
-TARGETPROJECT="$TARGET/project"
-for line in $(find $TARGETPROJECT -type d); do
-    touch "$line/index.html";
-    if [ "$line" = "$TARGETPROJECT" ]; then
-        continue;
-    fi
-    echo "$(basename $line)/" >> "$(dirname $line)/index.html";
+for TARGETPROJECT in "$TARGET/project $TARGET/lib"; do
+    for line in $(find $TARGETPROJECT -type d); do
+        touch "$line/index.html";
+        if [ "$line" = "$TARGETPROJECT" ]; then
+            continue;
+        fi
+        echo "$(basename $line)/" >> "$(dirname $line)/index.html";
+    done
+    echo "----------------------";
+    for line in $(find $TARGETPROJECT -type f); do
+        if [ "$(basename $line)" = 'index.html' ]; then
+            continue;
+        fi
+        echo "$(basename $line)" >> "$(dirname $line)/index.html";
+    done
 done
-echo "----------------------";
-for line in $(find $TARGETPROJECT -type f); do
-    if [ "$(basename $line)" = 'index.html' ]; then
-        continue;
-    fi
-    echo "$(basename $line)" >> "$(dirname $line)/index.html";
-done
+
+

@@ -102,6 +102,8 @@ if (require.main === module) {
             // that emits change events at "/fsEvents/project"
             mountAndMonitorRESTDirectory('/project', project.baseDir
                                                         , socketIO, app);
+            mountAndMonitorRESTDirectory('/lib/cpsLib', libDir + '/cpsLib'
+                                                        , socketIO, app);
 
             if (server.address()) {
                 console.warn('Metapolator: Serving ' + application.name + '.');
