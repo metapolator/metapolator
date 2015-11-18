@@ -47,8 +47,8 @@
   "dependencies": {
     "commander": "~2.3.0",
     "express": "~4.7.2",
-    "jsdom": "~0.10.5",
-    "libxmljs": "~0.14.2",
+    "jsdom": "~3",
+    "libxmljs": "~0.15.0",
     "requirejs": "~2.1.14",
     "lie": "~2.7.6",
     "immutable-complex": "~3.0.4",
