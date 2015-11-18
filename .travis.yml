@@ -1,3 +1,22 @@
+sudo: false
+
 language: node_js
 node_js:
   - "0.10"
+  - "0.12"
+  - "4"
+  - "5"
+
+# These are workarounds for travis not building libxmljs
+# found here: https://github.com/polotek/libxmljs/issues/339#issuecomment-142504275
+# It is likeley that we wont need this for a long time.
+env:
+    - CXX=g++-4.8
+
+addons:
+    apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.8
+
