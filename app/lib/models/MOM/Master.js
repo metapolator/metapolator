@@ -69,7 +69,7 @@ define([
                   , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
-                        ? ':i(' + this._parent.find(this) + ')'
+                        ? ':i(' + this.index + ')'
                         : '')
                 ].join('');
         }
