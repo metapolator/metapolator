@@ -19,10 +19,10 @@ define([
 ) {
     "use strict";
 
+    var NotImplementedError = errors.NotImplemented;
+
     var GlyphSet = (function(errors) {
-        var KeyError = errors.Key
-          , NotImplementedError = errors.NotImplemented
-          ;
+        var KeyError = errors.Key;
         /** a ducktyped GlyphSet for BasePen **/
         function GlyphSet(master, drawFunc) {
             this._master = master;
@@ -40,23 +40,21 @@ define([
             // the result is also a ducktyped "glyph" which needs a draw method in BasePen
             result = Object.create(null);
             result.draw = this._drawFunc.bind(glyph);
-        }
+        };
 
         return GlyphSet;
     })(errors);
 
-    function OTFExportController(io, project, masterName, targetName, precision) {
+    function OTFExportController(io, master, targetName, precision) {
         this._io = io;
-        this._project = project;
-        this._masterName = masterName;
+        this._master = master;
         this._targetName = targetName;
         this._precision = precision;
     }
     var _p = OTFExportController.prototype;
 
     _p.exportGenerator = function*(){
-        var model = this._project.open(this._masterName)
-          , master = model.query('master#' + this._masterName)
+        var master = this._master
           , glyphs = master.children
           , glyph
           , updatedUFOData
@@ -65,13 +63,6 @@ define([
           , time, one, total = 0
           , font
           , otf_glyphs = []
-          , renderer = {
-                  penstroke: glyphBasics.renderPenstrokeOutline
-                , contour: glyphBasics.renderContour
-            }
-        // We need to get the name  model into the closure, because `this` will be used otherwise
-        // NOTE: I believe we could get rid of the model argument by refactoring glyphBasics a bit
-        // Would be a big deal as well ;-)
           , drawFunc = function(async, segmentPen) {
                 /*jshint validthis:true*/
                 // we are going to bind the MOM glyph to `this`
@@ -79,7 +70,7 @@ define([
                 if(async)
                     throw new NotImplementedError('Asynchronous execution is not implemented');
                 pen = new PointToSegmentPen(segmentPen);
-                return glyphBasics.drawGlyphToPointPen ( renderer, model, this, pen );
+                return glyphBasics.drawPoints ( this, pen );
             }
           , glyphSet = new GlyphSet(master, drawFunc)
           ;
@@ -92,7 +83,7 @@ define([
               , bboxPen = new PointToSegmentPen(bPen)
               ;
             glyph = glyphs[i];
-            style = model.getComputedStyle(glyph);
+            style = glyph.getComputedStyle();
             time = timer.now();
 
             // Allow the glyph ufo data to be updated by the CPS.
@@ -111,8 +102,8 @@ define([
                 }
             }
 
-            glyphBasics.drawGlyphToPointPen ( renderer, model, glyph, pen );
-            glyphBasics.drawGlyphToPointPen ( renderer, model, glyph, bboxPen );
+            glyphBasics.drawPoints ( glyph, pen );
+            glyphBasics.drawPoints ( glyph, bboxPen );
 
             var bbox = bPen.getBounds();
             if (bbox == undefined)
@@ -135,8 +126,7 @@ define([
             yield {'current_glyph':i, 'total_glyphs':l, 'glyph_id':glyph.id};
         }
         font = new opentype.Font({
-            familyName: master.fontinfo.familyName
-                     || this._masterName || master.id,
+            familyName: master.fontinfo.familyName || master.id,
             styleName: master.fontinfo.styleName,
             unitsPerEm: master.fontinfo.unitsPerEm || 1000,
             glyphs: otf_glyphs

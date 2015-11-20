@@ -1,7 +1,7 @@
 define([
 ], function() {
     'use strict';
-    function glyphDirective() {
+    function glyphDirective(momModelController) {
         return {
             restrict: 'E'
           , controller: 'GlyphController'
@@ -10,11 +10,10 @@ define([
                 model : '=mtkModel'
             }
           , link : function(scope, element, attrs, ctrl) {
-                var masterName
-                  , glyphName = scope.model.name
+                var glyphName = scope.model.name
                 // add css classes for breaks and spaces
                   , parentElement = element.parent()
-                  , svg;
+                  , momGlyph, glyphRenderer;
                 if (glyphName === 'space') {
                     parentElement.addClass('space-character');
                 } else if (glyphName === '*n') {
@@ -27,8 +26,8 @@ define([
                 } else if (glyphName === '*specimenbreak') {
                     element.addClass('no-glyph');
                     parentElement.addClass('specimen-break');
-                } 
-                
+                }
+
                 // this is to ignore the fake glyphs, like specimenbreak etc. Their object
                 // doesn't have a level (only a name)
                 if (scope.model.level) {
@@ -43,18 +42,24 @@ define([
                         }
                     }
 
-                    masterName = scope.model.getMasterName();
-                    svg = scope.renderGlyph(masterName, glyphName);
-                    element.append(svg);
 
+                    momGlyph = momModelController.query('#' + scope.model.getMasterName() + ' #' + glyphName);
+                    glyphRenderer = scope.renderGlyph(momGlyph);
+                    glyphRenderer.on('viewBox-change', viewBoxChangeHandler, element[0]);
+                    element.append(glyphRenderer.element);
                     element.bind('$destroy', function(event) {
-                        scope.revokeGlyph(masterName, glyphName);
+                        glyphRenderer.destroy();
                     });
                 }
             }
         };
     }
-    
-    glyphDirective.$inject = [];
+
+    function viewBoxChangeHandler(dom, _channel, viewBox) {
+        var calculatedWidth = viewBox[2]/viewBox[3] * dom.clientHeight;
+        dom.style.width = calculatedWidth + 'px';
+    }
+
+    glyphDirective.$inject = ['modelController'];
     return glyphDirective;
 });

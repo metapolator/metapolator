@@ -11,6 +11,8 @@ define([
           , replace: false
           , template: template
           , scope: {}
+          , controllerAs: 'ctrl'
+          , bindToController: true
         };
     }
     redPillGlyphsDirective.$inject = [];

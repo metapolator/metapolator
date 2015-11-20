@@ -2,7 +2,10 @@ define([
     'metapolator/errors'
   , 'metapolator/webAPI/window'
   , 'metapolator/webAPI/document'
-  , 'metapolator/ui/services/GlyphRendererAPI'
+  , 'metapolator/rendering/glyphBasics'
+  , 'metapolator/rendering/dataTransformationCaches/DrawPointsProvider'
+  , 'metapolator/rendering/dataTransformationCaches/BBoxProvider'
+  , 'metapolator/ui/services/GlyphUIService'
   , 'metapolator/ui/services/DragDataService'
   , 'metapolator/ui/services/DragIndicatorService'
   , 'codemirror/lib/codemirror'
@@ -10,7 +13,10 @@ define([
     errors
   , window
   , document
-  , GlyphRendererAPI
+  , glyphBasics
+  , DrawPointsProvider
+  , BBoxProvider
+  , GlyphUIService
   , DragDataService
   , DragIndicatorService
   , _
@@ -26,9 +32,8 @@ define([
         this.frontend = undefined;
         this.project = project;
         this.loadTextEditor = loadTextEditor;
-        this.glyphRendererAPI = new GlyphRendererAPI(document, this.project.controller,
-            {noParentSizing: true}
-        );
+        this.drawPointsOutlineProvider = new DrawPointsProvider(glyphBasics.outlinesRenderer);
+        this.glyphUIService = new GlyphUIService(document, this.drawPointsOutlineProvider);
         this.dragDataService = new DragDataService();
         this.dragIndicatorService = new DragIndicatorService();
 
@@ -51,7 +56,7 @@ define([
         this.angularApp.constant('selectGlyphs', this.selectGlyphs.bind(this));
         this.angularApp.constant('ModelController', this.project.controller);
         this.angularApp.constant('ruleController', this.project.ruleController);
-        this.angularApp.constant('glyphRendererAPI', this.glyphRendererAPI);
+        this.angularApp.constant('glyphUIService', this.glyphUIService);
 
 
         // very specific for the cps-panel, right now

@@ -19,7 +19,7 @@ define([
       , ReceiverError = errors.Receiver
       , AssertionError = errors.Assertion
       , CPSKeyError = errors.CPSKey
-      , CPSRecursionError = errors.CPSRecursion
+      , CPSRecursionKeyError = errors.CPSRecursionKey
       , assert = errors.assert
       , propertyChangeEmitterSetup
       ;
@@ -60,14 +60,12 @@ define([
         // new GetAPI(this); => would make a cleaner definition, but maybe slows things down???
         this.getAPI = {
             get: function(key) {
-                var result = self.get(key);
                 self._subscribeTo(self, key);
-                return result;
+                return self.get(key);
             }
           , query: function(node, selector) {
-                var result = node.query(selector);
                 self._subscribeTo(node, selector);
-                return result;
+                return node.query(selector);
             }
           , genericGetter: function(item, key){
                 return self._genericGetter(item, key);
@@ -217,7 +215,7 @@ define([
      *  if key is in cache, invalidate the cache and inform all subscribers/dependants
      */
     _p._invalidateCache = function(key) {
-        // FIXME:
+        // NOTE:
         // This event should fire whenever the value of the dict
         // changed in a way, so that e.g. a redraw of a glyph is needed
         // _invalidateCache seems resonable at the moment, but it might be
@@ -226,14 +224,10 @@ define([
         this._nextTrigger('change', key);
 
         if(!(key in this._cache)) {
-            // Because the key is not cached, there must not be any dependency or dependant
+            // Looks like this is history now. I'm keeping the assertion
+            // however to spot regressions.
             assert(!this._cacheDependencies[key] || !this._cacheDependencies[key].length
-                , 'Because the key is not cached, there must not be any dependency or dependant');
-            // FIXME: this should be the concern of the channel: PropertyChange
-            // it certainly is wrong in here... remove without replacement when everything works
-            // fine.
-            assert(!this._dependants[key] || !this._dependants[key].length
-                , 'Because the key is not cached, there must not be any dependency or dependant');
+                , 'Because the key "' + key + '" is not cached, there must not be any dependency or dependant');
             return;
         }
         // remove this this._invalidatingKeys when there are no errors
@@ -359,13 +353,14 @@ define([
             // in which case?
             // is that case legit?
             // console.trace();
+            // Note: we can't subscribe to this, so it is a fatal case.
+            // No subscription means we can't recover
             throw new Error('trying to read "'+key+'" from an undefined item');
-            // also see cpsGetters.whitelist for a similar case
         }
         else if(item instanceof _MOMNode) {
             var cs = item.getComputedStyle();
-            result = cs.get(key);
             this._subscribeTo(cs, key);
+            result = cs.get(key);
         }
         else if(item.cps_proxy) {
             // FIXME:
@@ -378,7 +373,7 @@ define([
             // so, the do we need this subscription at all question arises again
             //
             // FIXME: can't we just not subscribe to this and do the same as with array
-            // that is the original source of this item must be subscribed and =
+            // that is the original source of item must be subscribed to and =
             // fire if item changes...
             // it is probably happening in __get anyways, like this
             // cpsGetters.whitelist(this.element, key);
@@ -387,8 +382,8 @@ define([
             // cpsGetters.generic plus cpsGetters.whitelist
             // so, in the best case, we wouldn't use this condition at all,
             // I think
-            result = item.cps_proxy[key];
             this._subscribeTo(item, key);
+            result = item.cps_proxy[key];
         }
         else if(item instanceof Array)
             result = whitelistProxies.array(item)[key];
@@ -648,13 +643,18 @@ define([
           ;
         if(param)
            return param.getValue();
+        // This will become part of the error message if the following
+        // attempt to read the key raises an error. Otherwise there is
+        // no error, because a value was found.
         errors.push(key + ' not found for ' + this.element.particulars);
-        // FIXME: prefer the following, then the cpsGetters module can be removed!
-        // if that is not possible, it's certainly interesting why
-        result = this.element.cps_proxy[key];
-        // old:
-        // result = cpsGetters.whitelist(this.element, key);
+        // Reading from the MOM node directly.
+        // At the moment this is a placeholder. There is no onPorpertyChange
+        // method for MOMNodes present yet.
         this._subscribeTo(this.element, key);
+        // will throw KeyError if key can't be returned
+        result = this.element.cps_proxy[key];
+
+
         return result;
     };
     /**
@@ -665,7 +665,7 @@ define([
      * (this.element). We check "this" first so it can't be overridden by
      * a @dictionary rule.
      *
-     * 2. If `key' is defiened in CPS its value is returned.
+     * 2. If `key' is defined in CPS its value is returned.
      *
      * 3. If key is available/whitelisted at this.element, return that value.
      *
@@ -681,11 +681,10 @@ define([
         var errors = [], getting;
         if(key === 'this')
             return this.element;
-
         getting = this._getting;
-        // Detect recursion on this.element
+
         if(key in getting.recursionDetection)
-            throw new CPSRecursionError('Looking up "' + key
+            throw new CPSRecursionKeyError('Looking up "' + key
                             + '" is causing recursion in the element: '
                             + this.element.particulars);
 
@@ -696,9 +695,27 @@ define([
             return this.__get(key, errors);
         }
         catch(error) {
-            if(!(error instanceof KeyError))
+            // CPSFormulaError, KeyError, ValueError are caught here for
+            // example. It is however hard to expect from the current users
+            // of StyleDict to differentiate between the myriad of possible
+            // ErrorTypes, leaving unprepared code in a bad situation!
+            // Maybe we can establsish that StyleDict triggers an event
+            // when it has erroneous entries, so an external observer/UI
+            // could inform the user and show the correct place to act.
+            //
+            // Casting anything to KeyError means that we don't get much
+            // information from a failing get. However, a normal user only
+            // needs to know that there was a fail.
+            // It is in a way an appropriate answer. It is however
+            // crucial to develop a way to deal with the details of these
+            // errors (see above: external observer/UI).
+            if(error instanceof AssertionError)
+                // This hints to a programming error. We really want this
+                // to be annoing so that it gets fixed soon.
                 throw error;
             errors.push(error.message);
+            if(error instanceof CPSRecursionKeyError)
+                throw error;
             throw new KeyError(errors.join('\n----\n'));
         }
         finally {
@@ -708,12 +725,53 @@ define([
     };
     // FIXME: memoize seems to be slower, can we fix it?
     //_p.get = memoize('get', _p._get);
-    _p.get = function(key) {
+    /**
+     * If the property at "key" does not exist or is otherwise faulty,
+     * default is returned if provided, otherwise KeyError is raised.
+     *
+     * Also CPSRecursionKeyError appears but that is an instance of KeyError.
+     *
+     * Even using "default" won't guard from AssertionErrors. These errors
+     * point to programming mistakes and need to be taken care off, so we
+     * want them to be annoing ;)
+     */
+    _p.get = function(key/* [ , defaultVal optional ] */) {
         if(this._invalidating)
-            throw new AssertionError('This is invalidating, so get is illegal: ' + this.element.type + ' ' + this.element.nodeID);
-        var val = this._cache[key];
-        if(val === undefined)
+            throw new AssertionError('This is invalidating, so get is illegal: '
+                    + this.element.type + ' ' + this.element.nodeID);
+
+        var val = this._cache[key], hasDefault, defaultVal;
+        hasDefault = arguments.length >= 2;
+        if(hasDefault) defaultVal = arguments[1];
+        // Replay the behavior when asked for this thing the first time.
+        // Also, all cache subscriptions bound to a cache entry are still
+        // related. Without this we had problems with an assertion in
+        // _invalidateCache.
+        if(val instanceof Error) {
+            if(hasDefault) return defaultVal;
+            throw val;
+        }
+        else if(val !== undefined)
+            return val;
+        // no cache hit, query it
+        try {
             this._cache[key] = val = this._get(key);
+        }
+        catch(error) {
+            if(error instanceof CPSRecursionKeyError) {
+                // this is pre querying key
+                if(hasDefault) return defaultVal;
+                throw error;
+            }
+            else {
+                // throw only real Errors! (how else could we easily cache
+                // errors next to legit values)
+                assert(error instanceof Error, 'Caught something, but it is not an instance of Error: ' + error);
+                this._cache[key] = error;
+                if(hasDefault) return defaultVal;
+                throw error;
+            }
+        }
         return val;
     };
 

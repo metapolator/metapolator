@@ -208,7 +208,7 @@ define([
                   , this.type
                   , (this.id ? '#' + this.id : '')
                   , (this._parent
-                        ? ':i(' + this._parent.find(this) + ')'
+                        ? ':i(' + this.index + ')'
                         : '')
                 ].join('');
         }
@@ -225,6 +225,13 @@ define([
     _p.hasClass = function(name) {
         return name in this._classes;
     };
+
+    Object.defineProperty(_p, 'classes', {
+        get: function(){
+            return Object.keys(this._classes);
+        }
+      , enumerable: true
+    });
 
     _p.toString = function() { return ['<', this.MOMType, '>'].join('');};
 

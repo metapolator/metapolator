@@ -76,8 +76,12 @@ define({
 
     // Non-functional test suite(s) to run in each browser
     suites: [
-        'tests/lib/export/_all_'
-      , 'tests/lib/models/CPS/_all_'
+        // we run this from the commandline if the other tests have passed;
+        // this solutions caused trouble (no output on console, newer intern
+        // said a node "hang" was detected etc.)
+        // See the npm test definition in package.json how export/test.sh is called
+        //  'tests/lib/export/_all_'
+        'tests/lib/models/CPS/_all_'
       , 'tests/lib/models/MOM/_all_'
       , 'tests/lib/es6/Proxy'
       , 'tests/lib/memoize'
@@ -89,4 +93,3 @@ define({
     // A regular expression matching URLs to files that should not be included in code coverage analysis
     excludeInstrumentation: /intern|tests/
 });
-

@@ -22,7 +22,7 @@
     "README.md"
   ],
   "scripts": {
-    "test": "cd app/tests; ./run_tests"
+    "test": "cd app/tests; ./run_tests && cd lib/export && ./test.sh"
   },
   "directories": {
     "bin": "bin",

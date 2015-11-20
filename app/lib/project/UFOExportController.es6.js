@@ -5,7 +5,7 @@ define([
   , 'metapolator/timer'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'ufojs/plistLib/main'
-  , 'ufojs/plistLib/IntObject'
+  , './ufoDefaults'
 ], function(
     errors
   , glyphBasics
@@ -13,40 +13,28 @@ define([
   , timer
   , GlyphSet
   , plistLib
-  , IntObject
+  , ufoDefaults
 ) {
     "use strict";
 
     // FIXME: make this available for browsers too
     // Specify formatVersion as an int, as required by
     // unifiedfontobject.org, otherwise it becomes a 'real' in the plist.
-    var metainfoV3 = {
-            creator: 'org.ufojs.lib'
-          , formatVersion: new IntObject(3)
-        }
-      , metainfoV2 = {
-            creator: 'org.ufojs.lib'
-          , formatVersion: new IntObject(2)
-        }
-      , // fontforge requires a fontinfo.plist that defines unitsPerEm
-        minimalFontinfo = {
-            unitsPerEm: new IntObject(1000)
-          , ascender: new IntObject(800)
-          , descender: new IntObject(-200)
-        }
+    var metainfoV3 = ufoDefaults.metainfoV3
+      , metainfoV2 = ufoDefaults.metainfoV2
+      , minimalFontinfo = ufoDefaults.minimalFontinfo
+      ;
 
-    function UFOExportController(io, project, masterName, dirName, precision) {
+    function UFOExportController(io, master, dirName, precision) {
         this._io = io;
-        this._project = project;
-        this._masterName = masterName;
+        this._master = master;
         this._dirName = dirName;
         this._precision = precision;
     }
     var _p = UFOExportController.prototype;
 
     _p.exportGenerator = function*(){
-        var model = this._project.open(this._masterName)
-          , master = model.query('master#' + this._masterName)
+        var master = this._master
           , glyphs = master.children
           , glyphSet
           , glyph
@@ -78,15 +66,9 @@ define([
         console.warn('exporting glyphs...');
         for(i = 0,l=glyphs.length;i<l;i++) {
             glyph = glyphs[i];
-            style = model.getComputedStyle(glyph);
+            style = glyph.getComputedStyle();
             time = timer.now();
-            drawFunc = glyphBasics.drawGlyphToPointPen.bind(
-                this
-              , {
-                      penstroke: glyphBasics.renderPenstrokeOutline
-                    , contour: glyphBasics.renderContour
-                }
-              , model, glyph);
+            drawFunc = glyphBasics.drawPoints.bind( this, glyph );
 
             // Allow the glyph ufo data to be updated by the CPS.
             updatedUFOData = glyph.getUFOData();

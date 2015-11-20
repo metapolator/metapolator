@@ -38,6 +38,7 @@ case $APP in
         mainfile=redPillMain
         lessfile=$SOURCE/app/lib/ui/redPill/app.less
         htmlfile=red-pill.html
+        assetsrootdir=lib/ui/redPill
         ;;
     slider-demo)
         mainfile=sliderDemoMain

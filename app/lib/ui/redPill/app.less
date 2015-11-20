@@ -100,18 +100,57 @@ mtk-red-pill-glyph {
         height: 100%;
     }
 
-    svg g.layer-centerline {
+    svg use.layer-centerline {
         fill: none;
         stroke: lime;
+        stroke-width: 1;
+    }
+    svg use.layer-base {
+        fill: rgba(0, 0, 0, 0.5);
+        paint-order: stroke;
+        stroke: Wheat;
+        stroke-width: 2;
+    }
+
+    svg use.layer-meta {
+        fill: rgba(255, 0, 0, 0.6);
+        paint-order: stroke;
+        stroke: blue;
         stroke-width: 0.5;
     }
-    svg g.layer-outline {
-        fill: black;
-        stroke: white;
-        stroke-width: 0.5;
-        /* disabled for now, we should have a switch for this in the ui */
-        stroke: none;
+    svg g.layer-shapes {
+        fill: rgba(0, 0, 0, 0.5);
+
+        use.type-contour,
+        use.type-penstroke {
+            marker-start: url('assets/markers.svg#direction-indicator');
+        }
+
+        use {
+            cursor:pointer;
+        }
+
+        use:hover {
+            fill: rgba(0, 30, 0, 0.45);
+            paint-order: stroke;
+        }
     }
+
+    svg g.layer-pointlike {
+        fill: rgba(255, 20, 20, 0.6);
+        paint-order: stroke;
+        stroke: red;
+        stroke-width: 1px;
+        cursor:pointer;
+    }
+
+    svg g.layer-pointlike > *:hover {
+        fill: rgba(100, 000, 000, 0.6);
+        stroke: orange;
+        stroke-width: 3px;
+    }
+
+
     svg g.component {
         fill: #333;
         opacity: 0.9;
@@ -122,6 +161,12 @@ mtk-red-pill-glyph {
 mtk-red-pill-glyph:hover span.particulars {
     width: auto;
     z-index: 100;
+    /* this must hide again when the mouse is over it
+      , otherwise elements beneath are not reachable
+    */
+    :hover {
+        display: none;
+    }
 }
 
 mtk-red-pill-glyphs ol{
@@ -184,7 +229,7 @@ mtk-cps-panel {
     }
 
     mtk-cps-collection.root,
-    mtk-cps-style-dict {
+    .mtl-cps-style-dict-container {
         display: block;
         flex-grow: 1;
         flex-shrink: 1;
