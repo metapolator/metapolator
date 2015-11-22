@@ -155,7 +155,7 @@ define([
 
             // attempt to fail gracefully
             item.recorder = rollbackRecorder || new RecordingAndComparingPointPen([]);;
-            rollbackRecorder.changed = false;
+            item.recorder.changed = false;
         }
 
         if(item.recorder.changed || !oldCommands)
