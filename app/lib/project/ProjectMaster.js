@@ -1,15 +1,19 @@
 define([
     'metapolator/errors'
+  , 'ufojs/errors'
   , 'metapolator/models/MOM/Master'
   , 'metapolator/models/MOM/Glyph'
   , './MOMPointPen'
 ], function(
     errors
+  , ufoErrors
   , Master
   , Glyph
   , MOMPointPen
 ) {
     "use strict";
+
+    var IONoEntryError = ufoErrors.IONoEntry;
 
     function ProjectMaster(io, project, name, glyphSetDir, cpsFile) {
         this._io = io;
@@ -32,12 +36,19 @@ define([
         }
     });
 
+    // These saveCPS/deleteCPS methods are a bit odd. They don't belong here.
     _p.saveCPS = function(filename, cps) {
         this._io.writeFile(false, this._project.cpsDir+'/'+filename, cps);
     };
 
     _p.deleteCPS = function(filename) {
-        this._io.unlink(false, this._project.cpsDir+'/'+filename);
+        try {
+            this._io.unlink(false, this._project.cpsDir+'/'+filename);
+        }
+        catch(e) {
+            if(!(e instanceof IONoEntryError))
+                throw e;
+        }
     };
 
     _p.loadMOM = function() {
@@ -66,6 +77,9 @@ define([
             // This can happen in the Constructor.
             // maybe, when event propagation for this stuf is built, we
             // can use this method again
+            // Also, I think I don't like that the MOM knows about UFO.
+            // That should not be the case. So maybe a stand setUFODataToGlyph
+            // in here would be better...
             glyph.setUFOData(ufoGlyph);
             master.add(glyph);
         }
