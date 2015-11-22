@@ -1,4 +1,4 @@
-@import 'centreline-skeleton-to-symmetric-outline.cps';
+@import 'generated/centreline-skeleton-to-symmetric-outline.cps';
 
 glyph {
 {{#n}}
