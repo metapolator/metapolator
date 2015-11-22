@@ -45,8 +45,16 @@ define([
         Object.defineProperty(this, 'nodeID', {value: getUniqueID()});
 
         this._children = [];
+
+        // Todo: all these dependencies to parent should be managed together
+        // This also includes references to multiverse, universe etc.
+        // Managed together means we could store lazily them at a this._parentDeps
+        // object and could then bulk delete them when parent changes and such.
         this._parent = null;
         this._index = null;
+        this._indexPath = null;
+        this._masterIndexPath = null;
+
         this._id = null;
         this._classes = Object.create(null);
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
@@ -140,7 +148,7 @@ define([
          * moment, I need id's to write the selector engine, and for that,
          * I don't need propper checked IDs
          */
-        set: function(id){ this._id = id; }
+        set: function(id){ this._id = id || null; }
       , get: function(){ return this._id; }
     });
 
@@ -227,7 +235,7 @@ define([
     };
 
     Object.defineProperty(_p, 'classes', {
-        get: function(){
+        get: function() {
             return Object.keys(this._classes);
         }
       , enumerable: true
@@ -279,6 +287,44 @@ define([
         get: function(){ return this._index;}
     });
 
+
+    Object.defineProperty(_p, 'indexPath', {
+        get: function() {
+            var indexPath = this._indexPath;
+            if(indexPath === null)
+                // will be reset by the parent setter
+                this._indexPath = indexPath = this.parent.indexPath + '/' + this._index;
+            return indexPath;
+        }
+    });
+
+    /**
+     * for parameterDB entries a master based index path is preferable
+     * because the parameterDB is always on a per master base. So, we
+     * are more flexible without saving the position of the master itself
+     * in its univers.
+     */
+    Object.defineProperty(_p, 'masterIndexPath', {
+        get: function() {
+            var master = this.master
+              , indexPath
+              , master, parentPath
+              ;
+            if(!master)
+                return null;
+
+            indexPath = this._masterIndexPath;
+            if(indexPath === null) {
+                parentPath = this.parent === master
+                            ? parentPath = ''
+                            : this.parent.masterIndexPath + '/'
+                            ;
+                indexPath = this._masterIndexPath = parentPath + this._index;
+            }
+            return indexPath;
+        }
+    });
+
     Object.defineProperty(_p, 'parent', {
         /**
          * Use parent for reading only.
@@ -298,6 +344,8 @@ define([
                 if(this._parent.find(this) !== false)
                     throw new MOMError('Can\'t unset the parent property '
                         +'when the parent still has this Node as a child');
+                this._indexPath = null;
+                this._masterIndexPath = null;
                 this._parent = null;
                 this._index = null;
                 return;
@@ -313,6 +361,8 @@ define([
                 throw new MOMError('A MOM Node must already be a child '
                     + 'of its parent when trying to set its parent property. '
                     + 'Use "parent.add(child)" instead.');
+            this._indexPath = null;
+            this._masterIndexPath = null;
             this._parent = parent;
             this._index = this._parent.find(this);
         }

@@ -41,6 +41,10 @@ define([
         return this._controller.queryAll(selector, scope);
     };
 
+    Object.defineProperty(_p, 'indexPath', {
+        value: ''
+    });
+
     _p.getComputedStyleFor = function(node) {
         return this._controller.getComputedStyle(node);
     };
