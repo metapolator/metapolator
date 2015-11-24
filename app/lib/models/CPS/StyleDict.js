@@ -713,10 +713,10 @@ define([
                 // This hints to a programming error. We really want this
                 // to be annoing so that it gets fixed soon.
                 throw error;
-            errors.push(error.message);
+            errors.push(error);
             if(error instanceof CPSRecursionKeyError)
                 throw error;
-            throw new KeyError(errors.join('\n----\n'));
+            throw new KeyError(errors.join('\n----\n'), errors[0] && errors[0].stack || undefined);
         }
         finally {
             delete getting.recursionDetection[key];
