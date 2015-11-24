@@ -1,20 +1,25 @@
 define([
     'metapolator/errors'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
+  , './elements/ParameterCollection'
   , './elements/Rule'
   , './elements/SelectorList'
   , './elements/ComplexSelector'
   , './elements/CompoundSelector'
   , './elements/SimpleSelector'
+  , 'bloomfilter'
 ], function(
     errors
   , parseSelectorList
+  , ParameterCollection
   , Rule
   , SelectorList
   , ComplexSelector
   , CompoundSelector
   , SimpleSelector
+  , bloomfilter
 ) {
+
     "use strict";
     var CPSError = errors.CPS
       , selectorListFromString = parseSelectorList.fromString
@@ -24,6 +29,14 @@ define([
     // start selector engine
     function SelectorEngine() {
         this._compoundSelectorCache = Object.create(null);
+        this._compoundSelectorBloomLocationsCache = Object.create(null);
+        this._complexSelectorsCache = Object.create(null);
+        // This must be the same as in MOM/_Node getBloomFilter
+        // FIXME: put this in a shared module, so that the
+        // synchronization of this setup is explicit!
+        // This instance is never used for filtering, it just calculates
+        // locations in _getCompoundSelectorBloomLocations.
+        this._bloomFilter = new bloomfilter.BloomFilter(512, 5);
     }
     var _p = SelectorEngine.prototype;
 
@@ -41,37 +54,14 @@ define([
         combinatorType = 'child';
         // this is a compound selector
 
-        // a shortcut, in the best case this should be generated from
-        // structure information of the MOM.
-        var length = compoundSelectors.value
-          , precheckElem
-          , matches
-          , type
-          ;
-        for(var i=0; i<length; i+=2) {
-            compoundSelector = compoundSelectors[i];
-            type = compoundSelector.type;
-            if(type === 'master')
-                precheckElem = element.master;
-            else if(type === 'glyph')
-                precheckElem = element.glyph;
-            else
-                continue;
-            if(precheckElem && !compoundSelector.matches(precheckElem, this))
-                return false;
-        }
-        // end of shortcut
-
         compoundSelector = compoundSelectors.pop();
-
         while(element) {
             if(compoundSelector.matches(element, this)) {
                 //  we got a hit
                 combinator = compoundSelectors.pop();
-                if(combinator === undefined) {
+                if(combinator === undefined)
                     // that's it all compoundSelectors are consumed
                     return true;
-                }
                 // there are selectors left, prepare the next round
                 // combinatorType is 'child' or 'descendant'
                 combinatorType = combinator.type;
@@ -171,11 +161,11 @@ define([
      */
     _p.compileCompoundSelector = function(compoundSelector) {
         var key = compoundSelector.normalizedName
-          , _compoundSelectorCache = this._compoundSelectorCache
+          , compiled = this._compoundSelectorCache[key]
           ;
-        if(!(key in _compoundSelectorCache))
-            _compoundSelectorCache[key] = _compileCompoundSelector(compoundSelector);
-        return _compoundSelectorCache[key];
+        if(!compiled)
+            this._compoundSelectorCache[key] = compiled = _compileCompoundSelector(compoundSelector);
+        return compiled;
     };
 
 
@@ -221,26 +211,237 @@ define([
     }
 
     /**
+     * This is analogous to what happens in MOM/_Node
+     */
+    _p._getCompoundSelectorBloomLocations = function(compoundSelector) {
+        var key = compoundSelector.normalizedName
+          , bloomLocations = this._compoundSelectorBloomLocationsCache[key]
+          , bf, types, items, i, l, item
+          ;
+        if(!bloomLocations) {
+            bf = this._bloomFilter;
+            types = {'type': true, 'class': true, 'id': true};
+            bloomLocations = [];
+            items = compoundSelector.value;
+            for(i=0,l=items.length;i<l;i++) {
+                item = items[i];
+                if(!(item.type in types))
+                    continue;
+                bloomLocations.push(bf.getLocations(item.toString()));
+            }
+            this._compoundSelectorBloomLocationsCache[key] = bloomLocations;
+        }
+        return bloomLocations;
+    };
+
+    /**
+     * Filter by using the bloomfilter of an element
+     * the filter will have false positives but no false negatives
+     * Thus when it returns false it is save to remove the
+     * complexSelector from the list of possibly matching elements;
+     */
+    _p._bloomfilterComplexSelector = function (bloomfilter, complexSelector) {
+        var compoundSelectors = complexSelector.value
+          , compoundSelector
+          , bloomLocations
+          , i,l,j,jl
+          ;
+        for(i=0,l=compoundSelectors.length;i<l;i+=2) {
+            compoundSelector = compoundSelectors[i];
+            bloomLocations = this._getCompoundSelectorBloomLocations(compoundSelector);
+            for(j=0,jl=bloomLocations.length;j<jl;j++) {
+                if(!bloomfilter.testByLocations(bloomLocations[j])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
+    /**
+     * TODO: To save some memory probably all Selector related elements could
+     * be created by SelectorEngine. We could then reuse instances with the
+     * same value. Especially when it comes to these cached values a little
+     * performance and some memory could be shared.
+     * Selector related items are a good fit for this, because they
+     * are all immutable.
+     *
+     * TODO: this adhoc class IDSelectorList could be integral to each
+     * SelectorList item.
+     */
+    var IDSelectorList = (function() {
+        // asserting that complexSelectors come in sorted by specificity
+        // this is that the hash of this item stays the same for the same
+        // value. Order is no in itself for SelectorLists
+        // also assert that all complexSelectors are valid (!invalid)
+        function IDSelectorList(complexSelectors) {
+            var i, l;
+            for(i=0,l=complexSelectors.length;i<l;i++)
+                Object.defineProperty(this, i, { value: complexSelectors[i] });
+            Object.defineProperty(this, 'length', {
+                value: l
+              , enumerable: true
+            });
+            Object.defineProperty(this, 'normalizedName', {
+                value: Array.prototype.join.call(this, ',\n')
+              , enumerable: true
+            });
+        }
+        var _p = IDSelectorList.prototype;
+
+        _p.toString = function() {
+            return this.normalizedName;
+        };
+
+        return IDSelectorList;
+    })();
+
+    _p._multiplyComplexSelectorLists = function(selectorsA_, selectorsB_) {
+        var x, y, l, ll
+          , result = []
+          , superKeyA
+          , superCacheA
+          , superKeyB
+          , keyA, keyB
+          , cacheA, product, sum
+          , selectorsA = selectorsA_ instanceof IDSelectorList ? selectorsA_ : new IDSelectorList(selectorsA_)
+          , selectorsB = selectorsB_ instanceof IDSelectorList ? selectorsB_ : new IDSelectorList(selectorsB_)
+          ;
+
+        superKeyA = '!' + selectorsA.normalizedName;
+        superKeyB = '!' + selectorsB.normalizedName;
+        superCacheA = this._complexSelectorsCache[superKeyA];
+        if(!superCacheA)
+            this._complexSelectorsCache[superKeyA] = superCacheA = Object.create(null);
+        product = superCacheA[superKeyB];
+        if(!product) {
+            for(x=0,l=selectorsA.length;x<l;x++) {
+                keyA = selectorsA[x].normalizedName;
+                cacheA = this._complexSelectorsCache[keyA];
+                if(!cacheA)
+                    this._complexSelectorsCache[keyA] = cacheA = Object.create(null);
+                for(y=0, ll=selectorsB.length;y<ll;y++) {
+                    keyB = selectorsB[y].normalizedName;
+                    sum = cacheA[keyB];
+                    if(!sum)
+                        sum = selectorsA[x].add(selectorsB[y]);
+                    result.push(sum);
+                }
+            }
+            product = new IDSelectorList(result);
+            superCacheA[superKeyB] = product;
+        }
+        return product;
+    };
+
+    /**
+     * Eliminate selectors rules as soon as possible, using the bloomfilter
+     * before resolving all the namspaces and running _complexSelectorMatches.
+     * This will reduce the number of selectors that we have to check
+     * for each element a lot.
+     * This is best when @namespaces are used, because then we can bulk
+     * remove a lot of false candidates at once.
+     * We could also  think about a way of clustering SelectorList items
+     * into common virtual-namespaces. But that clustering would be costly
+     * by itself and would also have to keep the original rule order in tact.
+     * Maybe just some sort of greasy clustering could be used, that
+     * clusters on the way if there is something compatible just in order.
+     * (greasy could mean a lot here: take the longest common sequence of
+     * compound selectors to increase the likelihood of not matching, or
+     * take the longest possible subsequent complex selectors by just picking
+     * the first compound selector for clustering to increase the likelihood
+     * of discarding many items at once). Sounds not easy to do though.
+     */
+    _p._getNamespacedRules = function(parameterCollection, element) {
+        var bloomfilter = this._bloomfilterComplexSelector.bind(this, element.getBloomFilter())
+          , filterInvalid = function (item){ return !item.invalid; }
+          , namespace = null
+          , trace
+          , namespacedRules = [] // result
+          , stack = []
+          , frame, items, item, selectors, i, l, j, n, sl, sli
+          ;
+        stack = [];
+        frame = [0, parameterCollection.items, parameterCollection, null, [parameterCollection]];
+        do {
+            i=frame[0];
+            items = frame[1];
+            namespace = frame[3];
+            trace = frame[4];
+            l=items.length;
+            // check all items
+            while(i<l) {
+                item = items[i];
+                i++;
+                if(item.invalid)
+                    continue;
+                selectors = null;
+                if(typeof item.getSelectorList === 'function') {
+                    selectors = [];
+                    sl = item.getSelectorList().value;
+                    for(j=0, n=sl.length;j<n;j++) {
+                        sli = sl[j];
+                        if(!sli.invalid && bloomfilter(sli))
+                            selectors.push(sli);
+                    }
+                    if(!selectors.length)
+                        // this @namespace or rule won't match
+                        continue;
+
+                    // Faster sorting would be good.
+                    selectors.sort(compareSelectorSpecificity);
+                    selectors = namespace
+                        ? this._multiplyComplexSelectorLists(namespace, selectors)
+                        : new IDSelectorList(selectors)
+                        ;
+
+                    if(item instanceof Rule) {
+                        namespacedRules.push([selectors, item, trace]);
+                        continue;
+                    }
+                }
+                if(item instanceof ParameterCollection) {
+                    if(i<l) {
+                        // we are not finished yet with this scope
+                        // save this frame
+                        frame[0]=i;
+                        stack.push(frame);
+                    }
+                    // setup the next frame
+                    // depth first! next iteration work on this item
+                    trace = trace.slice();
+                    trace.push(item);
+                    stack.push([0, item.items, item, selectors || namespace, trace]);
+                    break;
+                }
+            }
+        } while( (frame = stack.pop()) );
+        return namespacedRules;
+    };
+
+    _p.getMatchingRules = function(parameterCollection, element) {
+        var namespacedRules = this._getNamespacedRules(parameterCollection, element)
+          , result
+          ;
+        result = this._getMatchingNamespacedRules(namespacedRules, element);
+        return result;
+    };
+
+
+    /**
      * Returns a list of all of the rules currently applying to the element,
      * sorted from most specific to least.
-     *
-     * the complexSelectors in namespacedRules[n][0] should be sorted, so that the
-     * first complexSelector in namespacedRule has the highest specificity
      */
-    _p.getMatchingRules = function(namespacedRules, element) {
+    _p._getMatchingNamespacedRules = function(namespacedRules, element) {
         var matchingRules = []
           , namespacedRule
           , complexSelectors
           , specificity
           , i, j, length, lengthCS
           ;
-
-        // FIXME: rules should actually be clustered by their namespaces
-        // that would help to discard more rules at once and thus speed the
-        // thing up alot!
         for(i=0, length = namespacedRules.length;i<length;i++) {
             namespacedRule = namespacedRules[i];
-            complexSelectors = namespacedRule[0].value;
+            complexSelectors = namespacedRule[0];
             for(j=0, lengthCS = complexSelectors.length;j<lengthCS;j++) {
                 if(this._complexSelectorMatches(complexSelectors[j], element)) {
                     // got a match with the most specific selector

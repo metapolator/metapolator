@@ -99,7 +99,7 @@ define([
         if(!this._rules[ruleName]) {
             // subscribe only once, this saves calling us a lot of handlers
             // for each styledict
-            // we are currently not unsubscribing, becuause we don't
+            // we are currently not unsubscribing, because we don't
             // unload parameterCollections ever.
             // TODO: unload parameterCollections if they are not used anymore.
             //       Probably add a reference counter for that. Maybe this
@@ -111,8 +111,7 @@ define([
         }
         else
             parameterCollection = this._rules[ruleName][0];
-        allRules = parameterCollection.rules;
-        rules = this._selectorEngine.getMatchingRules(allRules, element);
+        rules = this._selectorEngine.getMatchingRules(parameterCollection, element);
         this._rules[ruleName][2].push(element.nodeID);
         return rules;
     };
