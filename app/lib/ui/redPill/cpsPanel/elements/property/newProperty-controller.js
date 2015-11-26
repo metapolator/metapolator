@@ -1,6 +1,6 @@
 define([
     './property-controller'
-  , 'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
+  , 'metapolator/models/CPS/cpsTools'
 ], function(
     Parent
   , cpsTools

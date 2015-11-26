@@ -1,7 +1,7 @@
 define([
     './ParameterModel'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
-  , 'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/models/CPS/cpsTools'
 ],
 function(
     ParameterModel

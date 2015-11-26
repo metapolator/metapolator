@@ -7,8 +7,6 @@ define([
   , './import/StrokeContour'
   , './import/contourFromContour'
 
-  , './parameters/registry'
-
   , 'metapolator/models/CPS/elements/ParameterCollection'
   , 'metapolator/models/CPS/elements/AtNamespaceCollection'
   , 'metapolator/models/CPS/elements/Rule'
@@ -30,6 +28,7 @@ define([
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
   , 'ufojs/errors'
+  , 'metapolator/models/CPS/cpsTools'
 
 ], function(
     errors
@@ -39,8 +38,6 @@ define([
   , ImportOutlinePen
   , StrokeContour
   , contourFromContour
-
-  , parameterRegistry
 
   , ParameterCollection
   , AtNamespaceCollection
@@ -62,6 +59,7 @@ define([
 
   , parseSelectorList
   , ufojsErrors
+  , cpsTools
 ) {
     "use strict";
     /*global console:true*/
@@ -69,6 +67,8 @@ define([
 
     var GlifLibError = ufojsErrors.GlifLib
       , Transformation = transform.Transform
+      , setElementProperties = cpsTools.setElementProperties
+      , setProperties = cpsTools.setProperties
       ;
 
     function ImportController(io, log, project, masterName, sourceUFODir) {
@@ -385,41 +385,23 @@ define([
     }
 
     function parameterDictFromObject(obj) {
-        var items = []
-          , k
+        var value
+          , data = Object.create(null)
           , name
-          , value
+          , propertyDict
           ;
 
-        for(k in obj) {
-            if(obj[k] === undefined)
+        for(name in obj) {
+            if(obj[name] === undefined)
                 continue;
-            name = new ParameterName(k, []);
-            value = new ParameterValue([
-                ( obj[k] instanceof Vector
-                    ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
-                    : obj[k] )], []);
-            items.push(new Parameter(name, value));
+            data[name] = obj[name] instanceof Vector
+                ? 'Vector ' + [obj[name].real, obj[name].imag].join(' ')
+                : obj[name]
+                ;
         }
-
-        return new ParameterDict(items);
-    }
-
-    // TODO: VERY similar to this._project._setPropertiesFromDB
-    function setElementProperties(element, data){
-        var newProperties
-          , name, value, factory
-          ;
-        if(!data)
-            return;
-        newProperties = [];
-        for(name in data) {
-            value = new ParameterValue([data[name]], []);
-            factory = parameterRegistry.getFactory(name);
-            value.initializeTypeFactory(name, factory);
-            newProperties.push(new Parameter({name:name}, value));
-        }
-        element.properties.splice(0, element.properties.length, newProperties);
+        propertyDict = new ParameterDict([]);
+        setProperties(propertyDict, data);
+        return propertyDict;
     }
 
     function makeCPSPointData(point, index, length) {

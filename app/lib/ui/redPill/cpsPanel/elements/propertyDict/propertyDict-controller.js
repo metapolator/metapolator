@@ -1,6 +1,6 @@
 define([
     'errors'
-  , 'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
+  , 'metapolator/models/CPS/cpsTools'
 ], function(
     errors
   , cpsTools

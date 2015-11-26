@@ -2,7 +2,8 @@ define([
     '../_BaseModel'
   , './GlyphModel'
   , './AxisModel'
-  , 'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/models/CPS/cpsTools'
+
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
 ], function(
     Parent
