@@ -2,16 +2,14 @@
 
 glyph {
 {{#n}}
-    base{{.}}: baseMaster{{.}}:children[index];
+    base{{.}}: baseMaster{{.}}[Selector "glyph#" + this:id];
 {{/n}}
 }
 
 contour > p {
-    indexGlyph: parent:parent:index;
     indexContour: parent:index;
 {{#n}}
-    base{{.}}: baseMaster{{.}}
-        :children[indexGlyph]
+    base{{.}}: parent:parent:base{{.}}
         :children[indexContour]
         :children[index]
         ;
@@ -19,12 +17,10 @@ contour > p {
 }
 
 point > * {
-    indexGlyph: parent:parent:parent:index;
     indexPenstroke: parent:parent:index;
     indexPoint: parent:index;
 {{#n}}
-    base{{.}}: baseMaster{{.}}
-        :children[indexGlyph]
+    base{{.}}: parent:parent:parent:base{{.}}
         :children[indexPenstroke]
         :children[indexPoint]
         :children[index]

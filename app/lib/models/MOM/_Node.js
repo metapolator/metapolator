@@ -87,6 +87,7 @@ define([
       , univers: 'univers'
       , multivers: 'multivers'
       , index: 'index'
+      , id: 'id'
       , type: 'type'
     };
 
