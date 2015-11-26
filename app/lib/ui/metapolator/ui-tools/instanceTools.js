@@ -20,9 +20,7 @@ define([
     updateCPSfile = function(project, instance) {
         var generatedFileName = _getGeneratedCPSFileName(project.ruleController, instance.axes.length)
           , cpsString = _createMultiMasterCPS(instance.axes, generatedFileName);
-        console.log(cpsString);
         project.ruleController.write(false, instance.cpsFile, cpsString);
-        console.log(project.ruleController.getRule(false, instance.cpsFile).toString());
     };
 
     _createMultiMasterCPS = function(axesSet, generatedFileName) {
@@ -50,7 +48,7 @@ define([
         try {
             ruleController.getRule(false, fileName);
         } catch(error) {
-            if (error.name !== 'IONoEntry') {
+            if (error.name !== 'IONoEntryError') {
                 throw error;
             } else {
                 string = cpsGenMetapolation(n);
