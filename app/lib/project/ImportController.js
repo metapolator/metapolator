@@ -148,12 +148,10 @@ define([
                     Array.prototype.push.apply(rules, g);
             }
             catch(error) {
-                if(error instanceof GlifLibError) {
-                    // we have already recorded this in the error
-                    // callback function
-                } else {
+                if(!(error instanceof GlifLibError))
                     throw error;
-                }
+                // we have already recorded this in the error
+                // callback function
             }
         }
 
@@ -189,7 +187,7 @@ define([
     };
 
     _p.importGlyph = function(glyphName, toMOM) {
-        console.warn('> importing glyph:', glyphName);
+        this._log.debug('> importing glyph:', glyphName);
         var sourceGlyph = this._readGlyphFromSource(glyphName)
           , targetGlyph
           , contours = []
@@ -232,7 +230,7 @@ define([
             }
 
             if(!item.closed) {
-                console.warn('    skipping contour '+ i +' because it is open.');
+                this._log.debug('    skipping contour '+ i +' because it is open.');
                 continue;
             }
 
@@ -248,7 +246,7 @@ define([
             }
             if(id && id.slice(0, contourIndicator.length) === contourIndicator) {
                 Vector.prototype._cps_whitelist.inspect = 'inspect';
-                console.warn('importing contour '+ i + ' as contour');
+                this._log.debug('importing contour '+ i + ' as contour');
                 var contourData = contourFromContour(item.commands);
                 contours.push({
                       type:'contour'
@@ -272,16 +270,16 @@ define([
 
             // import as penstroke if possible
             if(item.commands.length < 5) {
-                console.warn('    skipping contour '+ i +' because it has less '
+                this._log.debug('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
             if(item.commands.length % 2 === 0) {
-                 console.warn('    skipping contour '+ i +' because count of '
+                 this._log.debug('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.warn('importing contour '+ i + ' as penstroke');
+            this._log.debug('importing contour '+ i + ' as penstroke');
              // the z points of this stroke can go directly to the skeleton glyph
             var penStrokeData = new StrokeContour(item.commands).getPenStroke();
             // this goes into the glyph/skeleton
