@@ -27,7 +27,7 @@ define([
      */
     function ContourPoint(pointData) {
         Parent.call(this);
-        if(!(pointData) instanceof PointData)
+        if(!(pointData instanceof PointData))
             throw new TypeError('Expected an instance of PointData.');
         this._skeleton = pointData;
         Object.freeze(this._children);

@@ -25,6 +25,7 @@ define([
   , 'metapolator/models/MOM/Contour'
   , 'metapolator/models/MOM/ContourPoint'
   , 'metapolator/models/MOM/Component'
+  , 'metapolator/models/MOM/PointData'
 
 
   , 'metapolator/models/CPS/parsing/parseSelectorList'
@@ -57,6 +58,7 @@ define([
   , Contour
   , ContourPoint
   , Component
+  , PointData
 
   , parseSelectorList
   , ufojsErrors
@@ -572,7 +574,7 @@ define([
             pointData = penStrokeData[i];
 
             data = makeCPSPointData(pointData, i, penStrokeData.length);
-            point = new PenStrokePoint(pointData.z);
+            point = new PenStrokePoint(new PointData(pointData.z));
 
             // we translate names into classes, because they don't have to be
             // unique
@@ -634,7 +636,7 @@ define([
           ;
         for(i=0,l=contourData.length;i<l;i++) {
             pointData = contourData[i];
-            point = new ContourPoint(pointData);
+            point = new ContourPoint(new PointData(pointData));
 
             // Translate names into classes, because they don't have to be
             // unique.
