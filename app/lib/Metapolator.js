@@ -76,27 +76,11 @@ define([
             var MOMmaster = MOMmasters[i]
               , masterName = MOMmaster.id;
             // skip base for the ui
-            if (masterName !== "base") {
+            if (masterName.indexOf('master-') === 0) {
                 // temp private method, see issue #332
                 var cpsFile = this.project.controller._getMasterRule(masterName)
-                  , MOMglyphs = MOMmaster.children
                   , master = sequence.addMaster(masterName, MOMmaster, cpsFile);
-                for (var j = 0, jl = MOMglyphs.length; j < jl; j++) {
-                    var MOMglyph = MOMglyphs[j]
-                      , glyphName = MOMglyph.id
-                      , MOMpenstrokes = MOMglyph.children
-                      , glyph = master.addGlyph(glyphName, MOMglyph);
-                    for (var k = 0, kl = MOMpenstrokes.length; k < kl; k++) {
-                        var MOMpenstroke = MOMpenstrokes[k]
-                          , penstrokeName = "penstroke:i(" + k + ")"
-                          , MOMpoints = MOMpenstroke.children
-                          , penstroke = glyph.addPenstroke(penstrokeName, MOMpenstroke);
-                        for (var m = 0, ml = MOMpoints.length; m < ml; m++) {
-                            var pointName = "point:i(" + m + ")";
-                            penstroke.addPoint(pointName, MOMpoints[m]);
-                        }
-                    }
-                }
+                  ;
             }
         }
         selection.injectSequences(this.model.masterSequences);

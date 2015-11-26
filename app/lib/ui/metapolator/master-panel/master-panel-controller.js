@@ -3,11 +3,13 @@ define([
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
+  , 'require/text!metapolator/cpsLib/metapolator/ui-master.cps'
 ], function(
     $
   , instanceTools
   , dialog
   , selection
+  , cpsUIMasterTemplate
 ) {
     "use strict";
     function MasterPanelController($scope, project) {
@@ -89,23 +91,40 @@ define([
             // todo: put some more intelligence in here
             return name + " copy";
         }
-        
+
         $scope.handleUFOimportFiles = function(element) {
             var ufozipfile = element.files[0]
               , reader = new FileReader()
               ;
             dialog.openDialogScreen("Importing UFO ZIP...", true);
-            reader.onload = function(e) {
-                var importedMasters = project.importZippedUFOMasters(e.target.result)
-                  , i, l
-                  ;
 
-                for (i=0, l=importedMasters.length; i<l; i++){
-                    project.open(importedMasters[i]);
+            reader.onload = function(e) {
+                var baseMasterPrefix = 'base-'
+                  , uiMasterPrefix = 'master-'
+                  , importedMasters = project.importZippedUFOMasters(e.target.result, baseMasterPrefix)
+                  , i, l
+                  , cpsFile
+                  , baseMaster
+                  , uiMasterName
+                  , uiMaster
+                  , momMaster
+                  ;
+                for (i=0, l=importedMasters.length; i<l; i++) {
+                    baseMaster = importedMasters[i];
+                    uiMasterName = uiMasterPrefix + (baseMaster.name.slice(baseMasterPrefix.length));
+                    cpsFile = uiMasterName + '.cps';
+                    project.ruleController.write(false, cpsFile, cpsUIMasterTemplate);
+                    project.createMaster(uiMasterName, cpsFile, baseMaster.skeleton
+                          , { baseMaster: 'S"master#' + baseMaster.name + '"' });
+                    momMaster= project.getMOMMaster(uiMasterName);
+                    // TODO: This could be done by listening to univers
+                    // (if univers would emit this kind of events)
+                     $scope.model.masterSequences[0].addMaster(uiMasterName, momMaster, cpsFile);
                 }
 
                 $scope.importUfo_dialog_close();
                 dialog.closeDialogScreen();
+                $scope.$apply();
             };
             reader.readAsArrayBuffer(ufozipfile);
         };
