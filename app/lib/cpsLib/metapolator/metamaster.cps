@@ -7,8 +7,8 @@
 
 /* set up this masters parameters */
 
-* {
-    baseMaster: S"master#base";
+master * {
+    baseMaster: master:baseMaster;
 }
 
 point > center, contour > p {
