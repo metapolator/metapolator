@@ -11,7 +11,6 @@ define([
 
     function SelectorListDirective() {
         function link(scope, element, attrs, ctrl) {
-            element.on('dblclick', helpers.stopPropagation);
 
             scope.initEdit = function() {
                 var input = element[0].getElementsByClassName('input')[0]

@@ -77,7 +77,8 @@ define([
               //              , 'cps/comment', 'cps/generic-collection-item'
               //              , 'cps/import-collection']
               ;
-            element.on('dblclick', doubleClickHandler.bind(
+            // the AngularJS/jQuery event does not directly expose 'defaultPrevented'
+            element[0].addEventListener('dblclick', doubleClickHandler.bind(
                 null
               , findElement
               , getPositionReference

@@ -16,7 +16,11 @@ define([
         this._setItems();
         // subscribe to the collection ...
         this._collectionSubscription =  this.cpsCollection.on(
-                'structural-change', [this, '_collectionUpdateHandler']);
+                // prefer "add" + "delete" over "structural-change"
+                // because the latter also fires when a child changed
+                // and that is not needed here, we care only about the
+                // cpsCollection itself.
+                ['add', 'delete'], [this, '_collectionUpdateHandler']);
 
         $scope.$on('$destroy', this._destroy.bind(this));
         $scope.$on('checkParentCollection', this._checkParentHandler.bind(this));
@@ -33,8 +37,7 @@ define([
     };
 
     _p._collectionUpdateHandler = function() {
-        this._setItems();
-        this.$scope.$apply();
+        this.$scope.$apply(this._setItems.bind(this));
     };
 
     _p._destroy = function() {
@@ -112,7 +115,6 @@ define([
             // strange stuff should already be prevented by
             // this.acceptMoveCPSElement
             _targetIndex -= 1;
-
 
         cpsTools.moveCPSElement(source, sourceIndex
                              , this.cpsCollection, _targetIndex);

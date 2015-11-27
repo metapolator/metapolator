@@ -36,7 +36,10 @@ define([
     }
 
     function getPositionReference(empty, element, container) {
-        return element.parentElement;
+        return empty
+            ? container
+            : element.parentElement
+            ;
     }
 
 
