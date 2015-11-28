@@ -377,6 +377,29 @@ define([
         return masterName in this._data.masters;
     };
 
+    _p.getMasterData = function(masterName, key) {
+        var masterData, result, keys, i, l;
+        if(!(masterName in this._data.masters))
+            throw new KeyError('Master named "' + masterName
+                        + '" not found in: ' + this.masters.join(', '));
+
+        masterData = this._data.masters[masterName];
+        if(key === undefined)
+            keys = Object.keys(masterData);
+        else if(!(key instanceof Array))
+            // treat it as a single key
+            // may return undefined
+            return masterData[key];
+        else
+            keys = key;
+        // Return a copy of master data, so a user can't mess accidentially
+        // with the internal data of the project.
+        result = Object.create(null);
+        for(i=0,l=keys.length;i<l;i++)
+            result[keys[i]] = masterData[keys[i]];
+        return result;
+    };
+
     Object.defineProperty(_p, 'masters', {
         get: function(){ return Object.keys(this._data.masters); }
     });
@@ -674,9 +697,10 @@ define([
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
-            var master = this.getMaster(masterName)
-            , skeleton = this._data.masters[masterName].skeleton
-            , propertiesFile = this._data.masters[masterName].propertiesFile
+            var masterData = this._data.masters[masterName]
+            , skeleton = masterData.skeleton
+            , propertiesFile = masterData.propertiesFile
+            , cpsFile = masterData.cpsFile
             , sourceMOM
             , momMaster
             ;
@@ -686,17 +710,46 @@ define([
             // some kind of proxying to enable different "master.id"s
             sourceMOM = this._momCache[skeleton];
             if(!sourceMOM)
-                sourceMOM = this._momCache[skeleton] = master.loadMOM();
+                sourceMOM = this._momCache[skeleton] = this.getMaster(masterName).loadMOM();
             momMaster = sourceMOM.clone();
 
             momMaster.id = masterName;
 
             if(propertiesFile)
                 this._loadElementProperties(propertiesFile, momMaster);
-            this._controller.addMaster(momMaster, master._cpsFile);
+            this._controller.addMaster(momMaster, cpsFile);
         }
         // FIXME: I think it would be much more useful to return the master MOM Node
         return this._controller;
+    };
+
+    _p.clone = function (sourceMasterName, newMasterName) {
+        var sourceMOM = this.getMOMMaster(sourceMasterName)
+          , masterData = this._data.masters[sourceMasterName]
+          , cpsFile = newMasterName + ".cps"
+          , cpsString, momMaster
+          ;
+        // this ensures that we really have the current state
+        cpsString = '' + this._controller.getMasterCPS(false, sourceMasterName);
+        this.ruleController.write(false, cpsFile, cpsString);
+        // register
+        this.createMaster(newMasterName, cpsFile, masterData.skeleton);
+        // create
+        momMaster = sourceMOM.clone(true);
+        momMaster.id = newMasterName;
+        // open
+        this._controller.addMaster(momMaster, cpsFile);
+        return momMaster;
+    };
+
+    /**
+     * FIXME: this should be `createMaster`
+     * and `createMaster` should be `registerMaster`
+     */
+    _p.registerMaster = function (masterName, cpsFile, cpsString, skeleton, properies) {
+        this.ruleController.write(false, cpsFile, cpsString);
+        this.createMaster(masterName, cpsFile, skeleton, properies);
+        return this.getMOMMaster(masterName);
     };
 
     /**
