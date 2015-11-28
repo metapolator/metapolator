@@ -61,9 +61,9 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
-    _p.clone = function() {
+    _p.clone = function(cloneElementProperties) {
         var clone = new this.constructor(new PointData(this._skeleton));
-        this._cloneProperties(clone);
+        this._cloneProperties(clone, cloneElementProperties);
         return clone;
     };
 

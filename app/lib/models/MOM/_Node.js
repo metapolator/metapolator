@@ -91,19 +91,22 @@ define([
       , type: 'type'
     };
 
-    _p.clone = function() {
+    _p.clone = function(cloneElementProperties) {
         var clone = new this.constructor(), i,l;
-        this._cloneProperties(clone);
+        this._cloneProperties(clone, cloneElementProperties);
         for(i=0,l=this._children.length;i<l;i++)
-            clone.add(this._children[i].clone());
+            clone.add(this._children[i].clone(cloneElementProperties));
         return clone;
     };
 
-    _p._cloneProperties = function(clone) {
+    _p._cloneProperties = function(clone, cloneElementProperties) {
         if(this._id)
             clone.id = this._id;
         for(var k in this._classes)
             clone.setClass(k);
+        if(cloneElementProperties)
+            clone.properties.splice( 0, clone.properties.length
+                                   , this.properties.items );
     };
 
     _p.walkTreeDepthFirst = function(callback) {
