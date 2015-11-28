@@ -138,10 +138,19 @@ point:i(-1) > left {
         + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};
 }
 
-/****
- * set up the super masters of this master and the proportions:
+master * {
+{{#n}}
+    baseMaster{{.}}: master:baseMaster{{.}};
+{{/n}}
+{{#n}}
+    proportion{{.}}: master:proportion{{.}};
+{{/n}}
+}
 
-* {
+/****
+ * set up the baseMasters and the proportions of the <MOM Master>:
+
+ master {
 {{#n}}
     baseMaster{{.}}: S"master#anyName_{{.}}";
 {{/n}}

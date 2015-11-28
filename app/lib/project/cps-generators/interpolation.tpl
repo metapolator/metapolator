@@ -59,8 +59,17 @@ contour > p {
 }
 
 
+master * {
+{{#n}}
+    baseMaster{{.}}: master:baseMaster{{.}};
+{{/n}}
+{{#n}}
+    proportion{{.}}: master:proportion{{.}};
+{{/n}}
+}
+
 /****
- * set up the super masters of this master and the proportions:
+ * set up the baseMasters and the proportions of the <MOM Master>:
 
 * {
 {{#n}}

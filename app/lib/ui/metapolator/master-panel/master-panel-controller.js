@@ -39,23 +39,26 @@ define([
                         var master = sequence.children[j];
                         master.deselectAllChildren();
                         // todo: change [0] to [viewState]
-                        if (master.edit) {
-                            var clone = master.clone()
-                              , copiedCPSstring
-                              , newId = sequence.addToMasterId();
-                            setCloneProperties(clone, newId);
-                            copiedCPSstring = copyCPSString(master);
-                            registerMaster(clone, copiedCPSstring);
-                            master.edit = false;
-                            // a clone could have stacked parameters, if there are any
-                            // they are not registered as such, becuase the parameters
-                            // arent created in a regular way. So to be safe we
-                            // destack the clones parameters standard.
-                            for (var k = 0, kl = clone.parameters.length; k < kl; k++) {
-                                clone.parameters[k].destackOperators();
-                            }
-                            clones.push(clone);
+
+                        if (!master.edit)
+                            continue;
+
+                        var clone = master.clone()
+                          , newId = sequence.addToMasterId()
+                          ;
+
+                        setCloneProperties(clone, newId);
+                        project.clone(master.name, clone.name);
+
+                        master.edit = false;
+                        // a clone could have stacked parameters, if there are any
+                        // they are not registered as such, becuase the parameters
+                        // arent created in a regular way. So to be safe we
+                        // destack the clones parameters standard.
+                        for (var k = 0, kl = clone.parameters.length; k < kl; k++) {
+                            clone.parameters[k].destackOperators();
                         }
+                        clones.push(clone);
                     }
                     for (var m = 0, ml = clones.length; m < ml; m++) {
                         sequence.add(clones[m]);
@@ -70,21 +73,13 @@ define([
             clone.setMaster(clone);
             clone.displayName = nameCopy(clone.displayName);
             // giving it a unique name before registering
+            // NOTE: this is not DRY but it follows the convention
+            // of prefixing ui masters with "master-"
             clone.name = "master-" + clone.sequenceId + "-" + clone.id;
+
+            // probably unused as of now -> it is used a lot, for the parameters!
+            // however, the source of it is in project
             clone.cpsFile = clone.name + ".cps";
-        }
-
-
-        function registerMaster(master, cpsString) {
-            project.ruleController.write(false, master.cpsFile, cpsString);
-            project.createMaster(master.name, master.cpsFile, 'skeleton.base');
-            project.open(master.name);
-        }
-
-        function copyCPSString(master) {
-            // use the old name to get the cpsString
-            var sourceCollection = project.controller.getMasterCPS(false, master.name);
-            return "" + sourceCollection;
         }
 
         function nameCopy (name) {
@@ -113,10 +108,13 @@ define([
                     baseMaster = importedMasters[i];
                     uiMasterName = uiMasterPrefix + (baseMaster.name.slice(baseMasterPrefix.length));
                     cpsFile = uiMasterName + '.cps';
-                    project.ruleController.write(false, cpsFile, cpsUIMasterTemplate);
-                    project.createMaster(uiMasterName, cpsFile, baseMaster.skeleton
-                          , { baseMaster: 'S"master#' + baseMaster.name + '"' });
-                    momMaster= project.getMOMMaster(uiMasterName);
+                    momMaster = project.registerMaster(
+                            uiMasterName
+                          , cpsFile
+                          , cpsUIMasterTemplate
+                          , baseMaster.skeleton
+                          , { baseMaster: 'S"master#' + baseMaster.name + '"' }
+                    );
                     // TODO: This could be done by listening to univers
                     // (if univers would emit this kind of events)
                      $scope.model.masterSequences[0].addMaster(uiMasterName, momMaster, cpsFile);
@@ -167,8 +165,8 @@ define([
                                 axisValue = 0;
                             }
                             instance.addAxis(master, axisValue, null, project);
-                            instanceTools.updateCPSfile(project, instance);
-                        } 
+                            instanceTools.update(project, instance);
+                        }
                     }
                 }
             }
