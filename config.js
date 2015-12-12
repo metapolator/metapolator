@@ -21,6 +21,7 @@ module.exports = {
       , 'opentype': 'bower_components/opentype.js/dist/opentype'
       , 'ui-codemirror': 'bower_components/angular-ui-codemirror/ui-codemirror'
       , 'EventEmitter': 'bower_components/event-emitter.js/dist/event-emitter'
+      , 'bloomfilter': 'bower_components/bloomfilter.js/bloomfilter'
     }
   , shim: {
         angular: {

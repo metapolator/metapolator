@@ -41,6 +41,7 @@ define([
         Parent.call(this, source, lineNo);
         this._value = value;
         this._specificity = null;
+        this._normalizedName = null;
 
         var i, l, item, invalid = false, message;
         if(!this._value.length) {
@@ -113,6 +114,16 @@ define([
     _p.toString = function() {
         return this._value.join('');
     };
+
+    Object.defineProperty(_p, 'normalizedName', {
+        get: function() {
+            return this._normalizedName || (
+                this._normalizedName = this._value.map(function(item) {
+                    return item.normalizedName || item.toString();
+                }).join('')
+            );
+        }
+    });
 
     _p._combinators = {
         // the child combinator

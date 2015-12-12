@@ -66,7 +66,6 @@ define([
             throw new ValueError('trying to set an invalid selectorList: '+ selectorList);
 
         this._selectorList = selectorList;
-        this._unsetRulesCache();
         this._trigger(['selector-change', 'structural-change']);
     }
 
@@ -84,33 +83,6 @@ define([
       , set: setSelectorList
       , get: getSelectorList
     });
-
-    /**
-     * Wrapper to add the namespace to the rules returned by
-     * Parent.prototype._getRules
-     */
-    _p._getRules = function() {
-        var rules, i, l
-          , namespace = this.selectorList
-          ;
-        if(namespace.invalid)
-            return [];
-        rules = Parent.prototype._getRules.call(this);
-        for(i=0,l=rules.length;i<l;i++) {
-            // This creates a copy which is inevitable; otherwise the cache
-            // accumulates the changes made here beyond calls to _unsetRulesCache
-            // To be exact, changes made here persist otherwise in child
-            // rule collections. These changes survive _unsetRulesCache
-            // e.g. via _structuralChangeHandler. So, the second call to
-            // a not cleared child collection performs namespace.multiply
-            // a second time on the same rules item.
-            //rules[i] = [namespace.multiply(rules[i][0]), rules[i][1], rules[i][2]];
-
-            // The copy is not needed at the moment because now ParameterCollection._getRules
-            rules[i][0] = namespace.multiply(rules[i][0])
-        }
-        return rules;
-    };
 
     return AtNamespaceCollection;
 });

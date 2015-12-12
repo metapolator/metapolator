@@ -27,6 +27,7 @@ requirejs.config({
       , 'd3': 'bower_components/d3/d3.min'
       , 'jquery-ui': 'bower_components/jquery.ui/jquery-ui.min'
       , 'sortable': 'bower_components/angular-ui-sortable/sortable.min'
+      , 'bloomfilter': 'bower_components/bloomfilter.js/bloomfilter'
     }
   // exclude on build
   , excludeShallow: [

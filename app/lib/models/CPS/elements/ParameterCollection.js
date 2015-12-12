@@ -21,7 +21,9 @@ define([
      */
     function ParameterCollection(items, source, lineNo) {
         Parent.call(this, source, lineNo);
-        this._items = items.slice();
+        this._items = [];
+
+        this._subscriptions = new Map();
 
         this._name = null;
         this._rules = null;
@@ -30,23 +32,17 @@ define([
             // lock this.name
             this.name = undefined;
         }
+        // insert the items.
+        // triggers structural-change
+        this.splice(0, 0, items);
     }
     var _p = ParameterCollection.prototype = Object.create(Parent.prototype);
     _p.constructor = ParameterCollection;
 
     // called in RuleController._set
     _p.reset = function(/* same as constructor ! */) {
-        this._unsetRulesCache();
-
-        // FIXME: without having other listeners on these items, we'll
-        // probably won't need to call the destroy method
-        // but maybe this becomes interesting when the ui displays this
-        // data structure
-        // uncomment calls to destroy everywhere???
-        var items = this._items, i, l;
-        this._items = null;
-        for(i=0,l=items.length;i<l;i++)
-            items[i].destroy();
+        // the internal method won't trigger anything.
+        var result = this._splice(0, this._items.length);
 
         // reset all own, enumerable, configurable properties
         Object.keys(this).forEach(function(key) {
@@ -54,9 +50,12 @@ define([
                 delete this[key];
         }, this);
 
+        if(result[1]) this._trigger('delete');
+        // This will trigger structural-change the reset brought
+        // any items, also "add" will be triggered then.
         this.constructor.apply(this, arguments);
-        // the collection changed most probably
-        this._trigger('structural-change');
+        // if the reset did not add items, but we deleted any
+        if(result[1] && !this._items.length) this._trigger('structural-change');
     };
 
     _p.toString = function() {
@@ -126,95 +125,32 @@ define([
         }
     });
 
-    /**
-     * invalidate the cache on the right occasions,
-     * This are events that imply:
-     *  -- That a child rule changed its SelectorList
-     *  -- That this AtNamespaceCollection changed its SelectorList (right???)
-     *  -- That this ParameterCollection changed its set of Rules
-     *  -- That a child ParameterCollection changed its set of Rules
-     *
-     * We dont need invalidation of this cache if a Rule changed the contents
-     * of its ParameterDict.
-     */
-    _p._unsetRulesCache = function() {
-        this._rules = null;
-        this._unsubscribeAll();
+    _p._subscribeItem = function(item) {
+        var callback, channel;
+        if(item instanceof Rule)
+            channel = 'selector-change';
+        else if(item instanceof ParameterCollection)
+            channel = 'structural-change';
+        else
+            return;
+        callback = [this, '_structuralChangeHandler'];
+        this._subscribe(item, channel, callback);
     };
 
     _p._subscribe = function(item, channel, callback, data) {
         var subscriptionID = item.on(channel, callback, data);
-        this._rulesCacheSubscriptions.push([item, subscriptionID]);
+        this._subscriptions.set(item, subscriptionID);
     };
-    _p._unsubscribeAll = function() {
-        var i, l, subscription;
-        for(i=0,l=this._rulesCacheSubscriptions.length;i<l;i++) {
-            subscription = this._rulesCacheSubscriptions[i];
-            subscription[0].off(subscription[1]);
-        }
-        this._rulesCacheSubscriptions = [];
+
+    _p._unsubscribe = function(item) {
+        var subscriptionID = this._subscriptions.get(item);
+        if(!subscriptionID) return;
+        item.off(subscriptionID);
+        this._subscriptions.delete(item);
     };
 
     _p._structuralChangeHandler = function(data, channelName, eventData) {
-        this._unsetRulesCache();
         this._trigger('structural-change');
-    };
-
-    _p._getRules = function () {
-        var i, l, j, ll
-          , rules = []
-          , itemRules, itemRule
-          , item
-          , callback = [this, '_structuralChangeHandler']
-          , ruleChannel = 'selector-change'
-          , collectionChannel = 'structural-change'
-          ;
-        for(i=0, l=this._items.length;i<l;i++) {
-            item = this._items[i];
-            if(item instanceof Rule) {
-                this._subscribe(item, ruleChannel, callback);
-                if(item.invalid) continue;
-                // 0: array of namespaces, initially empty
-                // 1: the instance of Rule
-                // thus: [selectorList, rule, [_Collections where this rule is embeded]]
-                // TOOD: instead of using arrays here it may be very helpful to make
-                // a stateful "namespacedRule" or "locatedRule" or so interface,
-                // could help the js engine to make better optimizations. Also
-                // it would be more explicit, especially with these first and
-                // last arguements here and how it is copied all the time
-                // that is annoying to follow if one doesn't know how it all
-                // plays together.
-                // finally, that also MAY help implementing the clustered
-                // getMatchingRules method in SelectorEngine
-                rules.push([ item.getSelectorList(), item, [this] ]);
-            }
-            else if(item instanceof ParameterCollection) {
-                this._subscribe(item, collectionChannel, callback);
-                if(item.invalid)
-                    continue;
-                // To produce a history of nested ParameterCollections
-                // add `this` to the third entry; to show
-                // in the the ui where the rule comes from
-                // rule[2].push(this);
-                // NOTE: That requires each rule item to be copied!
-                // i.e. items.rules[i].slice(); otherwise the change is
-                // stored in the cache of `item` and that breaks things!
-                itemRules = item.rules;
-                for(j=0,ll=itemRules.length;j<ll;j++) {
-                    // That locatedRule would have an interface to do this
-                    // copy here, probably via a factory or so.
-                    // rules.push(itemRules[j].addTrace(this))
-                    itemRule = itemRules[j].slice()
-                    itemRule[2] = itemRules[j][2].slice()
-                    itemRule[2].push(this);
-                    rules.push(itemRule)
-                }
-                // without adding this as third argument, the following is enough
-                // Then, AtNamespaceCollection needs to copy the rule item, howewer!
-                // Array.prototype.push.apply(rules, item.rules);
-            }
-        }
-        return rules;
     };
 
 
@@ -247,6 +183,37 @@ define([
             return Math.max(0, length - start);
         return start;
     };
+
+    _p._splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
+        var insertions = _insertions instanceof Array
+            ? _insertions
+            : (_insertions === undefined
+                    ? []
+                    : [_insertions]
+              )
+          , deleted
+          , args
+          , i, l
+          , item
+          , canonicalStartIndex = this._getCanonicalStartIndex(startIndex, this._items.length)
+          ;
+        for(i=0,l=insertions.length;i<l; i++) {
+            item = insertions[i];
+            if(!_checkItem(item))
+                throw new ValueError('Trying to insert an invalid item: ' + item);
+            this._subscribeItem(item);
+        }
+
+        args = [startIndex, deleteCount];
+        Array.prototype.push.apply(args, insertions);
+        deleted = Array.prototype.splice.apply(this._items, args);
+        for(i=0,l=deleted.length;i<l;i++) {
+            this._unsubscribe(deleted[i]);
+            deleted[i].destroy();
+        }
+        return [canonicalStartIndex, deleted.length, insertions.length, deleted];
+    };
+
     /**
      * One to rule them all:
      *
@@ -265,34 +232,15 @@ define([
      *      "add" if there where insertion
      *      "structural-change" if there where insertion or deletions
      */
-    _p.splice = function(startIndex, deleteCount, _insertions /* single item or array of items */) {
-        var insertions = _insertions instanceof Array
-            ? _insertions
-            : (_insertions === undefined
-                    ? []
-                    : [_insertions]
-              )
-          , deleted
-          , args
-          , i, l
-          , item
+    _p.splice = function(startIndex, deleteCount, insertions /* single item or array of items */) {
+        var result = this._splice(startIndex, deleteCount, insertions)
+          , deleted = result[1]
+          , inserted = result[2]
           , events = []
-          , canonicalStartIndex = this._getCanonicalStartIndex(startIndex, this._items.length)
           ;
-        for(i=0,l=insertions.length;i<l; i++) {
-            item = insertions[i];
-            if(!_checkItem(item))
-                throw new ValueError('Trying to insert an invalid item: ' + item);
-        }
-
-        args = [startIndex, deleteCount];
-        Array.prototype.push.apply(args, insertions);
-        deleted = Array.prototype.splice.apply(this._items, args);
-        for(i=0,l=deleted.length;i<l;i++)
-            deleted[i].destroy();
-        if(deleted.length)
+        if(deleted)
             events.push('delete');
-        if(insertions.length)
+        if(inserted)
             events.push('add');
         if(!events.length)
             // nothing happened
@@ -301,13 +249,10 @@ define([
         // FIXME: this last part should be a separate method, that just returns
         // the deleted array. Check the usage of this, see how splice in
         // ParameterDict behaves and is splitted into two methods.
-        // NOTE: metapolatorStandAlone.cpsAPITools.addNewRule ane addNewAtImport
+        // NOTE: metapolatorStandAlone.cpsAPITools.addNewRule and addNewAtImport
         // use canonicalStartIndex!
         // (and I just backported parameterDict to comply with this API because
         // it was less effort for the moment)
-
-        // prune the cache.
-        this._unsetRulesCache();
 
         // FIXME: it seems that "update" (check!!!) is not taken yet as an
         // event name. PropertyDict uses "update" in this case. For the
@@ -321,11 +266,11 @@ define([
         // NOTE: index and deletedCount must be calculated see the
         // docs for Array.prototype.slice
         this._trigger(events);
-        return [canonicalStartIndex, deleted.length, insertions.length, deleted];
+        return result;
     };
 
     _p.getItem = function(index) {
-        return this.items[index];
+        return this._items[index];
     };
 
     return ParameterCollection;

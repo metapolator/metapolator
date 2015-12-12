@@ -4,12 +4,14 @@ define([
   , 'metapolator/models/CPS/whitelistProxies'
   , 'metapolator/models/emitterMixin'
   , 'metapolator/models/CPS/elements/ParameterDict'
+  , 'bloomfilter'
 ], function(
     errors
   , Parent
   , whitelistProxies
   , emitterMixin
   , ParameterDict
+  , bloomfilter
 ) {
     "use strict";
 
@@ -57,6 +59,7 @@ define([
 
         this._id = null;
         this._classes = Object.create(null);
+        this._bloomFilter = null;
         this.cps_proxy = whitelistProxies.generic(this, this._cps_whitelist);
 
         // this has higher precedence than any rule loaded by CPS
@@ -114,7 +117,7 @@ define([
         callback(this);
         for(i=0,l=this.children.length;i<l;i++)
             this.children[i].walkTreeDepthFirst(callback);
-    }
+    };
 
     emitterMixin(_p, emitterMixinSetup);
 
@@ -152,7 +155,10 @@ define([
          * moment, I need id's to write the selector engine, and for that,
          * I don't need propper checked IDs
          */
-        set: function(id){ this._id = id || null; }
+        set: function(id){
+            this._bloomFilter = null;
+            this._id = id || null;
+        }
       , get: function(){ return this._id; }
     });
 
@@ -227,10 +233,12 @@ define([
     });
 
     _p.setClass = function(name) {
+        this._bloomFilter = null;
         this._classes[name] = null;
     };
 
     _p.removeClass = function(name) {
+        this._bloomFilter = null;
         delete this._classes[name];
     };
 
@@ -255,7 +263,6 @@ define([
      *  enhance this list with accepted children Constructors
      */
     _p._acceptedChildren = [];
-
 
     _p.qualifiesAsChild = function(item) {
         var i=0;
@@ -312,7 +319,7 @@ define([
         get: function() {
             var master = this.master
               , indexPath
-              , master, parentPath
+              , parentPath
               ;
             if(!master)
                 return null;
@@ -350,6 +357,7 @@ define([
                         +'when the parent still has this Node as a child');
                 this._indexPath = null;
                 this._masterIndexPath = null;
+                this._bloomFilter = null;
                 this._parent = null;
                 this._index = null;
                 return;
@@ -367,6 +375,7 @@ define([
                     + 'Use "parent.add(child)" instead.');
             this._indexPath = null;
             this._masterIndexPath = null;
+            this._bloomFilter = null;
             this._parent = parent;
             this._index = this._parent.find(this);
         }
@@ -524,6 +533,53 @@ define([
             this._deinitCPSChangeEvent();
 
         return result;// usually undefined
+    };
+
+    _p._getBloomFilterData = function() {
+        var data
+          , parts, id, k
+          , classes
+          ;
+        data = [this.type];
+
+        id = this.id;
+        if(id)
+            data.push('#' + id);
+
+        classes = this._classes;
+        for(k in classes)
+            data.push('.' + k);
+
+        return data;
+    };
+
+    _p.getBloomFilter = function() {
+        var bf = this._bloomFilter
+          , data,i,l
+          ;
+        if(!bf) {
+            // we cache this but we will have to invalidate on many occasions
+            // Changes in the parent tree, as well as changes of this nodes
+            // id and classes
+            // A cache also speeds up the creation of the filter, because we
+            // can just do: this.parent.getBloomFilter().clone()
+            // and the add this nodes signature
+
+            if(this.parent)
+                bf = this.parent.getBloomFilter().clone();
+            else
+                // I think we don't need a particular big filter
+                // This must be the same as in SelectorEngine (Constructor)
+                // FIXME: put this in a shared module, so that the
+                // synchronization of this setup is explicit!
+                bf = new bloomfilter.BloomFilter(512, 5);
+
+            this._bloomFilter = bf;
+            data = this._getBloomFilterData();
+            for(i=0,l=data.length;i<l;i++)
+                bf.add(data[i]);
+        }
+        return bf;
     };
 
     return _Node;

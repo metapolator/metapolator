@@ -38,7 +38,8 @@
     "d3": "~3.5.5",
     "jquery": "~2.1.4",
     "jquery.ui": "~1.11.4",
-    "marked": "~0.3.3"
+    "marked": "~0.3.3",
+    "bloomfilter.js": "graphicore/bloomfilter.js#more-exposed-api"
   },
   "resolutions": {
     "angular": "^1"

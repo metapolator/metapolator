@@ -71,6 +71,7 @@ define({
           , 'ufojs': 'lib/ufoJS/lib'
           , 'es6': 'lib/es6'
           , 'es6/Reflect': 'lib/bower_components/harmony-reflect/reflect'
+          , 'bloomfilter': 'lib/bower_components/bloomfilter.js/bloomfilter'
         }
     },
 
