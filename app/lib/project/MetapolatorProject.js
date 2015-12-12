@@ -842,7 +842,7 @@ define([
           , savePropertiesDB = savePropertiesDB_ === undefined ? true : !!savePropertiesDB_
           , masterData, db
           ;
-        momMaster = importer['import'](glyphs, true);
+        momMaster = importer['import'](glyphs);
         momMaster.id = masterName;
         this._controller.addMaster(momMaster, this._data.masters[masterName].cpsFile);
         // somewhere serialize properties from master MOM tree into properties DB
