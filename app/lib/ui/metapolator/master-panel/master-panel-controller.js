@@ -3,11 +3,13 @@ define([
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
+  , 'require/text!metapolator/cpsLib/metapolator/ui-master.cps'
 ], function(
     $
   , instanceTools
   , dialog
   , selection
+  , cpsUIMasterTemplate
 ) {
     "use strict";
     function MasterPanelController($scope, project) {
@@ -37,23 +39,26 @@ define([
                         var master = sequence.children[j];
                         master.deselectAllChildren();
                         // todo: change [0] to [viewState]
-                        if (master.edit) {
-                            var clone = master.clone()
-                              , copiedCPSstring
-                              , newId = sequence.addToMasterId();
-                            setCloneProperties(clone, newId);
-                            copiedCPSstring = copyCPSString(master);
-                            registerMaster(clone, copiedCPSstring);
-                            master.edit = false;
-                            // a clone could have stacked parameters, if there are any
-                            // they are not registered as such, becuase the parameters
-                            // arent created in a regular way. So to be safe we
-                            // destack the clones parameters standard.
-                            for (var k = 0, kl = clone.parameters.length; k < kl; k++) {
-                                clone.parameters[k].destackOperators();
-                            }
-                            clones.push(clone);
+
+                        if (!master.edit)
+                            continue;
+
+                        var clone = master.clone()
+                          , newId = sequence.addToMasterId()
+                          ;
+
+                        setCloneProperties(clone, newId);
+                        project.clone(master.name, clone.name);
+
+                        master.edit = false;
+                        // a clone could have stacked parameters, if there are any
+                        // they are not registered as such, becuase the parameters
+                        // arent created in a regular way. So to be safe we
+                        // destack the clones parameters standard.
+                        for (var k = 0, kl = clone.parameters.length; k < kl; k++) {
+                            clone.parameters[k].destackOperators();
                         }
+                        clones.push(clone);
                     }
                     for (var m = 0, ml = clones.length; m < ml; m++) {
                         sequence.add(clones[m]);
@@ -68,31 +73,66 @@ define([
             clone.setMaster(clone);
             clone.displayName = nameCopy(clone.displayName);
             // giving it a unique name before registering
+            // NOTE: this is not DRY but it follows the convention
+            // of prefixing ui masters with "master-"
             clone.name = "master-" + clone.sequenceId + "-" + clone.id;
+
+            // probably unused as of now -> it is used a lot, for the parameters!
+            // however, the source of it is in project
             clone.cpsFile = clone.name + ".cps";
-        }
-
-
-        function registerMaster(master, cpsString) {
-            project.ruleController.write(false, master.cpsFile, cpsString);
-            project.createMaster(master.name, master.cpsFile, 'skeleton.base');
-            project.open(master.name);
-        }
-
-        function copyCPSString(master) {
-            // use the old name to get the cpsString
-            var sourceCollection = project.controller.getMasterCPS(false, master.name);
-            return "" + sourceCollection;
         }
 
         function nameCopy (name) {
             // todo: put some more intelligence in here
             return name + " copy";
         }
-        
-        $scope.importUfo = function () {
-            var message = "Want to load your own UFO?<br><br>Show us you want this by buying a T shirt:<br><ul><li><a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a></li><li><a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a></li>";
-            dialog.openDialogScreen(message, false, false, true);
+
+        $scope.handleUFOimportFiles = function(element) {
+            var ufozipfile = element.files[0]
+              , reader = new FileReader()
+              ;
+            dialog.openDialogScreen("Importing UFO ZIP...", true);
+
+            reader.onload = function(e) {
+                var baseMasterPrefix = 'base-'
+                  , uiMasterPrefix = 'master-'
+                  , importedMasters = project.importZippedUFOMasters(e.target.result, baseMasterPrefix)
+                  , i, l
+                  , cpsFile
+                  , baseMaster
+                  , uiMasterName
+                  , uiMaster
+                  , momMaster
+                  ;
+                for (i=0, l=importedMasters.length; i<l; i++) {
+                    baseMaster = importedMasters[i];
+                    uiMasterName = uiMasterPrefix + (baseMaster.name.slice(baseMasterPrefix.length));
+                    cpsFile = uiMasterName + '.cps';
+                    momMaster = project.registerMaster(
+                            uiMasterName
+                          , cpsFile
+                          , cpsUIMasterTemplate
+                          , baseMaster.skeleton
+                          , { baseMaster: 'S"master#' + baseMaster.name + '"' }
+                    );
+                    // TODO: This could be done by listening to univers
+                    // (if univers would emit this kind of events)
+                     $scope.model.masterSequences[0].addMaster(uiMasterName, momMaster, cpsFile);
+                }
+
+                $scope.importUfo_dialog_close();
+                dialog.closeDialogScreen();
+                $scope.$apply();
+            };
+            reader.readAsArrayBuffer(ufozipfile);
+        };
+
+        $scope.importUfo_dialog_open = function() {
+            $("#importufo_dialog").css("display", "block");
+        };
+
+        $scope.importUfo_dialog_close = function() {
+            $("#importufo_dialog").css("display", "none");
         };
         
         $scope.addMasterToDesignSpace = function (master) {
@@ -125,8 +165,8 @@ define([
                                 axisValue = 0;
                             }
                             instance.addAxis(master, axisValue, null, project);
-                            instanceTools.updateCPSfile(project, instance);
-                        } 
+                            instanceTools.update(project, instance);
+                        }
                     }
                 }
             }

@@ -1,6 +1,6 @@
 define([
     'metapolator/errors'
-  , 'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
+  , 'metapolator/models/CPS/cpsTools'
   , 'metapolator/ui/redPill/cpsPanel/elements/helpers'
   , 'metapolator/models/CPS/parsing/parseSelectorList'
 ], function(

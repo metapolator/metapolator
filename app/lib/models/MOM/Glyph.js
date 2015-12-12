@@ -44,8 +44,8 @@ define([
         for(var k in source) if(!this.hasOwnProperty(k)) this[k] = source[k];
     }).call(_p._cps_whitelist, Parent.prototype._cps_whitelist);
 
-    _p._cloneProperties = function(clone) {
-        Parent.prototype._cloneProperties.call(this, clone);
+    _p._cloneProperties = function(clone, cloneElementProperties) {
+        Parent.prototype._cloneProperties.call(this, clone, cloneElementProperties);
         clone.setUFOData(this.getUFOData());
     };
 

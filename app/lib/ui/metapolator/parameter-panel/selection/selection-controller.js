@@ -1,11 +1,9 @@
 define([
     'jquery'
-  , 'metapolator/ui/metapolator/cpsAPITools'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
 
 ], function(
     $
-  , cpsAPITools
   , selection
 ) {
     "use strict";

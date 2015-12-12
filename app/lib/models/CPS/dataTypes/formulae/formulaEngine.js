@@ -6,6 +6,7 @@ define([
   , './parsing/NameToken'
   , './parsing/_Token'
   , 'metapolator/models/CPS/elements/SelectorList'
+  , 'metapolator/models/CPS/parsing/parseSelectorList'
   , 'metapolator/models/MOM/_Node'
   , 'ufojs/tools/misc/transform'
   , 'metapolator/math/Vector'
@@ -19,6 +20,7 @@ define([
   , NameToken
   , _Token
   , SelectorList
+  , parseSelectorList
   , _MOMNode
   , transform
   , Vector
@@ -31,6 +33,7 @@ define([
       , CPSFormulaError = errors.CPSFormula
       , Transformation = transform.Transform
       , engine
+      , parseSelectorListFromString = parseSelectorList.fromString
       ;
 
     /**
@@ -356,6 +359,12 @@ define([
          */
       , new Operator('Identity', false, 0, 0, 0, function(){
                                             return transform.Identity;})
+      , new Operator('Selector', false, 0, 0, 1, [
+            ['string'
+            , function(selectorString) {
+                return parseSelectorListFromString(selectorString);
+            }]
+        ])
     );
 
 
@@ -376,8 +385,13 @@ define([
         else if(result instanceof SelectorList) {
             var host = getAPI.get('this') // this can\'t be overidden by cps
               , node = getAPI.genericGetter(host, 'multivers')
+              , item = getAPI.query(node, result)
               ;
-            return getAPI.query(node, result);
+
+            if(!item)
+                throw new CPSFormulaError('Not found: an element for '
+                                                        + result);
+            return item;
             // old, not fully subscribed:
             // return getAPI.get('this').multivers.query(result);
         }

@@ -225,7 +225,8 @@ define([
             }
           , z: {}
         };
-
+        // TODO: seems that we "loose" the kwargs here, and thus a possible
+        // identifier. (not sure how to solve that, though.)
         point.z.on = getCenterPoint(point.l.on, point.r.on);
         point.z['in'] = getCenterPoint(point.l['in'], point.r['in']);
         point.z.out = getCenterPoint(point.l.out, point.r.out);

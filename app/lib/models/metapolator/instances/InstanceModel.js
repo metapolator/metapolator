@@ -2,19 +2,23 @@ define([
     '../_BaseModel'
   , './GlyphModel'
   , './AxisModel'
-  , 'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/models/CPS/cpsTools'
+
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
 ], function(
     Parent
   , GlyphModel
   , AxisModel
-  , cpsAPITools
+  , cpsTools
   , instanceTools
 ){
     'use strict';
+
+    var setProperty = cpsTools.setProperty;
+
     function InstanceModel(id, axes, designSpace, color, parent, project) {
         this.id = id;
-        this.name = 'instance' + id;
+        this.name = 'instance-' + id;
         this.displayName = 'Instance ' + id;
         this.axes = [];
         this.children = [];
@@ -24,7 +28,7 @@ define([
         this.color = color;
         this.exportFont = true;
         this.openTypeFeatures = true;
-        this.cpsFile = 'instance' + id + '.cps';
+        this.cpsFile = this.name + '.cps';
         this._project = project;
 
         Object.defineProperty(this, 'parent', {
@@ -42,6 +46,9 @@ define([
 
     _p.remove = function() {
         var index = this._getIndex();
+        // modifies this.parent
+        // parent should rather have a removeChild method
+        // this violates the hierarchy.
         this.parent.children.splice(index, 1);
         this._findNewCurrentInstance(index);
     };
@@ -90,11 +97,11 @@ define([
 
     _p.setMetapolationValues = function() {
         this._setMetapolationValuesInModel();
-        this._setMetapolationValuesInCPSfile();
+        this._setMetapolationValuesInCPS();
     };
 
     _p.updateCPSFile = function() {
-        instanceTools.updateCPSfile(this._project, this);
+        instanceTools.update(this._project, this);
     };
 
     _p._setMetapolationValuesInModel = function() {
@@ -118,15 +125,12 @@ define([
         }
     };
 
-    _p._setMetapolationValuesInCPSfile  = function() {
-        var parameterCollection = this._project.ruleController.getRule(false, this.cpsFile)
-          , l = parameterCollection.length
-          , cpsRule = parameterCollection.getItem(l - 1)
-          , parameterDict = cpsRule.parameters
-          , setParameter = cpsAPITools.setParameter;
-        for (var i = 0; i < this.axes.length; i++) {
-            setParameter(parameterDict, 'proportion' + i, this.axes[i].metapolationValue);
-        }
+    _p._setMetapolationValuesInCPS  = function() {
+        var properties = this.__momMaster.properties
+          , i, l
+          ;
+        for (i=0,l=this.axes.length;i<l;i++)
+            setProperty(properties, 'proportion' + i, this.axes[i].metapolationValue);
     };
    
     _p.addAxis = function(master, axisValue, metapolationValue) {

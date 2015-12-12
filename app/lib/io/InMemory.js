@@ -2,13 +2,13 @@ define([
     'ufojs/errors'
   , 'ufojs/tools/io/_base'
   , 'obtain/obtain'
-  , 'path'
+  , './helpers/Path'
   , 'EventEmitter'
 ], function(
     errors
   , Parent
   , obtain
-  , path
+  , Path
   , EventEmitter
 ) {
     "use strict";
@@ -32,40 +32,6 @@ define([
             ?   process.nextTick.bind(process)
             :   function(cb){ setTimeout(cb, 0); }
             ;
-
-    function Path(pathStr) {
-        var _path;
-        this.normalPath = path.normalize(pathStr);
-        this.rawPath = pathStr;
-        if(this.normalPath[0] === '/')
-            this.normalPath = this.normalPath.slice(1);
-
-        if(this.normalPath.slice(-1) === '/')
-            this.normalPath = this.normalPath.slice(0,-1);
-
-        this.basename = path.basename(this.normalPath);
-
-        // if(this.basename = '' && this.normalPath '')
-        _path = (this.normalPath !== "")
-                    ? path.dirname(this.normalPath).split('/')
-                    : []
-                    ;
-        if(this.basename !== '')
-            _path.push(this.basename);
-
-        if(_path[0] === '.')
-            _path.shift();
-        if(_path[0] === '..')
-            throw new TypeError('Path "' + this.normalPath +'" is above root.');
-        if(_path.length === 1 && _path[0] === 1)
-            _path = [];
-        Object.defineProperty(this, 'path'
-                        , {get: Array.prototype.slice.bind(_path)});
-        Object.defineProperty(this, 'directory'
-                        , {get: Array.prototype.slice.bind(_path, 0, -1)});
-        Object.seal(this);
-    }
-    Path.factory = function(pathString){ return new Path(pathString); };
 
     function Node (mtime) {
         this.modified(undefined, mtime);
@@ -295,7 +261,7 @@ define([
                         extraAPI instanceof Array ? extraAPI : [extraAPI]);
         return obtain.factory(
             {
-                path: ['pathString', Path.factory]
+                path: ['pathString', Path.Factory]
               , request: request
             }
           , {}

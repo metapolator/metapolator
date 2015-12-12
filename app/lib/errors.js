@@ -8,10 +8,10 @@ define(function() {
      *
      * and observe that extending Error is uncool
      */
-    var makeError = function(name, Constructor, prototype, namespace)
+    var makeError = function(name, Constructor, Parent, namespace)
     {
-        if(prototype === undefined)
-            prototype = new Error();
+        if(Parent === undefined)
+            Parent = Error;
 
         if(Constructor === undefined) {
             Constructor = function(message, stack) {
@@ -23,14 +23,13 @@ define(function() {
                 if(!stack && typeof Error.captureStackTrace === 'function')
                     Error.captureStackTrace(this, Constructor);
                 else {
-                    stack = stack || (new Error()).stack || '(no stack available)';
-                    this.stack = [this.name+': ', this.message, '\n'
-                                                    , stack].join('');
+                    this.stack = stack || (new Error()).stack || '(no stack available)';
                 }
             };
         }
-        Constructor.prototype = prototype;
+        Constructor.prototype = Object.create(Parent.prototype);
         Constructor.prototype.constructor = Constructor;
+
         if(namespace === undefined)
             namespace = errors;
         namespace[name] = Constructor;
@@ -41,36 +40,36 @@ define(function() {
      */
     makeError('Error');
     makeError('Unhandled');
-    makeError('Assertion', undefined , new errors.Error());
-    makeError('CommandLine', undefined , new errors.Error());
-    makeError('Value', undefined , new RangeError());
-    makeError('MOM', undefined , new errors.Error());
-    makeError('NotImplemented', undefined , new errors.Error());
-    makeError('Deprecated', undefined , new errors.Error());
-    makeError('AbstractInterface', undefined , new errors.Error());
-    makeError('CPS', undefined , new errors.Error());
-    makeError('Key', undefined , new errors.Error());
-    makeError('CPSRegistryKey', undefined , new errors.Key());
-    makeError('CPSKey', undefined , new errors.Key());
-    makeError('CPSRecursion', undefined , new errors.CPS());
-    makeError('CPSRecursionKey', undefined , new errors.CPSKey());
-    makeError('CPSFormula', undefined , new errors.CPS());
+    makeError('Assertion', undefined, errors.Error);
+    makeError('CommandLine', undefined, errors.Error);
+    makeError('Value', undefined, RangeError);
+    makeError('MOM', undefined, errors.Error);
+    makeError('NotImplemented', undefined, errors.Error);
+    makeError('Deprecated', undefined, errors.Error);
+    makeError('AbstractInterface', undefined, errors.Error);
+    makeError('CPS', undefined, errors.Error);
+    makeError('Key', undefined, errors.Error);
+    makeError('CPSRegistryKey', undefined, errors.Key);
+    makeError('CPSKey', undefined, errors.Error);
+    makeError('CPSRecursion', undefined, errors.CPS);
+    makeError('CPSRecursionKey', undefined, errors.CPSKey);
+    makeError('CPSFormula', undefined, errors.CPS);
     // deprecated, CPSFormula superseeds this
-    makeError('CPSAlgebra', undefined , new errors.CPSFormula());
-    makeError('Project', undefined , new errors.CPS());
-    makeError('PointPen', undefined , new errors.CPS());
-    makeError('CPSParser', undefined , new errors.CPS());
-    makeError('Import', undefined , new errors.CPS());
-    makeError('ImportPenstroke', undefined , new errors.Import());
-    makeError('ImportContour', undefined , new errors.Import());
-    makeError('Event', undefined , new errors.Error());
-    makeError('Emitter', undefined , new errors.Event());
-    makeError('Receiver', undefined , new errors.Event());
+    makeError('CPSAlgebra', undefined, errors.CPSFormula);
+    makeError('Project', undefined, errors.CPS);
+    makeError('PointPen', undefined, errors.CPS);
+    makeError('CPSParser', undefined, errors.CPS);
+    makeError('Import', undefined, errors.CPS);
+    makeError('ImportPenstroke', undefined, errors.Import);
+    makeError('ImportContour', undefined, errors.Import);
+    makeError('Event', undefined, errors.Error);
+    makeError('Emitter', undefined, errors.Event);
+    makeError('Receiver', undefined, errors.Event);
     // UI = user interface
-    makeError('UI', undefined , new errors.Event());
-    makeError('UIInput', undefined , new errors.UI());
+    makeError('UI', undefined, errors.Event);
+    makeError('UIInput', undefined, errors.UI);
     // When the ui-setup was done wrong
-    makeError('UISetup', undefined , new errors.UI());
+    makeError('UISetup', undefined, errors.UI);
 
     /**
      * if expression is false, throw an Assertion

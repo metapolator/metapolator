@@ -203,7 +203,7 @@ define([
                     ? new ContourPoint(pointData)
                     : new PenStrokePoint(pointData)
                     ;
-        // we translate names into classes, because they dont have to be
+        // we translate names into classes, because they don't have to be
         // unique
         if (name !== null)
             (name.match(/\S+/g) || [])

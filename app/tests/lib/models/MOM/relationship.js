@@ -9,6 +9,7 @@ define([
   , 'metapolator/models/MOM/_Contour'
   , 'metapolator/models/MOM/PenStroke'
   , 'metapolator/models/MOM/PenStrokePoint'
+  , 'metapolator/models/MOM/PointData'
 ], function (
     registerSuite
   , assert
@@ -20,17 +21,18 @@ define([
   , _Contour
   , PenStroke
   , PenStrokePoint
+  , PointData
 ) {
     "use strict";
     registerSuite({
         name: 'MOM relationship',
         Node_: function() {
-            var univers = new Univers
-              , master = new Master
-              , glyph = new Glyph
-              , penStroke = new PenStroke
-              , penStrokePoint = new PenStrokePoint
-              ;
+              var univers = new Univers()
+                , master = new Master()
+                , glyph = new Glyph()
+                , penStroke = new PenStroke()
+                , penStrokePoint = new PenStrokePoint(new PointData({}))
+                ;
 
             assert.isTrue(univers instanceof _Node);
             assert.isTrue(univers.isMOMNode(univers));
@@ -62,4 +64,4 @@ define([
             assert.strictEqual(penStroke, penStrokePoint.parent);
         }
     });
-})
+});

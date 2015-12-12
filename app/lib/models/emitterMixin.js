@@ -180,7 +180,7 @@ define([
             if(!(subscriberID in channel)) continue;
             callback = channel[subscriberID][0];
             subscriberData = channel[subscriberID][1];
-            if(callback instanceof Function)
+            if(typeof callback === 'function' || callback instanceof Function)
                 callback(subscriberData, channelKey, eventData);
             else if(callback instanceof Array)
                 // callback = [object, 'methodName']

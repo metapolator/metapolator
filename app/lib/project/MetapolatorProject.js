@@ -12,6 +12,8 @@ define([
   , './parameters/outputConverter'
   , 'metapolator/models/Controller'
   , 'metapolator/models/CPS/RuleController'
+  , 'metapolator/models/CPS/cpsTools'
+  , 'metapolator/models/MOM/Master'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , './ImportController'
   , './UFOExportController'
@@ -20,6 +22,7 @@ define([
   , 'io/zipUtil'
   , 'io/InMemory'
   , './ufoDefaults'
+  , 'io/Mounting'
 ], function(
     errors
   , log
@@ -34,6 +37,8 @@ define([
   , defaultParameters
   , ModelController
   , RuleController
+  , cpsTools
+  , Master
   , GlyphSet
   , ImportController
   , UFOExportController
@@ -42,6 +47,7 @@ define([
   , zipUtil
   , InMemory
   , ufoDefaults
+  , MountingIO
 ) {
     "use strict";
 
@@ -50,10 +56,14 @@ define([
       , ProjectError = errors.Project
       , KeyError = errors.Key
       , IONoEntryError = ufoErrors.IONoEntry
+      , makeProperty = cpsTools.makeProperty
+      , setElementProperties = cpsTools.setElementProperties
       ;
 
-    function MetapolatorProject(io, baseDir, fsEvents) {
-        this._io = io;
+    function MetapolatorProject(io, baseDir, fsEvents, cpsLibIo) {
+        this._projectIo = io;
+        this._cpsLibIo = cpsLibIo;
+
         this._data = {
             masters: {}
         };
@@ -64,6 +74,19 @@ define([
         };
 
         this.baseDir = baseDir || '.';
+        if(cpsLibIo) {
+            // I'm keeping the conditional here, so that the project can bring
+            // it's own cps/lib. However, this is just a temporary backwards
+            // compatibility thing. A project should rather not use the
+            // cps/lib directory.
+            // NOTE: the mount call completeley hides everything that would
+            // be at project/data/ ... /cps/lib otherwise.
+            this._io = new MountingIO(this._projectIo);
+            this._io.mount(cpsLibIo.io, this.cpsDir + '/lib', cpsLibIo.pathOffset);
+        }
+        else
+            this._io = io;
+
         this._fsEvents = fsEvents;
         this._updateChangedRuleHandlers = null;
         if(this._fsEvents) {
@@ -73,7 +96,7 @@ define([
         }
 
         Object.defineProperty(this, 'ruleController', {
-            value: new RuleController(io, parameterRegistry, this.cpsDir)
+            value: new RuleController(this._io, parameterRegistry, this.cpsDir)
         });
 
         this._controller = new ModelController(this.ruleController);
@@ -97,11 +120,21 @@ define([
         get: function(){ return this.dataDir + '/cps';}
     });
 
+    Object.defineProperty(_p, 'cpsGeneratedDirName', {
+        get: function(){ return 'generated';}
+    });
+
+    Object.defineProperty(_p, 'propertiesDBDir', {
+        get: function(){ return this.dataDir + '/propertiesDB';}
+    });
+
     Object.defineProperty(_p, 'cpsOutputConverterFile', {
-        get: function(){ return 'centreline-skeleton-to-symmetric-outline.cps'; }
+        // name as used in @import
+        get: function(){ return this.cpsGeneratedDirName + '/centreline-skeleton-to-symmetric-outline.cps'; }
     });
 
     Object.defineProperty(_p, 'cpsGlobalFile', {
+        // name as used in @import
         get: function(){ return 'global.cps'; }
     });
 
@@ -115,7 +148,6 @@ define([
     Object.defineProperty(_p, 'fontinfoFileName', {
         value: 'fontinfo.plist'
     });
-
 
     Object.defineProperty(_p, 'groupsFile', {
         get: function(){ return this.baseDir+'/' + this.groupsFileName; }
@@ -268,6 +300,9 @@ define([
 
         // create dir this.dataDir/cps
         this._io.mkDir(false, this.cpsDir);
+        this._io.mkDir(false, this.cpsDir + '/' + this.cpsGeneratedDirName);
+
+        this._io.mkDir(false, this.propertiesDBDir);
 
         // create layercontents.plist
         this._io.writeFile(false, this.layerContentsFile,
@@ -340,6 +375,29 @@ define([
 
     _p.hasMaster = function(masterName) {
         return masterName in this._data.masters;
+    };
+
+    _p.getMasterData = function(masterName, key) {
+        var masterData, result, keys, i, l;
+        if(!(masterName in this._data.masters))
+            throw new KeyError('Master named "' + masterName
+                        + '" not found in: ' + this.masters.join(', '));
+
+        masterData = this._data.masters[masterName];
+        if(key === undefined)
+            keys = Object.keys(masterData);
+        else if(!(key instanceof Array))
+            // treat it as a single key
+            // may return undefined
+            return masterData[key];
+        else
+            keys = key;
+        // Return a copy of master data, so a user can't mess accidentially
+        // with the internal data of the project.
+        result = Object.create(null);
+        for(i=0,l=keys.length;i<l;i++)
+            result[keys[i]] = masterData[keys[i]];
+        return result;
     };
 
     Object.defineProperty(_p, 'masters', {
@@ -445,9 +503,42 @@ define([
         return layerDir;
     };
 
+    _p._serializePropertiesDB = function(momMaster) {
+        var db = Object.create(null);
+        momMaster.walkTreeDepthFirst(this._setPropertiesToDB.bind(this, db));
+        return yaml.safeDump(db);
+    };
+
+    _p._writePropertiesDB = obtain.factory(
+        {
+            db: ['momMaster', _p._serializePropertiesDB]
+          , ensureDir: [function(){ return this._io.ensureDir(false, this.propertiesDBDir); }]
+          , path: ['propertiesFile', 'ensureDir', function(propertiesFile){
+                return this.propertiesDBDir + '/' + propertiesFile; }]
+          , write: ['path', 'db', function(path, db) {
+                return this._io.writeFile(false, path, db);
+            }]
+        }
+      , {
+            ensureDir: [function(){ return this._io.ensureDir(true, this.propertiesDBDir); }]
+          , write: ['path', 'db', function(path, db) {
+                return this._io.writeFile(true, path, db);
+            }]
+
+        }
+      , ['propertiesFile', 'momMaster']
+      , function job(obtain){ return obtain('write'); }
+    );
+
     /**
      * Create a master entry for this masterName, with the given cpsFile
      * and skeleton.
+     * Use the open method after this to make the master available.
+     * To run open and then receive the MOM-Master-Element use getMOMMaster.
+     *
+     * Initial element properties for the master element can optionally be
+     * given with the masterProperties argument. A normal JavaScript
+     * object {key: value}.
      *
      * Also creates an entry in layercontents.plist: `skeleton`,
      * glyphs.`skeleton`
@@ -456,11 +547,20 @@ define([
      * it before attempting to use the font.
      *
      */
-    _p.createMaster = function(masterName, cpsFile, skeleton) {
+    _p.createMaster = function(masterName, cpsFile, skeleton, masterProperties) {
         // get the name for this master from the CLI
         if(this.hasMaster(masterName))
             throw new ProjectError('Master "'+masterName+'" already exists.');
-        var master = {cpsFile: cpsFile};
+        var master = {cpsFile: cpsFile, propertiesFile: masterName + '.db'}
+          , momMaster
+          ;
+
+        if(masterProperties) {
+            momMaster = new Master();
+            setElementProperties(momMaster ,masterProperties);
+            this._writePropertiesDB(false, master.propertiesFile, momMaster);
+        }
+
         this._data.masters[masterName] = master;
 
         // create a skeleton layer for this master
@@ -487,7 +587,17 @@ define([
         var master = this._data.masters[masterName];
 
         // Remove CPS file
-        this.getMaster(masterName).deleteCPS(masterName + '.cps');
+        this.getMaster(masterName).deleteCPS(master.cpsFile);
+
+        try {
+            this._io.unlink(false, this.propertiesDBDir + '/' + master.propertiesFile);
+        }
+        catch(e) {
+            if(!(e instanceof IONoEntryError))
+                throw e;
+        }
+
+        this._io.writeFile(false, this.projectFile, yaml.safeDump(this._data));
 
         // Remove skeleton layer for this master
         if (master.skeleton === 'skeleton.' + masterName)
@@ -519,30 +629,78 @@ define([
         return this._cache.masters[masterName];
     };
 
-    _p._loadElementProperties = function(propertiesFile, momMaster) {
+    _p._setPropertiesToDB = function(db, element) {
+        var i,l, itemData = [], items = element.properties.items;
+        for(i=0,l=items.length;i<l;i++)
+            itemData.push([items[i].name, items[i].value.valueString]);
+        if(i>0)
+            db[element.masterIndexPath] = itemData;
+    };
+
+    _p._setPropertiesFromDB = function (allProperties, element) {
+        var data = allProperties[element.masterIndexPath]
+          , newProperties
+          , i, l
+          ;
+        if(!data)
+            return;
+        newProperties = [];
+        for(i=0,l=data.length;i<l;i++)
+            newProperties.push(makeProperty(data[i][0], data[i][1]));
+        element.properties.splice(0, element.properties.length, newProperties);
+    };
+
+    _p._setPropertiesFromCPS = function (allRules, element) {
+        var rules = this._controller._selectorEngine.getMatchingRules(allRules, element)
+          , newProperties
+          ;
+        if(!rules[0])
+            return;
+        newProperties = rules[0][1].parameters.items;
+        element.properties.splice(0, element.properties.length, newProperties);
+    };
+
+    _p._loadElementPropertiesFromDB = function(propertiesFile, momMaster) {
+        var dataString
+          , allProperties
+          ;
+        try {
+            dataString = this._io.readFile(false, this.propertiesDBDir +'/' + propertiesFile);
+        }
+        catch(error) {
+            if(error instanceof IONoEntryError)
+                return;
+            throw error;
+        }
+
+        allProperties = yaml.safeLoad(dataString);
+        momMaster.walkTreeDepthFirst(this._setPropertiesFromDB.bind(this, allProperties));
+    };
+
+    _p._loadElementPropertiesFromCPS = function(propertiesFile, momMaster) {
         // get the rules ...
         var parameterCollection = this.ruleController.getRule(false, propertiesFile)
           , allRules = parameterCollection.rules
-          , newProperties
-          , rules
           ;
-
-        function setProperties(element) {
-            /*jshint validthis: true*/
-            rules = this._controller._selectorEngine.getMatchingRules(allRules, element);
-            if(!rules[0]) return;
-            newProperties = rules[0][1].parameters.items;
-            element.properties.splice(0, element.properties.length, newProperties);
-        }
-        momMaster.walkTreeDepthFirst(setProperties.bind(this));
+        momMaster.walkTreeDepthFirst(this._setPropertiesFromCPS.bind(this, allRules));
     };
 
+    _p._loadElementProperties = function(propertiesFile, momMaster) {
+        if(propertiesFile.slice(-3) === '.db')
+            this._loadElementPropertiesFromDB(propertiesFile, momMaster);
+        else // is cps (hopefully)
+            this._loadElementPropertiesFromCPS(propertiesFile, momMaster);
+    };
+
+    // TODO: returning this._controller here was a bad choice, the MOM-Master
+    // would be much more useful. At the moment getMOMMaster does exactly that.
     _p.open = function(masterName) {
         if(!this._controller.hasMaster(masterName)) {
             // this._log.warning('open', masterName)
-            var master = this.getMaster(masterName)
-            , skeleton = this._data.masters[masterName].skeleton
-            , propertiesFile = this._data.masters[masterName].propertiesFile
+            var masterData = this._data.masters[masterName]
+            , skeleton = masterData.skeleton
+            , propertiesFile = masterData.propertiesFile
+            , cpsFile = masterData.cpsFile
             , sourceMOM
             , momMaster
             ;
@@ -552,17 +710,46 @@ define([
             // some kind of proxying to enable different "master.id"s
             sourceMOM = this._momCache[skeleton];
             if(!sourceMOM)
-                sourceMOM = this._momCache[skeleton] = master.loadMOM();
+                sourceMOM = this._momCache[skeleton] = this.getMaster(masterName).loadMOM();
             momMaster = sourceMOM.clone();
 
             momMaster.id = masterName;
 
             if(propertiesFile)
                 this._loadElementProperties(propertiesFile, momMaster);
-            this._controller.addMaster(momMaster, master._cpsFile);
+            this._controller.addMaster(momMaster, cpsFile);
         }
         // FIXME: I think it would be much more useful to return the master MOM Node
         return this._controller;
+    };
+
+    _p.clone = function (sourceMasterName, newMasterName) {
+        var sourceMOM = this.getMOMMaster(sourceMasterName)
+          , masterData = this._data.masters[sourceMasterName]
+          , cpsFile = newMasterName + ".cps"
+          , cpsString, momMaster
+          ;
+        // this ensures that we really have the current state
+        cpsString = '' + this._controller.getMasterCPS(false, sourceMasterName);
+        this.ruleController.write(false, cpsFile, cpsString);
+        // register
+        this.createMaster(newMasterName, cpsFile, masterData.skeleton);
+        // create
+        momMaster = sourceMOM.clone(true);
+        momMaster.id = newMasterName;
+        // open
+        this._controller.addMaster(momMaster, cpsFile);
+        return momMaster;
+    };
+
+    /**
+     * FIXME: this should be `createMaster`
+     * and `createMaster` should be `registerMaster`
+     */
+    _p.registerMaster = function (masterName, cpsFile, cpsString, skeleton, properies) {
+        this.ruleController.write(false, cpsFile, cpsString);
+        this.createMaster(masterName, cpsFile, skeleton, properies);
+        return this.getMOMMaster(masterName);
     };
 
     /**
@@ -577,47 +764,63 @@ define([
      *     └── master3.ufo.zip
      *          └── master3.ufo
      */
-    _p.importZippedUFOMasters = function(blob) {
+    _p.importZippedUFOMasters = function(blob, masterNamePrefix_) {
+        // The blob we got, MUST contain at least one file with the .ufo.zip suffix.
+        // For now, we'll only load the first one.
+
+        // First step is to instantiate an InMemory I/O module:
         var mem_io = new InMemory()
           , importedMasters = []
-          , dirs, baseDir, names, name
-          , n, l, UFOZip, another_blob
+          , dirs, baseDir, names, name, suffix
+          , n, l, e, UFOZip, another_blob
           , sourceUFODir, glyphs, masterName
+          , masterNamePrefix = masterNamePrefix_ || ''
+          , entries
           ;
 
+        // Then we unpack there the original blob:
         zipUtil.unpack(false, blob, mem_io, "");
 
-        dirs = mem_io.readDir(false, "/");
-        baseDir = dirs[0];
-        names = mem_io.readDir(false, baseDir);
+        // We'll list all entries from the top-level dir
+        entries = mem_io.readDir(false, "/");
+        // And we'll look for zipped ufo files for decompression:
+        for (e=0, l=entries.length; e<l; e++) {
+            suffix = ".ufo.zip";
+            name = entries[e];
 
-
-        for (n=0, l=names.length; n<l; n++) {
-            name = names[n];
-            UFOZip = baseDir + name;
-            another_blob = mem_io.readFile(false, UFOZip);
-            zipUtil.unpack(false, another_blob, mem_io, baseDir);
+            //if the filename ends with the .ufo.zip suffix:
+            if (name.slice(-suffix.length) === suffix) {
+                //Here we decompress the data of the ufo.zip file we found:
+                another_blob = mem_io.readFile(false, name);
+                mem_io.unlink(false, name);
+                zipUtil.unpack(false, another_blob, mem_io, "/");
+            }
         }
 
-        names = mem_io.readDir(false, baseDir);
-        for (n=0, l=names.length; n<l; n++){
-            name = names[n];
-            if (name[name.length-1]=='/'){
-                // This sourceUFODir name may be wrong in some cases.
-                //   We need a more robust implementation.
-                //   The current implementation works only for
-                //   the UFO packing scheme described above.
-                sourceUFODir = baseDir + name.split("/")[0];
-                glyphs = undefined;
-                masterName = name.split(".ufo/")[0];
+        // Now we'll list all in-memory filesystem entries again
+        // looking for UFO folders which may have been extracted from
+        // one of the ufo.zip files or could even be already available since the
+        // decompression of the original zip container.
+        entries = mem_io.readDir(false, "/");
 
+        for (e=0, l=entries.length; e<l; e++){
+            name = entries[e];
+            suffix = '.ufo/';
+
+            // If we identify this entry as an UFO dir, then we import it:
+            if (name.slice(-suffix.length) === suffix) {
+                sourceUFODir = name.split("/")[0];
+                glyphs = undefined;
                 //FIXME: Replacing by spaces by '_' can be removed once we have proper escaping implemented.
                 //       Metapolator dislikes spaces in master names as well as anything that has a meaning
                 //       in a selector/cps. (.#>:(){}) etc.
-                masterName = masterName.split(' ').join('_');
+                masterName = (masterNamePrefix + name).split(suffix)[0].split(' ').join('_');
 
-                this['import'](masterName, sourceUFODir, glyphs, mem_io);
-                importedMasters.push(masterName);
+                // FIXME: what to do if masterName exists?
+                this['import'](masterName, sourceUFODir, glyphs, mem_io, false);
+                importedMasters.push({name: masterName, skeleton: this._data.masters[masterName].skeleton});
+                break; //here we're stopping right after finding the first ufo.zip
+                       //In the future we may continue to load more instances at once
             }
         }
 
@@ -625,13 +828,35 @@ define([
     };
 
     // import is a 'reserved word' :-/
-    _p['import'] = function(masterName, sourceUFODir, glyphs, io) {
+    _p['import'] = function(masterName, sourceUFODir, glyphs, io, savePropertiesDB_) {
         var importer = new ImportController( io || this._io, this._log, this,
-                                             masterName, sourceUFODir);
-        importer['import'](glyphs);
-
+                                             masterName, sourceUFODir)
+          , momMaster
+            // defaults to true, we don't need to save this in an interactive
+            // session, since we should save it at the end of the session anyways.
+            // NOTE: if we don't save it at the end of the session, we end up with
+            // a property-less master. Thus this may be a bad idea. But since we
+            // "usually" operate on a mem-io in interactive sessions and that would
+            // need an explicit save to some other persistent io anyways, we can
+            // do it there, in "project.save" probably.
+          , savePropertiesDB = savePropertiesDB_ === undefined ? true : !!savePropertiesDB_
+          , masterData, db
+          ;
+        momMaster = importer['import'](glyphs);
+        momMaster.id = masterName;
+        this._controller.addMaster(momMaster, this._data.masters[masterName].cpsFile);
+        // somewhere serialize properties from master MOM tree into properties DB
+        if(savePropertiesDB) {
+            // It's interesting! with the new propertiesDB all masters should be
+            // serialized when the project is saved. At least if there was some
+            // change. We don't do project.save yet though!
+            masterData = this._data.masters[masterName];
+            this._writePropertiesDB(false, masterData.propertiesFile, momMaster);
+        }
         this._importGroupsFile(sourceUFODir, false);
         this._importFontInfoFile(sourceUFODir, false);
+
+        return momMaster;
     };
 
     /**

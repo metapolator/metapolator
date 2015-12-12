@@ -1,48 +1,53 @@
 define([
     'metapolator/errors'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
+  , 'ufojs/tools/misc/transform'
   , './import/SegmentPen'
   , './import/ImportOutlinePen'
   , './import/StrokeContour'
   , './import/contourFromContour'
 
-  , 'metapolator/models/CPS/elements/ParameterCollection'
-  , 'metapolator/models/CPS/elements/AtNamespaceCollection'
-  , 'metapolator/models/CPS/elements/Rule'
-  , 'metapolator/models/CPS/elements/ParameterDict'
-  , 'metapolator/models/CPS/elements/Parameter'
-  , 'metapolator/models/CPS/elements/ParameterName'
-  , 'metapolator/models/CPS/elements/ParameterValue'
-  , 'metapolator/math/Vector'
+  , 'metapolator/models/MOM/Master'
+  , 'metapolator/models/MOM/Glyph'
+  , 'metapolator/models/MOM/PenStroke'
+  , 'metapolator/models/MOM/PenStrokePoint'
+  , 'metapolator/models/MOM/Contour'
+  , 'metapolator/models/MOM/ContourPoint'
+  , 'metapolator/models/MOM/Component'
+  , 'metapolator/models/MOM/PointData'
 
-  , 'metapolator/models/CPS/parsing/parseSelectorList'
   , 'ufojs/errors'
+  , 'metapolator/models/CPS/cpsTools'
 
 ], function(
     errors
   , GlyphSet
+  , transform
   , SegmentPen
   , ImportOutlinePen
   , StrokeContour
   , contourFromContour
 
-  , ParameterCollection
-  , AtNamespaceCollection
-  , Rule
-  , ParameterDict
-  , Parameter
-  , ParameterName
-  , ParameterValue
-  , Vector
+  , Master
+  , Glyph
+  , PenStroke
+  , PenStrokePoint
+  , Contour
+  , ContourPoint
+  , Component
+  , PointData
 
-  , parseSelectorList
   , ufojsErrors
+  , cpsTools
 ) {
     "use strict";
     /*global console:true*/
     /*jshint  sub:true*/
 
-    var GlifLibError = ufojsErrors.GlifLib;
+    var GlifLibError = ufojsErrors.GlifLib
+      , Transformation = transform.Transform
+      , setElementProperties = cpsTools.setElementProperties
+      ;
 
     function ImportController(io, log, project, masterName, sourceUFODir) {
         this._io = io;
@@ -87,8 +92,7 @@ define([
 
     _p['import'] = function(glyphs) {
         var missing, i=0
-          , rules = []
-          , cps
+          , fontinfo, master
           , sourceGlyphSet = this._getSourceGlyphSet(false)
           ;
 
@@ -102,33 +106,37 @@ define([
                                     +'are missing in the source GlyphSet: '
                                     +missing.join(', '));
         }
-        console.warn('importing ...');
+
+        fontinfo = this._project.getFontinfo();
+        master = new Master(fontinfo);
+
         for(;i<glyphs.length;i++) {
-            var glyphName = glyphs[i];
+            var glyphName = glyphs[i], glyph;
             try {
-                var g = this.importGlyph(glyphName);
-                Array.prototype.push.apply(rules, g);
+                glyph = this.importGlyph(glyphName);
             }
             catch(error) {
-                if(error instanceof GlifLibError) {
-                    // we have already recorded this in the error
-                    // callback function
-                } else {
+                if(!(error instanceof GlifLibError))
                     throw error;
-                }
+                // we have already recorded this in the error
+                // callback function
+                continue;
             }
+            master.add(glyph);
         }
 
         this._master.glyphSet.writeContents(false);
 
-        cps = new ParameterCollection(rules);
+        // TODO: it should be possible to import changed glyphs into an
+        // existing master files, changing only the new glyphs and keeping
+        // the old ones. But that ain't gonna be easy, especially because
+        // changed essences will need to be propagated.
+        this._master.saveCPS(this._masterName + '.cps'
+                        , '@import "' + this._project.cpsOutputConverterFile
+                        + '";\n@import "' + this._project.cpsGlobalFile
+                        + '";\n');
 
-        // This just overrides the local CPS file
-        // We might come up with some smart merging in the future, so that
-        // it is possible to import changed glyphs into an existing CPS
-        // files, changing only the new glyphs and keeping the old ones. But
-        // that ain't gonna be easy.
-        this._master.saveCPS(this._masterName + '.cps', '@import "' + this._project.cpsOutputConverterFile + '";\n@import "' + this._project.cpsGlobalFile + '";\n\n' + cps);
+        return master;
     };
 
     _p._readGlyphFromSource = function(glyphName) {
@@ -143,31 +151,44 @@ define([
     };
 
     _p.importGlyph = function(glyphName) {
-        console.warn('> importing glyph:', glyphName);
+        this._log.debug('> importing glyph:', glyphName);
         var sourceGlyph = this._readGlyphFromSource(glyphName)
-          , targetGlyph
           , contours = []
           , item
-          , i=0
+          , i,l
             // the index at which the contour will be addressable in CPS
           , parentIndex = 0
-          , rules = []
+          , glyph, glyphClasses
           , id
+          , outlineItem
           // If the identifier starts with C: (for *C*ontour)
           , contourIndicator = 'C:'
           ;
-        for(;i<sourceGlyph.contours.length;i++) {
+        // This is pretty much a code duplication of code from
+        // ProjectMaster.loadMOM
+        // a good indicator that we should merge some code paths
+        // when this is done!
+        glyph = new Glyph();
+        glyph.id = glyphName;
+        glyph.setUFOData(sourceGlyph.data);
+        glyphClasses = this._project.getGlyphClassesReverseLookup();
+        if(glyphName in glyphClasses)
+            glyphClasses[glyphName].forEach(glyph.setClass, glyph);
+
+        for(i=0,l=sourceGlyph.contours.length;i<l;i++) {
             item = sourceGlyph.contours[i];
 
             // component
             if(item.type == 'component' ) {
                 contours.push(item);
                 parentIndex += 1;
+                outlineItem = new Component(item.glyphName, new Transformation( item.transformation ));
+                glyph.add(outlineItem);
                 continue;
             }
 
             if(!item.closed) {
-                console.warn('    skipping contour '+ i +' because it is open.');
+                this._log.debug('    skipping contour '+ i +' because it is open.');
                 continue;
             }
 
@@ -182,31 +203,35 @@ define([
                     throw error;
             }
             if(id && id.slice(0, contourIndicator.length) === contourIndicator) {
-                Vector.prototype._cps_whitelist.inspect = 'inspect';
-                console.warn('importing contour '+ i + ' as contour');
+                this._log.debug('importing contour '+ i + ' as contour');
                 var contourData = contourFromContour(item.commands);
                 contours.push({
                       type:'contour'
                     , data: contourData
                     , kwargs: item.kwargs
                 });
-                rules.push(makeCPSContourRule(contourData, parentIndex));
+
+                outlineItem = makeMOMContour(contourData, parentIndex);
+                outlineItem.id = id.slice(contourIndicator.length);
+                // no classes available yet (due to ufo not offering names here)
+                glyph.add(outlineItem);
+
                 parentIndex += 1;
                 continue;
             }
 
             // import as penstroke if possible
             if(item.commands.length < 5) {
-                console.warn('    skipping contour '+ i +' because it has less '
+                this._log.debug('    skipping contour '+ i +' because it has less '
                                             +'than 4 on-curve points.');
                 continue;
             }
             if(item.commands.length % 2 === 0) {
-                 console.warn('    skipping contour '+ i +' because count of '
+                 this._log.debug('    skipping contour '+ i +' because count of '
                                             +'on-curve points is uneven');
                 continue;
             }
-            console.warn('importing contour '+ i + ' as penstroke');
+            this._log.debug('importing contour '+ i + ' as penstroke');
              // the z points of this stroke can go directly to the skeleton glyph
             var penStrokeData = new StrokeContour(item.commands).getPenStroke();
             // this goes into the glyph/skeleton
@@ -216,27 +241,38 @@ define([
                 , kwargs: item.kwargs
             });
 
-            // this goes into the glyph
-            // returns an atNamespaceRule(penstroke:i({parentIndex})){ points ... }
-            rules.push(makeCPSPenStrokeRule(penStrokeData, parentIndex));
+            outlineItem = makeMOMPenStroke(penStrokeData, parentIndex);
+            if(id)
+                outlineItem.id = id;
+            // no classes available yet (due to ufo not offering names here)
+            glyph.add(outlineItem);
+
             parentIndex += 1;
         }
 
+        // save the skeleton
         this._master.glyphSet.writeGlyph(false, glyphName, sourceGlyph.data,
             // draw the outline to the new glif
             draw.bind(null, contours)
         );
 
-        return [new AtNamespaceCollection(
-                    'namespace'
-                  , parseSelectorList.fromString('glyph#'+(glyphName.replace('.', '\\.')))
-                  , rules)
-                ];
+        return glyph;
     };
 
     function draw(contours, pen) {
         var i=0, j, segmentType, point, item, command;
-
+        // NOTE: there are no identifiers kept yet (they are skipped in)
+        // StrokeContour _getMetapolatorPoint
+        // TODO: it would maybe make sense to somehow merge left + right
+        // identifier into the according identifier of in/on/out
+        // and to demerge that in MOMPointPen
+        // Where we however don't set left/right id's BUT
+        // just point id.
+        // Maybe, with some syntax for idenifiers we can specify all we
+        // need ... (like on a left point identifier="P:mypointid;myownid")
+        // same could be done for names, so we would not have create
+        // these pesky left- and right- classes anymore.
+        // see import/tools.mergeNames
         for(;i<contours.length;i++) {
             item = contours[i];
             if( item.type == 'component' ) {
@@ -284,52 +320,15 @@ define([
         }
     }
 
-    function parameterDictFromObject(obj) {
-        var items = []
-          , k
-          , name
-          , value
-          ;
-
-        for(k in obj) {
-            if(obj[k] === undefined)
-                continue;
-            name = new ParameterName(k, []);
-            value = new ParameterValue([
-                ( obj[k] instanceof Vector
-                    ? 'Vector ' + [obj[k].real, obj[k].imag].join(' ')
-                    : obj[k] )], []);
-            items.push(new Parameter(name, value));
-        }
-
-        return new ParameterDict(items);
-    }
-    /**
-     * returns a Rule point:i({index}){ ... data ... }
-     *
-     * This is VERY special knowledge about the structure of CPS CompoundValues
-     * It knows for example how the CompoundValues are configured, etc.
-     * This should be in a package together with the configuration
-     * keyword: import plugins
-     *
-     * For terminals inDir and outDir are imported instead of inDirIntrinsic
-     * and outDirIntrinsic, because they cannot be relative to the skeleton.
-     *
-     * If we can't extract useful values for controls, we create a rule
-     * that places the control in question directly on the on-curve point
-     * "in: on;" OR "out: on;" thus overriding the general rule here,
-     * because we are very specific.
-     */
-    function makeCPSPointRules(point, index, length) {
-        var rules = []
-          , left={}, center={}, right={}
+    function makeCPSPointData(point, index, length) {
+        var left={}, center={}, right={}
           , selectorList
           , rightOnIntrinsic
           ;
 
         // center
         // there's not much to import for center
-        selectorList = parseSelectorList.fromString('point:i('+index+') > center');
+
         // In cases where the general rules:
         //     inDir: (on - in):angle;
         //     outDir: (out - on):angle;
@@ -342,10 +341,6 @@ define([
             center.outDir = point.z.outDir;
             center.out = 'on';
         }
-        if(Object.keys(center).length)
-            rules.push(
-                new Rule(selectorList, parameterDictFromObject(center)));
-
 
         rightOnIntrinsic = point.r.on['-'](point.z.on);
         // TODO: we could import onLength and onDir in ./tools/StrokeContour?
@@ -400,70 +395,113 @@ define([
         if(point.r.outLength === 0)
             right.out = 'on';
 
-        selectorList = parseSelectorList.fromString('point:i('+index+')>left');
-        rules.push(
-            new Rule(selectorList, parameterDictFromObject(left)));
-        selectorList = parseSelectorList.fromString('point:i('+index+')>right');
-        rules.push(
-            new Rule(selectorList, parameterDictFromObject(right)));
-
-        return rules;
+        return {
+            left: left
+          , center: center
+          , right: right
+        };
     }
+
 
     /**
-     * returns an atNamespaceRule(penstroke:i({penStrokeIndex}))
+     * This is VERY special knowledge about the structure of CPS CompoundValues
+     * It knows for example how the CompoundValues are configured, etc.
+     * This should be in a package together with the configuration
+     * keyword: import plugins
+     *
+     * For terminals inDir and outDir are imported instead of inDirIntrinsic
+     * and outDirIntrinsic, because they cannot be relative to the skeleton.
+     *
+     * If we can't extract useful values for controls, we create a rule
+     * that places the control in question directly on the on-curve point
+     * "in: on;" OR "out: on;" thus overriding the general rule here,
+     * because we are very specific.
      */
-    function makeCPSPenStrokeRule(penStrokeData, index) {
-        var name = 'namespace'
-          , selectorList = parseSelectorList.fromString('penstroke:i('+index+')')
-          , i = 0
-          , items = []
-          ;
-        for(;i<penStrokeData.length;i++)
-            Array.prototype.push.apply(
-                items, makeCPSPointRules(penStrokeData[i], i, penStrokeData.length));
 
-        return new AtNamespaceCollection(name, selectorList, items);
+    function isNotEmptyString (item){ return !!item.length;}
+
+    function makeMOMPenStroke(penStrokeData, index) {
+        var penstroke = new PenStroke()
+          , pointData
+          , i, l, point, data, name, identifier
+          ;
+        for(i=0,l=penStrokeData.length;i<l;i++) {
+            pointData = penStrokeData[i];
+
+            data = makeCPSPointData(pointData, i, penStrokeData.length);
+            point = new PenStrokePoint(new PointData(pointData.z));
+
+            // we translate names into classes, because they don't have to be
+            // unique
+            // not these things are code duplication from MOMPointPen!
+            name = pointData.z.on.name;
+            if (name)
+                (name.match(/\S+/g) || [])
+                    .filter(isNotEmptyString)
+                    .forEach(point.setClass, point);
+            identifier = pointData.z.on.kwargs.identifier;
+            if(identifier !== undefined)
+                // MOM will have to check validity and uniqueness
+                point.id = identifier;
+
+
+            setElementProperties(point.center, data.center);
+            setElementProperties(point.left, data.left);
+            setElementProperties(point.right, data.right);
+            penstroke.add(point);
+        }
+        return penstroke;
     }
 
-    function makeCPSContourPointRules(point, index, length) {
-        var rules = []
-          , dict={}
-          , selectorList
-          , rightOnIntrinsic
+
+    function makeCPSContourPoinData(point, index, length) {
+        var data={}
           ;
         // there's not much to import for `p` (for *p*oint)
-        selectorList = parseSelectorList.fromString('p:i('+index+')');
         // In cases where the general rules:
         //     inDir: (on - in):angle;
         //     outDir: (out - on):angle;
         // produce worse results
         if(point.inLenght === 0) {
-            dict.inDir = point.inDir;
-            dict['in'] = 'on';
+            data.inDir = point.inDir;
+            data['in'] = 'on';
         }
         if(point.outLenght === 0) {
-            dict.outDir = point.outDir;
-            dict.out = 'on';
+            data.outDir = point.outDir;
+            data.out = 'on';
         }
-        if(Object.keys(dict).length)
-            rules.push(
-                new Rule(selectorList, parameterDictFromObject(dict)));
-        return rules;
+        return data;
     }
 
-    function makeCPSContourRule(contourData, index) {
-        var name = 'namespace'
-          , selectorList = parseSelectorList.fromString('contour:i('+index+')')
-          , i = 0
-          , items = []
+    function makeMOMContour(contourData, index) {
+        var contour = new Contour()
+          , pointData, cpsData
+          , i,l,point, name, identifier
           ;
-        for(;i<contourData.length;i++)
-            Array.prototype.push.apply(
-                items, makeCPSContourPointRules(contourData[i], i));
+        for(i=0,l=contourData.length;i<l;i++) {
+            pointData = contourData[i];
+            point = new ContourPoint(new PointData(pointData));
+
+            // Translate names into classes, because they don't have to be
+            // unique.
+            // NOTE: these things are code duplication from MOMPointPen!
+            name = pointData.on.name;
+            if (name)
+                (name.match(/\S+/g) || [])
+                    .filter(isNotEmptyString)
+                    .forEach(point.setClass, point);
+            identifier = pointData.on.kwargs.identifier;
+            if(identifier !== undefined)
+                // MOM will have to check validity and uniqueness
+                point.id = identifier;
 
 
-        return new AtNamespaceCollection(name, selectorList, items);
+            cpsData = makeCPSContourPoinData(pointData, i);
+            setElementProperties(point, cpsData);
+            contour.add(point);
+        }
+
+        return contour;
     }
 
     return ImportController;

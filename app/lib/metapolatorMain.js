@@ -23,15 +23,16 @@ require([
     // init, loading the project from http at './project'
     var projectPath = 'project'
       , fsEvents
-      , io
+      , io, cpsLibIo
       , promise
       ;
     // InMemory is its own event emitter
     io = fsEvents = new InMemory();
+    cpsLibIo = {io: new InMemory()};
     io.mkDir(false, 'project');
     function main() {
         var project, metapolator;
-        project = new MetapolatorProject(io, 'project', fsEvents);
+        project = new MetapolatorProject(io, 'project', fsEvents, cpsLibIo);
         project.load();
         metapolator = new Metapolator(project, angularApp);
         // The metapolator interface is made global here for development
@@ -46,7 +47,12 @@ require([
 
     // copy the project data from the server into memory
     // then run main
-    ioREST.copyRecursive(true, projectPath, io, 'project')
-          .then(main)
-          ;
+    var resourceCount = 2;
+    function resourceLoaded() {
+        resourceCount -=1;
+        if(resourceCount === 0)
+            main();
+    }
+    ioREST.copyRecursive(true, projectPath, io, 'project').then(resourceLoaded);
+    ioREST.copyRecursive(true,'lib/cpsLib', cpsLibIo.io, '').then(resourceLoaded);
 });

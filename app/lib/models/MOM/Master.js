@@ -23,11 +23,11 @@ define([
     var _p = Master.prototype = Object.create(Parent.prototype);
     _p.constructor = Master;
 
-    _p.clone = function() {
+    _p.clone = function(cloneElementProperties) {
         var clone = new this.constructor(this.fontinfo), i,l;
-        this._cloneProperties(clone);
+        this._cloneProperties(clone, cloneElementProperties);
         for(i=0,l=this._children.length;i<l;i++)
-            clone.add(this._children[i].clone());
+            clone.add(this._children[i].clone(cloneElementProperties));
         return clone;
     };
 

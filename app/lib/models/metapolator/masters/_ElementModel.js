@@ -1,7 +1,7 @@
 define([
     './ParameterModel'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
-  , 'metapolator/ui/metapolator/cpsAPITools'
+  , 'metapolator/models/CPS/cpsTools'
 ],
 function(
     ParameterModel
@@ -33,6 +33,12 @@ function(
         if (factor === 1 && this.level !== 'master') {
             this._removeParameter(parameter);
         } else {
+
+            // here! -> add rule would be unecessary if we would
+            // write into the element.properties, BUT that also means
+            // that we need to clean up there when necessary. Thus,
+            // we still need this kind of registry...
+
             if (!this.ruleIndex) {
                 this._addRule();
             }

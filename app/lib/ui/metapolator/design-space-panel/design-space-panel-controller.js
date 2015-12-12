@@ -35,6 +35,11 @@ define([
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
                     if (instance.designSpace === oldDesignSpace) {
+                        // FIXME: DRY same code is in `instance-panel-controller`
+                        // I can't decide reight now if it uses the same
+                        // `arguments`
+                        // it does  $scope.model.instanceSequences[0].addInstance(clone);
+                        // in the end.
                         // clone the instance as well
                         var axes = []
                           , clone;

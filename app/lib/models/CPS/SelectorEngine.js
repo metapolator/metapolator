@@ -86,6 +86,14 @@ define([
             // no match
             else if(combinatorType === 'child')
                 // this will halt the while loop
+                // this wouldn't match a selector like "body > div  p"
+                // if there is actually another div between body > div and p
+                // as in body div div p
+                // Maybe a child combinator should match all elements
+                // it's connected to (also with other child combinators)
+                // and rollback to the previous descendant state if it fails.
+                // HOWEVER: at the moment, the MOM doesn't have such a stucture
+                // anyways!
                 element = undefined;
             else if (combinatorType === 'descendant')
                 // may be undefined. if so it will halt the while loop

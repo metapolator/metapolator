@@ -1,5 +1,5 @@
 define([
-    'metapolator/ui/redPill/cpsPanel/elements/cpsTools'
+    'metapolator/models/CPS/cpsTools'
   , 'metapolator/ui/redPill/cpsPanel/elements/helpers'
   , 'metapolator/ui/redPill/cpsPanel/elementToolbar/clickHandler'
 ], function(
