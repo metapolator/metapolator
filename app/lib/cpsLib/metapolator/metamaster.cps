@@ -1,8 +1,8 @@
 @import 'generated/centreline-skeleton-to-symmetric-outline.cps';
-@import 'lib/point-child-base.cps';
-@import 'lib/single-inheritance.cps';
-@import 'lib/weight.cps';
-@import 'lib/scale.cps';
+@import 'lib/metapolator/point-child-base.cps';
+@import 'lib/metapolator/single-inheritance.cps';
+@import 'lib/metapolator/weight.cps';
+@import 'lib/metapolator/scale.cps';
 @import 'global.cps';
 
 /* set up this masters parameters */

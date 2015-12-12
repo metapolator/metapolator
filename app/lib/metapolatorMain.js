@@ -28,7 +28,7 @@ require([
       ;
     // InMemory is its own event emitter
     io = fsEvents = new InMemory();
-    cpsLibIo = {io: new InMemory(), pathOffset: 'metapolator'};
+    cpsLibIo = {io: new InMemory()};
     io.mkDir(false, 'project');
     function main() {
         var project, metapolator;

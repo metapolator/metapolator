@@ -1,4 +1,4 @@
-@import 'lib/metamaster.cps';
+@import 'lib/metapolator/metamaster.cps';
 
 
 glyph, point > center, contour > p, component  {
