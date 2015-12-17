@@ -44,6 +44,23 @@ define([
     
     var _p = InstanceModel.prototype = Object.create(Parent.prototype);
 
+    _p.clone = function(designSpace, project) {
+        var axes = []
+          , i
+          , l = this.axes.length;
+        for (i = 0; i < l; i++) {
+            var axis = this.axes[i]
+              , clonedAxis = {
+                    axisValue: axis.axisValue,
+                    metapolationValue : axis.metapolationValue,
+                    // keep the reference of the master
+                    master: axis.master
+                };
+            axes.push(clonedAxis);
+        }
+        return this.parent.createNewInstance(axes, designSpace, project);
+    };
+
     _p.remove = function() {
         var index = this._getIndex();
         // modifies this.parent
@@ -141,8 +158,8 @@ define([
     };
     
     _p.reDestributeAxes = function() {
-        // this functin is called after a change of slack master
-        // or when a axis is removed from the design space
+        // this function is called after a change of slack master
+        // or when an axis is removed from the design space
         var slack = this.designSpace.slack
           , axes = this.axes
           , l = axes.length
