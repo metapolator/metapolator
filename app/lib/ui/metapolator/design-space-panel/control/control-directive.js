@@ -20,7 +20,7 @@ define([
             link : function(scope, element, attrs, ctrl) {
                 $(window).resize(function() {
                     initialBuildGraphics();
-                    redrawFunction();
+                    scope.redraw();
                 });
                 var dragActive = false
                   , designSpace = null
@@ -57,11 +57,11 @@ define([
                     return softRedraw();
                 });
 
-                scope.$watchCollection('[model.parent.currentDesignSpace, model.axes.length, model.slack]', function() {
-                    return redrawFunction();
+                scope.$watchCollection('[model.parent.currentDesignSpace, model.axes.length]', function() {
+                    return scope.redraw();
                 });
 
-                function redrawFunction() {
+                scope.redraw = function() {
                     removeAll();
                     buildData();
                     if (thisInstance) {
@@ -70,7 +70,7 @@ define([
                     if (inactiveInstances.length > 0) {
                         drawInactiveAxes();
                     }
-                }
+                };
                 
                 function softRedraw() {
                     inactiveLayer.selectAll('*').remove();

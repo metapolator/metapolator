@@ -24,6 +24,7 @@ define([
                     }
                 }
             }
+            $scope.redraw();
         };
         
         $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
@@ -61,7 +62,7 @@ define([
                     }
                 }
                 instance.setMetapolationValues();
-                console.log("wants a design space redraw");
+                $scope.redraw();
             }
             
             function format(value) {
