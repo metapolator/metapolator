@@ -11,7 +11,6 @@ define([
         this.axes = axes;
         this.slack = slack;
         this.lastInstance = null;
-        
         Object.defineProperty(this, 'parent', {
             value: parent,
             enumerable: false,
@@ -45,7 +44,6 @@ define([
 
     _p.setCurrent = function() {
         this.parent.currentDesignSpace = this;
-        this.parent.currentDesignSpaceTrigger++;
     };
 
     _p.isCurrent = function() {

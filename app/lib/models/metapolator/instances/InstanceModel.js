@@ -30,7 +30,6 @@ define([
         this.openTypeFeatures = true;
         this.cpsFile = this.name + '.cps';
         this._project = project;
-
         Object.defineProperty(this, 'parent', {
             value: parent,
             enumerable: false,
@@ -63,11 +62,6 @@ define([
     _p.setCurrent = function() {
         this.parent.parent.currentInstance = this;
         this.designSpace.setLastInstance(this);
-        // todo: get rid of these 2.
-        // the first by refactoring the design space
-        // the second by refactoring the specimen
-        this.parent.parent.currentInstanceTrigger++;
-
     };
 
     _p.isCurrent = function() {
@@ -160,13 +154,9 @@ define([
             // 2 find ratio of others compared to highest
             ratio = 100 / (parseFloat(max) + parseFloat(axes[slack].axisValue));
             for (var j = 0; j < l; j++) {
-                axes[j].axisValue = this._formatAxisValue(ratio * axes[j].axisValue);
+                axes[j].axisValue = (ratio * axes[j].axisValue).toFixed(1);
             }
         }
-    };
-    
-    _p._formatAxisValue = function(x) {
-        return Math.round(x * 10) / 10;
     };
 
     _p._getIndex = function() {

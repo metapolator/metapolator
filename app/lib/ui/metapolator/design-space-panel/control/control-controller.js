@@ -14,21 +14,16 @@ define([
         };
         
         $scope.changeSlackMaster = function() {
-            var designSpace = $scope.model;
-            var slack = designSpace.slack;
             // swop main master in each instance in the design space
-            for (var i = $scope.model.instances.length - 1; i >= 0; i--) {
-                var sequence = $scope.model.instances.sequences[i];
+            for (var i = $scope.model.parent.instanceSequences.length - 1; i >= 0; i--) {
+                var sequence = $scope.model.parent.instanceSequences[i];
                 for (var j = sequence.children.length - 1; j >= 0; j--) {
                     var instance = sequence.children[j];
-                    if (instance.designSpace == designSpace) {
-                        instance.reDestributeAxes(slack);
+                    if (instance.designSpace === $scope.model) {
+                        instance.reDestributeAxes($scope.model.slack);
                     }
                 }
-                
             }
-            // trigger the designspace to redraw
-            designSpace.parent.currentDesignSpaceTrigger++;
         };
         
         $scope.redrawAxesFromInput = function(inputAxis, keyEvent) {
@@ -37,11 +32,11 @@ define([
                   , slack = designSpace.slack
                   , instance = designSpace.lastInstance
                   , axes = instance.axes
-                  , l = axes.length;
+                  , l = axes.length
+                  , max = 0;
                 axes[inputAxis].value = format(axes[inputAxis].value);
 
                 // find the highest non-slack master
-                var max = 0;
                 for (var i = 0; i < l; i++) {
                     if (parseFloat(axes[i].axisValue) >= max && i != slack) {
                         max = parseFloat(axes[i].axisValue);
@@ -61,13 +56,12 @@ define([
                     // correct all sliders but slack proportionally
                     for (var j = 0; j < l; j++) {
                         if (i != slack) {
-                            axes[j].axisValue = instance.formatAxisValue(ratio * axes[j].axisValue);
+                            axes[j].axisValue = (ratio * axes[j].axisValue).toFixed(1);
                         }
                     }
                 }
-                instance.updateMetapolationValues();
-                // trigger the design space to redraw
-                designSpace.parent.currentDesignSpaceTrigger++;
+                instance.setMetapolationValues();
+                console.log("wants a design space redraw");
             }
             
             function format(value) {

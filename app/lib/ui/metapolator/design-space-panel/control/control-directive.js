@@ -52,23 +52,15 @@ define([
                 };
                 
                 initialBuildGraphics();
-                
-                // todo, when changing design space, automatically the current instance is changed as well
-                // this causes 2 triggers for redraw, where only the designspace redraw function should be fired
-                
-                scope.$watch('model.parent.currentInstanceTrigger', function() {
+
+                scope.$watch('model.parent.currentInstance', function() {
                     return softRedraw();
                 });
-                
-                scope.$watch('model.parent.currentDesignSpaceTrigger', function() {
+
+                scope.$watchCollection('[model.parent.currentDesignSpace, model.axes.length, model.slack]', function() {
                     return redrawFunction();
                 });
-                
-                scope.$watch('model.parent.nrOfAxesTrigger', function() {
-                    // for now using a full redraw. We can make this more specific later on
-                    return redrawFunction();
-                });
-                            
+
                 function redrawFunction() {
                     removeAll();
                     buildData();
