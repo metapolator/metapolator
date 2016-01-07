@@ -37,21 +37,9 @@ define([
         };
         
         $scope.cloneInstance = function () {
-            var designSpace = $scope.model.currentDesignSpace
-              , axes = []
-              , clone;
-            for (var i = 0, l = $scope.model.currentInstance.axes.length; i < l; i++) {
-                var axis = $scope.model.currentInstance.axes[i];
-                axes.push({
-                    axisValue: axis.axisValue,
-                    metapolationValue : axis.metapolationValue,
-                    // keep the reference of the master
-                    master: axis.master
-                });
-            }
-            clone = $scope.model.instanceSequences[0].createNewInstance(axes, designSpace, project);
+            var clone = $scope.model.currentInstance.clone($scope.model.currentDesignSpace, project);
             instanceTools.registerInstance(project, clone);
-            $scope.model.instanceSequences[0].addInstance(clone);
+            $scope.model.currentInstance.parent.addInstance(clone);
         };
         
         $scope.removeInstance = function (instance) {
