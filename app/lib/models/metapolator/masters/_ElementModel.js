@@ -6,10 +6,13 @@ define([
 function(
     ParameterModel
   , selection
-  , cpsAPITools
+  , cpsTools
 )
 {
     "use strict";
+
+    var setProperty = cpsTools.setProperty;
+
     function _ElementModel() {
     }
 
@@ -27,27 +30,10 @@ function(
     };
 
     _p.writeValueInCPSfile = function(factor, parameter) {
-        var parameterCollection
-            , cpsRule;
-        // && prevent removing hardcoded cps rule
         if (factor === 1 && this.level !== 'master') {
             this._removeParameter(parameter);
         } else {
-
-            // here! -> add rule would be unecessary if we would
-            // write into the element.properties, BUT that also means
-            // that we need to clean up there when necessary. Thus,
-            // we still need this kind of registry...
-
-            if (!this.ruleIndex) {
-                this._addRule();
-            }
-            parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile);
-            cpsRule = parameterCollection.getItem(this.ruleIndex);
-            var parameterDict = cpsRule.parameters
-                , setParameter = cpsAPITools.setParameter;
-            setParameter(parameterDict, parameter.base.cpsKey, factor);
-            //console.log(cpsRule.toString());
+            setProperty(this.MOMelement.properties, parameter.base.cpsKey, factor);
         }
     };
 
@@ -58,8 +44,8 @@ function(
             // if the factor equals 1 and the element already has an index, that means the cps rule is unnecessary
             // so we remove the property in the rule
             var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-                , ruleIndex = this.ruleIndex
-                , cpsRule = parameterCollection.getItem(ruleIndex);
+              , ruleIndex = this.ruleIndex
+              , cpsRule = parameterCollection.getItem(ruleIndex);
             cpsRule.parameters.erase(parameter.base.cpsKey);
             // if this is the last property in the rule, we remove the rule itself
             // therefor we have to rewrite all the rule indexes of this master
@@ -73,7 +59,7 @@ function(
         if (!this.ruleIndex) {
             var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
               , l = parameterCollection.length;
-            this.ruleIndex = cpsAPITools.addNewRule(parameterCollection, l, this.getSelector());
+            this.ruleIndex = cpsTools.addNewRule(parameterCollection, l, this.getSelector());
         }
     };
 
