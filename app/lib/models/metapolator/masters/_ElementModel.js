@@ -30,11 +30,7 @@ function(
     };
 
     _p.writeValueInCPSfile = function(factor, parameter) {
-        if (factor === 1 && this.level !== 'master') {
-            this._removeParameter(parameter);
-        } else {
-            setProperty(this.MOMelement.properties, parameter.base.cpsKey, factor);
-        }
+        setProperty(this.MOMelement.properties, parameter.base.cpsKey, factor);
     };
 
     _p._removeParameter = function(parameter) {
