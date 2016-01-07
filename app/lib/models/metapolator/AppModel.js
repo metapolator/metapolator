@@ -21,12 +21,9 @@ define([
         this.designSpaces = [];
         this.designSpaceCounter = 0;
         this.currentDesignSpace = null;
-        this.currentDesignSpaceTrigger = 0;
-        this.nrOfAxesTrigger = 0;
         //
         this.instanceSequences = [];
         this.currentInstance = null;
-        this.currentInstanceTrigger = 0;
         //
         this.localMenu = null;
         this.viewState = 0;
