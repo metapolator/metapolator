@@ -32,49 +32,6 @@ function(
     _p.writeValueInCPSfile = function(factor, parameter) {
         setProperty(this.MOMelement.properties, parameter.base.cpsKey, factor);
     };
-
-    _p._removeParameter = function(parameter) {
-        // if there is no rule index yet, that means cps writing was triggered but it was by
-        // a 'change' from 1 to 1. We might better catch this behaviour already at the input field.
-        if (this.ruleIndex) {
-            // if the factor equals 1 and the element already has an index, that means the cps rule is unnecessary
-            // so we remove the property in the rule
-            var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-              , ruleIndex = this.ruleIndex
-              , cpsRule = parameterCollection.getItem(ruleIndex);
-            cpsRule.parameters.erase(parameter.base.cpsKey);
-            // if this is the last property in the rule, we remove the rule itself
-            // therefor we have to rewrite all the rule indexes of this master
-            if (cpsRule.parameters.keys().length === 0) {
-                this._removeRule(parameterCollection, ruleIndex);
-            }
-        }
-    };
-
-    _p._addRule = function() {
-        if (!this.ruleIndex) {
-            var parameterCollection = this.master._project.ruleController.getRule(false, this.master.cpsFile)
-              , l = parameterCollection.length;
-            this.ruleIndex = cpsTools.addNewRule(parameterCollection, l, this.getSelector());
-        }
-    };
-
-    _p._removeRule = function(parameterCollection, currentRuleIndex) {
-        parameterCollection.splice(currentRuleIndex, 1);
-        this.ruleIndex = null;
-        this._updateRuleIndexes(currentRuleIndex);
-    };
-
-    _p._updateRuleIndexes = function(currentRuleIndex) {
-        var allElementsOfMaster = this.master.getAllOffspringElements();
-        for (var i = 0, l = allElementsOfMaster.length; i < l; i++) {
-            // for every element with a rule index greater than the just deleted one
-            var element = allElementsOfMaster[i];
-            if (element.ruleIndex && element.ruleIndex > currentRuleIndex) {
-                element.ruleIndex -= 1;
-            }
-        }
-    };
     
     _p.deselectAllChildren = function() {
         for (var i = this.children.length -1; i >= 0; i--) {
