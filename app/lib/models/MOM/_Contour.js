@@ -1,9 +1,14 @@
 define([
-    './_Node'
+    'metapolator/errors'
+  , './_Node'
 ], function(
-    Parent
+    errors
+  , Parent
 ) {
     "use strict";
+
+    var MOMError = errors.MOM;
+
     /**
      * All children of a MOM Glyph have to inherit from MOM _Contour.
      */
