@@ -31,6 +31,72 @@ define([
         return clone;
     };
 
+    _p._interpolationCompatibilityTests = [
+        function isMaster(other, collect, strictlyCompatible) {
+            if(!(other instanceof Master))
+                return [false, this + ' "'+this.id+'": other item is not a '
+                                + 'Master: "' + other +'" (typeof '
+                                + (typeof other)+').'];
+            return true;
+        }
+      , function checkGlyphs(other, collect, strictlyCompatible) {
+            //jshint validthis:true
+            var namesA = Object.create(null)
+              , namesB = Object.create(null)
+              , i,l, k
+              , result
+              , childrenOther = other.children
+              , messages = []
+              , compatible = true
+              , excessInOther = [], missingFromOther = []
+              ;
+            // In our CPS *polation scripts, glyphs are keyed by id not
+            // by index. Thus, we need to check by key.
+            for(i=0,l=this._children.length;i<l;i++)
+                namesA[this._children[i].id] = this._children[i];
+            for(i=0,l=childrenOther.length;i<l;i++)
+                namesB[childrenOther[i].id] = childrenOther[i];
+            for(k in namesA) if(!(k in namesB))
+                missingFromOther.push(k);
+
+            // Unless we implement "patching" masters, this breaks interpolation
+            // with this Master as the base. But, patching is going to happen.
+            if(missingFromOther.length) {
+                compatible = false;
+                messages.push(this + ' "'+this.id+'": missing glyphs in Master "'
+                                + other.id + '": ' + missingFromOther.join(', ')
+                                + '.');
+            }
+
+            if(strictlyCompatible) {
+                for(k in namesB) if(!(k in namesA))
+                    excessInOther.push(k);
+                if(excessInOther.length) {
+                    compatible = false;
+                    messages.push(this + ' "'+this.id+'": excess glyphs in Master "'
+                        + other.id + '": ' + excessInOther.join(', ') + '.');
+                }
+            }
+
+            if(!collect && !compatible)
+                return [compatible, messages];
+
+            // still compatible, compare the glyphs:
+
+            for(k in namesA) if (k in namesB) {
+                result = namesA[k].isInterpolationCompatible(namesB[k]
+                                            , collect, strictlyCompatible);
+                if(result[0])
+                    continue;
+                compatible = false;
+                Array.prototype.push.apply(messages, result[1]);
+                if(!collect)
+                    break;
+            }
+            return [compatible, messages];
+        }
+    ];
+
     Object.defineProperty(_p, 'MOMType', {
         value: 'MOM Master'
     });
