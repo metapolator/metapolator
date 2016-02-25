@@ -14,7 +14,7 @@ define([
     "use strict";
     function MasterPanelController($scope, project) {
         this.$scope = $scope;
-        
+
         $scope.removeMasters = function() {
             if ($scope.model.areMastersSelected()) {
                 for (var i = 0, l = $scope.model.masterSequences.length; i < l; i++) {
@@ -25,8 +25,8 @@ define([
                             master.remove();
                         }
                     }
-                } 
-                
+                }
+
             }
         };
 
@@ -134,7 +134,7 @@ define([
         $scope.importUfo_dialog_close = function() {
             $("#importufo_dialog").css("display", "none");
         };
-        
+
         $scope.addMasterToDesignSpace = function (master) {
             var designSpace = $scope.model.currentDesignSpace
               , axes = designSpace.axes
@@ -152,6 +152,13 @@ define([
                 instanceTools.registerInstance(project, newInstance);
                 $scope.model.instanceSequences[0].addInstance(newInstance);
             }  else {
+                var result = designSpace.axes[0].MOMelement
+                    .isInterpolationCompatible(master.MOMelement, true);
+                if(!result[0]) {
+                    console.log('Not compatible:', result[1]);
+                    return;
+                }
+
                 designSpace.addAxis(master);
                 // add this axes to each instance in the design space
                 for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
@@ -172,7 +179,7 @@ define([
             }
             //$scope.data.checkIfIsLargest();
         };
-        
+
         // angular-ui sortable
         $scope.sortableOptions = {
             handle : '.list-edit',
@@ -193,20 +200,20 @@ define([
                         setColorCursorHelper(true);
                         $(".drop-area").addClass("drag-over");
                     }
-                    
+
                 } else {
                     destroyCursorHelper();
                     $(".drop-area").removeClass("drag-over");
                 }
             },
-            update : function(e, ui) { 
-                
+            update : function(e, ui) {
+
             },
             stop : function(e, ui) {
                 destroyCursorHelper();
                 var element = $(ui.item).find("mtk-master");
                 var master = angular.element(element).isolateScope().model;
-    
+
                 if (isOverDropArea(ui) && !isInDesignSpace(master)) {
                     // push master to design space when dropped on drop-area
                     $scope.addMasterToDesignSpace(master);
@@ -215,7 +222,7 @@ define([
                 $(".drop-area").removeClass("drag-over");
             }
         };
-        
+
         function isOverDropArea(master) {
             if ($scope.model.currentDesignSpace) {
                 var dropLeft = $(".drop-area").offset().left;
@@ -237,22 +244,22 @@ define([
                 return false;
             }
         }
-        
+
         function isInDesignSpace(master) {
             var designSpace = $scope.model.currentDesignSpace;
             for (var i = designSpace.axes.length - 1; i >= 0; i--) {
                 var masterInDS = designSpace.axes[i];
                 if (masterInDS === master) {
                     return true;
-                }   
+                }
             }
             return false;
         }
-        
+
         //cursorhelper functions
         var cursorHelper = false
           , templayer = $('<div class="cursor-helper"></div>')[0];
-    
+
         function createCursorHelper(x, y) {
             cursorHelper = true;
             $(document.body).append(templayer);
@@ -261,19 +268,19 @@ define([
                 'top' : y + 10
             });
         }
-    
+
         function destroyCursorHelper() {
             $(templayer).remove();
             cursorHelper = false;
         }
-    
+
         function setPositionCursorHelper(x, y) {
             $(templayer).css({
                 "left" : x + 10,
                 "top" : y + 10
             });
         }
-    
+
         function setColorCursorHelper(ok) {
             if (ok) {
                 $(templayer).html("+").removeClass("cursor-not-ok");
@@ -281,7 +288,7 @@ define([
                 $(templayer).html("×").addClass("cursor-not-ok");
             }
         }
-        
+
         // hover masters
         $scope.mouseoverMaster = function(master) {
             if (master.display || master.edit) {
@@ -291,7 +298,7 @@ define([
                 });
             }
         };
-    
+
         $scope.mouseleaveMaster = function() {
             $(".specimen-field-masters ul li").removeClass("dimmed");
         };
@@ -301,4 +308,4 @@ define([
     var _p = MasterPanelController.prototype;
 
     return MasterPanelController;
-}); 
+});

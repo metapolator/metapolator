@@ -14,8 +14,11 @@ define([
   , bloomfilter
 ) {
     "use strict";
+    /*globals clearTimeout:true, setTimeout:true*/
 
-    var MOMError = errors.MOM;
+    var MOMError = errors.MOM
+      , NotImplementedError = errors.NotImplemented
+      ;
 
     var _id_counter = 0
       , emitterMixinSetup
@@ -117,6 +120,35 @@ define([
         callback(this);
         for(i=0,l=this.children.length;i<l;i++)
             this.children[i].walkTreeDepthFirst(callback);
+    };
+
+    _p._interpolationCompatibilityTests = null;
+    _p.isInterpolationCompatible = function(other, collect /* default: true*/
+                                        , strictlyCompatible/*default: true*/) {
+        if(!this._interpolationCompatibilityTests)
+            throw new NotImplementedError(this + ' does not support the '
+                                +'isInterpolationCompatible interface.');
+
+        var accumulate = collect === undefined ? true : !!collect
+          , strict = strictlyCompatible === undefined ? true : !!strictlyCompatible
+          , compatible = true
+          , messages = []
+          , i,l, test, result
+          ;
+
+        for(i=0,l=this._interpolationCompatibilityTests.length;i<l;i++) {
+            test = this._interpolationCompatibilityTests[i];
+            result = test.call(this, other, accumulate, strictlyCompatible);
+            if(result === true || result[0])
+                continue;//passed;
+            compatible = false;
+            if(typeof result[1] === 'string')
+                messages.push(result[1]);
+            else
+                Array.prototype.push.apply(messages, result[1]);
+            break;
+        }
+        return [compatible, messages];
     };
 
     emitterMixin(_p, emitterMixinSetup);
