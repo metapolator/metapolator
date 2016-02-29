@@ -25,16 +25,11 @@ define([
         this.master = this;
         this.cpsFile = cpsFile;
         this.MOMelement = MOMelement;
-        this.ruleIndex = null;
 
         this.setInitialParameters();
     }
     
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
-
-    _p.getSelector = function() {
-        return "master";
-    };
     
     _p.addGlyph = function(name, MOMelement) {
         var glyph = new GlyphModel(name, this, MOMelement);
