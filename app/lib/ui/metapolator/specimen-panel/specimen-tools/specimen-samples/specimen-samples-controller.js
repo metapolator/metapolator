@@ -7,6 +7,9 @@ define([], function() {
             name : "[Enter your own text]",
             text : "Metapolator"
         }], [{
+            name : "Metagram",
+            text : "Incredibly, he makes a major life-change! For example: \"I’ll require that the system have two sizes.\""
+        }, {
             name : "3 Pangrams",
             text : "Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog. Bright vixens jump dozy fowl quack."
         }, {
