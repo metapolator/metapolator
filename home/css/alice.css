@@ -6,23 +6,23 @@ html {
     -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
 
-/* 
-    -webkit-font-smoothing: none;
-    -webkit-font-smoothing: antialiased;
-    -webkit-font-smoothing: subpixel-antialiased;
- */
+    /*
+        -webkit-font-smoothing: none;
+        -webkit-font-smoothing: antialiased;
+        -webkit-font-smoothing: subpixel-antialiased;
+     */
 
-/*
-    text-rendering: optimizeLegibility;
-    text-rendering: geometricPrecision;
-*/
+    /*
+        text-rendering: optimizeLegibility;
+        text-rendering: geometricPrecision;
+    */
 }
 @font-face {
     font-family: 'alice';
     src: url('../fonts/src/testfonts/Alice-Normal.otf'); format('opentype');
     src: url('../fonts/src/testfonts/alice-normal-webfont.woff') format('woff'),
-         url('../fonts/src/testfonts/alice-normal-webfont.ttf') format('truetype'),
-         url('../fonts/src/testfonts/alice-normal-webfont.svg#alicenormal') format('svg');
+    url('../fonts/src/testfonts/alice-normal-webfont.ttf') format('truetype'),
+    url('../fonts/src/testfonts/alice-normal-webfont.svg#alicenormal') format('svg');
     font-weight: 400;
     font-style: normal;
 }
@@ -30,8 +30,8 @@ html {
     font-family: 'alice';
     src: url('../fonts/src/testfonts/Alice-Light.otf'); format('opentype');
     src: url('../fonts/src/testfonts/alice-light-webfont.woff') format('woff'),
-         url('../fonts/src/testfonts/alice-light-webfont.ttf') format('truetype'),
-         url('../fonts/src/testfonts/alice-light-webfont.svg#alicelight') format('svg');
+    url('../fonts/src/testfonts/alice-light-webfont.ttf') format('truetype'),
+    url('../fonts/src/testfonts/alice-light-webfont.svg#alicelight') format('svg');
     font-weight: 300;
     font-style: normal;
 }
@@ -39,8 +39,8 @@ html {
     font-family: 'alice';
     src: url('../fonts/src/testfonts/Alice-ExtraLight.otf'); format('opentype');
     src: url('../fonts/src/testfonts/alice-extralight-webfont.woff') format('woff'),
-         url('../fonts/src/testfonts/alice-extralight-webfont.ttf') format('truetype'),
-         url('../fonts/src/testfonts/alice-extralight-webfont.svg#aliceextralight') format('svg');
+    url('../fonts/src/testfonts/alice-extralight-webfont.ttf') format('truetype'),
+    url('../fonts/src/testfonts/alice-extralight-webfont.svg#aliceextralight') format('svg');
     font-weight: 200;
     font-style: normal;
 }
@@ -48,8 +48,8 @@ html {
     font-family: 'alice';
     src: url('../fonts/src/testfonts/Alice-Thin.otf'); format('opentype');
     src: url('../fonts/src/testfonts/alice-thin-webfont.woff') format('woff'),
-         url('../fonts/src/testfonts/alice-thin-webfont.ttf') format('truetype'),
-         url('../fonts/src/testfonts/alice-thin-webfont.svg#alicethin') format('svg');
+    url('../fonts/src/testfonts/alice-thin-webfont.ttf') format('truetype'),
+    url('../fonts/src/testfonts/alice-thin-webfont.svg#alicethin') format('svg');
     font-weight: 100;
     font-style: normal;
 }

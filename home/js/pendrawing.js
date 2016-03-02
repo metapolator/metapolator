@@ -15,13 +15,13 @@ var colors = {
 function rgba(r, g, b, a) {
     var color = new Color(r / 255.0, g / 255.0, b / 255.0, a / 255.0);
     return color
-    }
+}
 
 function distanceBetween(p0, p1) {
     p0 = p0.position;
     p1 = p1.position;
-    distance = Math.sqrt(Math.pow((p1.x - p0.x), 2) 
-                       + Math.pow((p1.y - p0.y), 2));
+    distance = Math.sqrt(Math.pow((p1.x - p0.x), 2)
+        + Math.pow((p1.y - p0.y), 2));
     return distance
 }
 
@@ -50,8 +50,8 @@ function hobby2Bezier(p0, p1, theta0, theta1, tension) {
     var b = 1 / 16.0;
     var c = (3 - Math.sqrt(5)) / 2;
     var alpha = a *
-        (Math.sin(theta0) - b * Math.sin(theta1)) * 
-        (Math.sin(theta1) - b * Math.sin(theta0)) * 
+        (Math.sin(theta0) - b * Math.sin(theta1)) *
+        (Math.sin(theta1) - b * Math.sin(theta0)) *
         (Math.cos(theta0) - Math.cos(theta1));
     var rho = (2 + alpha) /
         (1 + (1 - c) * Math.cos(theta0) + c * Math.cos(theta1));
@@ -103,15 +103,15 @@ function penWidget(x, y, theta) {
     var that = this;
 
     this.update = function() {
-        that.widthHandle.handle.position = 
+        that.widthHandle.handle.position =
             pointOnCircle(that.p.handle, that.angle - 180, that.width);
-        that.angleHandle.handle.position = 
+        that.angleHandle.handle.position =
             pointOnCircle(that.p.handle, that.angle, that.width);
-        that.thetaHandle.handle.position = 
-             pointOnCircle(that.p.handle, that.theta, 72);
+        that.thetaHandle.handle.position =
+            pointOnCircle(that.p.handle, that.theta, 72);
     }
     this.update();
-    
+
     this.p.handle.onMouseDrag = function(event) {
         this.position += event.delta;
         that.update();
@@ -130,7 +130,7 @@ function penWidget(x, y, theta) {
         this.position += event.delta;
         that.theta = 270 - angleBetween(this, that.p.handle);
         that.update();
-    }    
+    }
 }
 
 function strokeWidget(x) {
@@ -147,9 +147,9 @@ function strokeWidget(x) {
 
     this.pw0 = new penWidget(x, 50, 0);
     this.pw1 = new penWidget(x, 350, 180);
-    
+
     this.tension = 0;
-    this.tensionHandle = new handle(x, y, 9, colors.tensionColor);    
+    this.tensionHandle = new handle(x, y, 9, colors.tensionColor);
 
     var that = this;
 
@@ -165,8 +165,8 @@ function strokeWidget(x) {
         this.position += event.delta;
         // Calculate the tension value.
         var angle = angleBetween(that.pw1.p.handle, that.pw0.p.handle);
-        var distance = distanceBetween(that.pw0.p.handle, 
-                                      that.pw1.p.handle) * 0.5;
+        var distance = distanceBetween(that.pw0.p.handle,
+                that.pw1.p.handle) * 0.5;
         var poc = pointOnCircle(that.pw0.p.handle, 360 - angle - 90, distance);
         that.tension = distanceBetween(this, {'position': poc});
         that.update();
@@ -175,28 +175,28 @@ function strokeWidget(x) {
     this.update = function() {
         // Calculate tensionHandle position
         var angle = angleBetween(that.pw1.p.handle, that.pw0.p.handle);
-        var distance = distanceBetween(that.pw0.p.handle, 
-                                       that.pw1.p.handle) * 0.5;
+        var distance = distanceBetween(that.pw0.p.handle,
+                that.pw1.p.handle) * 0.5;
         var poc = pointOnCircle(that.pw0.p.handle, 360 - angle - 90, distance);
         var pos = pointOnCircle({'position': poc}, 360 - angle, that.tension);
         that.tensionHandle.handle.position = pos;
-        
+
         handles = hobby2Bezier(
             that.pw0.angleHandle.handle, that.pw1.angleHandle.handle,
-            360 - that.pw0.theta + 90, 
-            that.pw1.theta + 90, 
+            360 - that.pw0.theta + 90,
+            that.pw1.theta + 90,
             that.tension
-            );
+        );
         that.path.segments[0].point = that.pw0.angleHandle.handle.position;
         that.path.segments[0].handleOut = handles.handleOut;
         that.path.segments[1].point = that.pw1.angleHandle.handle.position;
         that.path.segments[1].handleIn = handles.handleIn;
         handles = hobby2Bezier(
             that.pw0.widthHandle.handle, that.pw1.widthHandle.handle,
-            360 - that.pw0.theta + 90, 
-            that.pw1.theta + 90, 
+            360 - that.pw0.theta + 90,
+            that.pw1.theta + 90,
             that.tension
-            );
+        );
         that.path.segments[2].point = that.pw1.widthHandle.handle.position;
         that.path.segments[2].handleOut = handles.handleIn;
         that.path.segments[3].point = that.pw0.widthHandle.handle.position;

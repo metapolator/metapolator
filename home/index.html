@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -29,223 +29,212 @@
         <link rel="icon" type="image/png" href="/home/favicon/favicon-96x96.png?v=2" sizes="96x96">
         <link rel="icon" type="image/png" href="/home/favicon/favicon-16x16.png?v=2" sizes="16x16">
 
-        <!-- jQuery -->
-        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
-        <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
-        <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css'>
-
-        <!-- Angular -->
-        <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
-        <script src="https://code.angularjs.org/1.2.12/angular-sanitize.min.js"></script>
-        <script src='js/app.js' type='text/javascript'></script>
-        <script src='js/factory.js' type='text/javascript'></script>
-        <script src='js/templates.js' type='text/javascript'></script>
-        <script src='js/controllers/mastersController.js' type='text/javascript'></script>
-        <script src='js/controllers/designspaceController.js' type='text/javascript'></script>
-        <script src='js/controllers/glyphController.js' type='text/javascript'></script>
-        <script src='js/directives.js' type='text/javascript'></script>
-        <script src='js/sortable.js' type='text/javascript'></script>
 
         <!-- CSS -->
-        <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/alice.css">
-        <link rel="stylesheet" type="text/css" href="css/bluepill.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
 
         <!-- fonts -->
         <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css'>
-        
-        <!-- d3 JS -->
-        <script src="js/d3-v3-min.js" charset="utf-8"></script>
-        
-        <script src='js/scrolls.js' type='text/javascript'></script>
     </head>
 
-    <body ng-app="Metapolator">
-        <div id="menu">
-            <div id="logo"><img src="img/mp-logo.svg" style="width: 80px"></div>
-            <div id="buttons">
-                <ul>
-                    <li><a href="#productvision" data-scroll="productvision">Product Vision</a></li>
-                    <li><a href="#strokes" data-scroll="strokes">The Stroke</a></li>
-                    <li><a href="#fonts" data-scroll="fonts">Our Fonts</a></li>
-                    <li><a href="#demos" data-scroll="demos">Live Demos</a></li>
-                    <li><a href="#history" data-scroll="history">Project History</a></li>
-                    <li><a href="#social" data-scroll="social">Social Media</a></li>
-                </ul>
-            </div>
-        </div>
-        <!-- end of menu -->
-        
-        <div id="pagewrap">
-            <div id="subwrapper">
-        	    <section id="home-section" data-anchor="frontmatter" ng-controller="glyphController" style="padding-bottom: 0; text-align: center">
-        	        <div id="glyphslider"> 
-        	            <!-- in './js/controllers/glyphController.js' -->
-                        <div id="glyph" style="margin-top: 0; margin-bottom: 0;" title="Metorpolating logo">Metapolator</div>
-                        <!-- in ./js/directives.js -->
-                        <glyphslider title="Slide me!"></glyphslider>
+    <body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <div class="identity">
+                        <span class="text">I </span><img src="img/mp-logo.svg" class="logo-mini"><span class="text"> Fonts</span>
                     </div>
-                </section>
-               
-                <section data-anchor="productvision" class="red">
-                    <a name="productvision"></a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav">
+                        <li><a href="#vision">Vision</a></li>
+                        <li><a href="#the-stroke">The Stroke</a></li>
+                        <li><a href="#our-fonts">Our Fonts</a></li>
+                        <li><a href="#demos">Demos</a></li>
+                        <li><a href="#project-history">Project History</a></li>
+                        <li><a href="#social-media">Join Us!</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="body">
+
+            <div class="container" ng-app="Slider">
+                <div id="glyphslider">
+                    <div id="glyph">Metapolator</div>
+                    <glyphslider title="Slide me!"></glyphslider>
+                </div>
+            </div>
+
+            <a name="vision"></a>
+            <div id="vision" class="container red">
+                <div class="col-sm-12">
                     <h1>Product Vision</h1>
-                    <div class="bullets"></div>
                     <div class="content intro-content">
                         <p>“Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.</p>
-                        
-                        <p>With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency. 
-                        They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.</p>
+
+                        <p>With Metapolator, ‘pro’ font designers are able to create and edit fonts and font families much faster, with inherent consistency.
+                            They gain unique exploration possibilities and the tools to quickly adapt typefaces to different media and domains of use.</p>
 
                         <p>With Metapolator, typographers gain the possibility to change existing fonts — or even create new ones — to their needs.</p>
 
                         <p>Metapolator is extensible through plugins and custom specimens. It contains all the tools and fine control that designers need to finish a font.”</p>
                     </div>
-                    <div class="subscript">
-                          <a href="https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase" target="_blank">Product Vision</a> by Peter Sikking, UI Architect
+                    <div>
+                        <a href="https://github.com/metapolator/metapolator/wiki/interaction-design#the-product-phase" target="_blank">Product Vision</a> by Peter Sikking, UI Architect
                     </div>
-                </section>
-    
-                <section data-anchor="strokes">
-                    <a name="strokes"></a>
-                    <h1>Drawing The Metapolator Way</h1>
-                    <div class="bullets"></div>
-                    <div class="content">
-                        The core of Metapolator is the stroke element, re-implemented from Metafont. 
-                        This uses the Hobby Spline to control a stroke, that is defined by points along a skeleton path.
-                        Each stroke point has a left point and a right point set at an angle and a distance from that parent point.
-                        The parent has a direction angle itself, and a tension value that defines the curvature of the stroke.
-                        Here is a simple interactive demonstration to play with drawing, the Metapolator way:
-                        <div id="pen-drawing-container">
-                            <canvas class="float-element-1" id="pencanvas" width="400" height="400"></canvas>
-                            <iframe class="float-element-2" width="400" height="400" src="https://www.youtube.com/embed/LlvO4n6vd-U" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </section>
-    
-                <section data-anchor="fonts">
-                    <div class="bullets"></div>
-                    <a name="fonts"></a>
-                    <h1>Fonts Made With Metapolator</h1>
-                    <div class="bullets"></div>
-                    <div class="content">
-                        <b>Existing Fonts</b><br>
-                        Fonts can be drawn with existing traditional font editors and loaded into Metapolator using the UFO format.
-                        Metapolator can interpolate them in a typical way, with unlimited masters and axes.
-                        <br><br>
-                        It can also import fonts that are drawn the Metapolator way, with glyphs drawn as separate and overlapping contours. 
-                        They mimic strokes with pairs of points along each edge. 
-                        Glyphs are often drawn this way already because it is a good way to draw shapes resembling strokes of pens.
-                        When imported, these drawn outlines are converted into real stroke objects.
-                        <br><br>
-                        <img src="img/Latin.svg"><br><br>
-                        <br><br>
-                        <b>New Fonts</b><br>
-                        <a href="https://github.com/weiweihuanghuang/Work-Sans">Work Sans</a>, 
-                        <a href="https://github.com/metapolator/canola">Canola</a> and 
-                        <a href="https://github.com/metapolator/Breite">Breite</a> 
-                        are being developed as the first font families with Metapolator in mind. 
-                        Here's a sketch of some of the work in progress:
-                        <br><br>
-                        <img src="img/Font.svg">
-                    </div>
-                </section>
-        
-                <section data-anchor="demos" class="red">
-                    <a name="demos"></a>
-                    <h1>Live Demos</h1>
-                    <div class="bullets"></div>
-                    <div class="content" id="blue-pill-content">
-                        <a href="http://metapolator.com/purple-pill/" target="_blank" style="cursor: alias">Open alpha demo in a new window</a>
-                        <br><br>
-                        <a href="http://metapolator.com/v0.3.0" target="_blank" style="cursor: alias">Open alpha demo in a new window</a>
-                        <br><br>
-                        <a href="http://metapolator.com/purple-pill/" target="_blank" style="cursor: alias"><img src="img/screenshot-020-a.png" width="100%" /></a><br>
-                        <a href="http://metapolator.com/purple-pill/" target="_blank" style="cursor: alias"><img src="img/screenshot-020-b.png" width="100%" /></a><br>
-                        <a href="http://metapolator.com/purple-pill/" target="_blank" style="cursor: alias"><img src="img/screenshot-020-c.png" width="100%" /></a><br>
-                        <br><br>
-                        <a href="http://metapolator.com/red-pill-demo" target="_blank" style="cursor: alias">Open technology demo in a new window</a>
-                        
-                    </div>
-                    <div class="bullets"></div>
-                </section>  
-    
-                <section data-anchor="history">
-                    <a name="history"></a>
-                    <h1>Project History</h1>
-                    <div class="bullets"></div>
-                    <div class="content">
-                         <p>
-                         The Metapolator project is a free, libre, open source project that is developed by a community of designers and developers. 
-                         It began in March 2013 when Simon Egli (a graphic and type designer from Switzerland) and Dave Crossland (a software freedom activist working to free typography) met in New York City to discuss the <a href="http://metaflop.com" title="Metaflop">Metaflop</a> project that Simon was contributing to. 
-                         Metaflop is web-based graphical user interface to the <a href="http://en.wikipedia.org/wiki/Metafont" title="Metafont">Metafont</a> parametric font programming language, allowing non-programmers to adjust the parameters of a metafont intuitively. 
-                         </p>
-                         <p>
-                         Simon had realised that the Bezier contours typically drawn by type designers, and stored in the <a href="http://unifiedfontobject.org/versions/ufo2/glif.html">UFO GLIF</a> XML format, could be converted into a Metafont <i>stroke</i> element, if they simply have an even number of points. 
-                         Dave wondered if this could become a powerful new way to develop typeface families. 
-                         It would combine the parametric power of Metafont with a graphical interface to glyph drawing.
-                         This could overcome the inherent limitation of inputting text for outputting graphics, which has prevented Metafont from being truly useful for type designers.
-                         </p>
-                         <p>
-                         Simon returned home to Switzerland and founded the Metapolator project to pursue this vision. 
-                         He began a PHP codebase and posted some <a href="http://metapolator.tumblr.com/" title="Metapolator prototypes">experimental results on Tumblr</a>. 
-                         Dave and Simon attended the <a href="http://libregraphicsmeeting.org/2013">Libre Graphics Meeting 2013</a> in Madrid in April to begin a new prototype, <a href="https://github.com/metapolator/mfg-2013">mfg</a>.
-                         This used a Python web server to connect <a href="http://robofab.com/">Robofab</a>, <a href="http://en.wikipedia.org/wiki/MetaPost">Metapost</a>, <a href="http://www.ctan.org/pkg/mf2pt1">mf2pt1</a> and <a href="http://fontforge.github.io">FontForge</a> to a web UI that used <a href="http://paperjs.org/">paper.js</a>.
-                         Over the following year, the project grew to include new contributors, including Vitaly Volkhov (a Python developer in Ukraine) Wei Huang (a graphic and type designer in Norway) and Nicolas Pauly (a graphic and type designer in Lyon.) 
-                         With a working prototype in hand, Simon began work on a new Sans Serif family, codenamed Sean Sans.
-                         </p>
-                         <p>
-                         In April 2014 Simon presented this prototype at the <a href="http://www.metapolator.com/pre.html" title="Metapolator at Libre Graphics Meeting 2014">Libre Graphics Meeting 2014</a> in Leipzig, which was attended by Lasse Fister (a designer-developer in Nuremburg) and Peter Sikking (a user experience architect in Berlin.)
-                         Lasse had developed <a href="http://lib.ufojs.org/" title="ufoJS">ufoJS</a>, a JavaScript library for working with UFO fonts entirely in the browser.
-                         He proposed a new approach to Metapolator that would leverage his ufoJS and a native JavaScript implementation of the Hobby Spline to completely replace Metafont itself.
-                         In its place, Lasse proposed <a href="https://github.com/metapolator/metapolator/wiki/cascading-properties-sheets" title="Cascading Properties Sheets">Cascading Properties Sheets</a>, which uses the familiar syntax of CSS to describe font properties and parametric formula.
-                         At the same time Peter proposed a completely new user interface, designed from the ground up with his User Experience Architecture process.
-                         </p>
-                         <p>
-                         Simon, Wei and Nicolas began developing new font families, and Peter began the design of the new Metapolator application.
-                         Lasse led the development of the core CPS technology engine, with assistance from Reuben Thomas and Ben Martin, software developers who had contributed to FontForge.
-                         The team met at the <a href="http://web.archive.org/web/20140723144305/http://automatic-type-design.anrt-nancy.fr/index_en.php">automatic type design</a> conference at the Atelier National de Recherche Typographique in May in Nancy, France.
-                         </p>
-                         <p>                      
-                         Development continued over the summer, posting work in progress and discussions on the <a href="https://plus.google.com/communities/110027004108709154749" title="Metapolator G+ community">Metapolator community on Google Plus</a>.
-                         The community grew to include contributions from Jeroen Breen, Coen van der Kamp and Felipe Sanches who implemented a working prototype of the UI in close collaboration with Peter.
-                         This was presented at the <a href="http://libregraphicsmeeting.org">Libre Graphics Meeting 2015</a> in Toronto in April 2015.
-                         </p>
-                         <p>
-                         The future of Metapolator is to continue implementing what has been designed, to set the trend for the next generation of typeface design.
-                         We hope you'll join us.
-                         </p>
-                         <br><br>
-                        
-                    </div>
-                    <div class="bullets"></div>
-                </section>  
-    
-                <section data-anchor="social" class="red">
-                    <a name="social"></a>
-                    <h1>Join us!</h1>
-                    <div class="bullets"></div>
-                    <div class="content">
-                         <div class="content-center content-follow">
-                             <img src="img/google-plus.png" width="48"><br>
-                             <a href="https://plus.google.com/communities/110027004108709154749" target="_blank">Join our Google+ Community</a><br><br>                         
-                             <img src="img/github.svg" width="48"><br>
-                             <a href="https://github.com/metapolator/metapolator" target="_blank">Watch our Github Project</a>
-                        </div>
-                    </div>
-                    <div class="bullets"></div>
-                </section>
+                </div>
             </div>
+
+            <a name="the-stroke"></a>
+            <div id="the-stroke" class="container">
+                <div class="col-sm-12">
+                    <h1>Drawing The Metapolator Way</h1>
+                    The core of Metapolator is the stroke element, re-implemented from Metafont.
+                    This uses the Hobby Spline to control a stroke, that is defined by points along a skeleton path.
+                    Each stroke point has a left point and a right point set at an angle and a distance from that parent point.
+                    The parent has a direction angle itself, and a tension value that defines the curvature of the stroke.
+                    Here is a simple interactive demonstration to play with drawing, the Metapolator way:
+                </div>
+                <div class="col-md-6">
+                    <canvas class="illustration" id="pencanvas" width="400" height="400"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <iframe class="illustration" width="400" height="400" src="https://www.youtube.com/embed/LlvO4n6vd-U" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <a name="our-fonts"></a>
+            <div id="our-fonts" class="container">
+                <div class="col-sm-12">
+                    <h1>Fonts Made With Metapolator</h1>
+                    <b>Existing Fonts</b><br>
+                    Fonts can be drawn with existing traditional font editors and loaded into Metapolator using the UFO format.
+                    Metapolator can interpolate them in a typical way, with unlimited masters and axes.
+                    <br><br>
+                    It can also import fonts that are drawn the Metapolator way, with glyphs drawn as separate and overlapping contours.
+                    They mimic strokes with pairs of points along each edge.
+                    Glyphs are often drawn this way already because it is a good way to draw shapes resembling strokes of pens.
+                    When imported, these drawn outlines are converted into real stroke objects.
+                    <br><br>
+                    <img src="img/Latin.svg"><br><br>
+                    <br><br>
+                    <b>New Fonts</b><br>
+                    <a href="https://github.com/weiweihuanghuang/Work-Sans">Work Sans</a>,
+                    <a href="https://github.com/metapolator/canola">Canola</a> and
+                    <a href="https://github.com/metapolator/Breite">Breite</a>
+                    are being developed as the first font families with Metapolator in mind.
+                    Here's a sketch of some of the work in progress:
+                    <br><br>
+                    <img src="img/Font.svg">
+                </div>
+            </div>
+
+            <a name="demos"></a>
+            <div id="demos" class="container">
+                <div class="col-sm-12">
+                    <h1>Demos</h1>
+                </div>
+                <div class="col-sm-6">
+                    <img src="img/metapolator.png"><br>
+                    <a href="http://metapolator.com/v0.3.0/max" target="_blank" style="cursor: alias">Open alpha demo in a new window</a>
+                </div>
+                <div class="col-sm-6">
+                    <img src="img/red-pill-2.png"><br>
+                    <a href="http://metapolator.com/red-pill-demo/" target="_blank" style="cursor: alias">Open alpha demo in a new window</a>
+                </div>
+            </div>
+
+            <a name="project-history"></a>
+            <div id="project-history" class="container">
+                <div class="col-sm-12">
+                    <h1>Project History</h1>
+                    <p>
+                        The Metapolator project is a free, libre, open source project that is developed by a community of designers and developers.
+                        It began in March 2013 when Simon Egli (a graphic and type designer from Switzerland) and Dave Crossland (a software freedom activist working to free typography) met in New York City to discuss the <a href="http://metaflop.com" title="Metaflop">Metaflop</a> project that Simon was contributing to.
+                        Metaflop is web-based graphical user interface to the <a href="http://en.wikipedia.org/wiki/Metafont" title="Metafont">Metafont</a> parametric font programming language, allowing non-programmers to adjust the parameters of a metafont intuitively.
+                    </p>
+                    <p>
+                        Simon had realised that the Bezier contours typically drawn by type designers, and stored in the <a href="http://unifiedfontobject.org/versions/ufo2/glif.html">UFO GLIF</a> XML format, could be converted into a Metafont <i>stroke</i> element, if they simply have an even number of points.
+                        Dave wondered if this could become a powerful new way to develop typeface families.
+                        It would combine the parametric power of Metafont with a graphical interface to glyph drawing.
+                        This could overcome the inherent limitation of inputting text for outputting graphics, which has prevented Metafont from being truly useful for type designers.
+                    </p>
+                    <p>
+                        Simon returned home to Switzerland and founded the Metapolator project to pursue this vision.
+                        He began a PHP codebase and posted some <a href="http://metapolator.tumblr.com/" title="Metapolator prototypes">experimental results on Tumblr</a>.
+                        Dave and Simon attended the <a href="http://libregraphicsmeeting.org/2013">Libre Graphics Meeting 2013</a> in Madrid in April to begin a new prototype, <a href="https://github.com/metapolator/mfg-2013">mfg</a>.
+                        This used a Python web server to connect <a href="http://robofab.com/">Robofab</a>, <a href="http://en.wikipedia.org/wiki/MetaPost">Metapost</a>, <a href="http://www.ctan.org/pkg/mf2pt1">mf2pt1</a> and <a href="http://fontforge.github.io">FontForge</a> to a web UI that used <a href="http://paperjs.org/">paper.js</a>.
+                        Over the following year, the project grew to include new contributors, including Vitaly Volkhov (a Python developer in Ukraine) Wei Huang (a graphic and type designer in Norway) and Nicolas Pauly (a graphic and type designer in Lyon.)
+                        With a working prototype in hand, Simon began work on a new Sans Serif family, codenamed Sean Sans.
+                    </p>
+                    <p>
+                        In April 2014 Simon presented this prototype at the <a href="http://www.metapolator.com/pre.html" title="Metapolator at Libre Graphics Meeting 2014">Libre Graphics Meeting 2014</a> in Leipzig, which was attended by Lasse Fister (a designer-developer in Nuremburg) and Peter Sikking (a user experience architect in Berlin.)
+                        Lasse had developed <a href="http://lib.ufojs.org/" title="ufoJS">ufoJS</a>, a JavaScript library for working with UFO fonts entirely in the browser.
+                        He proposed a new approach to Metapolator that would leverage his ufoJS and a native JavaScript implementation of the Hobby Spline to completely replace Metafont itself.
+                        In its place, Lasse proposed <a href="https://github.com/metapolator/metapolator/wiki/cascading-properties-sheets" title="Cascading Properties Sheets">Cascading Properties Sheets</a>, which uses the familiar syntax of CSS to describe font properties and parametric formula.
+                        At the same time Peter proposed a completely new user interface, designed from the ground up with his User Experience Architecture process.
+                    </p>
+                    <p>
+                        Simon, Wei and Nicolas began developing new font families, and Peter began the design of the new Metapolator application.
+                        Lasse led the development of the core CPS technology engine, with assistance from Reuben Thomas and Ben Martin, software developers who had contributed to FontForge.
+                        The team met at the <a href="http://web.archive.org/web/20140723144305/http://automatic-type-design.anrt-nancy.fr/index_en.php">automatic type design</a> conference at the Atelier National de Recherche Typographique in May in Nancy, France.
+                    </p>
+                    <p>
+                        Development continued over the summer, posting work in progress and discussions on the <a href="https://plus.google.com/communities/110027004108709154749" title="Metapolator G+ community">Metapolator community on Google Plus</a>.
+                        The community grew to include contributions from Jeroen Breen, Coen van der Kamp and Felipe Sanches who implemented a working prototype of the UI in close collaboration with Peter.
+                        This was presented at the <a href="http://libregraphicsmeeting.org">Libre Graphics Meeting 2015</a> in Toronto in April 2015.
+                    </p>
+                    <p>
+                        The future of Metapolator is to continue implementing what has been designed, to set the trend for the next generation of typeface design.
+                        We hope you'll join us.
+                    </p>
+                </div>
+            </div>
+
+            <a name="social-media"></a>
+            <div id="social-media" class="container">
+                <div class="col-sm-12">
+                    <h1>Join us!</h1>
+                </div>
+                <div class="col-sm-6">
+                    <img src="img/google-plus.png" width="48"><br>
+                    <a href="https://plus.google.com/communities/110027004108709154749" target="_blank">Join our Google+ Community</a>
+                </div>
+                <div class="col-sm-6">
+                    <img src="img/github.svg" width="48"><br>
+                    <a href="https://github.com/metapolator/metapolator" target="_blank">Watch our Github Project</a>
+
+                </div>
+            </div>
+
         </div>
-        <!-- end of pagewrap -->
 
 
-        <!-- paperjs -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js' type='text/javascript'></script>
+        <script src="https://code.angularjs.org/1.2.12/angular-sanitize.min.js"></script>
+        <script src='js/app.js' type='text/javascript'></script>
+        <script src="js/d3-v3-min.js" charset="utf-8"></script>
+        <script src='js/ui.js' type='text/javascript'></script>
         <script type="text/javascript" src="js/paper-full.min.js"></script>
         <script type="text/paperscript" src="js/pendrawing.js" canvas="pencanvas"></script>
-            
-        <!-- old website -->
-        <script type="text/javascript" src="app/js/paper-full.js"></script>
+
+
         <script type="text/javascript" src="app/js/instance.js"></script>
         <script type="text/javascript" src="app/js/opentype.js"></script>
     </body>
