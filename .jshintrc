@@ -1,7 +1,8 @@
 {
-    "undef": true,
-    // is useful but not as a default "unused": true,
-    "globals": {"define": false, "require": false},
     "laxcomma": true,
-    "laxbreak": true
+    "laxbreak": true,
+    "undef": true,
+    "unused": true,
+    "predef": [ "define", "require" ],
+    "sub": true
 }
