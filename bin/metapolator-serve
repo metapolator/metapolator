@@ -1,119 +1,84 @@
-#!/bin/sh
-__hash_bang_trick=/* exec /usr/bin/env node --harmony --harmony-proxies "$0" "$@"  # -*- mode: javascript; -*- */undefined
-
+#!/usr/bin/env node
 "use strict";
+
+// FIXME: this is virtually identical to Atem-MOM-Developer-Tool momdev-serve
+// We need a way to reuse cli scripts between subprojects
 
 exports.command = {
     description: 'Serve a metapolator application loading a metapoltor project UFO (default: current directory).'
-  , arguments: '[ufo]'
+  , arguments: '[project]'
 };
 
-var path = require('path');
-var requirejs = require('requirejs');
-var express = require('express');
-require('rootpath')();
-requirejs.config(require('config'));
-
 if (require.main === module) {
-    requirejs([
-        'commander'
-      , 'metapolator/parseArgs'
-      , 'metapolator/errors'
-      , 'ufojs/tools/io/staticNodeJS'
-      , 'restfs'
-      , 'socket.io'
-      , 'fsEventsServer'
-    ], function (
-        program
-      , parseArgs
-      , errors
-      , io
-      , restfs
-      , SocketIO
-      , fsEventsServer
-    ) {
-        var CommandLineError = errors.CommandLine
-          , applications = {
-                'red-pill': {
-                    index: 'red-pill.html'
-                  , name: 'the Red Pill'
-                }
-              , 'metapolator': {
-                    index: 'metapolator.html'
-                  , name: 'the Blue Pill'
-                }
-            }
-          ;
 
-        function mountAndMonitorRESTDirectory(location, baseDir, socketIO, app) {
-            var relativeLocation = location[0] === '/'
-                    ? location.slice(1)
-                    : location
-              , socketNamespace = socketIO.of('/fsEvents/' + relativeLocation)
-              ;
-            app.use(location, restfs(baseDir));
-            return fsEventsServer.createEmitter(
-                                socketNamespace, baseDir, relativeLocation + '/');
-        }
+var requirejs = require('requirejs')
+  , configure = requirejs('./node-config')
+  , path = require('path')
+  , program = require('commander')
+  , express = require('express')
+  ;
+configure(requirejs);
 
-        function getPort(program) {
-            if(program.port === undefined)
-                program.port = parseInt(process.env.RED_PILL_PORT) || 0;
-            return program.port;
-        }
+program._name = path.basename(process.argv[1]).replace('-', ' ');
+program.arguments(exports.command.arguments)
+    .description(exports.command.description);
 
-        function getApplication(key) {
-            if(key === undefined)
-                key = 'metapolator';
-            if(!(key in applications))
-                throw new CommandLineError('"'+key+'" is no known application.');
-            return applications[key];
-        }
 
-        program._name = path.basename(process.argv[1]).replace('-', ' ');
-        program.arguments(exports.command.arguments)
-        .description(exports.command.description)
-        .action(function(projectDir) {
-            // expect require.main.filename to be path/to/metapolator-code/bin/<command>
-            // thus path/to/metapolator-code is the root directory
-            var rootDir = path.dirname(path.dirname(require.main.filename))
-              , application = getApplication(program.application)
-              , libDir = rootDir + '/app/lib'
-              , htmlDir = rootDir + '/app/lib/html'
-              , index = htmlDir + '/' + application.index
-              , project = parseArgs.project(io, projectDir)
-              , app = express()
-              , server = app.listen(getPort(program))
-              , socketIO = SocketIO(server)
-              ;
-            app.get('/', function(req, res, next) { res.sendfile(index); }) // index file
-               // any .html file
-               .get('/*.html', function(req, res, next) {
-                    var i = req.path.lastIndexOf('/');
-                    if(i === -1){
-                        next();
-                        return;
-                    }
-                    res.sendfile(htmlDir + req.path.slice(i));
-               })
-               .use('/lib', express.static(libDir)) // application code
-               ;
-            // project is a RESTful directory with a socket io channel
-            // that emits change events at "/fsEvents/project"
-            mountAndMonitorRESTDirectory('/project', project.baseDir
-                                                        , socketIO, app);
-            mountAndMonitorRESTDirectory('/lib/cpsLib', libDir + '/cpsLib'
-                                                        , socketIO, app);
-
-            if (server.address()) {
-                console.warn('Metapolator: Serving ' + application.name + '.');
-                console.warn('Open http://localhost:'+server.address().port+' in your browser.');
-                console.warn('If you are using Chromium (or Chrome), you should run it as: chromium --js-flags="--harmony_proxies"');
-            }
-        })
-        .option('-a, --application <'+(Object.keys(applications).join('|'))+'>', 'The main application to serve at index.html (default: metapolator)')
-        .option('-p, --port <n>', 'The port to listen on (default: environment variable RED_PILL_PORT (if unset, random))', parseInt)
-        ;
-        program.parse(process.argv);
+requirejs([
+    'Atem-IO/io/staticNodeJS'
+  , 'Atem-MOM/errors'
+  , 'Atem-IO/node-server-backend/restfs'
+], function (
+    io
+  , errors
+  , restfs
+) {
+    function getPort(program) {
+        if(program.port === undefined)
+            program.port = parseInt(process.env.MOM_DEV_PORT) || 0;
+        return program.port;
     }
-)}
+    function getBaseDir(projectDir){
+        if (projectDir === undefined || projectDir === '')
+            return process.cwd();
+        return projectDir + (projectDir.slice(-1) != '/' ? '/' : '');
+    }
+
+    function main (projectDirArgument) {
+        var rootDir = path.dirname(path.dirname(require.main.filename))
+          , baseDir = getBaseDir(projectDirArgument)
+          , app = express()
+          , server = app.listen(getPort(program))
+          ;
+        // app is the root directory
+        app.use('/', express.static(rootDir + '/app'));
+
+        // mount the project (writable)
+        app.use('/project', restfs(baseDir));
+
+        // FIXME:
+        // We definetly need a more elegant solution to include foreign
+        // cpsLib files.
+        // It is done this way because restfs will provide a proper directory
+        // listing for our RESTful browser io API.
+        // The normal express.static does not (which is ok so far)
+        // It must be easier to inlude other cpsLibs, without such a "big"
+        // configuration effort. Concept pending ...
+        // FIXME: These cps libraries should not be writable, but they are
+        // via restfs!
+        app.use('/lib/bower_components/Atem-MOM/lib/cpsLib',
+              restfs(rootDir + '/app/lib/bower_components/Atem-MOM/lib/cpsLib'));
+
+        app.use('/lib/bower_components/metapolator-cpsLib/lib',
+              restfs(rootDir + '/app/lib/bower_components/metapolator-cpsLib/lib'));
+
+        if (server.address())
+            console.warn('Serving! Open http://localhost:'+server.address().port+' in your browser.');
+    }
+    program.action(main)
+           .option('-p, --port <n>', 'The port to listen on (default: environment variable MOM_DEV_PORT (if unset, random))', parseInt)
+           ;
+    program.parse(process.argv);
+)};
+
+}

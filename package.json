@@ -37,17 +37,13 @@
     "intern": "~2.0.1",
     "less": "~1.7.5",
     "nexpect": "~0.4.2",
-    "regenerator": "~0.6.5"
+    "regenerator": ">=0.6.5"
   },
   "dependencies": {
-    "express": "~4.7.2",
-    "jsdom": "~3",
-    "libxmljs": "~0.15.0",
-    "requirejs": "~2.1.14",
-    "lie": "~2.7.6",
-    "helmsman": "~0.4.0",
-    "rootpath": "~0.1.2",
-    "chokidar": "^0.10.4",
-    "socket.io": "^1.2.0"
+    "commander": "git://github.com/graphicore/commander.js.git#atem-integration",
+    "express": "^4.13.4",
+    "helmsman": "^1.0.3",
+    "lie": "^3.0.2",
+    "requirejs": "^2.2.0"
   }
 }
