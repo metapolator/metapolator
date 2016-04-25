@@ -57,7 +57,7 @@ requirejs([
         app.use('/project', restfs(baseDir));
 
         // FIXME:
-        // We definetly need a more elegant solution to include foreign
+        // We definitely need a more elegant solution to include foreign
         // cpsLib files.
         // It is done this way because restfs will provide a proper directory
         // listing for our RESTful browser io API.
