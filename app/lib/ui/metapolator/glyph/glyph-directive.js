@@ -42,7 +42,6 @@ define([
                         }
                     }
 
-
                     momGlyph = cpsController.query('#' + scope.model.getMasterName() + ' #' + glyphName);
                     glyphRenderer = scope.renderGlyph(momGlyph);
                     glyphRenderer.on('viewBox-change', viewBoxChangeHandler, element[0]);

@@ -1,17 +1,22 @@
 define([
-    'jquery'
+    'metapolator/errors'
+  , 'jquery'
   , 'jszip'
   , 'filesaver'
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
 ], function(
-    $
+    errors
+  , $
   , JSZip
   , saveAs
   , instanceTools
   , dialog
 ) {
     'use strict';
+
+    var unhandledPromise = errors.unhandledPromise;
+
     function InstancePanelController($scope, $timeout, project) {
         this.$scope = $scope;
         this.$scope.name = 'masterPanel';
@@ -238,55 +243,94 @@ define([
 
         $scope.exportIsRunning = false;
 
+        function _setFileToZipFolder(name, data) {
+            //jshint validthis:true
+            this.file(name, data, {binary:true});
+        }
+
+
+        function _job (exportObjects, totalInstances, bundleFolder, progress) {
+            var index = totalInstances - exportObjects.length
+              , obj = exportObjects[exportObjects.length - 1]
+              , it = obj.generator.next()
+              , promise
+              , name
+              ;
+
+            if (!it.done) {
+                if (progress)
+                    progress.setData(index, totalInstances, it.value);
+                return null;
+            }
+
+            // done
+            exportObjects.pop();
+            if (obj.fileFormat == 'UFO') {
+                // === zipUtil.pack
+                promise = project.getZipFromIo(true, obj.io, obj.getFileName(), 'uint8array');
+                name = obj.getFileName() + '.zip';
+            }
+            else {
+                /* obj.fileFormat == 'OTF' */
+                promise = obj.io.readFile(true, obj.getFileName());
+                name = obj.getFileName();
+            }
+
+            return promise.then(_setFileToZipFolder.bind(bundleFolder, name));
+        }
+
+        function _runner(done, job, timeout, nextRun) {
+            // done
+            if (done())
+                return true;
+            // do
+            var promise = job();
+            if(promise)
+                return promise.then(nextRun);
+            // The return value of calling $timeout is a promise ...
+            // The promise will be resolved with the return value of the fn function.
+            // If the return value of fn is a promise $timeout does the right thing
+            // and resolves when the inner promise is resolved.
+            // recursive!
+            return $timeout(nextRun, timeout);
+        }
+
+        function _exportFontComputeGlyphs(exportObjects, totalInstances,
+                                bundleFolder, timeout, progress) {
+
+            var done = function () { return exportObjects.length === 0; }
+              , job = _job.bind(null, exportObjects, totalInstances, bundleFolder, progress)
+                // recursive call
+              , nextRun = function(){ return _runner(done, job, timeout, nextRun);}
+              ;
+            return nextRun();
+        }
+
         function generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress) {
             var bundle = new JSZip()
               , bundleFolderName = 'metapolator-export-' + getTimestamp()
               , bundleFileName = bundleFolderName + '.zip'
               , bundleFolder = bundle.folder(bundleFolderName)
               , totalInstances = exportObjects.length
-              ;
-            function _exportFontComputeGlyphs(exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress, resolve, reject){
-                if (exportObjects.length === 0){
-                    resolve(true);
-                    return;
-                }
+              , generateZip = bundle.generateAsync.bind(bundle, {type:'blob'})
+              , promise = _exportFontComputeGlyphs(
+                              exportObjects
+                            , totalInstances
+                            , bundleFolder
+                            , UI_UPDATE_TIMESLICE
+                            , progress)
 
-                var text
-                  , percentage
-                  , index = totalInstances - exportObjects.length
-                  , obj = exportObjects[exportObjects.length - 1]
-                  , it = obj.generator.next()
-                  , data, name
-                  ;
-                if (!it.done){
-                    if (progress){
-                        it.target_data = obj.getFileName();
-                        progress.setData(index, totalInstances, it.value);
-                    }
-                } else {
-                    exportObjects.pop();
+            ;
 
-                    if (obj.fileFormat == 'UFO'){
-                        data = project.getZipFromIo(false, obj.io, obj.getFileName(), 'uint8array');
-                        name = obj.getFileName() + '.zip';
-                    } else {
-                        /* obj.fileFormat == 'OTF' */
-                        data = obj.io.readFile(false, obj.getFileName());
-                        name = obj.getFileName();
-                    }
-                    bundleFolder.file(name, data, {binary:true});
-                }
-                $timeout(_exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress, resolve, reject)
-                       , UI_UPDATE_TIMESLICE);
-            }
+            if(promise === true)
+                // nothing to do, exportObjects.length was 0
+                promise = generateZip();
+            else
+                promise = promise.then(generateZip);
 
-            // note how the first three args are bound, new Promise will call the bound function with
-            // the two missing args `resolve` and `reject`
-            return new Promise(
-                _exportFontComputeGlyphs.bind(null, exportObjects, totalInstances, bundleFolder, UI_UPDATE_TIMESLICE, progress)
-            ).then(function(){
-                return [bundleFileName, bundle.generate({type:'blob'})];
-            });
+            return promise.then(function(zip) {
+                return [bundleFileName, zip];
+            }, unhandledPromise);
         }
 
         $scope.exportFonts = function() {
@@ -313,7 +357,7 @@ define([
             }
 
             $scope.exportIsRunning = true;
-            const UI_UPDATE_TIMESLICE = 50; // msecs
+            var UI_UPDATE_TIMESLICE = 50; // msecs
             var progress = new InstanceExportProgressBar( $('#progressbar')
                                                         , $('#progresslabel')
                                                         , UI_UPDATE_TIMESLICE );
@@ -356,7 +400,7 @@ define([
     }
 
     InstancePanelController.$inject = ['$scope', '$timeout', 'project'];
-    var _p = InstancePanelController.prototype;
+    // var _p = InstancePanelController.prototype;
 
     return InstancePanelController;
 });
