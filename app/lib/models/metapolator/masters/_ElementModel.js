@@ -1,7 +1,7 @@
 define([
     './ParameterModel'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
-  , 'metapolator/models/CPS/cpsTools'
+  , 'Atem-MOM/cpsTools'
 ],
 function(
     ParameterModel
@@ -17,22 +17,23 @@ function(
     }
 
     var _p = _ElementModel.prototype;
-    
+
     _p.setInitialParameters = function() {
         // on the creation of an element, we check if there are effective parameters
         // at the level of the element
         for (var i = selection.baseParameters.length - 1; i >= 0; i--) {
             var baseParameter = selection.baseParameters[i];
             if (baseParameter.effectiveLevel === this.level) {
-                this._addParameter(baseParameter);    
+                this._addParameter(baseParameter);
             }
         }
     };
 
+    // This may be a useful name to grep when moving more to element.properties
     _p.writeValueInCPSfile = function(factor, parameter) {
         setProperty(this.MOMelement.properties, parameter.base.cpsKey, factor);
     };
-    
+
     _p.deselectAllChildren = function() {
         for (var i = this.children.length -1; i >= 0; i--) {
             var child = this.children[i];
@@ -49,12 +50,12 @@ function(
         }
         return null;
     };
-    
+
     _p.addParameterOperator = function(baseParameter, baseOperator, id) {
         var parameter = this.checkIfHasParameter(baseParameter);
         parameter.addOperator(baseOperator, id, this.level);
     };
-    
+
     _p.checkIfHasParameter = function(baseParameter) {
         // with editing in ranges, we can want to set a value of a
         // not yet existing parameter and/or operator
@@ -66,13 +67,13 @@ function(
             return this._addParameter(baseParameter);
         }
     };
-    
+
     _p._addParameter = function(baseParameter) {
         var parameter = new ParameterModel(baseParameter, this);
         this.parameters.push(parameter);
         return parameter;
     };
-    
+
     _p.removeParameter = function(baseParameter) {
         var elementParameter = this.getParameterByName(baseParameter.name)
           , index;
@@ -82,23 +83,23 @@ function(
             this.parameters.splice(index, 1);
         }
     };
-    
-    _p.changeParameter = function(currentParameter, newBaseParameter) {  
+
+    _p.changeParameter = function(currentParameter, newBaseParameter) {
         // get the old one, or create one it it didn't have one
         var parameter = this.checkIfHasParameter(currentParameter.base);
         // because of the current solution of removing cps, we have to set the values
-        // of the operators to a standard value. 
+        // of the operators to a standard value.
         // We could do something to store them and afterwards check the effects and apply cps
         parameter.removeCPS();
-        parameter.base = newBaseParameter;         
+        parameter.base = newBaseParameter;
     };
-       
+
     // cps functions
     _p.updateEffectiveValue = function(baseParameter, writeCPS) {
         var elementParameter = this.getParameterByName(baseParameter.name);
         elementParameter.updateEffectiveValue(writeCPS);
     };
-    
+
     _p.findParentsFactor = function(baseParameter) {
         // this function finds all the factors for this parameter in its parent or grandparents (etc)
         // this is because CPS uses factors (multiply and divide) So when we calculate the correctionVAlue
@@ -118,7 +119,7 @@ function(
         }
         return parentsFactor;
     };
-    
+
     _p.getEffectedElements = function(effectiveLevel) {
         // go down to the level where the change of this value has effect
         // and get the elements.
@@ -138,11 +139,11 @@ function(
             }
             thisLevelElements = tempArray;
             tempArray = [];
-        }  
-        return thisLevelElements; 
+        }
+        return thisLevelElements;
     };
 
-    
+
     // cloning
     _p.clone = function() {
         var clone = {};
@@ -156,7 +157,7 @@ function(
         }
         return clone;
     };
-    
+
     // after cloning, we need to reset the master property
     _p.setMaster = function(master) {
         this.master = master;

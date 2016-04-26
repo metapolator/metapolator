@@ -1,6 +1,6 @@
 define([
-    'metapolator/project/cps-generators/metapolation'
-  , 'metapolator/models/CPS/cpsTools'
+    'Atem-MOM/cpsGenerators/metapolation'
+  , 'Atem-MOM/cpsTools'
 ], function(
     cpsGenMetapolation
   , cpsTools

@@ -79,6 +79,6 @@ requirejs([
            .option('-p, --port <n>', 'The port to listen on (default: environment variable MOM_DEV_PORT (if unset, random))', parseInt)
            ;
     program.parse(process.argv);
-)};
+});
 
 }

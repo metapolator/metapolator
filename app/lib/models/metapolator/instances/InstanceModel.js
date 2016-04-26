@@ -2,7 +2,7 @@ define([
     '../_BaseModel'
   , './GlyphModel'
   , './AxisModel'
-  , 'metapolator/models/CPS/cpsTools'
+  , 'Atem-MOM/cpsTools'
 
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
 ], function(
@@ -40,7 +40,7 @@ define([
         this.addInitialAxis(axes);
         this.addInitialGlyphs();
     }
-    
+
     var _p = InstanceModel.prototype = Object.create(Parent.prototype);
 
     _p.clone = function(designSpace, project) {
@@ -88,7 +88,7 @@ define([
             return false;
         }
     };
-    
+
     _p.addInitialGlyphs = function() {
         // when we render instance glyphs, we have to know the glyphname.
         // We copy the glyphnames in baseMaster0 to the instance.
@@ -143,14 +143,14 @@ define([
         for (i=0,l=this.axes.length;i<l;i++)
             setProperty(properties, 'proportion' + i, this.axes[i].metapolationValue);
     };
-   
+
     _p.addAxis = function(master, axisValue, metapolationValue) {
         this.axes.push(
             new AxisModel(master, axisValue, metapolationValue, this)
         );
         this._setMetapolationValuesInModel();
     };
-    
+
     _p.reDestributeAxes = function() {
         // this function is called after a change of slack master
         // or when an axis is removed from the design space
@@ -208,6 +208,6 @@ define([
             }
         }
     };
-    
+
     return InstanceModel;
 });

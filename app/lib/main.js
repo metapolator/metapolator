@@ -51,7 +51,7 @@ function (
         model.addInstanceSequence("Family 1");
         model.createNewDesignSpace();
         return model;
-    };
+    }
 
     function loadMOMmastersIntoMetapolator(metapolatorModel, cpsController) {
         // load initial MOMmasters with MOMglyphs into model
@@ -68,17 +68,16 @@ function (
             // has no baseNode, the others have one.
             // This skips instance-masters as well!
             if (masterName.indexOf('master-') === 0) {
-                var cpsFile = cpsController.getCPSName(masterName)
-                    // Todo: Is this masterName the "display" name or is it used
-                    // like MOMmaster.id? If it's the latter, there shouldn't
-                    // be such redundancies.
-                  , master = sequence.addMaster(masterName, MOMmaster, cpsFile);
-                  ;
+                var cpsFile = cpsController.getCPSName(MOMmaster);
+                // Todo: Is this masterName the "display" name or is it used
+                // like MOMmaster.id? If it's the latter, there shouldn't
+                // be such redundancies.
+                sequence.addMaster(masterName, MOMmaster, cpsFile);
             }
         }
         selectionTools.injectSequences(metapolatorModel.masterSequences);
         selectionTools.updateSelection('master');
-    };
+    }
 
     function main() {
         var projectDir = 'project'
@@ -135,7 +134,7 @@ function (
                  // currently no async openSession (no big issue since we
                  // use mostly InMemoryIO)
                  .then(project.openSession.bind(project, false))
-                 .then(loadMOMmastersIntoMetapolator.bind(null, metapolatorModel, cpsController))
+                 .then(loadMOMmastersIntoMetapolator.bind(null, metapolatorModel, project.controller))
                  .then(null, errors.unhandledPromise)
                  ;
         // this should be the last thing here, because domReady will execute

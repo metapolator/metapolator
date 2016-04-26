@@ -3,7 +3,7 @@ define([
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
-  , 'require/text!metapolator/cpsLib/metapolator/ui-master.cps'
+  , 'require/text!metapolator-cpsLib/ui-master.cps'
 ], function(
     $
   , instanceTools

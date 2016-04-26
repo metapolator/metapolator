@@ -1,5 +1,5 @@
 require([
-    'app/lib/bower_components/Atem-RequireJS-Config/browserConfig'
+    'lib/bower_components/Atem-RequireJS-Config/browserConfig'
 ], function(
     configure
 ) {
@@ -10,7 +10,13 @@ require([
       , paths: {
             'metapolator': './'
         }
-    }
+      , shim: {
+            angular: {
+              deps: ['jquery'],
+              exports: 'angular'
+            }
+        }
+    };
     configure(setup, require);
     require(['metapolator/main']);
 });

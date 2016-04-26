@@ -6,8 +6,9 @@ define([
   , selection
 ) {
     "use strict";
-    function AppController($scope, model, registerFrontend) {
-        registerFrontend(this);
+    /* globals window:true */
+
+    function AppController($scope, model) {
         this.$scope = $scope;
         this.$scope.model = $scope.model = model;
 
@@ -20,7 +21,7 @@ define([
             }
             return "calc(" + (parts / -16) + " * 100%)";
         };
-        
+
         // every click outside a local menu head button
         // collapses the local menu and collapses all parameter / operator adding popup windows
         $scope.releaseLocalMenu = function (event) {
@@ -31,7 +32,7 @@ define([
                 selection.closePanel();
             }
         };
-        
+
         $scope.reAdjustPanels = function (){
             var windowWidth = $(window).outerWidth();
             for (var i = $scope.panels.length - 1; i >= 0; i--) {
@@ -55,7 +56,7 @@ define([
             }
             $scope.totalPanelParts = $scope.getTotalParts();
         };
-        
+
         $scope.getTotalParts = function() {
             var parts = 0;
             for (var i = 0, l = $scope.panels.length; i < l; i++) {
@@ -157,11 +158,11 @@ define([
             , limitMin : 260
             , limitMax : 350
         }];
-        
+
         $scope.reAdjustPanels();
     }
 
-    AppController.$inject = ['$scope', 'metapolatorModel', 'registerFrontend'];
+    AppController.$inject = ['$scope', 'metapolatorModel'];
     var _p = AppController.prototype;
 
     _p.redraw = function() {

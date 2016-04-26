@@ -4,14 +4,12 @@ define([
   , 'filesaver'
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
-  , 'metapolator/project/MetapolatorProject'
 ], function(
     $
   , JSZip
   , saveAs
   , instanceTools
   , dialog
-  , project
 ) {
     'use strict';
     function InstancePanelController($scope, $timeout, project) {
@@ -35,13 +33,13 @@ define([
             instanceTools.registerInstance(project, instance);
             $scope.model.instanceSequences[0].addInstance(instance);
         };
-        
+
         $scope.cloneInstance = function () {
             var clone = $scope.model.currentInstance.clone($scope.model.currentDesignSpace, project);
             instanceTools.registerInstance(project, clone);
             $scope.model.currentInstance.parent.addInstance(clone);
         };
-        
+
         $scope.removeInstance = function (instance) {
             var designSpace = instance.designSpace
               , n = 0;
@@ -69,7 +67,7 @@ define([
             }
 
         };
-        
+
         $scope.canAddInstance = function () {
             var designSpace = $scope.model.currentDesignSpace;
             if (designSpace && designSpace.axes.length > 0) {
@@ -78,7 +76,7 @@ define([
                 return false;
             }
         };
-        
+
         //export fonts
 
         var ExportObject = (function() {
@@ -193,7 +191,7 @@ define([
 
             return InstanceExportProgressBar;
         })(ProgressBar);
-        
+
         $scope.instancesForExport = function () {
             for (var i = $scope.model.instanceSequences.length - 1; i >= 0; i--) {
                 var sequence = $scope.model.instanceSequences[i];
@@ -203,10 +201,10 @@ define([
                         return true;
                     }
                 }
-            } 
+            }
             return false;
         };
-        
+
         function getTimestamp(){
             var year, month, day, hours, minutes, seconds
               , date = new Date()
@@ -331,7 +329,7 @@ define([
             handle : '.list-edit',
             helper : 'clone'
         };
-        
+
         // hover functions
         $scope.mouseoverInstance = function(instance) {
             // Dim slider diamonds
@@ -348,7 +346,7 @@ define([
                 });
             }
         };
-    
+
         $scope.mouseleaveInstance = function() {
             // Restore slider diamonds
             $('.design-space-diamond').css('opacity', '');
@@ -361,4 +359,4 @@ define([
     var _p = InstancePanelController.prototype;
 
     return InstancePanelController;
-}); 
+});
