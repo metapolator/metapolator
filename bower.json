@@ -32,6 +32,7 @@
     "d3": ">=3.5.5",
     "jquery": ">=2.1.4",
     "jquery.ui": ">=1.11.4",
+    "jszip": ">=3.0.0",
     "Atem-RequireJS-Config": "git@github.com:graphicore/Atem-RequireJS-Config.git",
     "Atem-MOM-Toolkit": "git@github.com:graphicore/Atem-MOM-Toolkit.git",
     "Atem-CPS-Toolkit": "git@github.com:graphicore/Atem-CPS-Toolkit",
