@@ -53,8 +53,9 @@ define([
                           ;
 
                         setCloneProperties(clone, newId);
+
                         // FIXME: clonedMOM.id might be !== clone.name
-                        clonedMOM = project.cloneMaster(master.name, clone.name);
+                        clonedMOM = project.cloneMaster(false, master.name, clone.name);
 
                         master.edit = false;
                         // a clone could have stacked parameters, if there are any
