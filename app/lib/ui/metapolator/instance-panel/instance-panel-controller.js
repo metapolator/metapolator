@@ -85,25 +85,21 @@ define([
         //export fonts
 
         var ExportObject = (function() {
-            function ExportObject(instance, fileFormat) {
-                var retval
-                  , getGenerator
-                  ;
+            function ExportObject(project, instance, fileFormat) {
+                var genIo;
                 this.fileFormat = fileFormat || 'UFO';
                 this.instance = instance;
 
                 if (this.fileFormat == 'UFO'){
-                    getGenerator = project.getUFOExportGenerator.bind(project);
+                    genIo = project.getUFOExportGenerator(false, instance.name
+                                            , this.getFileName(), 2, -1);
                 } else if (this.fileFormat == 'OTF'){
-                    getGenerator = project.getOTFExportGenerator.bind(project);
+                    genIo = project.getOTFExportGenerator(false, instance.name
+                                            , this.getFileName(), -1);
                 }
-                retval = getGenerator(
-                    instance.name
-                  , this.getFileName()
-                  , /* precision: */ -1
-                );
-                this.generator = retval[0];
-                this.io = retval[1];
+                this.generator = genIo[0];
+                this.io = genIo[1];
+                this.name = this.instance.displayName;
             }
 
             var _p = ExportObject.prototype;
@@ -166,9 +162,8 @@ define([
             var _p = InstanceExportProgressBar.prototype = Object.create(Parent.prototype);
             _p.constructor = InstanceExportProgressBar;
 
-            function exportingGlyphMessage (data, instanceIndex, totalInstances) {
+            function exportingGlyphMessage (data, instanceIndex, instanceName, totalInstances) {
                 var msg
-                  , instanceName = data.target_name
                   , currentGlyph = data.current_glyph + 1 //humans start counting from 1.
                   , totalGlyphs = data.total_glyphs
                   , glyphId = data.glyph_id
@@ -187,8 +182,8 @@ define([
                 return percentage;
             }
 
-            _p.setData = function(index, totalInstances, data) {
-                var text = exportingGlyphMessage(data, index, totalInstances)
+            _p.setData = function(index, totalInstances, instanceName, data) {
+                var text = exportingGlyphMessage(data, index, instanceName, totalInstances)
                   , width = calculateGlyphsProgress(data, index, totalInstances)
                   ;
                 this.set(width, text);
@@ -259,7 +254,7 @@ define([
 
             if (!it.done) {
                 if (progress)
-                    progress.setData(index, totalInstances, it.value);
+                    progress.setData(index, totalInstances, obj.name, it.value);
                 return null;
             }
 
@@ -275,7 +270,6 @@ define([
                 promise = obj.io.readFile(true, obj.getFileName());
                 name = obj.getFileName();
             }
-
             return promise.then(_setFileToZipFolder.bind(bundleFolder, name));
         }
 
@@ -285,7 +279,7 @@ define([
                 return true;
             // do
             var promise = job();
-            if(promise)
+            if(promise !== null)
                 return promise.then(nextRun);
             // The return value of calling $timeout is a promise ...
             // The promise will be resolved with the return value of the fn function.
@@ -312,7 +306,7 @@ define([
               , bundleFileName = bundleFolderName + '.zip'
               , bundleFolder = bundle.folder(bundleFolderName)
               , totalInstances = exportObjects.length
-              , generateZip = bundle.generateAsync.bind(bundle, {type:'blob'})
+              , generateZip = bundle.generateAsync.bind(bundle, {type:'blob'}, undefined)
               , promise = _exportFontComputeGlyphs(
                               exportObjects
                             , totalInstances
@@ -330,7 +324,7 @@ define([
 
             return promise.then(function(zip) {
                 return [bundleFileName, zip];
-            }, unhandledPromise);
+            });
         }
 
         $scope.exportFonts = function() {
@@ -350,8 +344,8 @@ define([
                     var instance = sequence.children[j];
                     if (instance.exportFont){
                         instance.measureAllGlyphs();
-                        exportObjects.push(new ExportObject(instance, 'OTF'));
-                        exportObjects.push(new ExportObject(instance, 'UFO'));
+                        exportObjects.push(new ExportObject(project, instance, 'OTF'));
+                        exportObjects.push(new ExportObject(project, instance, 'UFO'));
                     }
                 }
             }
@@ -365,7 +359,8 @@ define([
                 setDownloadBlobLink(result[0], result[1], result[0], progress);
                 $scope.exportIsRunning = false;
             }
-            generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress).then(finalizeExport);
+            generateFontBundle(exportObjects, UI_UPDATE_TIMESLICE, progress)
+                    .then(finalizeExport, unhandledPromise);
         };
 
         // angular-ui sortable
