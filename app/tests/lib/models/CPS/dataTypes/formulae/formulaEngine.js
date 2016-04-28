@@ -1,12 +1,10 @@
  define([
     'intern!object'
   , 'intern/chai!assert'
-  , 'metapolator/errors'
-  , 'metapolator/models/CPS/dataTypes/formulae/formulaEngine'
+  , 'Atem-Property-Language/flavours/MOM/parser'
 ], function (
     registerSuite
   , assert
-  , errors
   , formulaEngine
 ) {
     "use strict";
@@ -40,16 +38,16 @@
                   , '(1 + 2 * (1 + 2 * 3)) + 3'
                   , '(1 + 2 * (1 + 2 * 3)) * 3'
                 ]
-              , i=0
-              , stack
-            for(;i<tests.length;i++) {
-                stack = formulaEngine.parse(tests[i])
+              , i, stack
+              ;
+            for(i=0;i<tests.length;i++) {
+                stack = formulaEngine.parse(tests[i]);
                 assert.strictEqual(
                     stack.execute(),
                     eval(tests[i]),
                     'The results of calculating :"'+tests[i]+'" are not strict equal'
-                )
+                );
             }
         }
     });
-})
+});

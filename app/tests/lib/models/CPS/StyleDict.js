@@ -1,21 +1,25 @@
  define([
     'intern!object'
   , 'intern/chai!assert'
-  , 'metapolator/errors'
-  , 'metapolator/models/Controller'
-  , 'metapolator/models/CPS/RuleController'
-  , 'metapolator/project/parameters/registry'
-  , 'metapolator/models/CPS/parsing/parseRules'
-  , 'ufojs/tools/io/TestingIO'
+  , 'Atem-MOM/errors'
+  , 'Atem-CPS/CPS/SelectorEngine'
+  , 'Atem-MOM/cpsTools'
+  , 'Atem-CPS/CPS/RuleController'
+  , 'Atem-MOM/MOM/Multivers'
+  , 'Atem-MOM/MOM/Univers'
+  , 'Atem-MOM/Controller'
+  , 'Atem-IO/io/TestingIO'
   , 'tests/lib/models/test_data/makeMasterFixture'
 ], function (
     registerSuite
   , assert
   , errors
-  , ModelController
+  , SelectorEngine
+  , cpsTools
   , RuleController
-  , parameterRegistry
-  , cpsParser
+  , Multivers
+  , Univers
+  , MOMController
   , TestingIO
   , makeMasterFixture
 ) {
@@ -27,31 +31,38 @@
     registerSuite({
         name: 'CPS StyleDict',
         CPS_StyleDict_detect_recursion: function() {
+            function rootNodeFactory(controller) {
+                var root = new Multivers(controller);
+                root.add(new Univers());
+                return root;
+            }
             var recursive_cps = [
-                    'point{ on: on; }'
-                  , 'point>left{ on: parent:on; } point{ on: left:on; }'
-                  , '*{ on: customOn;} point{ customOn: this:on;}'
+                    'center{ on: on; }'
+                  , 'center>left{ on: parent:on; } center{ on: left:on; }'
+                  , '*{ on: customOn;} center{ customOn: this:on;}'
                 ]
               , failingSelectors = [
-                    'master#master_0 point'
-                  , 'master#master_1 point>left'
-                  , 'master#master_2 point'
+                    'master#master_0 center'
+                  , 'master#master_1 center>left'
+                  , 'master#master_2 center'
               ]
               , io = new TestingIO()
-              , ruleController = new RuleController(io, parameterRegistry, '')
-              , modelController = new ModelController(ruleController)
+              , selectorEngine = new SelectorEngine()
+              , ruleController = new RuleController(io, '', cpsTools.initializePropertyValue, selectorEngine)
+              , momController = new MOMController(ruleController, rootNodeFactory, selectorEngine)
               , i=0
-              , source
-              , master
+              , master, cpsFile
               , elementStyle
               ;
             for(;i<recursive_cps.length;i++) {
-                io.writeFile(false, '/recursive_cps_'+i, recursive_cps[i]);
+                cpsFile = 'recursive_cps_'+i+'.cps';
+                io.writeFile(false, '/'+cpsFile, recursive_cps[i]);
                 master = makeMasterFixture('master_'+ i, ['a']);
-                modelController.addMaster(master, 'recursive_cps_'+i);
+                master.attachData('cpsFile', cpsFile);
+                momController.rootNode.getChild(0).add(master);
             }
             for(i=0;i<failingSelectors.length;i++) {
-                elementStyle = modelController.query(failingSelectors[i])
+                elementStyle = momController.query(failingSelectors[i])
                                               .getComputedStyle();
                 // fails with CPSRecursionKeyError
                 assert.throws(
