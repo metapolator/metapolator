@@ -75,6 +75,8 @@ function (
                 sequence.addMaster(masterName, MOMmaster, cpsFile);
             }
         }
+
+        // This is really bad, it stores state on the module level of selectionTools.
         selectionTools.injectSequences(metapolatorModel.masterSequences);
         selectionTools.updateSelection('master');
     }

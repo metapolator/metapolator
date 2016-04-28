@@ -159,12 +159,15 @@ function(
     };
 
     // after cloning, we need to reset the master property
-    _p.setMaster = function(master) {
+    _p.setMasterAndMOM = function(master, momElement) {
         this.master = master;
+        // this is a hotfix/workaround. what we really need is a refactoring
+        this.MOMelement = momElement;
+
         if (this.children) {
             for (var i = 0, l = this.children.length; i < l; i++) {
                 var child = this.children[i];
-                child.setMaster(master);
+                child.setMasterAndMOM(master, momElement.getChild(i));
             }
         }
         // restore the links to the master and to the element in the cloned parameters
@@ -177,8 +180,16 @@ function(
         }
     };
 
+
+
     _p._cloneProperties = function(clone) {
         for (var propertyName in this) {
+            // FIXME: This copies all of the methods as well
+            // but that's probably why clone = new this.constructor();
+            // in the clone method is working after all. Because
+            // this.constructor is not set explicitly anywhere it's
+            // always just _ElementModel.
+            // A bigger refactoring will have to get rid of all of this.
             if (propertyName !== 'children' && propertyName !== 'parent' &&
                 propertyName !== '$$hashKey' && propertyName !== 'parameters') {
                 clone[propertyName] = this[propertyName];

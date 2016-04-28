@@ -52,10 +52,13 @@ define([
                           , newId = sequence.addToMasterId()
                           ;
 
-                        setCloneProperties(clone, newId);
-
                         // FIXME: clonedMOM.id might be !== clone.name
-                        clonedMOM = project.cloneMaster(false, master.name, clone.name);
+                        clonedMOM = project.cloneMaster(false, master.name,
+                                // giving it a unique name before registering
+                                // NOTE: this is not DRY but it follows the convention
+                                // of prefixing ui masters with "master-"
+                                "master-" + master.sequenceId + "-" + newId);
+                        setCloneProperties(clone, newId, clonedMOM);
 
                         master.edit = false;
                         // a clone could have stacked parameters, if there are any
@@ -75,18 +78,16 @@ define([
             }
         };
 
-        function setCloneProperties(clone, id) {
+        function setCloneProperties(clone, id, momMaster) {
+            clone.name = momMaster.id;
             clone.id = id;
-            clone.setMaster(clone);
+            clone.setMasterAndMOM(clone, momMaster);
             clone.displayName = nameCopy(clone.displayName);
-            // giving it a unique name before registering
-            // NOTE: this is not DRY but it follows the convention
-            // of prefixing ui masters with "master-"
-            clone.name = "master-" + clone.sequenceId + "-" + clone.id;
+
 
             // probably unused as of now -> it is used a lot, for the parameters!
             // however, the source of it is in project
-            clone.cpsFile = clone.name + ".cps";
+            clone.cpsFile = project.controller.getCPSName(momMaster);
         }
 
         function nameCopy (name) {
