@@ -33,12 +33,12 @@
     "jquery": ">=2.1.4",
     "jquery.ui": ">=1.11.4",
     "jszip": ">=3.0.0",
-    "Atem-RequireJS-Config": "git@github.com:graphicore/Atem-RequireJS-Config.git",
-    "Atem-MOM-Toolkit": "git@github.com:graphicore/Atem-MOM-Toolkit.git",
-    "Atem-CPS-Toolkit": "git@github.com:graphicore/Atem-CPS-Toolkit",
-    "Atem-MOM": "git@github.com:graphicore/Atem-MOM.git",
-    "metapolator-cpsLib": "git@github.com:metapolator/metapolator-cpsLib",
+    "Atem-RequireJS-Config": "https://github.com/graphicore/Atem-RequireJS-Config.git",
+    "Atem-MOM-Toolkit": "https://github.com/graphicore/Atem-MOM-Toolkit.git",
+    "Atem-CPS-Toolkit": "https://github.com/graphicore/Atem-CPS-Toolkit.git",
+    "Atem-MOM": "https://github.com/graphicore/Atem-MOM.git",
+    "metapolator-cpsLib": "https://github.com/metapolator/metapolator-cpsLib.git",
     "angular-ui-sortable": "~0.14.0",
-    "Atem-Property-Language": "graphicore/Atem-Property-Language"
+    "Atem-Property-Language": "https://github.com/graphicore/Atem-Property-Language.git"
   }
 }
