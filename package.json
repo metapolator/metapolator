@@ -22,7 +22,8 @@
     "README.md"
   ],
   "scripts": {
-    "test": "cd app/tests; ./run_tests && cd lib/export && ./test.sh"
+    "test": "cd app/tests; ./run_tests",
+    "postinstall" : "bower install"
   },
   "directories": {
     "bin": "bin",
@@ -36,8 +37,8 @@
   "devDependencies": {
     "intern": "~2.0.1",
     "less": "~1.7.5",
-    "nexpect": "~0.4.2",
-    "regenerator": ">=0.6.5"
+    "regenerator": ">=0.6.5",
+    "bower": "*"
   },
   "dependencies": {
     "commander": "git://github.com/graphicore/commander.js.git#atem-integration",
