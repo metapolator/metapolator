@@ -61,11 +61,15 @@
         </script>
         <script src="lib/bower_components/less.js/dist/less.min.js"></script>
         <script src="lib/bower_components/requirejs/require.js"></script>
-        <script src="lib/bootstrap.js"></script>
+        <script>
+        require(['lib/bootstrap.js'], function() {
+            require(['main'], function(main){main()});
+        });
+        </script>
         <!-- end of development -->
         <!-- production
         <link rel="stylesheet" type="text/css" href="main.css" />
-        <script src="metapolatorMain.js"></script>
+        <script src="main.js"></script>
         <!-- end of production -->
     </head>
     <body>

@@ -1,5 +1,5 @@
 require([
-    'lib/bower_components/Atem-RequireJS-Config/browserConfig'
+    'bower_components/Atem-RequireJS-Config/browserConfig'
 ], function(
     configure
 ) {
@@ -18,5 +18,4 @@ require([
         }
     };
     configure(setup, require);
-    require(['metapolator/main']);
 });

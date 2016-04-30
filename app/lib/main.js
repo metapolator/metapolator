@@ -1,4 +1,4 @@
-require([
+define([
     'require/domReady'
   , 'angular'
   , 'metapolator/ui/metapolator/app'
@@ -147,5 +147,5 @@ function (
                    ;
         });
     }
-    main();
+    return main;
 });
