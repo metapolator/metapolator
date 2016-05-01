@@ -75,7 +75,7 @@ program.action(function (application, outFile) {
         // if an app has different entry points, this should be configurable
         // as well! But the default should be like this!
           , rawText: {
-                init: 'require(["bootstrap"], function() {require(["main"], function(main){main();});});'
+                init: 'require(["bootstrap"], function(require) {require(["main"], function(main){main();});});'
             }
         }
         , buildConfig

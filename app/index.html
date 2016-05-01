@@ -62,7 +62,8 @@
         <script src="lib/bower_components/less.js/dist/less.min.js"></script>
         <script src="lib/bower_components/requirejs/require.js"></script>
         <script>
-        require(['lib/bootstrap.js'], function() {
+        require.config({baseUrl: 'lib'});
+        require(['bootstrap'], function(require) {
             require(['main'], function(main){main()});
         });
         </script>

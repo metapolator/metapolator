@@ -1,4 +1,4 @@
-require([
+define([
     'bower_components/Atem-RequireJS-Config/browserConfig'
 ], function(
     configure
@@ -18,4 +18,5 @@ require([
         }
     };
     configure(setup, require);
+    return require;
 });
