@@ -112,7 +112,7 @@ done
 # directory contents, where directories end with a slash "/"
 
 AUGMENTIOREST="$TARGET/project
-        $TARGET/lib/bower_components/Atem-MOM/lib
+        $TARGET/lib/bower_components/Atem-MOM/lib/cpsLib
         $TARGET/lib/bower_components/metapolator-cpsLib"
 
 for TARGETPROJECT in $AUGMENTIOREST; do
