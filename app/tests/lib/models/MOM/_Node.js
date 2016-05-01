@@ -1,8 +1,8 @@
 define([
     'intern!object'
   , 'intern/chai!assert'
-  , 'metapolator/errors'
-  , 'metapolator/models/MOM/_Node'
+  , 'Atem-CPS/errors'
+  , 'Atem-CPS/OMA/_Node'
 ], function (
     registerSuite
   , assert
@@ -14,20 +14,31 @@ define([
         _Node.call(this);
     }
     TestChildNode.prototype = Object.create(_Node.prototype);
-    TestChildNode.prototype.constructor = TestChildNode
+    TestChildNode.prototype.constructor = TestChildNode;
+    Object.defineProperty(TestChildNode.prototype, 'type', {
+        value: 'childnode'
+    });
 
     function NoChildNode() {
         _Node.call(this);
     }
     NoChildNode.prototype = Object.create(_Node.prototype);
-    NoChildNode.prototype.constructor = NoChildNode
+    NoChildNode.prototype.constructor = NoChildNode;
+    Object.defineProperty(NoChildNode.prototype, 'type', {
+        value: 'nochildnode'
+    });
 
     function TestParentNode() {
         _Node.call(this);
     }
     TestParentNode.prototype = Object.create(_Node.prototype);
-    TestParentNode.prototype._acceptedChildren = [TestChildNode];
+    TestParentNode.prototype._acceptedChildren = Object.create(null);
+    TestParentNode.prototype._acceptedChildren[TestChildNode.prototype.type] = TestChildNode;
     TestParentNode.prototype.constructor = TestParentNode;
+    Object.defineProperty(TestParentNode.prototype, 'type', {
+        value: 'parentnode'
+    });
+
 
     registerSuite({
         name: 'MOM _Node',
@@ -35,13 +46,13 @@ define([
 
             assert.throws(
                 function(){ new _Node(); },
-                errors.MOM, 'MOM _Node must not be instantiated directly');
+                errors.MOM, 'OMA _Node must not be instantiated directly');
 
             var parent = new TestParentNode();
             assert.instanceOf(parent, _Node, 'parent must be a _Node now.')
 
             // we did not override this
-            assert.equal('MOM TestParentNode', parent.MOMType);
+            assert.equal('parentnode', parent.type);
         }
       , Node_add:function() {
             var parent = new TestParentNode(),
@@ -65,9 +76,8 @@ define([
             assert.throws(
                 parent.add.bind(parent, new NoChildNode()),
                 errors.MOM,
-                '<MOM TestParentNode> doesn\'t accept <MOM NoChildNode> '
-                +'as a child object.'
-            )
+                /<.+> doesn\'t accept <.+> as a child object./
+            );
         }
       , Node_find: function() {
             var parent = new TestParentNode()
@@ -116,7 +126,6 @@ define([
       , Node_qualifiesAsChild: function() {
             var parent = new TestParentNode()
               , child
-              , Anything = function(){}
               ;
             // I'll use some internals to test the  method.
             child = new TestChildNode();
@@ -125,18 +134,27 @@ define([
             assert.throws(
                 parent.add.bind(parent, new NoChildNode()),
                 errors.MOM,
-                '<MOM TestParentNode> doesn\'t accept <MOM NoChildNode> '
-                    +'as a child object.'
+                /<.+> doesn\'t accept <.+> as a child object./
             )
 
-            function Node(){};
+            function Anything(){}
+            Object.defineProperty(Anything.prototype, 'type', {
+                value: 'Anything'
+            })
+
+            function Node(){_Node.call(this);};
             Node.prototype = Object.create(_Node.prototype);
-            Node.prototype._acceptedChildren = [
-                TestChildNode, Anything, Node
-            ];
+            Node.prototype.constructor = Node;
+            Object.defineProperty(Node.prototype, 'type', {
+                value: 'Node'
+            });
+            Node.prototype._acceptedChildren = Object.create(null);
+            Node.prototype._acceptedChildren[TestChildNode.prototype.type] = TestChildNode;
+            Node.prototype._acceptedChildren[Anything.prototype.type] = Anything;
+            Node.prototype._acceptedChildren[Node.prototype.type] = Node;
+
 
             parent = new Node();
-
             assert.isTrue(parent.qualifiesAsChild(new TestChildNode()));
             assert.isTrue(parent.qualifiesAsChild(new Node()),
                 'Accept it\'s own type');
@@ -144,6 +162,12 @@ define([
                 'Don\'t accept itself');
             assert.isFalse(parent.qualifiesAsChild(new Anything()),
                 'Don\'t accept anything that is not a _Node');
+
+            assert.throws(
+                parent.add.bind(parent, new Anything()),
+                errors.MOM,
+                /<.+> doesn\'t accept \[object .+\] as a child object./
+            )
         }
       , Node_children: function() {
             var parent = new TestParentNode()
@@ -182,7 +206,7 @@ define([
             assert.throws(
                 function(){child.parent = parent;}
               , errors.MOM
-              , 'A MOM Node must already be a child of its parent when '
+              , 'A OMA Node must already be a child of its parent when '
                     +'trying to set its parent property.');
 
             parent.add(child);
@@ -191,19 +215,19 @@ define([
             assert.throws(
                 function(){child.parent = newParent;}
               , errors.MOM
-              , '<MOM TestChildNode> is still a child of a');
+              , /<.+> is still a child of a/);
 
             child = new TestChildNode();
             assert.throws(
                 function(){child.parent = new Anything();}
               , errors.MOM
-              , 'The parent property must be a MOM Node, but it is:');
+              , 'The parent property must be an OMA Node, but it is:');
 
             assert.strictEqual(null, child.parent);
             assert.throws(
                 function(){child.parent = parent;}
               , errors.MOM
-              , 'A MOM Node must already be a child of its parent when '
+              , 'A OMA Node must already be a child of its parent when '
                     + 'trying to set its parent property.');
 
             parent.add(child);

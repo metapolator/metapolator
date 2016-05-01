@@ -1,17 +1,20 @@
 define([
     'jquery'
+  , 'angular'
   , 'metapolator/ui/metapolator/ui-tools/instanceTools'
   , 'metapolator/ui/metapolator/ui-tools/dialog'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
-  , 'require/text!metapolator/cpsLib/metapolator/ui-master.cps'
+  , 'require/text!metapolator-cpsLib/ui-master.cps'
 ], function(
     $
+  , angular
   , instanceTools
   , dialog
   , selection
   , cpsUIMasterTemplate
 ) {
     "use strict";
+    /*global document:true, FileReader:true*/
     function MasterPanelController($scope, project) {
         this.$scope = $scope;
 
@@ -34,7 +37,9 @@ define([
             if ($scope.model.areMastersSelected()) {
                 for (var i = 0, l = $scope.model.masterSequences.length; i < l; i++) {
                     var sequence = $scope.model.masterSequences[i]
-                      , clones = [];
+                      , clones = []
+                      , clonedMOM
+                      ;
                     for (var j = 0, jl = sequence.children.length; j < jl; j++) {
                         var master = sequence.children[j];
                         master.deselectAllChildren();
@@ -43,12 +48,17 @@ define([
                         if (!master.edit)
                             continue;
 
-                        var clone = master.clone()
+                        var clone = master.clone() // this not MOM, it is the metapolator model
                           , newId = sequence.addToMasterId()
                           ;
 
-                        setCloneProperties(clone, newId);
-                        project.clone(master.name, clone.name);
+                        // FIXME: clonedMOM.id might be !== clone.name
+                        clonedMOM = project.cloneMaster(false, master.name,
+                                // giving it a unique name before registering
+                                // NOTE: this is not DRY but it follows the convention
+                                // of prefixing ui masters with "master-"
+                                "master-" + master.sequenceId + "-" + newId);
+                        setCloneProperties(clone, newId, clonedMOM);
 
                         master.edit = false;
                         // a clone could have stacked parameters, if there are any
@@ -68,18 +78,16 @@ define([
             }
         };
 
-        function setCloneProperties(clone, id) {
+        function setCloneProperties(clone, id, momMaster) {
+            clone.name = momMaster.id;
             clone.id = id;
-            clone.setMaster(clone);
+            clone.setMasterAndMOM(clone, momMaster);
             clone.displayName = nameCopy(clone.displayName);
-            // giving it a unique name before registering
-            // NOTE: this is not DRY but it follows the convention
-            // of prefixing ui masters with "master-"
-            clone.name = "master-" + clone.sequenceId + "-" + clone.id;
+
 
             // probably unused as of now -> it is used a lot, for the parameters!
             // however, the source of it is in project
-            clone.cpsFile = clone.name + ".cps";
+            clone.cpsFile = project.controller.getCPSName(momMaster);
         }
 
         function nameCopy (name) {
@@ -87,42 +95,47 @@ define([
             return name + " copy";
         }
 
+         var baseMasterPrefix = 'base-'
+          , uiMasterPrefix = 'master-'
+          ;
+        function _initUiMasters(baseMasters) {
+            var i, l
+              , cpsFile
+              , baseMaster
+              , uiMasterName
+              , momMaster
+              ;
+            for (i=0, l=baseMasters.length; i<l; i++) {
+                baseMaster = baseMasters[i];
+                uiMasterName = uiMasterPrefix + (baseMaster.id.slice(baseMasterPrefix.length));
+                momMaster = project.createDerivedMaster(false, baseMaster.id, uiMasterName, cpsUIMasterTemplate);
+                project.addMasterToSession(momMaster);
+                // TODO: This could be done by listening to univers
+                // (if univers would emit this kind of events … it does now!)
+                $scope.model.masterSequences[0].addMaster(momMaster.id, momMaster, cpsFile);
+            }
+        }
+
         $scope.handleUFOimportFiles = function(element) {
             var ufozipfile = element.files[0]
               , reader = new FileReader()
               ;
+
             dialog.openDialogScreen("Importing UFO ZIP...", true);
 
-            reader.onload = function(e) {
-                var baseMasterPrefix = 'base-'
-                  , uiMasterPrefix = 'master-'
-                  , importedMasters = project.importZippedUFOMasters(e.target.result, baseMasterPrefix)
-                  , i, l
-                  , cpsFile
-                  , baseMaster
-                  , uiMasterName
-                  , uiMaster
-                  , momMaster
-                  ;
-                for (i=0, l=importedMasters.length; i<l; i++) {
-                    baseMaster = importedMasters[i];
-                    uiMasterName = uiMasterPrefix + (baseMaster.name.slice(baseMasterPrefix.length));
-                    cpsFile = uiMasterName + '.cps';
-                    momMaster = project.registerMaster(
-                            uiMasterName
-                          , cpsFile
-                          , cpsUIMasterTemplate
-                          , baseMaster.skeleton
-                          , { baseMaster: 'S"master#' + baseMaster.name + '"' }
-                    );
-                    // TODO: This could be done by listening to univers
-                    // (if univers would emit this kind of events)
-                     $scope.model.masterSequences[0].addMaster(uiMasterName, momMaster, cpsFile);
-                }
-
+            function finalize() {
                 $scope.importUfo_dialog_close();
                 dialog.closeDialogScreen();
                 $scope.$apply();
+            }
+
+            reader.onload = function(e) {
+                /*global alert:true*/
+                project.importZippedUFOMasters(true, e.target.result, baseMasterPrefix)
+                       .then(_initUiMasters)
+                       .then(finalize, function(e){alert(e); throw e;})
+                       ;
+
             };
             reader.readAsArrayBuffer(ufozipfile);
         };
@@ -305,7 +318,7 @@ define([
     }
 
     MasterPanelController.$inject = ['$scope', 'project'];
-    var _p = MasterPanelController.prototype;
+    // var _p = MasterPanelController.prototype;
 
     return MasterPanelController;
 });

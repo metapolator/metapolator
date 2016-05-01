@@ -1,7 +1,7 @@
 define([
 ], function() {
     'use strict';
-    function glyphDirective(momModelController) {
+    function glyphDirective(cpsController) {
         return {
             restrict: 'E'
           , controller: 'GlyphController'
@@ -42,8 +42,7 @@ define([
                         }
                     }
 
-
-                    momGlyph = momModelController.query('#' + scope.model.getMasterName() + ' #' + glyphName);
+                    momGlyph = cpsController.query('#' + scope.model.getMasterName() + ' #' + glyphName);
                     glyphRenderer = scope.renderGlyph(momGlyph);
                     glyphRenderer.on('viewBox-change', viewBoxChangeHandler, element[0]);
                     element.append(glyphRenderer.element);
@@ -60,6 +59,6 @@ define([
         dom.style.width = calculatedWidth + 'px';
     }
 
-    glyphDirective.$inject = ['modelController'];
+    glyphDirective.$inject = ['cpsController'];
     return glyphDirective;
 });

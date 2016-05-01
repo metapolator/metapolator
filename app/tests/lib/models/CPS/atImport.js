@@ -1,18 +1,18 @@
  define([
     'intern!object'
   , 'intern/chai!assert'
-  , 'metapolator/errors'
-  , 'metapolator/models/CPS/RuleController'
-  , 'metapolator/project/parameters/registry'
-  , 'metapolator/models/CPS/parsing/parseRules'
-  , 'ufojs/tools/io/TestingIO'
+  , 'Atem-MOM/errors'
+  , 'Atem-CPS/CPS/SelectorEngine'
+  , 'Atem-MOM/cpsTools'
+  , 'Atem-CPS/CPS/RuleController'
+  , 'Atem-IO/io/TestingIO'
 ], function (
     registerSuite
   , assert
   , errors
+  , SelectorEngine
+  , cpsTools
   , RuleController
-  , parameterRegistry
-  , cpsParser
   , TestingIO
 ) {
     "use strict";
@@ -27,7 +27,9 @@
                   , b: '@import "a";'
                 }
               , io = new TestingIO()
-              , ruleController = new RuleController(io, parameterRegistry, '')
+
+              , selectorEngine = new SelectorEngine()
+              , ruleController = new RuleController(io, '', cpsTools.initializePropertyValue, selectorEngine)
               , i
               ;
             for(i in recursive_cps) {
@@ -41,7 +43,8 @@
         }
        , CPS_atImport_detect_recursion_false_positives: function() {
             var io = new TestingIO()
-              , ruleController = new RuleController(io, parameterRegistry, '')
+              , selectorEngine = new SelectorEngine()
+              , ruleController = new RuleController(io, '', cpsTools.initializePropertyValue, selectorEngine)
               ;
             io.writeFile(false, '/a', '/* not recursive CPS */');
             // The second call fails with CPSRecursionError, but it shouldn't,

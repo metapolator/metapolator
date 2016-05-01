@@ -1,25 +1,24 @@
 #!/bin/sh
 SOURCE="$(dirname $0)/..";
-APP=$1
-PROJECT=$2
-TARGET=$3
+APP=metapolator
+PROJECT=$1
+TARGET=$2
 
 
-if test "$APP" = '--help' || test "$APP" = '-h' || test "$APP" = ''; then
-    echo "Usage: $(basename $0) APPLICATION PROJECTDIR TARGETDIR\n"
-    echo 'Build an instance of a Metapolator application as a HTML website to be served (statically) from any simple HTTP file server.\n'
+if test "$1" = '--help' || test "$1" = '-h' || test "$1" = ''; then
+    echo "Usage: $(basename $0) PROJECTDIR TARGETDIR\n"
+    echo 'Build an instance of a Metapolator build as a HTML website to be served (statically) from any simple HTTP file server.\n'
 
-    echo 'APPLICATION: the Metapolator application to be exported, choices are:'
-    echo '\t * metapolator'
-    echo '\t * red-pill'
-    echo '\t * slider-demo'
-    echo '\t * stand-alone'
-    echo '\t * --help: displays this page'
+    # echo 'APPLICATION: the Metapolator application to be exported, choices are:'
+    # echo '\t * metapolator'
+    # echo '\t * red-pill'
+    # echo '\t * slider-demo'
+    # echo '\t * stand-alone'
+    # echo '\t * --help: displays this page'
 
     echo 'PROJECTDIR: a Metapolator project directory.'
 
     echo 'TARGETDIR: the target directory of this operation.'
-
 
     exit 0;
 fi
@@ -29,24 +28,10 @@ lessfile=0
 assetsrootdir=''
 case $APP in
     metapolator)
-        mainfile=metapolatorMain
+        mainfile=main
         lessfile=$SOURCE/app/lib/ui/metapolator/app.less
         htmlfile=metapolator.html
         assetsrootdir=lib/ui/metapolator
-        ;;
-    red-pill)
-        mainfile=redPillMain
-        lessfile=$SOURCE/app/lib/ui/redPill/app.less
-        htmlfile=red-pill.html
-        assetsrootdir=lib/ui/redPill
-        ;;
-    slider-demo)
-        mainfile=sliderDemoMain
-        htmlfile=slider-demo.html
-        ;;
-    stand-alone)
-        mainfile=metapolatorStandAlone
-        htmlfile=slider-demo.html
         ;;
     *) echo "Invalid selection! Try: $(basename $0) --help"
        exit 1
@@ -55,13 +40,17 @@ esac
 
 echo "Exporting $APP"
 
-
 mkdir "$TARGET" \
     && rsync -vvap "$PROJECT/" "$TARGET/project/" \
     && mkdir -p "$TARGET/lib" \
-    && rsync -vvap "$SOURCE/app/lib/cpsLib" "$TARGET/lib" \
+    && mkdir -p "$TARGET/lib/bower_components/Atem-MOM/lib/cpsLib" \
+    && mkdir -p "$TARGET/lib/bower_components/metapolator-cpsLib" \
+    && rsync -vvap "$SOURCE/app/lib/bower_components/Atem-MOM/lib/cpsLib" "$TARGET/lib/bower_components/Atem-MOM/lib" \
+    && rsync -vvap "$SOURCE/app/lib/bower_components/metapolator-cpsLib/lib" "$TARGET/lib/bower_components/metapolator-cpsLib"\
     && cp "$SOURCE/README.md" "$TARGET" \
-    && cp "$SOURCE/LICENSE.txt" "$TARGET"
+    && cp "$SOURCE/LICENSE.txt" "$TARGET"\
+    && cp "$SOURCE/AUTHORS" "$TARGET"\
+    && cp "$SOURCE/CONTRIBUTORS" "$TARGET"
 
 if [ $? != 0 ]; then
     echo "ERROR: failed copying resources."
@@ -87,34 +76,23 @@ fi
 
 # copy files not suited for the optimizer
 
-# The optimizer won't include this, because we load it as a shim
-# when the browser has only the older (i.e. non-direct) Harmony Proxies
-MODULE_0="lib/bower_components/harmony-reflect/reflect.js"
 # The optimizer fails on Harmony generators
-MODULE_1="lib/rendering/glyphBasics.es6.js"
-MODULE_2="lib/project/UFOExportController.es6.js"
-MODULE_3="lib/project/OTFExportController.es6.js"
+MODULE_1="lib/bower_components/Atem-MOM/lib/rendering/basics.es6.js"
+MODULE_2="lib/bower_components/Atem-MOM/lib/export/UFOExporter.es6.js"
+MODULE_3="lib/bower_components/Atem-MOM/lib/export/OTFExporter.es6.js"
 # We have a feature detection in the main file, if generators
-# are not supported, this file needs to be present
-MODULE_4="lib/rendering/glyphBasics.js"
-MODULE_5="lib/project/UFOExportController.js"
-MODULE_6="lib/project/OTFExportController.js"
-MODULES="$MODULE_0 $MODULE_1 $MODULE_2 $MODULE_3 $MODULE_4 $MODULE_5 $MODULE_6"
+# are not supported, these files needs to be present
+MODULE_4="lib/bower_components/Atem-MOM/lib/rendering/basics.js"
+MODULE_5="lib/bower_components/Atem-MOM/lib/export/UFOExporter.js"
+MODULE_6="lib/bower_components/Atem-MOM/lib/export/OTFExporter.js"
+MODULES="$MODULE_1 $MODULE_2 $MODULE_3 $MODULE_4 $MODULE_5 $MODULE_6"
 for module in $MODULES; do
     mkdir -p "$(dirname $TARGET/$module)" && cp "$SOURCE/app/$module" "$TARGET/$module";
 done
 
-# build the javascript into one file
-node $SOURCE/node_modules/.bin/r.js -o \
-    optimize=none\
-    mainConfigFile="$SOURCE/app/lib/browserConfig.js" \
-    baseUrl="$SOURCE/app/lib" \
-    paths.requireLib="bower_components/requirejs/require" \
-    name="$mainfile" \
-    include=requireLib,browserConfig \
-    out="$TARGET/$mainfile"".js";
+$(dirname $0)/metapolator-build $SOURCE "$TARGET/$mainfile"".js";
 
-cp $SOURCE/app/lib/html/$htmlfile $TARGET/index.html;
+cp $SOURCE/app/index.html $TARGET/index.html;
 
 for line in $(find $TARGET -maxdepth 1 -name "*.html" -type f); do
   echo "activating production <header> of $line";
@@ -132,7 +110,13 @@ done
 # into returning a HTTP 200 status code
 # To read the dir, our file system abstraction would expect a \n separated list of
 # directory contents, where directories end with a slash "/"
-for TARGETPROJECT in "$TARGET/project $TARGET/lib"; do
+
+AUGMENTIOREST="$TARGET/project
+        $TARGET/lib/bower_components/Atem-MOM/lib/cpsLib
+        $TARGET/lib/bower_components/metapolator-cpsLib"
+
+for TARGETPROJECT in $AUGMENTIOREST; do
+    echo augmenting for RESTful Atem-IO: $TARGETPROJECT;
     for line in $(find $TARGETPROJECT -type d); do
         touch "$line/index.html";
         if [ "$line" = "$TARGETPROJECT" ]; then

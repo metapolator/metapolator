@@ -1,15 +1,13 @@
 define([
-    'metapolator/models/MOM/Master'
-  , 'metapolator/models/MOM/Glyph'
-  , 'metapolator/models/MOM/PenStroke'
-  , 'metapolator/models/MOM/PenStrokePoint'
-  , 'metapolator/models/MOM/PointData'
+    'Atem-MOM/MOM/Master'
+  , 'Atem-MOM/MOM/Glyph'
+  , 'Atem-MOM/MOM/PenStroke'
+  , 'Atem-MOM/MOM/PenStrokeCenter'
 ], function(
     Master
   , Glyph
   , PenStroke
-  , PenStrokePoint
-  , PointData
+  , PenStrokeCenter
 ){
     /**
      * Create a simple MOM Master tree as a test fixture
@@ -28,12 +26,10 @@ define([
     function _makeStroke() {
         var stroke = new PenStroke()
           , points = 6
-          , skeleton
           , i = 0
           ;
         for(;i<points;i++) {
-            skeleton = new PointData({});
-            stroke.add(new PenStrokePoint(skeleton));
+            stroke.add(new PenStrokeCenter());
         }
         return stroke;
     }

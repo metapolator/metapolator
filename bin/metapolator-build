@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+"use strict";
+
+// This packages the JavaScript metapolator into one file.
+// TODO: this could become the entry point of a more generic Atem-Application build tool
+
+
+exports.command = {
+    description: 'Build metapolator TODO: Flesh out'
+  , arguments: '[application] [outfile]'
+};
+
+if (require.main === module) {
+
+var requirejs = require('requirejs')
+  , path = require('path')
+  , program = require('commander')
+  ;
+
+program._name = path.basename(process.argv[1]).replace('-', ' ');
+program.arguments(exports.command.arguments)
+    .description(exports.command.description);
+
+program.action(function (application, outFile) {
+    var absPath = path.normalize(path.join(process.cwd(), application))
+        // A normal Atem application would have it's data stored at
+        // "app/lib" while a normal Atem library would have its data stored
+        // just at "lib"
+      , baseUrl = [absPath, 'app/lib'].join(absPath.slice(-1) === '/' ? '' : '/')
+      , configure
+      ;
+    // This is the setup for requirejs to load the browserConfig method
+    // the browser configuration is then used to configure the optimizer.
+    // It's easy to get confused here, by all the different targets for
+    // the same configuration ...
+    requirejs.config({
+        baseUrl: baseUrl
+    });
+    configure = requirejs('bower_components/Atem-RequireJS-Config/browserConfig');
+
+    // This is the setup for the optimizer.
+    // Note: it's configured with the browserConfig
+    // Some of these configurations are different per app and some
+    // are the same for all atem projects (TODO: by convention, needs documentation!)
+    var setup = {
+        // relative from the cwd.
+            baseUrl: baseUrl
+        // this is app specific
+          , paths: {
+                // per app, the namespace of this package
+                // the Atem wide namespace is defined in Atem-RequireJS-Config
+                // and overridden here. Though, if the build is not done from
+                // "within" and the app is indeed at its bower_components
+                // position, this would be wrong here.
+                'metapolator': './'
+           }
+          , shim: {
+                // Metapolator needs jQuery with angular.
+                // Atem-MOM-Developer-Tool does not yet need jQuery,
+                // so this is specific per app.
+                // There's similar configuration in Atem-RequireJS-Config
+                // but only if it's true for all of Atem.
+                angular: {//  <== per app
+                  deps: ['jquery'],
+                  exports: 'angular'
+                }
+            }
+        // The rest here should be (by convention) the same for every
+        // Atem application.
+          , bowerPrefix: 'bower_components'
+          , include: ['requireLib','main']
+          , name: 'init'// <== see rawText
+          , optimize: 'uglify'
+          , out: outFile // relative to cwd
+        // if an app has different entry points, this should be configurable
+        // as well! But the default should be like this!
+          , rawText: {
+                init: 'require(["bootstrap"], function(require) {require(["main"], function(main){main();});});'
+            }
+        }
+        , buildConfig
+      ;
+    configure(setup
+        // ducktyping to extract these bits ...
+        , {config: function(data){buildConfig = data;}});
+    console.log('buildConfig:', buildConfig);
+
+    requirejs.optimize(buildConfig, function (buildResponse) {
+        // buildResponse is just a text output of the modules
+        // included. Load the built file for the contents.
+        // Use config.out to get the optimized file contents.
+        console.log('buildResponse:\n', buildResponse);
+    }, function(err) {
+        //optimization err callback
+        console.log('Error:', err);
+        throw err;
+    });
+
+});
+program.parse(process.argv);
+}

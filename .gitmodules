@@ -1,9 +1,3 @@
-[submodule "app/lib/ufoJS"]
-	path = app/lib/ufoJS
-	url = https://github.com/graphicore/ufoJS.git
-[submodule "app/lib/obtainJS"]
-	path = app/lib/obtainJS
-	url = https://github.com/graphicore/obtainJS.git
 [submodule "examples/Canola-min"]
 	path = examples/Canola-min
 	url = https://github.com/metapolator/Canola-min.git

@@ -1,7 +1,9 @@
 define([
     'jquery'
+  , 'jquery-ui/draggable'
 ], function(
     $
+  , _$uiDraggable
 ) {
     "use strict";
     function horizontalDividerDirective() {
@@ -19,7 +21,7 @@ define([
                   , totalHeight = null;
                 getElements();
                 setValues();
-                
+
                 $(element[0]).draggable({
                     axis : "y",
                     containment : [0, containmentTop, 0, containmentBottom],
@@ -33,20 +35,20 @@ define([
                         divideHorizontal(element[0]);
                     }
                 });
-                
+
                 function getElements() {
                     parentElement = $(element).parent();
                     topElement = $(element).prev();
                     bottomElement = $(element).next();
                 }
-                
+
                 function setValues() {
                     var menuHeight = $("mtk-menubar").outerHeight();
                     containmentTop = containmentMargin + menuHeight;
                     containmentBottom = $("metapolator").outerHeight() - containmentMargin;
                     totalHeight = parentElement.outerHeight();
                 }
-                
+
                 function divideHorizontal(element) {
                     var y = $(element).position().top;
                     topElement.outerHeight("calc(" + y / totalHeight + " * 100% + 5px)");
@@ -56,7 +58,7 @@ define([
             }
         };
     }
-    
+
     horizontalDividerDirective.$inject = [];
     return horizontalDividerDirective;
 });

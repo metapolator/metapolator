@@ -1,21 +1,17 @@
 define([
-    'jquery'
-  , 'jquery-ui'
-  , 'angular'
+    'angular'
   , './master-panel-controller'
   , './master-panel-directive'
   , './master/master'
   , '../view-rubberband/view-rubberband'
-  , 'sortable'
+  , 'angular-ui-sortable'
 ], function(
-    jquery
-  , jqueryui
-  , angular
+    angular
   , Controller
   , directive
   , masterModule
   , viewRubberbandModule
-  , sortableModule
+  , _uiSortable
 ) {
     "use strict";
     return angular.module('mtk.masterPanel', ['ui.sortable', masterModule.name, viewRubberbandModule.name])

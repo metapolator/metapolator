@@ -1,7 +1,7 @@
 define([
       'metapolator/ui/metapolator/ui-tools/selectionTools'
     , 'metapolator/errors'
-    , 'metapolator/math/simpleMathEngine'
+    , 'Atem-Property-Language/flavours/simpleMathEngine'
 
 ], function(
       selection
@@ -200,7 +200,7 @@ define([
 
         function openParameterPanel(parameter, event) {
             selection.panel.level = $scope.model.parent.level;
-            selection.panel.type = 'parameter';           
+            selection.panel.type = 'parameter';
             selection.panel.left = $(event.target).offset().left + 20;
             selection.panel.top = $(event.target).offset().top + 20;
             selection.panel.parameter = parameter;
@@ -214,38 +214,38 @@ define([
             selection.panel.parameter = $scope.model;
             selection.panel.operator = operator;
         }
-        
+
         $scope.changeParameter = function(baseParameter) {
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 var element = $scope.model.parent.elements[i];
                 element.changeParameter($scope.model, baseParameter);
             }
-            $scope.model.parent.updateParameters(); 
+            $scope.model.parent.updateParameters();
         };
-    
+
         $scope.removeParameter = function() {
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 var element = $scope.model.parent.elements[i];
-                element.removeParameter(selection.panel.parameter.base);          
-            } 
+                element.removeParameter(selection.panel.parameter.base);
+            }
             $scope.model.parent.updateParameters();
-        };   
+        };
 
         $scope.changeOperator = function(baseOperator) {
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 var element = $scope.model.parent.elements[i]
                   , parameter = element.checkIfHasParameter(selection.panel.parameter.base);
                 parameter.changeOperator(selection.panel.operator, baseOperator);
-            } 
-            $scope.model.parent.updateParameters();          
+            }
+            $scope.model.parent.updateParameters();
         };
-    
+
         $scope.removeOperator = function() {
             for (var i = $scope.model.parent.elements.length - 1; i >= 0; i--) {
                 var element = $scope.model.parent.elements[i]
                   , elementParameter = element.getParameterByName(selection.panel.parameter.base.name);
-                elementParameter.removeOperator(selection.panel.operator, element);          
-            } 
+                elementParameter.removeOperator(selection.panel.operator, element);
+            }
             $scope.model.parent.updateParameters();
         };
 
