@@ -126,7 +126,7 @@ function(
         var thisLevelElements = [this]
           , tempArray = [];
 
-        while (thisLevelElements[0].level !== effectiveLevel) {
+        while (thisLevelElements.length && thisLevelElements[0].level !== effectiveLevel) {
             for (var i = 0, il = thisLevelElements.length; i < il; i++) {
                 var thisLevelElement = thisLevelElements[i];
                 for (var j = 0, jl = thisLevelElement.children.length; j < jl; j++) {

@@ -343,7 +343,7 @@ define([
                 for (var j = 0; j < sequence.children.length; j++) {
                     var instance = sequence.children[j];
                     if (instance.exportFont){
-                        instance.measureAllGlyphs();
+                        instance.measureAllGlyphs();// WTF, WHY?
                         exportObjects.push(new ExportObject(project, instance, 'OTF'));
                         exportObjects.push(new ExportObject(project, instance, 'UFO'));
                     }
