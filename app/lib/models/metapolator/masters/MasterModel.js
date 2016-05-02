@@ -28,15 +28,15 @@ define([
 
         this.setInitialParameters();
     }
-    
+
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
-    
+
     _p.addGlyph = function(name, MOMelement) {
         var glyph = new GlyphModel(name, this, MOMelement);
         this.children.push(glyph);
         return glyph;
     };
-   
+
    _p.findGlyphByName = function(glyphName) {
        for (var i = 0, l = this.children.length; i < l; i++) {
            var glyph = this.children[i];
@@ -47,17 +47,21 @@ define([
        return false;
    };
 
-    _p.remove = function() { 
+    _p.remove = function() {
         var project = this._project
-          , index;
-        project.deleteMaster(this.name);
-        // empty cps file to prevent caching issues
-        project.ruleController.write(false, this.cpsFile, '');
+          , index
+          , deleted
+          ;
+        // delete the base master as well, if it has no other dependants
+
+        deleted = project.deleteMaster(false, this.MOMelement.id, true, false);
+        if(!deleted)
+            return;
         index = this._getIndex();
         this.parent.parent.removeMasterFromDesignSpaces(this);
         this.parent.children.splice(index, 1);
     };
-    
+
     _p._getIndex = function() {
         for (var i = this.parent.children.length - 1; i >= 0; i--) {
             var master = this.parent.children[i];

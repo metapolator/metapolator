@@ -61,7 +61,16 @@ define([
     };
 
     _p.remove = function() {
-        var index = this._getIndex();
+        var index;
+        // Don't delete the baseNode.
+        if(!this._project.deleteMaster(false, this.__momMaster.id, false))
+            // NOTE: in Metapolator this should usually succeed because
+            // intsance-master don't have other dependants. An mp file
+            // edited outside of metapolator could however define such
+            // relations.
+            return;
+
+        index = this._getIndex();
         // modifies this.parent
         // parent should rather have a removeChild method
         // this violates the hierarchy.
