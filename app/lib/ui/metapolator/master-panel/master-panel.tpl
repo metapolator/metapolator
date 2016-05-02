@@ -1,31 +1,22 @@
 <mtk-local-menu class="localmenu">
+<input
+    id="ufo-file-dialog"
+    style="display: none;"
+    type='file'
+    accept='application/zip'
+    onchange='angular.element(this).scope().handleUFOimportFiles(this)' />
+
     <div class="lm-head" ng-mousedown="localMenuCtrl.toggleMenu('masters')">
         Masters
     </div>
     <div class="lm-body" ng-if="display.localMenu == 'masters'">
-        <div class="lm-button" ng-mouseup="importUfo_dialog_open()">Import ufo…</div>
+        <div class="lm-button" ng-mouseup="importUfo()">Import ufo…</div>
         <div class="lm-divider"></div>
         <div class="lm-button" ng-mouseup="duplicateMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Duplicate</div>
         <div class="lm-divider"></div>
         <div class="lm-button" ng-mouseup="removeMasters()" ng-class="{'inactive': !model.areMastersSelected()}">Delete…</div>
     </div>
 </mtk-local-menu>
-
-<div id="importufo_dialog" class="dialog" style="display:none">
-    <h2>Want to load your own UFO?</h2>
-    <p>Show us you want this by buying a T shirt:</p>
-    <br>
-    <ul>
-        <li>
-            <a title='Support the project and buy a T shirt (USA)' href='http://teespring.com/metapolator-beta-0-3-0' target='_blank' class='newtab'>USA</a>
-        </li>
-        <li>
-            <a title='Support the project and buy a T shirt (Worldwide)' href='http://metapolator.spreadshirt.com' target='_blank' class='newtab'>Worldwide</a>
-        </li>
-    </ul>
-    <br><br>
-    <input type='file' accept='application/zip' onchange='angular.element(this).scope().handleUFOimportFiles(this)' />
-</div>
 
 <div class="list-container" mtk-view-rubberband="masters">
     <ul class="ul-sequence">

@@ -124,7 +124,6 @@ define([
             dialog.openDialogScreen("Importing UFO ZIP...", true);
 
             function finalize() {
-                $scope.importUfo_dialog_close();
                 dialog.closeDialogScreen();
                 $scope.$apply();
             }
@@ -140,13 +139,9 @@ define([
             reader.readAsArrayBuffer(ufozipfile);
         };
 
-        $scope.importUfo_dialog_open = function() {
-            $("#importufo_dialog").css("display", "block");
-        };
-
-        $scope.importUfo_dialog_close = function() {
-            $("#importufo_dialog").css("display", "none");
-        };
+        $scope.importUfo = function() {
+            $("#ufo-file-dialog")[0].click();
+        }
 
         $scope.addMasterToDesignSpace = function (master) {
             var designSpace = $scope.model.currentDesignSpace
