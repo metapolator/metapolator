@@ -75,17 +75,19 @@ fi
 
 
 # copy files not suited for the optimizer
-
+ATEM_MOM="lib/bower_components/Atem-MOM/lib"
 # The optimizer fails on Harmony generators
-MODULE_1="lib/bower_components/Atem-MOM/lib/rendering/basics.es6.js"
-MODULE_2="lib/bower_components/Atem-MOM/lib/export/UFOExporter.es6.js"
-MODULE_3="lib/bower_components/Atem-MOM/lib/export/OTFExporter.es6.js"
+MODULE_1="$ATEM_MOM/rendering/basics.es6.js"
+MODULE_2="$ATEM_MOM/export/UFOExporter.es6.js"
+MODULE_3="$ATEM_MOM/export/OTFExporter.es6.js"
+MODULE_4="$ATEM_MOM/import/UFOImporter.es6.js"
 # We have a feature detection in the main file, if generators
 # are not supported, these files needs to be present
-MODULE_4="lib/bower_components/Atem-MOM/lib/rendering/basics.js"
-MODULE_5="lib/bower_components/Atem-MOM/lib/export/UFOExporter.js"
-MODULE_6="lib/bower_components/Atem-MOM/lib/export/OTFExporter.js"
-MODULES="$MODULE_1 $MODULE_2 $MODULE_3 $MODULE_4 $MODULE_5 $MODULE_6"
+MODULE_5="$ATEM_MOM/rendering/basics.js"
+MODULE_6="$ATEM_MOM/export/UFOExporter.js"
+MODULE_7="$ATEM_MOM/export/OTFExporter.js"
+MODULE_8="$ATEM_MOM/import/UFOImporter.js"
+MODULES="$MODULE_1 $MODULE_2 $MODULE_3 $MODULE_4 $MODULE_5 $MODULE_6 $MODULE_7 $MODULE_8"
 for module in $MODULES; do
     mkdir -p "$(dirname $TARGET/$module)" && cp "$SOURCE/app/$module" "$TARGET/$module";
 done
