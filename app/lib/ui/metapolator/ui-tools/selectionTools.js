@@ -28,9 +28,9 @@ define([
           , step : 0.005
           , decimals : 4
           , effectiveLevel : 'glyph'
-          , getInitial : function(MOMelement) {
+          , getInitial : function(momElement) {
                 // temp hack untill #392 is fixed
-                return MOMelement._advanceWidth;
+                return momElement._advanceWidth;
             }
         }, {
             name : 'Weight'
@@ -39,8 +39,8 @@ define([
           , step : 0.1
           , decimals : 2
           , effectiveLevel : 'point'
-          , getInitial : function(MOMelement) {
-                return MOMelement.right.getComputedStyle().get('onLength');
+          , getInitial : function(momElement) {
+                return momElement.right.getComputedStyle().get('onLength');
             }
       }]
       , baseOperators = [{

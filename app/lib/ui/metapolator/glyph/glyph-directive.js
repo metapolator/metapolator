@@ -42,7 +42,7 @@ define([
                         }
                     }
 
-                    glyphRenderer = scope.renderGlyph(scope.model.MOMelement);
+                    glyphRenderer = scope.renderGlyph(scope.model.momElement);
                     glyphRenderer.on('viewBox-change', viewBoxChangeHandler, element[0]);
                     element.append(glyphRenderer.element);
                     element.bind('$destroy', function(event) {

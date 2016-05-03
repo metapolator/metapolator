@@ -31,7 +31,7 @@ function(
 
     // This may be a useful name to grep when moving more to element.properties
     _p.writeValueInCPSfile = function(factor, parameter) {
-        setProperty(this.MOMelement.properties, parameter.base.cpsKey, factor);
+        setProperty(this.momElement.properties, parameter.base.cpsKey, factor);
     };
 
     _p.deselectAllChildren = function() {
@@ -162,7 +162,7 @@ function(
     _p.setMasterAndMOM = function(master, momElement) {
         this.master = master;
         // this is a hotfix/workaround. what we really need is a refactoring
-        this.MOMelement = momElement;
+        this.momElement = momElement;
 
         if (this.children) {
             for (var i = 0, l = this.children.length; i < l; i++) {

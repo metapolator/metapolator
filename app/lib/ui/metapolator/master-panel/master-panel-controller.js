@@ -159,9 +159,11 @@ define([
                 var newInstance = $scope.model.instanceSequences[0].createNewInstance(instanceAxes, designSpace, project);
                 instanceTools.registerInstance(project, newInstance);
                 $scope.model.instanceSequences[0].addInstance(newInstance);
+
+
             }  else {
-                var result = designSpace.axes[0].MOMelement
-                    .isInterpolationCompatible(master.MOMelement, true);
+                var result = designSpace.axes[0].momElement
+                    .isInterpolationCompatible(master.momElement, true);
                 if(!result[0]) {
                     console.log('Not compatible:', result[1]);
                     return;

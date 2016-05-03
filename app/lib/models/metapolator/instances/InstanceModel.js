@@ -57,13 +57,23 @@ define([
                 };
             axes.push(clonedAxis);
         }
+        // bad hierarchy
         return this.parent.createNewInstance(axes, designSpace, project);
+    };
+
+    _p.setMOMElement = function(momElement) {
+        var i,l;
+        this.momElement = momElement;
+        // This is a dirty workaround until we can rewrite this
+        for(i=0,l=this.children.length;i<l;i++)
+            // assume this is in sync ...
+            this.children[i].momElement = momElement.getChild(i);
     };
 
     _p.remove = function() {
         var index;
         // Don't delete the baseNode.
-        if(!this._project.deleteMaster(false, this.__momMaster.id, false))
+        if(!this._project.deleteMaster(false, this.momElement.id, false))
             // NOTE: in Metapolator this should usually succeed because
             // intsance-master don't have other dependants. An mp file
             // edited outside of metapolator could however define such
@@ -146,7 +156,7 @@ define([
     };
 
     _p._setMetapolationValuesInCPS  = function() {
-        var properties = this.__momMaster.properties
+        var properties = this.momElement.properties
           , i, l
           ;
         for (i=0,l=this.axes.length;i<l;i++)

@@ -22,16 +22,16 @@ define([
         }
         this.stacked = false;
     }
-    
-        
+
+
     var _p = ParameterModel.prototype = Object.create(Parent.prototype);
-    
-    _p.setInitial = function(MOMelement) {
-        var measuredValue = this.getInitial(MOMelement);
+
+    _p.setInitial = function(momElement) {
+        var measuredValue = this.getInitial(momElement);
         this.initial = measuredValue;
         this.effectiveValue = measuredValue;
     };
-    
+
     _p.changedOperator = function(operator) {
         var element = this.element
           , effectedElements = element.getEffectedElements(this.base.effectiveLevel)
@@ -63,8 +63,8 @@ define([
             }
         }
     };
-    
-    // operator functions   
+
+    // operator functions
     _p.checkIfHasOperator = function(changedOperator, level) {
         var id = changedOperator.id
           , operator = this.findOperator(changedOperator.base, changedOperator.id);
@@ -84,7 +84,7 @@ define([
         }
         return false;
     };
-    
+
     _p.addOperator = function(baseOperator, id, level) {
         var operator = new OperatorModel(baseOperator, id, this);
         this.operators.push(operator);
@@ -116,25 +116,25 @@ define([
         */
        return operator;
     };
-    
-    _p.changeOperator = function(currentOperator, newBaseOperator) {     
+
+    _p.changeOperator = function(currentOperator, newBaseOperator) {
         var operator = this.checkIfHasOperator(currentOperator, this.element.level);
         this._cleanUpOperatorEffects(operator);
         // asign new base and the standard value belonging to that base
         operator.base = newBaseOperator;
         operator.setValue(newBaseOperator.standardValue);
     };
-    
+
     _p.removeOperator = function(currentOperator, element) {
         var operator = this.findOperator(currentOperator.base, currentOperator.id)
           , index;
         if (operator){
             this._cleanUpOperatorEffects(operator);
             index = this.operators.indexOf(operator);
-            this.operators.splice(index, 1);  
-        }  
+            this.operators.splice(index, 1);
+        }
     };
-    
+
     _p.findOperator = function(operator, id) {
         for (var i = this.operators.length - 1; i >= 0; i--) {
             var thisOperator = this.operators[i];
@@ -183,22 +183,22 @@ define([
             this.stacked = false;
         }
     };
-    
-    // cps functions   
+
+    // cps functions
     _p._cleanUpOperatorEffects = function(operator) {
         // set the value temp to standard, so all the cps will be cleaned up
         operator.setValue(operator.base.standardValue);
         this.changedOperator(operator);
     };
-    
+
     _p.removeCPS = function() {
         // todo: currently this is quite a rough method to reset the cps. We should just remove rules instead.
         for (var i = 0, l = this.operators.length; i < l; i++) {
             var operator = this.operators[i];
             this._cleanUpOperatorEffects(operator);
-        }       
+        }
     };
-       
+
     _p.getCPSFactor = function() {
         var factor = 1;
         var hasLocalOperator = false;
@@ -219,7 +219,7 @@ define([
             return false;
         }
     };
-      
+
     _p.updateEffectiveValue = function(writeCPS) {
         var element = this.element
           , parameterName = this.base.name
@@ -237,7 +237,7 @@ define([
             if (levelCounter === 0) {
                 // this says we are at the effective level, so the initial values should be found here
                 if (!this.initial) {
-                    this.setInitial(element.MOMelement);
+                    this.setInitial(element.momElement);
                 }
                 initial = this.initial;
 
@@ -316,7 +316,7 @@ define([
         correctionValue = this.effectiveValue / parentsFactor / this.initial;
         this.element.writeValueInCPSfile(correctionValue, this);
     };
-    
+
     // cloning
     _p.clone = function(master) {
         var clone = {};

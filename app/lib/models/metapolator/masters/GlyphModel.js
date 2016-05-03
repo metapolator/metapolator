@@ -8,7 +8,7 @@ define([
   , selection
 ){
     'use strict';
-    function GlyphModel(name, parent, MOMelement) {
+    function GlyphModel(name, parent, momElement) {
         this.level = 'glyph';
         this.type = 'master';
         this.name = name;
@@ -21,19 +21,19 @@ define([
         // cps properties
         this.parameters = [];
         this.measured = false; // only the initial parameter values are measured for glyphs when they appear in the view
-        this.MOMelement = MOMelement;
+        this.momElement = momElement;
 
         this.setInitialParameters();
     }
-    
+
     var _p = GlyphModel.prototype = Object.create(Parent.prototype);
 
     _p.getMasterName = function() {
         return this.parent.name;
     };
-    
-    _p.addPenstroke = function(name, MOMelement) {
-        var penstroke = new PenstrokeModel(name, this, MOMelement);
+
+    _p.addPenstroke = function(name, momElement) {
+        var penstroke = new PenstrokeModel(name, this, momElement);
         this.children.push(penstroke);
         return penstroke;
     };
@@ -82,8 +82,8 @@ define([
                 for (var j = 0, jl = effectedElements.length; j < jl; j++) {
                     var effectedElement = effectedElements[j]
                       , elementParameter = effectedElement.getParameterByName(baseParameter.name)
-                      , MOMelement = effectedElement.MOMelement;
-                    elementParameter.setInitial(MOMelement);
+                      , momElement = effectedElement.momElement;
+                    elementParameter.setInitial(momElement);
                 }
             }
 
@@ -109,6 +109,6 @@ define([
         }
         this.displayed = true;
     };
-    
+
     return GlyphModel;
 });

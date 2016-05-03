@@ -20,10 +20,10 @@ define([
 
     var _p = SequenceModel.prototype = Object.create(Parent.prototype);
 
-    _p.addMaster = function(name, MOMelement, cpsFile) {
-        var master = new MasterModel(name, this, MOMelement, cpsFile, this.id, this.masterId++, this._project);
+    _p.addMaster = function(name, momElement, cpsFile) {
+        var master = new MasterModel(name, this, momElement, cpsFile, this.id, this.masterId++, this._project);
         this.children.push(master);
-        this.addGlyphsToMaster(master, MOMelement.children);
+        this.addGlyphsToMaster(master, momElement.children);
         return master;
     };
 

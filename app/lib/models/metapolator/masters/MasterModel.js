@@ -6,7 +6,7 @@ define([
   , GlyphModel
 ){
     "use strict";
-    function MasterModel(name, parent, MOMelement, cpsFile, sequenceId, masterId, project) {
+    function MasterModel(name, parent, momElement, cpsFile, sequenceId, masterId, project) {
         this._project = project;
         this.level = "master";
         this.id = masterId;
@@ -24,15 +24,15 @@ define([
         this.parameters = [];
         this.master = this;
         this.cpsFile = cpsFile;
-        this.MOMelement = MOMelement;
+        this.momElement = momElement;
 
         this.setInitialParameters();
     }
 
     var _p = MasterModel.prototype = Object.create(Parent.prototype);
 
-    _p.addGlyph = function(name, MOMelement) {
-        var glyph = new GlyphModel(name, this, MOMelement);
+    _p.addGlyph = function(name, momElement) {
+        var glyph = new GlyphModel(name, this, momElement);
         this.children.push(glyph);
         return glyph;
     };
@@ -54,7 +54,7 @@ define([
           ;
         // delete the base master as well, if it has no other dependants
 
-        deleted = project.deleteMaster(false, this.MOMelement.id, true, false);
+        deleted = project.deleteMaster(false, this.momElement.id, true, false);
         if(!deleted)
             return;
         index = this._getIndex();
