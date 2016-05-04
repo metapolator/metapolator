@@ -1,11 +1,4 @@
 <mtk-local-menu class="localmenu">
-<input
-    id="ufo-file-dialog"
-    style="display: none;"
-    type='file'
-    accept='application/zip'
-    onchange='angular.element(this).scope().handleUFOimportFiles(this)' />
-
     <div class="lm-head" ng-mousedown="localMenuCtrl.toggleMenu('masters')">
         Masters
     </div>
@@ -32,6 +25,13 @@
                 </li>
             </ul>
         </li>
+        <li class="masters-import"
+            ng-repeat="process in importProcesses">
+            <mtk-masters-import
+                mtk-import-process="process"
+                ></mtk-masters-import>
+        </li>
+
     </ul>
     <div class="list-buttons">
         <div title="Import UFO" ng-click="importUfo();" class="list-button">

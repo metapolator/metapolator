@@ -1,0 +1,74 @@
+
+mtk-masters-import {
+    display: block;
+    border-top: 2px dotted @mtk-color-2;
+    > ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        > li {
+            position: relative;
+            border-bottom: 2px solid @mtk-color-1;
+            padding: 5px;
+            margin: 0;
+            height: 34px;
+            text-align: right;
+            box-sizing: content-box;
+            > * {
+                line-height: 36px;
+                vertical-align: middle;
+            }
+            button {
+                font-size: 1em;
+                background: white;
+                border-radius: 0;
+                border: 2px solid @mtk-color-1;
+                box-sizing: border-box;
+                line-height: 30px;
+                font-weight: bold;
+            }
+            button:hover{
+                background: @mtk-color-1;
+            }
+
+            .name {
+                max-width: calc(100% - 50px);
+                white-space: nowrap;
+                display: inline-block;
+                text-overflow: ellipsis;
+                /*
+                It's probably better to show the end of the filename
+                as usually font file names would be more specific at
+                the end. E.g. "MyFont-Regular.ufo" "MyFont-Bold.ufo"
+
+                Firefox would handle this correctly with the direction
+                property set to rtl, but chrome is bad with this.
+                direction: rtl;
+                */
+                overflow: hidden;
+                position: absolute;
+                left:5px;
+                top:5px;
+                text-align: left;
+            }
+            .progress-bar {
+                display: block;
+                position: absolute;
+                bottom: 0px;
+                height: 3px;
+                left: 0;
+                max-width: 100%;
+                background: @mtk-progress-bar-color;
+            }
+            .progress-waiting {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                background: url('assets/img/loading.gif');
+                background-size: cover;
+                background-repeat:   no-repeat;
+                background-position: center center;
+            }
+        }
+    }
+}

@@ -5,6 +5,7 @@ define([
   , 'metapolator/ui/metapolator/ui-tools/dialog'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
   , 'require/text!metapolator-cpsLib/ui-master.cps'
+  , './import/ImportProcess'
 ], function(
     $
   , angular
@@ -12,10 +13,11 @@ define([
   , dialog
   , selection
   , cpsUIMasterTemplate
+  , ImportProcess
 ) {
     "use strict";
     /*global document:true, FileReader:true*/
-    function MasterPanelController($scope, project) {
+    function MasterPanelController($scope, $element, project) {
         this.$scope = $scope;
 
         $scope.removeMasters = function() {
@@ -95,53 +97,74 @@ define([
             return name + " copy";
         }
 
-         var baseMasterPrefix = 'base-'
+        // apparently these two prefixed deserve a better place, because
+        // they are so important.
+        // They are considered the Metapolator convention for master naming.
+        // Also 'instance-' for instance masters is missing in this list.
+        // This is currently located in instanceModel.
+        var baseMasterPrefix = 'base-'
           , uiMasterPrefix = 'master-'
           ;
-        function _initUiMasters(baseMasters) {
-            var i, l
-              , cpsFile
-              , baseMaster
-              , uiMasterName
-              , momMaster
+        // As the onMasterReady callback of ImportProcess
+        function initUiMaster(baseMaster) {
+            var uiMasterName = uiMasterPrefix + (baseMaster.id.slice(baseMasterPrefix.length))
+              , momMaster = project.createDerivedMaster(false, baseMaster.id, uiMasterName, cpsUIMasterTemplate)
+              // deprecated: we don't use this anymore
+              , cpsFile = null
               ;
-            for (i=0, l=baseMasters.length; i<l; i++) {
-                baseMaster = baseMasters[i];
-                uiMasterName = uiMasterPrefix + (baseMaster.id.slice(baseMasterPrefix.length));
-                momMaster = project.createDerivedMaster(false, baseMaster.id, uiMasterName, cpsUIMasterTemplate);
-                project.addMasterToSession(momMaster);
-                // TODO: This could be done by listening to univers
-                // (if univers would emit this kind of events … it does now!)
-                $scope.model.masterSequences[0].addMaster(momMaster.id, momMaster, cpsFile);
-            }
+            project.addMasterToSession(momMaster);
+            // TODO: This could be done by listening to univers
+            // (if univers would emit this kind of events … it does now!)
+            $scope.model.masterSequences[0].addMaster(momMaster.id, momMaster, cpsFile);
+        }
+
+        $scope.importProcesses = [];
+        function finishImportProcess(process) {
+            var i = $scope.importProcesses.indexOf(process);
+            if(i===-1)
+                // Would be an error if this happened!
+                return;
+            // remove!
+            $scope.importProcesses.splice(i, 1);
+            // display status/error reporting somewhere
+            $scope.$apply();
         }
 
         $scope.handleUFOimportFiles = function(element) {
             var ufozipfile = element.files[0]
-              , reader = new FileReader()
+              , reader
               ;
-
-            dialog.openDialogScreen("Importing UFO ZIP...", true);
-
-            function finalize() {
-                dialog.closeDialogScreen();
-                $scope.$apply();
-            }
-
+            if(!ufozipfile)
+                return;
+            reader = new FileReader();
             reader.onload = function(e) {
+                var process = new ImportProcess(project, e.target.result, baseMasterPrefix, initUiMaster);
+                $scope.importProcesses.push(process);
                 /*global alert:true*/
-                project.importZippedUFOMasters(true, e.target.result, baseMasterPrefix)
-                       .then(_initUiMasters)
-                       .then(finalize, function(e){alert(e); throw e;})
-                       ;
-
+                // some callback to remove it when it's done ...
+                process.after(finishImportProcess)
+                        // I doubt though that there will be an ultimate rejection
+                        // for process, so the error handler will never be called.
+                        // via process, but finishImportProcess could still fail ...
+                       .then(null, function(e){alert(e); throw e;});
+                $scope.$apply();
             };
             reader.readAsArrayBuffer(ufozipfile);
         };
 
         $scope.importUfo = function() {
-            $("#ufo-file-dialog")[0].click();
-        }
+            var doc = $element[0].ownerDocument
+             , input = doc.createElement('input')
+             ;
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'application/zip');
+            input.addEventListener('change'
+                , $scope.handleUFOimportFiles.bind($scope, input), false);
+            // Seems like we don't even have to append this to the DOM!
+            // Which is good, so we don't have to remove it either.
+            // This is a really nice feature.
+            input.click();
+        };
 
         $scope.addMasterToDesignSpace = function (master) {
             var designSpace = $scope.model.currentDesignSpace
@@ -156,6 +179,7 @@ define([
                   , axisValue: axisValue
                   , metapolationValue : 1
                 }];
+                // ->> exactly the same 3 lines as in instance-panel-controller
                 var newInstance = $scope.model.instanceSequences[0].createNewInstance(instanceAxes, designSpace, project);
                 instanceTools.registerInstance(project, newInstance);
                 $scope.model.instanceSequences[0].addInstance(newInstance);
@@ -314,7 +338,7 @@ define([
         };
     }
 
-    MasterPanelController.$inject = ['$scope', 'project'];
+    MasterPanelController.$inject = ['$scope', '$element', 'project'];
     // var _p = MasterPanelController.prototype;
 
     return MasterPanelController;
