@@ -30,7 +30,7 @@ define([
           , effectiveLevel : 'glyph'
           , getInitial : function(momElement) {
                 // temp hack untill #392 is fixed
-                return momElement._advanceWidth;
+                return momElement.getComputedStyle().get('width');
             }
         }, {
             name : 'Weight'

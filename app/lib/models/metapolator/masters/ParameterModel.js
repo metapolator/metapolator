@@ -26,6 +26,17 @@ define([
 
     var _p = ParameterModel.prototype = Object.create(Parent.prototype);
 
+    Object.defineProperty(_p, 'effectiveValue', {
+            set: function(val) {
+                if(val !== val)
+                    throw new Error('Got a NaN');
+                this._effectiveValue = val;
+            }
+          , get: function(){
+                return this._effectiveValue;
+            }
+    });
+
     _p.setInitial = function(momElement) {
         var measuredValue = this.getInitial(momElement);
         this.initial = measuredValue;

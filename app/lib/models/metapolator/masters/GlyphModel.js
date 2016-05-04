@@ -41,6 +41,7 @@ define([
     // handling measuring and cps writing only for displayed glyphs
 
     _p.checkIfIsDisplayed = function() {
+        // FIXME: understand these measurement things
         if (!this.displayed) {
             // if a glyph is never displayed before it can have been measured
             // (because measure info is shared among cloned masters)
