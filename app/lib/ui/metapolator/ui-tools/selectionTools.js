@@ -40,6 +40,11 @@ define([
           , decimals : 2
           , effectiveLevel : 'point'
           , getInitial : function(momElement) {
+                if(!momElement.right)
+                    // FIXME: this is a hotfix when mom element is not
+                    // a <center> but a <p>. The calling code does not
+                    // consider this.
+                    return 0;
                 return momElement.right.getComputedStyle().get('onLength');
             }
       }]
