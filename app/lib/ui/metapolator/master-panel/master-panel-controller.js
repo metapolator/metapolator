@@ -127,6 +127,13 @@ define([
             // remove!
             $scope.importProcesses.splice(i, 1);
             // display status/error reporting somewhere
+
+
+            var win = window.open();
+            if(win) {
+                win.document.title = 'UFO import report | Metapolator';
+                win.document.body.innerHTML = '<p>' + process._logData.join('</p><p>') + '</p>';
+            }
             $scope.$apply();
         }
 

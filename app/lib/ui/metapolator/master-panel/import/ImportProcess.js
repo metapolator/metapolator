@@ -1,7 +1,13 @@
 define([
 //    'metapolator/errors'
+    'Atem-Logging/Logger'
+  , 'Atem-Logging/Level'
+  , 'Atem-Logging/CallbackHandler'
 ], function(
 //    errors
+    Logger
+  , Level
+  , CallbackHandler
 ) {
     "use strict";
 
@@ -23,7 +29,21 @@ define([
         this._current = null;
         this._items = [];
 
-        // also a promise
+        // The afterlife of this ImportProcess instance will be used
+        // for reporting.
+        this._log = new Logger().setLevel(Level.DEBUG);
+        this._logData = [];
+        // Add CallbackHandler to log to add new entries to the log file
+        var fh = new CallbackHandler(function(message) {
+            this._logData.push(message);
+        }.bind(this));
+        fh.setLevel(Level.DEBUG);
+        // this is how to set a formatter that is not the default one.
+        //fh.setFormatter(new YAMLFormatter());
+        this._log.addHandler(fh);
+
+        // also a promise!
+        // here insert log
         this.initialized = project.unpackImportBlob(blob, baseMasterPrefix)
             .then(function (data) {
                 // -> we have io, and the ufo to names map, that's enough to init
@@ -105,25 +125,20 @@ define([
         file = item[0];
         name = item[1];
         glyphs = undefined;
-        importer = this._project.ufoImporterFactory(false, file, this._io);
-        this._current = {
-            file: item[0]
-            , name: item[1]
-            , importer: importer
-            , gen: importer.importGenerator(false, glyphs)
-        };
+        importer = this._project.ufoImporterFactory(false, file, this._io, this._log);
+        if(importer)
+            this._current = {
+                file: item[0]
+                , name: item[1]
+                , importer: importer
+                , gen: importer.importGenerator(false, glyphs)
+            };
         // and run a first iteration on it (recursive call)
         return this.next();
     };
 
     _p._initFailed = function(error) {
-        // TODO: better reporting!
-        // The afterlife of this ImportProcess instance will be used
-        // for reporting.
-        // So this could be stored in some status report structure, or
-        // wherever it can be useful.
-        /* global console:true */
-        console.warn('ImportProcess init failed with ' + error, error);
+        this._log.warning('ImportProcess init failed with ' + error, error);
         // shutdown
         this.end();
     };
