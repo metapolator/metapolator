@@ -2,16 +2,15 @@ define([
 //    'metapolator/errors'
     'Atem-Logging/Logger'
   , 'Atem-Logging/Level'
-  , 'Atem-Logging/CallbackHandler'
+
 ], function(
 //    errors
     Logger
   , Level
-  , CallbackHandler
 ) {
     "use strict";
 
-    function ImportProcess (project, blob, baseMasterPrefix, onMasterReady) {
+    function ImportProcess (project, blob, baseMasterPrefix, onMasterReady, logHandler) {
         this._project = project;
         this._baseMasterPrefix = baseMasterPrefix;
         this._resolve = null;
@@ -29,18 +28,9 @@ define([
         this._current = null;
         this._items = [];
 
-        // The afterlife of this ImportProcess instance will be used
-        // for reporting.
+        // The logHandler can and should be used to create reporting/feedback.
         this._log = new Logger().setLevel(Level.DEBUG);
-        this._logData = [];
-        // Add CallbackHandler to log to add new entries to the log file
-        var fh = new CallbackHandler(function(message) {
-            this._logData.push(message);
-        }.bind(this));
-        fh.setLevel(Level.DEBUG);
-        // this is how to set a formatter that is not the default one.
-        //fh.setFormatter(new YAMLFormatter());
-        this._log.addHandler(fh);
+        this._log.addHandler(logHandler);
 
         // also a promise!
         // here insert log
@@ -125,6 +115,7 @@ define([
         file = item[0];
         name = item[1];
         glyphs = undefined;
+        this._log.info('# File: ' + file);
         importer = this._project.ufoImporterFactory(false, file, this._io, this._log);
         if(importer)
             this._current = {

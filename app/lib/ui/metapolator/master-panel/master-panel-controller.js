@@ -6,6 +6,11 @@ define([
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
   , 'require/text!metapolator-cpsLib/ui-master.cps'
   , './import/ImportProcess'
+  , 'Atem-Logging/Level'
+  , 'Atem-Logging/CallbackHandler'
+  , 'Atem-Logging/Formatter'
+  , 'Atem-Logging/LogRecord'
+  , 'marked'
 ], function(
     $
   , angular
@@ -14,9 +19,14 @@ define([
   , selection
   , cpsUIMasterTemplate
   , ImportProcess
+  , Level
+  , CallbackHandler
+  , Formatter
+  , LogRecord
+  , marked
 ) {
     "use strict";
-    /*global document:true, FileReader:true*/
+    /*global window:true, document:true, FileReader:true*/
     function MasterPanelController($scope, $element, project) {
         this.$scope = $scope;
 
@@ -119,6 +129,8 @@ define([
         }
 
         $scope.importProcesses = [];
+        var importProcessData = new Map();
+
         function finishImportProcess(process) {
             var i = $scope.importProcesses.indexOf(process);
             if(i===-1)
@@ -129,23 +141,151 @@ define([
             // display status/error reporting somewhere
 
 
-            var win = window.open();
+            var win = window.open(), importReport;
             if(win) {
-                win.document.title = 'UFO import report | Metapolator';
-                win.document.body.innerHTML = '<p>' + process._logData.join('</p><p>') + '</p>';
+
+                // how to pop-under?
+                win.blur();
+                window.focus();
+
+                importReport = importProcessData.get(process);
+                importProcessData.delete(process);
+                importReport.makeReport(win.document);
+
             }
             $scope.$apply();
         }
 
+        var ObjectFormatter = (function(){
+            function ObjectFormatter() {
+                // Cargo-cult pattern from util-logging
+                (this.super_ = Formatter.super_).call(this);
+            }
+
+            var _p = ObjectFormatter.prototype = Object.create(Formatter.prototype);
+
+            /**
+             * returns null or:
+             * {
+             *      message: type string
+             *    , level: type string
+             *    , parameters: type array (may be empty)
+             * }
+             *
+             * Copied rom YAMLFormatter and then trimmed.
+             */
+            _p.formatMessage = function(logRecord) {
+                var record = {}, type, thrown;
+                if (!logRecord || !(logRecord instanceof LogRecord))
+                    return null;
+
+
+                thrown = logRecord.getThrown();
+                if(thrown)
+                    record.message = thrown.name + ' ' + thrown.message;
+                else
+                    record.message = logRecord.getMessage() || "(no message)";
+
+                var level = logRecord.getLevel();
+                if (level)
+                    record.level = level.getName();
+
+                var parameters = logRecord.getParameters();
+                if (parameters && parameters instanceof Array)
+                    record.parameters = parameters;
+                else
+                    record.parameters = [];
+
+                type = record.level === 'INFO'
+                                ? '' : '**'+record.level+'**' + '\n';
+
+                if(record.message[0] === '#')
+                    return record.message + (type && ' ') + type
+                        + (record.parameters.length && ' ' + record.parameters.join() || '');
+
+                return ' * ' + type + (type && ' ') + record.message
+                        + (record.parameters.length && ' ' + record.parameters.join() || '');
+            };
+
+            return ObjectFormatter;
+        })();
+
+        var ImportReport = (function (ObjectFormatter) {
+            function ImportReport() {
+                this._logData = [];
+                this.logHandler = new CallbackHandler(this._log.bind(this));
+
+                this.logHandler.setLevel(Level.INFO);
+                // this is how to set a formatter that is not the default one.
+                this.logHandler.setFormatter(new ObjectFormatter());
+            }
+            var _p = ImportReport.prototype;
+
+            _p._log = function(message) {
+                this._logData.push(message);
+            };
+
+            _p._makeReportHeader = function(document) {
+                var header = document.createElement('header');
+                header.innerHTML = marked('# Metapolator UFO Import Report\n\n'
+                        + 'Date: ' + new Date() + '\n\n'
+                        // + 'Log entries: ' + this._logData.length
+                );
+                return header;
+            };
+
+            _p._makeReportBody = function() {
+                var article = document.createElement('article')
+                  , lines = [], i, l
+                  ;
+
+                function removeEmptyGlyphs(lines) {
+                    var glyphStart = '### glyph';
+                    while(lines.length && lines[lines.length-1].slice(0, glyphStart.length) === glyphStart)
+                        // if there are other glyph start line before, without
+                        // further log entries, remove them, because they
+                        // just "bloat" the report
+                        lines.pop();
+                }
+
+                for(i=0,l=this._logData.length;i<l;i++) {
+                    if(this._logData[i][0] === '#')
+                        // this is a "headline" of some kind, so some new "blog"
+                        // cleaning up empty glyphs
+                        removeEmptyGlyphs(lines);
+                    lines.push(this._logData[i]);
+                }
+                removeEmptyGlyphs(lines);
+                article.innerHTML = marked(lines.join('\n'));
+                return article;
+            };
+
+            _p.makeReport = function (document) {
+                var header = this._makeReportHeader(document)
+                  , body = this._makeReportBody(document)
+                  ;
+                document.title = 'UFO import report | Metapolator';
+                document.body.appendChild(header);
+                document.body.appendChild(body);
+            };
+            return ImportReport;
+        })(ObjectFormatter);
+
         $scope.handleUFOimportFiles = function(element) {
             var ufozipfile = element.files[0]
               , reader
+              , importReport
               ;
             if(!ufozipfile)
                 return;
             reader = new FileReader();
             reader.onload = function(e) {
-                var process = new ImportProcess(project, e.target.result, baseMasterPrefix, initUiMaster);
+
+                importReport = new ImportReport();
+                var process = new ImportProcess(project, e.target.result
+                    , baseMasterPrefix, initUiMaster, importReport.logHandler);
+                importProcessData.set(process, importReport);
+
                 $scope.importProcesses.push(process);
                 /*global alert:true*/
                 // some callback to remove it when it's done ...
