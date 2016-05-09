@@ -334,9 +334,19 @@ define([
 
             }  else {
                 var result = designSpace.axes[0].momElement
-                    .isInterpolationCompatible(master.momElement, true);
+                    .isInterpolationCompatible(master.momElement, true)
+                  , message
+                  ;
                 if(!result[0]) {
-                    console.log('Not compatible:', result[1]);
+                    message = marked(
+                        '## The masters are not compatible for metapolation:\n\n'
+                        + result[1].map(function(line) {
+                                return '* '
+                                        + (line.replace('<', '`<')
+                                               .replace('>', '>`'));
+                         }).join('\n')
+                    );
+                    dialog.openDialogScreen(message, false, false, true);
                     return;
                 }
 
