@@ -16,7 +16,7 @@
 <div class="view-buttons">
     <div ng-repeat="menuItem in menuItems"
          ng-click="model.viewState = $index"
-         class="menu-item" 
+         class="menu-item"
          ng-class="{'menu-item-current': $index === model.viewState }">
         {{menuItem}}
     </div>
@@ -49,5 +49,5 @@
 </div>
 
 <div id="name-and-version">
-    Metapolator Beta 0.3.devel
+    Metapolator Alpha v0.4.0
 </div>

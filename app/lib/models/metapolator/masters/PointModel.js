@@ -4,7 +4,7 @@ define([
     Parent
 ){
     "use strict";
-    function PointModel(name, parent, MOMelement) {
+    function PointModel(name, parent, momElement) {
         this.level = "point";
         this.name = name;
         this.edit = true;
@@ -13,11 +13,11 @@ define([
         // cps properties
         this.parameters = [];
         this.master = parent.master;
-        this.MOMelement = MOMelement;
+        this.momElement = momElement;
 
         this.setInitialParameters();
     }
-    
+
     var _p = PointModel.prototype = Object.create(Parent.prototype);
 
     return PointModel;

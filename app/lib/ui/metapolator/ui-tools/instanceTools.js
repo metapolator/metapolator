@@ -25,7 +25,10 @@ define([
         // FIXME: sorry for this nasty trick (of writing wildly to instance),
         // we need to clean it up see `update` for the optimization strategy.
         instance.__cpsFileAxesCount = instance.axes.length;
-        instance.__momMaster = momMaster;
+
+        // This is not enough. the momMaster needs to go though the whole
+        // instance.
+        instance.setMOMElement(momMaster);
 
         _setXPolationMasterProperties(momMaster, instance.axes);
         return momMaster;// could use this to store on instance
@@ -50,7 +53,7 @@ define([
             // FIXME! instance.cpsFile is a bad choice.
             // We should probably abandon it completely and prefer
             // controller.getCPSName as single source of truth
-            cpsFile = project.controller.getCPSName(instance.__momMaster);
+            cpsFile = project.controller.getCPSName(instance.momElement);
 
             // FIXME! a rulecontroller.update(cpsFile, cpsString)
             // would be better here! It's enough to change the rule just
@@ -63,12 +66,8 @@ define([
             project.ruleController.write(false, cpsFile, cpsString);
             project.ruleController.reloadRule(false, cpsFile);
         }
-        // project.controller.query('master#' + instance.name);
         // this do always (we could check if it is necessary though)
-        // FIXME: need an official API to read instance.__momMaster
-        // we can also use univers.getById(instance.name) if instance.name
-        // is correct!
-        _setXPolationMasterProperties(instance.__momMaster, instance.axes);
+        _setXPolationMasterProperties(instance.momElement, instance.axes);
     }
 
     function _createMultiMasterCPS(ruleController, n) {
@@ -92,7 +91,8 @@ define([
         // create new metapolation properties
         for (i=0,l=axesSet.length;i<l;i++) {
             requiredMasters.push(axesSet[i].master);
-            item = cpsTools.makeProperty(baseMaster + i, 'S"master#' + axesSet[i].master.name + '"');
+            item = cpsTools.makeProperty(baseMaster + i
+                    , 'S"master#' + cpsTools.escapeSelectorName(axesSet[i].master.momElement.id) + '"');
             newItems.push(item);
             item = cpsTools.makeProperty(proportion + i, axesSet[i].metapolationValue);
             newItems.push(item);

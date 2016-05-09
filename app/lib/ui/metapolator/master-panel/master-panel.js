@@ -4,6 +4,7 @@ define([
   , './master-panel-directive'
   , './master/master'
   , '../view-rubberband/view-rubberband'
+  , './import/import'
   , 'angular-ui-sortable'
 ], function(
     angular
@@ -11,10 +12,12 @@ define([
   , directive
   , masterModule
   , viewRubberbandModule
+  , importModule
   , _uiSortable
 ) {
     "use strict";
-    return angular.module('mtk.masterPanel', ['ui.sortable', masterModule.name, viewRubberbandModule.name])
+    return angular.module('mtk.masterPanel', ['ui.sortable', masterModule.name
+                              , viewRubberbandModule.name, importModule.name])
            .controller('MasterPanelController', Controller)
            .directive('mtkMasterPanel', directive)
            ;

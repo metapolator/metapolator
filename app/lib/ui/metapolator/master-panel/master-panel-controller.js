@@ -5,6 +5,12 @@ define([
   , 'metapolator/ui/metapolator/ui-tools/dialog'
   , 'metapolator/ui/metapolator/ui-tools/selectionTools'
   , 'require/text!metapolator-cpsLib/ui-master.cps'
+  , './import/ImportProcess'
+  , 'Atem-Logging/Level'
+  , 'Atem-Logging/CallbackHandler'
+  , 'Atem-Logging/Formatter'
+  , 'Atem-Logging/LogRecord'
+  , 'marked'
 ], function(
     $
   , angular
@@ -12,10 +18,16 @@ define([
   , dialog
   , selection
   , cpsUIMasterTemplate
+  , ImportProcess
+  , Level
+  , CallbackHandler
+  , Formatter
+  , LogRecord
+  , marked
 ) {
     "use strict";
-    /*global document:true, FileReader:true*/
-    function MasterPanelController($scope, project) {
+    /*global window:true, document:true, FileReader:true*/
+    function MasterPanelController($scope, $element, project) {
         this.$scope = $scope;
 
         $scope.removeMasters = function() {
@@ -95,57 +107,210 @@ define([
             return name + " copy";
         }
 
-         var baseMasterPrefix = 'base-'
+        // apparently these two prefixed deserve a better place, because
+        // they are so important.
+        // They are considered the Metapolator convention for master naming.
+        // Also 'instance-' for instance masters is missing in this list.
+        // This is currently located in instanceModel.
+        var baseMasterPrefix = 'base-'
           , uiMasterPrefix = 'master-'
           ;
-        function _initUiMasters(baseMasters) {
-            var i, l
-              , cpsFile
-              , baseMaster
-              , uiMasterName
-              , momMaster
+        // As the onMasterReady callback of ImportProcess
+        function initUiMaster(baseMaster) {
+            var uiMasterName = uiMasterPrefix + (baseMaster.id.slice(baseMasterPrefix.length))
+              , momMaster = project.createDerivedMaster(false, baseMaster.id, uiMasterName, cpsUIMasterTemplate)
+              // deprecated: we don't use this anymore
+              , cpsFile = null
               ;
-            for (i=0, l=baseMasters.length; i<l; i++) {
-                baseMaster = baseMasters[i];
-                uiMasterName = uiMasterPrefix + (baseMaster.id.slice(baseMasterPrefix.length));
-                momMaster = project.createDerivedMaster(false, baseMaster.id, uiMasterName, cpsUIMasterTemplate);
-                project.addMasterToSession(momMaster);
-                // TODO: This could be done by listening to univers
-                // (if univers would emit this kind of events … it does now!)
-                $scope.model.masterSequences[0].addMaster(momMaster.id, momMaster, cpsFile);
-            }
+            project.addMasterToSession(momMaster);
+            // TODO: This could be done by listening to univers
+            // (if univers would emit this kind of events … it does now!)
+            $scope.model.masterSequences[0].addMaster(momMaster.id, momMaster, cpsFile);
         }
+
+        $scope.importProcesses = [];
+        var importProcessData = new Map();
+
+        function finishImportProcess(process) {
+            var i = $scope.importProcesses.indexOf(process);
+            if(i===-1)
+                // Would be an error if this happened!
+                return;
+            // remove!
+            $scope.importProcesses.splice(i, 1);
+            // display status/error reporting somewhere
+
+
+            var win = window.open(), importReport;
+            if(win) {
+
+                // how to pop-under?
+                win.blur();
+                window.focus();
+
+                importReport = importProcessData.get(process);
+                importProcessData.delete(process);
+                importReport.makeReport(win.document);
+
+            }
+            $scope.$apply();
+        }
+
+        var ObjectFormatter = (function(){
+            function ObjectFormatter() {
+                // Cargo-cult pattern from util-logging
+                (this.super_ = Formatter.super_).call(this);
+            }
+
+            var _p = ObjectFormatter.prototype = Object.create(Formatter.prototype);
+
+            /**
+             * returns null or:
+             * {
+             *      message: type string
+             *    , level: type string
+             *    , parameters: type array (may be empty)
+             * }
+             *
+             * Copied rom YAMLFormatter and then trimmed.
+             */
+            _p.formatMessage = function(logRecord) {
+                var record = {}, type, thrown;
+                if (!logRecord || !(logRecord instanceof LogRecord))
+                    return null;
+
+
+                thrown = logRecord.getThrown();
+                if(thrown)
+                    record.message = thrown.name + ' ' + thrown.message;
+                else
+                    record.message = logRecord.getMessage() || "(no message)";
+
+                var level = logRecord.getLevel();
+                if (level)
+                    record.level = level.getName();
+
+                var parameters = logRecord.getParameters();
+                if (parameters && parameters instanceof Array)
+                    record.parameters = parameters;
+                else
+                    record.parameters = [];
+
+                type = record.level === 'INFO'
+                                ? '' : '**'+record.level+'**' + '\n';
+
+                if(record.message[0] === '#')
+                    return record.message + (type && ' ') + type
+                        + (record.parameters.length && ' ' + record.parameters.join() || '');
+
+                return ' * ' + type + (type && ' ') + record.message
+                        + (record.parameters.length && ' ' + record.parameters.join() || '');
+            };
+
+            return ObjectFormatter;
+        })();
+
+        var ImportReport = (function (ObjectFormatter) {
+            function ImportReport() {
+                this._logData = [];
+                this.logHandler = new CallbackHandler(this._log.bind(this));
+
+                this.logHandler.setLevel(Level.INFO);
+                // this is how to set a formatter that is not the default one.
+                this.logHandler.setFormatter(new ObjectFormatter());
+            }
+            var _p = ImportReport.prototype;
+
+            _p._log = function(message) {
+                this._logData.push(message);
+            };
+
+            _p._makeReportHeader = function(document) {
+                var header = document.createElement('header');
+                header.innerHTML = marked('# Metapolator UFO Import Report\n\n'
+                        + 'Date: ' + new Date() + '\n\n'
+                        // + 'Log entries: ' + this._logData.length
+                );
+                return header;
+            };
+
+            _p._makeReportBody = function() {
+                var article = document.createElement('article')
+                  , lines = [], i, l
+                  ;
+
+                function removeEmptyGlyphs(lines) {
+                    var glyphStart = '### glyph';
+                    while(lines.length && lines[lines.length-1].slice(0, glyphStart.length) === glyphStart)
+                        // if there are other glyph start line before, without
+                        // further log entries, remove them, because they
+                        // just "bloat" the report
+                        lines.pop();
+                }
+
+                for(i=0,l=this._logData.length;i<l;i++) {
+                    if(this._logData[i][0] === '#')
+                        // this is a "headline" of some kind, so some new "blog"
+                        // cleaning up empty glyphs
+                        removeEmptyGlyphs(lines);
+                    lines.push(this._logData[i]);
+                }
+                removeEmptyGlyphs(lines);
+                article.innerHTML = marked(lines.join('\n'));
+                return article;
+            };
+
+            _p.makeReport = function (document) {
+                var header = this._makeReportHeader(document)
+                  , body = this._makeReportBody(document)
+                  ;
+                document.title = 'UFO import report | Metapolator';
+                document.body.appendChild(header);
+                document.body.appendChild(body);
+            };
+            return ImportReport;
+        })(ObjectFormatter);
 
         $scope.handleUFOimportFiles = function(element) {
             var ufozipfile = element.files[0]
-              , reader = new FileReader()
+              , reader
+              , importReport
               ;
-
-            dialog.openDialogScreen("Importing UFO ZIP...", true);
-
-            function finalize() {
-                $scope.importUfo_dialog_close();
-                dialog.closeDialogScreen();
-                $scope.$apply();
-            }
-
+            if(!ufozipfile)
+                return;
+            reader = new FileReader();
             reader.onload = function(e) {
-                /*global alert:true*/
-                project.importZippedUFOMasters(true, e.target.result, baseMasterPrefix)
-                       .then(_initUiMasters)
-                       .then(finalize, function(e){alert(e); throw e;})
-                       ;
 
+                importReport = new ImportReport();
+                var process = new ImportProcess(project, e.target.result
+                    , baseMasterPrefix, initUiMaster, importReport.logHandler);
+                importProcessData.set(process, importReport);
+
+                $scope.importProcesses.push(process);
+                /*global alert:true*/
+                // some callback to remove it when it's done ...
+                process.after(finishImportProcess)
+                        // I doubt though that there will be an ultimate rejection
+                        // for process, so the error handler will never be called.
+                        // via process, but finishImportProcess could still fail ...
+                       .then(null, function(e){alert(e); throw e;});
+                $scope.$apply();
             };
             reader.readAsArrayBuffer(ufozipfile);
         };
 
-        $scope.importUfo_dialog_open = function() {
-            $("#importufo_dialog").css("display", "block");
-        };
-
-        $scope.importUfo_dialog_close = function() {
-            $("#importufo_dialog").css("display", "none");
+        $scope.importUfo = function() {
+            var doc = $element[0].ownerDocument
+             , input = doc.createElement('input')
+             ;
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'application/zip');
+            input.addEventListener('change'
+                , $scope.handleUFOimportFiles.bind($scope, input), false);
+            // Seems like we don't even have to append this to the DOM!
+            // Which is good, so we don't have to remove it either.
+            // This is a really nice feature.
+            input.click();
         };
 
         $scope.addMasterToDesignSpace = function (master) {
@@ -161,14 +326,27 @@ define([
                   , axisValue: axisValue
                   , metapolationValue : 1
                 }];
+                // ->> exactly the same 3 lines as in instance-panel-controller
                 var newInstance = $scope.model.instanceSequences[0].createNewInstance(instanceAxes, designSpace, project);
                 instanceTools.registerInstance(project, newInstance);
                 $scope.model.instanceSequences[0].addInstance(newInstance);
+
+
             }  else {
-                var result = designSpace.axes[0].MOMelement
-                    .isInterpolationCompatible(master.MOMelement, true);
+                var result = designSpace.axes[0].momElement
+                    .isInterpolationCompatible(master.momElement, true)
+                  , message
+                  ;
                 if(!result[0]) {
-                    console.log('Not compatible:', result[1]);
+                    message = marked(
+                        '## The masters are not compatible for metapolation:\n\n'
+                        + result[1].map(function(line) {
+                                return '* '
+                                        + (line.replace('<', '`<')
+                                               .replace('>', '>`'));
+                         }).join('\n')
+                    );
+                    dialog.openDialogScreen(message, false, false, true);
                     return;
                 }
 
@@ -317,7 +495,7 @@ define([
         };
     }
 
-    MasterPanelController.$inject = ['$scope', 'project'];
+    MasterPanelController.$inject = ['$scope', '$element', 'project'];
     // var _p = MasterPanelController.prototype;
 
     return MasterPanelController;

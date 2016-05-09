@@ -5,6 +5,7 @@ define([], function() {
 
         // if a glyph of an instance is rendered, we need to check if the corresponding glyph
         // of iths baseMaster(s) are measured already
+        // WHY?
         $scope.checkBaseMasters = function(glyph) {
             var instance = glyph.parent;
             for (var i = instance.axes.length - 1; i >= 0; i--) {

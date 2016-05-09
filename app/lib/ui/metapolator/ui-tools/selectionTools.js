@@ -28,9 +28,9 @@ define([
           , step : 0.005
           , decimals : 4
           , effectiveLevel : 'glyph'
-          , getInitial : function(MOMelement) {
+          , getInitial : function(momElement) {
                 // temp hack untill #392 is fixed
-                return MOMelement._advanceWidth;
+                return momElement.getComputedStyle().get('width');
             }
         }, {
             name : 'Weight'
@@ -39,8 +39,13 @@ define([
           , step : 0.1
           , decimals : 2
           , effectiveLevel : 'point'
-          , getInitial : function(MOMelement) {
-                return MOMelement.right.getComputedStyle().get('onLength');
+          , getInitial : function(momElement) {
+                if(!momElement.right)
+                    // FIXME: this is a hotfix when mom element is not
+                    // a <center> but a <p>. The calling code does not
+                    // consider this.
+                    return 0;
+                return momElement.right.getComputedStyle().get('onLength');
             }
       }]
       , baseOperators = [{
