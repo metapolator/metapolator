@@ -22,7 +22,7 @@ program.arguments(exports.command.arguments)
     .description(exports.command.description);
 
 program.action(function (application, outFile) {
-    var absPath = path.normalize(path.join(process.cwd(), application))
+    var absPath = path.resolve(process.cwd(), application)
         // A normal Atem application would have it's data stored at
         // "app/lib" while a normal Atem library would have its data stored
         // just at "lib"
