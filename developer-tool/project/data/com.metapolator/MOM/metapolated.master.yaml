@@ -1,0 +1,5 @@
+base: base
+data:
+  .:
+    attachment:
+      cpsFile: metapolated.master.cps
