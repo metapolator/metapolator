@@ -1,0 +1,5 @@
+{
+  "name"    : "Metapolator",
+  "version" : "0.3.0",
+  "main"    : "metapolator_electron_main.js"
+}
