@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "test": "cd app/tests; ./run_tests",
-    "postinstall" : "bower install"
+    "postinstall": "bower install"
   },
   "directories": {
     "bin": "bin",
@@ -35,10 +35,10 @@
   },
   "license": "GPL-3.0",
   "devDependencies": {
-    "intern": "~2.0.1",
+    "bower": "*",
+    "intern": "^3.3.1",
     "less": "~1.7.5",
-    "regenerator": ">=0.6.5",
-    "bower": "*"
+    "regenerator": ">=0.6.5"
   },
   "dependencies": {
     "commander": "git://github.com/graphicore/commander.js.git#atem-integration",
