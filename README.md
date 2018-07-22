@@ -28,7 +28,7 @@ This project is licensed by the [authors](AUTHORS) under the [GNU General Public
 
 #### Thanks
 
-Thanks to the developers, especailly Simon Egli for founding the project, Lasse Fister (@graphicore) for technical leadership, Peter Sikking (NL) for Interaction Architecture, and all current and past past contributors. 
+Thanks to the developers, especially Simon Egli for founding the project, Lasse Fister (@graphicore) for technical leadership, Peter Sikking (NL) for Interaction Architecture, and all current and past contributors. 
 See [CONTRIBUTORS](CONTRIBUTORS) for a complete list.
 
 Thanks to [metaflop](http://www.metaflop.com) for inspiration and [prototypo](http://www.prototypo.io) for exploring this territory in another direction with the same ideals!
