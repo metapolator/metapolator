@@ -5,7 +5,7 @@
 // We need a way to reuse cli scripts between subprojects
 
 exports.command = {
-    description: 'Serve a metapolator application loading a metapoltor project UFO (default: current directory).'
+    description: 'Serve a metapolator application loading a metapolator project UFO (default: current directory).'
   , arguments: '[project]'
 };
 
