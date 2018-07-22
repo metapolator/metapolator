@@ -62,7 +62,7 @@ Start Metapolator
 -----------------
 
 Metapolator is both a command line interface and a web-based graphical user interface. 
-`metapolator` lives in bin. For all possible commands:
+`metapolator` lives in `bin`. For all possible commands:
 
     $ bin/metapolator help
 
