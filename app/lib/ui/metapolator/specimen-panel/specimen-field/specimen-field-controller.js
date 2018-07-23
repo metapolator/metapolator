@@ -15,13 +15,13 @@ define([
         };
 
         var specimenbreak = {
-            name: '*specimenbreak',
+            name: '\specimenbreak',
             type: 'fake'
         }, linebreak = {
-            name : '*n',
+            name : '\n',
             type: 'fake'
         }, paragraphbreak = {
-            name : '*p',
+            name : '\p',
             type: 'fake'
         };
 
@@ -54,11 +54,11 @@ define([
                     for (var i = 0, il = glyphsOut.length; i < il; i++) {
                         var glyphName = glyphsOut[i]
                           , master = masterArray[masterId];
-                        if (glyphName === '*p') {
+                        if (glyphName === '\p') {
                             glyph = paragraphbreak;
-                        } else if (glyphName === '*n') {
+                        } else if (glyphName === '\n') {
                             glyph = linebreak;
-                        } else if (glyphName === '*specimenbreak') {
+                        } else if (glyphName === '\specimenbreak') {
                             glyph = specimenbreak;
                         } else {
                             glyph = getGlyph(master, glyphName);
@@ -247,7 +247,7 @@ define([
                 }
                 if (unique) {
                     // unique is set for the filter
-                    if (glyphs.indexOf(glyph) < 0 || glyph === '*n' || glyph === '*p') {
+                    if (glyphs.indexOf(glyph) < 0 || glyph === '\n' || glyph === '\p') {
                         if (glyph != 'space' || includeSpaces) {
                             glyphs.push(glyph);
                         }
@@ -272,7 +272,7 @@ define([
         }
 
         function isSpaceGlyph(glyph) {
-            if (glyph === 'space' || glyph === '*n' || glyph === '*p') {
+            if (glyph === 'space' || glyph === '\n' || glyph === '\p') {
                 return true;
             } else {
                 return false;
