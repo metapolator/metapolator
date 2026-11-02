@@ -122,7 +122,19 @@ fn check(name: &str, ufo: &str) -> Vec<String> {
             Err(_) => failures.push(format!("{name}: {f} missing")),
         }
     }
-    println!("{name}: MOM data compared, {same}/{} exported files byte-identical", want_files.len());
+    // OTF: byte-identical, or failing like the JS
+    match (mp_mom::export_otf::export_otf(&project.engine, master, &serde_json::json!({})),
+           golden.read("export.otf"), golden.read_string("export.otf.error")) {
+        (Ok(have), Ok(want), _) => if have == want { same += 1; } else {
+            let i = have.iter().zip(&want).take_while(|(a, b)| a == b).count();
+            failures.push(format!("{name}: export.otf differs from byte {i} (len {} vs {})", want.len(), have.len()));
+        },
+        (Err(_), _, Ok(_)) => same += 1,
+        (Ok(_), _, Ok(e)) => failures.push(format!("{name}: OTF: Rust exported, JS failed: {e}")),
+        (Err(e), Ok(_), _) => failures.push(format!("{name}: OTF: Rust failed: {e}")),
+        (r, w, e) => failures.push(format!("{name}: OTF: unexpected {:?} {:?} {:?}", r.is_ok(), w.is_ok(), e.is_ok())),
+    }
+    println!("{name}: MOM data compared, {same}/{} exported files byte-identical (UFO + OTF)", want_files.len() + 1);
     failures
 }
 

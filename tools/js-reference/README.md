@@ -43,6 +43,10 @@ the pin, the result is `152 match, 2 differ` (`PropertyValue`, `OMA/_Node`).
 The check detects drift, but weakly: matching literals is a necessary
 condition, not proof of identical code.
 
+opentype.js (used only by the OTF export) is pinned by date alone, to 0.6.3
+(released 2016-05-10). The bundle's minified copy could not be matched to a
+release by its literals.
+
 Before pinning, Atem-CPS (2018) and Atem-MOM (2016) at their HEADs did not
 work together. Every CPS lookup failed with
 `KeyError: Key "parent" is not whitelisted`.
@@ -81,3 +85,11 @@ work together. Every CPS lookup failed with
 
 Two runs into different directories gave byte-identical output (`diff -r`).
 `tests/golden/SHA256SUMS` holds the baseline hashes.
+
+- `Project.getOTFInstance` is broken upstream (it calls `do_export`, which
+  does not exist). The UI exported OTFs through `getOTFExportGenerator`, so
+  the harnesses do the same.
+- OTF export quirks reproduced by `crates/mp-otf`: components are never drawn
+  (`MasterGlyphSet.get` returns nothing), glyphs with width 0 make the export
+  fail, the whole `unicodes` array is passed as `unicode` (cmap and OS/2
+  coerce it), `usFirstCharIndex` is always 0, and `usDefaultChar` is always 32.

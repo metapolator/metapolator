@@ -9,14 +9,18 @@
 
 **Signal.** Every file of every exported master is compared byte for byte
 (GLIF, `contents.plist`, `fontinfo.plist`, `layercontents.plist`,
-`metainfo.plist`), and the file lists must be equal.
+`metainfo.plist`), and the file lists must be equal. The OTF export (the
+opentype.js 0.6.3 port in `crates/mp-otf`) is compared byte for byte too.
+Where the JS export fails, the Rust export must fail as well: the
+`sean_hairline-nop` import contains a zero-width glyph, and opentype.js
+requires a truthy `advanceWidth`.
 
 **Recorded 2026-11-02** (rustc 1.93.1):
 
 | fixture       | masters | files compared | failures | Rust time (release, whole test) |
 |---------------|---------|----------------|----------|---------------------------------|
-| `v0.4.0-min`  | 5       | 75             | 0        | –                               |
-| `v0.4.0-full` | 2       | 354            | 0        | 0.64 s for both fixtures        |
+| `v0.4.0-min`  | 5       | 75 + 5 OTF     | 0        | –                               |
+| `v0.4.0-full` | 2       | 354 + 2 OTF    | 0        | 1.05 s for both fixtures        |
 
 For comparison, the JS reference needs about 24 s for `v0.4.0-full`
 (tools/js-reference/README.md).

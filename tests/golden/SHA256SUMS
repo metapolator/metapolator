@@ -1,3 +1,4 @@
+bb8b234dc05a95a3df887d43cbd65b4507712539072efc62000b5bacaf191fd7  ./v0.4.0-full/base-regular.otf
 abe2a1d3b46f35e9b6ddddbedd5d8052607ed128388e310c6128842edddd978b  ./v0.4.0-full/base-regular.ufo/fontinfo.plist
 3a3bc0965c1395f592a6208f1d8f9277fe94353b9df85c243b4b6492a5ec8104  ./v0.4.0-full/base-regular.ufo/glyphs/A_acute.glif
 747f92465d6e81ff1c2fbfbb7cea7767ac62e1ff24229d818054f2dfaa672f5d  ./v0.4.0-full/base-regular.ufo/glyphs/acute.glif
@@ -175,7 +176,8 @@ beceb6efef0edb481fcdc2a297bccf9005f381ce3f8c58426dc260e0aa329591  ./v0.4.0-full/
 5776499ad114f07c3530db6c5eed437a86e66f3cea23849e3f605b539a75793b  ./v0.4.0-full/base-regular.ufo/glyphs/Z_.glif
 7bdb7fcabfdedb9d615055091e8385f92fa946427f79ebdabf8b5dc29bdfb206  ./v0.4.0-full/base-regular.ufo/layercontents.plist
 08540eb52a35ccc7b10c07a5c003565dca0d6c3e8b2c70d752b862ca856d17e4  ./v0.4.0-full/base-regular.ufo/metainfo.plist
-8cbfab112469ec24869e09f0addbe33d7122a92bffe0692e0243531bd39995ec  ./v0.4.0-full/manifest.json
+90ad01e90431a439957005a41e833a5f1cf3f05e75998633b285dd37133bbe48  ./v0.4.0-full/manifest.json
+86237fdee1886d3ea5b8d2941febce13480fcca6c558d1cd723e26f0398adf4e  ./v0.4.0-full/master-regular.otf
 abe2a1d3b46f35e9b6ddddbedd5d8052607ed128388e310c6128842edddd978b  ./v0.4.0-full/master-regular.ufo/fontinfo.plist
 3a3bc0965c1395f592a6208f1d8f9277fe94353b9df85c243b4b6492a5ec8104  ./v0.4.0-full/master-regular.ufo/glyphs/A_acute.glif
 747f92465d6e81ff1c2fbfbb7cea7767ac62e1ff24229d818054f2dfaa672f5d  ./v0.4.0-full/master-regular.ufo/glyphs/acute.glif
@@ -353,6 +355,7 @@ beceb6efef0edb481fcdc2a297bccf9005f381ce3f8c58426dc260e0aa329591  ./v0.4.0-full/
 5776499ad114f07c3530db6c5eed437a86e66f3cea23849e3f605b539a75793b  ./v0.4.0-full/master-regular.ufo/glyphs/Z_.glif
 7bdb7fcabfdedb9d615055091e8385f92fa946427f79ebdabf8b5dc29bdfb206  ./v0.4.0-full/master-regular.ufo/layercontents.plist
 08540eb52a35ccc7b10c07a5c003565dca0d6c3e8b2c70d752b862ca856d17e4  ./v0.4.0-full/master-regular.ufo/metainfo.plist
+cc5c2d1d29219fcad6c2f0c6f8fb202f9bc905e8eb55f72b7d58871601defa63  ./v0.4.0-min/base-identity.otf
 055fbb7ec835cf881b526e8bab7748da0286a2e6b9a3e22dca8d179d802bc3c4  ./v0.4.0-min/base-identity.ufo/fontinfo.plist
 0f9be31e8d3f319e838e4986a30b62ca9948ac4d6a3ecff649603ab6f2dc98ca  ./v0.4.0-min/base-identity.ufo/glyphs/a.glif
 16e9aca1674c325e73fb52583d1f2482795eeedff08504f0129178e4a5c26817  ./v0.4.0-min/base-identity.ufo/glyphs/A_.glif
@@ -368,6 +371,7 @@ e697670c74f0edd43f3cd0a0516b33592061fc8a82e864ab435947fd10227e7d  ./v0.4.0-min/b
 2a1c1d9e1bff2b16cc448d5d5d6972e953244461aec565abb5dbad4000a37789  ./v0.4.0-min/base-identity.ufo/glyphs/t.glif
 7bdb7fcabfdedb9d615055091e8385f92fa946427f79ebdabf8b5dc29bdfb206  ./v0.4.0-min/base-identity.ufo/layercontents.plist
 08540eb52a35ccc7b10c07a5c003565dca0d6c3e8b2c70d752b862ca856d17e4  ./v0.4.0-min/base-identity.ufo/metainfo.plist
+77ad4a1256632011172b31b19145f6959475149ca1a09c88db5a154023a0cff3  ./v0.4.0-min/base-regular.otf
 abe2a1d3b46f35e9b6ddddbedd5d8052607ed128388e310c6128842edddd978b  ./v0.4.0-min/base-regular.ufo/fontinfo.plist
 0f9be31e8d3f319e838e4986a30b62ca9948ac4d6a3ecff649603ab6f2dc98ca  ./v0.4.0-min/base-regular.ufo/glyphs/a.glif
 16e9aca1674c325e73fb52583d1f2482795eeedff08504f0129178e4a5c26817  ./v0.4.0-min/base-regular.ufo/glyphs/A_.glif
@@ -383,6 +387,7 @@ e697670c74f0edd43f3cd0a0516b33592061fc8a82e864ab435947fd10227e7d  ./v0.4.0-min/b
 75fe8a6aa3a67a1bb72e82f0acf84361c02195114be60e6d8e07d056a83fa59d  ./v0.4.0-min/base-regular.ufo/glyphs/t.glif
 7bdb7fcabfdedb9d615055091e8385f92fa946427f79ebdabf8b5dc29bdfb206  ./v0.4.0-min/base-regular.ufo/layercontents.plist
 08540eb52a35ccc7b10c07a5c003565dca0d6c3e8b2c70d752b862ca856d17e4  ./v0.4.0-min/base-regular.ufo/metainfo.plist
+d6e13c41454670e54271fd7854e4fb5d1c6b61ccc994267942f806adbfb8eb11  ./v0.4.0-min/insance-0.otf
 abe2a1d3b46f35e9b6ddddbedd5d8052607ed128388e310c6128842edddd978b  ./v0.4.0-min/insance-0.ufo/fontinfo.plist
 0f9be31e8d3f319e838e4986a30b62ca9948ac4d6a3ecff649603ab6f2dc98ca  ./v0.4.0-min/insance-0.ufo/glyphs/a.glif
 16e9aca1674c325e73fb52583d1f2482795eeedff08504f0129178e4a5c26817  ./v0.4.0-min/insance-0.ufo/glyphs/A_.glif
@@ -398,7 +403,8 @@ e697670c74f0edd43f3cd0a0516b33592061fc8a82e864ab435947fd10227e7d  ./v0.4.0-min/i
 7ba16f29d4082e5b6a1ea45b57df85ee03878327e4f96765a9811ea97c1f80b9  ./v0.4.0-min/insance-0.ufo/glyphs/t.glif
 7bdb7fcabfdedb9d615055091e8385f92fa946427f79ebdabf8b5dc29bdfb206  ./v0.4.0-min/insance-0.ufo/layercontents.plist
 08540eb52a35ccc7b10c07a5c003565dca0d6c3e8b2c70d752b862ca856d17e4  ./v0.4.0-min/insance-0.ufo/metainfo.plist
-6dc528e10a56857073549e9a61387bc8d88315f12450caef907e68eb94218dd2  ./v0.4.0-min/manifest.json
+a0934817c57823f1d3fe4e119326ac819b41e15971c5abf4e05a31fa3bcfa667  ./v0.4.0-min/manifest.json
+b5e4aa44925fd926a40a164b582b5bd20754724b0c3e1d91b70255ad63a1d0a4  ./v0.4.0-min/master-identity.otf
 055fbb7ec835cf881b526e8bab7748da0286a2e6b9a3e22dca8d179d802bc3c4  ./v0.4.0-min/master-identity.ufo/fontinfo.plist
 0f9be31e8d3f319e838e4986a30b62ca9948ac4d6a3ecff649603ab6f2dc98ca  ./v0.4.0-min/master-identity.ufo/glyphs/a.glif
 16e9aca1674c325e73fb52583d1f2482795eeedff08504f0129178e4a5c26817  ./v0.4.0-min/master-identity.ufo/glyphs/A_.glif
@@ -414,6 +420,7 @@ e697670c74f0edd43f3cd0a0516b33592061fc8a82e864ab435947fd10227e7d  ./v0.4.0-min/m
 2a1c1d9e1bff2b16cc448d5d5d6972e953244461aec565abb5dbad4000a37789  ./v0.4.0-min/master-identity.ufo/glyphs/t.glif
 7bdb7fcabfdedb9d615055091e8385f92fa946427f79ebdabf8b5dc29bdfb206  ./v0.4.0-min/master-identity.ufo/layercontents.plist
 08540eb52a35ccc7b10c07a5c003565dca0d6c3e8b2c70d752b862ca856d17e4  ./v0.4.0-min/master-identity.ufo/metainfo.plist
+d05b7d1f2a8eaee6b8a030d30b15afe759fcc52e915b4eb6b5f445df23ea2e7d  ./v0.4.0-min/master-regular.otf
 abe2a1d3b46f35e9b6ddddbedd5d8052607ed128388e310c6128842edddd978b  ./v0.4.0-min/master-regular.ufo/fontinfo.plist
 0f9be31e8d3f319e838e4986a30b62ca9948ac4d6a3ecff649603ab6f2dc98ca  ./v0.4.0-min/master-regular.ufo/glyphs/a.glif
 16e9aca1674c325e73fb52583d1f2482795eeedff08504f0129178e4a5c26817  ./v0.4.0-min/master-regular.ufo/glyphs/A_.glif

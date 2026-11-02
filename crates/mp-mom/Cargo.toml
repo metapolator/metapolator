@@ -14,6 +14,7 @@ serde_json.workspace = true
 serde_yaml.workspace = true
 mp-io = { path = "../mp-io" }
 mp-ufo = { path = "../mp-ufo" }
+mp-otf = { path = "../mp-otf" }
 
 [dev-dependencies]
 serde_json.workspace = true

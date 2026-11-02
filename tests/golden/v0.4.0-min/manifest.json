@@ -6,5 +6,12 @@
     "insance-0",
     "master-identity",
     "master-regular"
-  ]
+  ],
+  "otf": {
+    "base-identity": "ok",
+    "base-regular": "ok",
+    "insance-0": "ok",
+    "master-identity": "ok",
+    "master-regular": "ok"
+  }
 }

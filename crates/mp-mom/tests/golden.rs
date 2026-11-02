@@ -31,6 +31,25 @@ fn check_fixture(name: &str) -> (usize, Vec<String>) {
             failures.push(format!("{name}/{m}: export failed: {e}"));
             continue;
         }
+        // OTF (opentype.js port): byte-identical, or failing like the JS
+        let otf_status = manifest["otf"][m].as_str().unwrap_or("");
+        match mp_mom::export_otf::export_otf(&project.engine, master, &serde_json::json!({})) {
+            Ok(bytes) => {
+                compared += 1;
+                if otf_status != "ok" {
+                    failures.push(format!("{name}/{m}.otf: Rust exported, JS failed: {otf_status}"));
+                } else {
+                    let want = std::fs::read(golden.join(format!("{m}.otf"))).unwrap();
+                    if bytes != want {
+                        let i = bytes.iter().zip(&want).take_while(|(a, b)| a == b).count();
+                        failures.push(format!("{name}/{m}.otf differs (len {} vs {}) from byte {i}: JS {:?} Rust {:?}",
+                            want.len(), bytes.len(), &want[i.saturating_sub(4)..(i + 12).min(want.len())],
+                            &bytes[i.saturating_sub(4)..(i + 12).min(bytes.len())]));
+                    }
+                }
+            }
+            Err(e) => if otf_status == "ok" { failures.push(format!("{name}/{m}.otf: Rust failed: {e}")); },
+        }
         let want_dir = golden.join(format!("{m}.ufo"));
         let mut want_files = vec![];
         for e in walk(&want_dir) {

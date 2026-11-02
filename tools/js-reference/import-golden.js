@@ -8,6 +8,7 @@
 //   OUTDIR/<name>/project/   the saved in-memory project (MOM/*.yaml, CPS/*, ...)
 //   OUTDIR/<name>/export.ufo the imported master exported again as UFO
 //                            (precision 3, like golden.js)
+//   OUTDIR/<name>/export.otf the imported master as OTF (or export.otf.error)
 // where <name> is the UFO directory name without ".ufo"; the master is
 // called "base-<name>".
 "use strict";
@@ -54,6 +55,17 @@ amd.require([
         project.save(false);
         mem.mkDir(false, 'out');
         project.exportUFOInstance(false, master.id, 'out/export.ufo', 3, undefined);
+        // OTF through the export generator (Project.getOTFInstance is broken
+        // upstream); a failure is recorded as export.otf.error
+        try {
+            var genIo = project.getOTFExportGenerator(false, master.id, 'export.otf')
+              , gen = genIo[0], step;
+            while(!(step = gen.next()).done);
+            mem.writeFile(false, 'out/export.otf', Buffer.from(step.value));
+        }
+        catch(e) {
+            mem.writeFile(false, 'out/export.otf.error', String(e && e.message || e) + '\n');
+        }
         fs.mkdirSync(path.join(target, 'project'), { recursive: true });
         mem.copyRecursive(false, 'project', diskIO, path.join(target, 'project'));
         mem.copyRecursive(false, 'out', diskIO, target);

@@ -3,5 +3,9 @@
   "masters": [
     "base-regular",
     "master-regular"
-  ]
+  ],
+  "otf": {
+    "base-regular": "ok",
+    "master-regular": "ok"
+  }
 }

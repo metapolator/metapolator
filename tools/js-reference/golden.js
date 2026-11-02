@@ -7,7 +7,8 @@
 //
 // For every master (default: all persisted masters of the project) writes
 //   OUTDIR/<master>.ufo/   UFO export (ufoJS UFOWriter via Atem-MOM UFOExporter)
-// and OUTDIR/manifest.json listing what was exported.
+//   OUTDIR/<master>.otf    OTF export (opentype.js via Atem-MOM OTFExporter)
+// and OUTDIR/manifest.json listing what was exported (OTF errors included).
 //
 // PROJECTDIR is a v0.4-format project (see extract-fixtures.sh).
 "use strict";
@@ -65,10 +66,24 @@ amd.require([
         project._persistedMasters.slice().sort().forEach(function(name) {
             project.openMaster(false, name);
         });
+        manifest.otf = {};
         masters.forEach(function(name) {
             console.warn('exporting', name);
             project.exportUFOInstance(false, name, 'out/' + name + '.ufo', 3, undefined);
             manifest.masters.push(name);
+            // OTF via opentype.js; errors are part of the reference behaviour.
+            // Project.getOTFInstance is broken upstream (calls `do_export`),
+            // the UI used getOTFExportGenerator, so do the same.
+            try {
+                var genIo = project.getOTFExportGenerator(false, name, name + '.otf')
+                  , gen = genIo[0], step;
+                while(!(step = gen.next()).done);
+                mem.writeFile(false, 'out/' + name + '.otf', Buffer.from(step.value));
+                manifest.otf[name] = 'ok';
+            }
+            catch(e) {
+                manifest.otf[name] = 'error: ' + (e && e.message || e);
+            }
         });
 
         if(fs.existsSync(outDir))

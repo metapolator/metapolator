@@ -21,7 +21,7 @@ jszip https://github.com/Stuk/jszip.git a4138a23cb9b8eb773c19af7d36d5ce2bcf4bfda
 metapolator-cpsLib https://github.com/metapolator/metapolator-cpsLib.git 158f6e1d06afb2d0d2e27ca9e7925a07886437d8
 mustache.js https://github.com/janl/mustache.js.git 49714ba8ae0035ee5461eac42ba5f53ff5c0f86a
 obtainJS https://github.com/graphicore/obtainJS.git cd75efdc6f1cd3aa39a42254f8f0bd0a363e01b2
-opentype.js https://github.com/opentypejs/opentype.js.git bce15392e3c42cf279914cafa1e61a8dc6d418ed
+opentype.js https://github.com/opentypejs/opentype.js.git da54e7b27648fbb81d2e5a6977beb2469f148df6
 requirejs https://github.com/requirejs/requirejs.git 042628d72a9be906f9e79c8e1965439c2beb946b
 requirejs-domReady https://github.com/requirejs/domReady.git c74caaa6dac64f2f47093f4952b991390406adfb
 requirejs-text https://github.com/requirejs/text.git 3f9d4c19b3a1a3c6f35650c5788cbea1db93197a
