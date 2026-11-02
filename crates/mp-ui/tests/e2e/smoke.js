@@ -111,6 +111,33 @@ async function main() {
         await until('rubberband selection', `$$('.selection-level')[1]?.querySelector('.title small')?.textContent === '(4)'`, 5000).catch(() => {});
         check('rubberband selects 4 glyphs: ' + await js(`$$('.selection-level')[1]?.querySelector('.title small')?.textContent`),
               await js(`$$('.selection-level')[1]?.querySelector('.title small')?.textContent === '(4)'`));
+
+        // Width + 10 on the four, + 30 on M alone, then the range 10–30 over
+        // the four; raising the high bound to 50 moves M only
+        const rubberband = `(() => {
+            const g = $$('.panel.specimen .glyph.selectable'), f = document.querySelector('.panel.specimen .specimen-field');
+            const r0 = g[0].getBoundingClientRect(), r3 = g[3].getBoundingClientRect();
+            const ev = (type, x, y) => f.dispatchEvent(new MouseEvent(type, {bubbles: true, clientX: x, clientY: y, button: 0}));
+            ev('mousedown', r0.left + 2, r0.top + 2); ev('mousemove', r3.right - 2, r3.bottom - 2); ev('mouseup', r3.right - 2, r3.bottom - 2);
+            return true })()`;
+        const enter = (sel, i, v) => `(() => { const x = $$(${JSON.stringify(sel)})[${i}]; x.value = ${JSON.stringify(v)}; x.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true})); return true })()`;
+        await js(`$$('.selection-level .add')[1].click(), true`);
+        await js(`press('.chooser', 'Width'), press('.chooser', '+'), true`);
+        await until('the glyph operator', `$$('.selection-level')[1].querySelectorAll('.operator input').length === 1`);
+        await js(enter('.selection-level:nth-of-type(2) .operator input', 0, '10'));
+        await until('+10', `$$('.selection-level')[1].querySelector('.operator input').value === '10'`);
+        await js(`$$('.panel.specimen .glyph.selectable')[0].click(), true`);
+        await until('M alone', `$$('.selection-level')[1].querySelector('.title small').textContent === '(1)'`);
+        await js(enter('.selection-level:nth-of-type(2) .operator input', 0, '30'));
+        await until('+30', `$$('.selection-level')[1].querySelector('.operator input').value === '30'`);
+        await js(rubberband);
+        await until('the range', `$$('.selection-level')[1].querySelectorAll('.operator.range input').length === 2`);
+        const range = await js(`Array.from($$('.selection-level')[1].querySelectorAll('.operator.range input')).map(i => i.value)`);
+        check('range shown ' + JSON.stringify(range), JSON.stringify(range) === '["10","30"]');
+        await js(enter('.selection-level:nth-of-type(2) .operator.range input', 1, '50'));
+        await until('the new range', `Array.from($$('.selection-level')[1].querySelectorAll('.operator.range input')).map(i => i.value).join() === '10,50'`, 5000).catch(() => {});
+        const range2 = await js(`Array.from($$('.selection-level')[1].querySelectorAll('.operator.range input')).map(i => i.value)`);
+        check('range edited to ' + JSON.stringify(range2), JSON.stringify(range2) === '["10","50"]');
         await shot('2-bold-copy');
 
         // both masters into the design space

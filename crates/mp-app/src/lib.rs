@@ -682,6 +682,29 @@ impl App {
         for e in self.selection(level) { self.params.set_operator(&mut self.project, &e, param, op, value); }
     }
 
+    /// edit the bounds of a range (`getRangeValue` of the selection
+    /// parameter controller): each selected element keeps its relative
+    /// position between the bounds; `old` are the bounds shown before the
+    /// edit. Fails if the bounds would overlap.
+    pub fn set_operator_range(&mut self, level: Level, param: usize, op: usize, old: (f64, f64), new: (f64, f64)) -> Result<()> {
+        if new.1 < new.0 { return Err("Overlapping of range values.".into()); }
+        let decimals = PARAMETERS[param].decimals;
+        let standard = OPERATORS[op].standard;
+        for e in self.selection(level).into_iter().rev() {
+            let current = self.params.get(&e, param).and_then(|p| p.value(op)).unwrap_or(standard).unwrap_or(f64::NAN);
+            let value = if old == new {
+                current
+            } else if old.1 - old.0 != 0.0 {
+                let pos = (current - old.0) / (old.1 - old.0);
+                params::round_decimals((new.1 - new.0) * pos + new.0, decimals)
+            } else {
+                new.0
+            };
+            self.params.set_operator(&mut self.project, &e, param, op, Some(value));
+        }
+        Ok(())
+    }
+
     pub fn remove_operator(&mut self, level: Level, param: usize, op: usize) {
         for e in self.selection(level) { self.params.remove_operator(&mut self.project, &e, param, op); }
     }

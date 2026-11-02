@@ -10,7 +10,7 @@ by `tests/golden-ui-model`. The UI itself is checked in Chromium by
 |---------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | menubar                                     | New (empty project), Demo, Open…/Save (project ZIP: new; the JS app could not save a project)                                                                  |
 | parameter panel                             | ported: master and glyph level, Width/Weight, the 7 operators, formulas, arrow-key steps, effective values                                                     |
-| parameter ranges (edit low/high of a range) | not ported: a range is shown as `low – high`, typing a value sets it on every selected element                                                                 |
+| parameter ranges (edit low/high of a range) | ported (`getRangeValue`): two fields; each element keeps its relative position between the bounds                                                              |
 | specimen: samples, own text, mixer, font-by | ported, `glyphsOut` identical to the JS (golden); characters that are not glyph names are looked up by unicode when drawn                                      |
 | specimen: Glyph Range sample                | ported and working (upstream it had no text and failed)                                                                                                        |
 | specimen: size rope, line height            | number inputs instead of the drag rope                                                                                                                         |

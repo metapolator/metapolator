@@ -212,3 +212,27 @@ fn project_zip_round_trip() {
     assert_eq!(back.masters.iter().map(|m| m.name.as_str()).collect::<Vec<_>>(), vec!["master-light", "master-bold"]);
     assert!(back.project.master_by_name("instance-0").is_some());
 }
+
+#[test]
+fn operator_ranges_scale_proportionally() {
+    use mp_app::params::{op_index, param_index, Elem, Level};
+    let mut app = App::with_default_project().unwrap();
+    let (w, add) = (param_index("Width").unwrap(), op_index("add").unwrap());
+    for (g, v) in [("a", 10.0), ("b", 20.0), ("c", 40.0)] {
+        app.select_glyph("master-regular", g, false);
+        app.set_operator_value(Level::Glyph, w, add, Some(v));
+    }
+    app.selected_glyphs.clear();
+    for g in ["a", "b", "c"] { app.select_glyph("master-regular", g, true); }
+    let sel = app.selection_parameters(Level::Glyph);
+    assert_eq!(sel[0].operators, vec![(add, Some(10.0), Some(40.0))]);
+    // raise the high bound: 10..40 -> 10..70, b keeps its third
+    app.set_operator_range(Level::Glyph, w, add, (10.0, 40.0), (10.0, 70.0)).unwrap();
+    let v = |app: &App, g: &str| app.params.get(&Elem::Glyph("master-regular".into(), g.into()), w).unwrap().value(add).unwrap().unwrap();
+    assert_eq!((v(&app, "a"), v(&app, "b"), v(&app, "c")), (10.0, 30.0, 70.0));
+    assert!(app.set_operator_range(Level::Glyph, w, add, (10.0, 70.0), (80.0, 70.0)).is_err());
+    // the widths follow: initial + add
+    let a = Elem::Glyph("master-regular".into(), "c".into());
+    let ep = app.params.get(&a, w).unwrap().clone();
+    assert_eq!(ep.effective, Some(ep.initial.unwrap() + 70.0));
+}

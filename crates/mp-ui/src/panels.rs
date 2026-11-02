@@ -60,7 +60,8 @@ fn OperatorField(level: Level, param: usize, op: usize, low: Option<f64>, high: 
     let c = ctx();
     let def = &PARAMETERS[param];
     let fmt = move |v: Option<f64>| v.map(|x| mp_app::svg::fmt(params::round_decimals(x, def.decimals))).unwrap_or_default();
-    let shown = if low == high { fmt(low) } else { format!("{} – {}", fmt(low), fmt(high)) };
+    let shown = fmt(low);
+    let is_range = low != high;
     let apply = move |v: f64| {
         let v = params::round_decimals(v, def.decimals);
         c.update(|a| a.set_operator_value(level, param, op, Some(v)));
@@ -88,6 +89,36 @@ fn OperatorField(level: Level, param: usize, op: usize, low: Option<f64>, high: 
         }
     };
     let unit = if OPERATORS[op].uses_unit { def.unit } else { "" };
+    // a range over the selection: edit either bound, the elements in
+    // between keep their relative position (getRangeValue)
+    let range_key = move |high_bound: bool| move |ev: KeyboardEvent| {
+        if ev.key() != "Enter" { return; }
+        let input: web_sys::HtmlInputElement = event_target(&ev);
+        let (Some(lo), Some(hi)) = (low, high) else { return };
+        match params::eval_math(&input.value()) {
+            Ok(v) => {
+                let v = params::round_decimals(v, def.decimals);
+                let new = if high_bound { (lo, v) } else { (v, hi) };
+                match c.update(|a| a.set_operator_range(level, param, op, (lo, hi), new)) {
+                    Ok(()) => { input.class_list().remove_1("error").ok(); }
+                    Err(e) => { input.class_list().add_1("error").ok(); c.error(e) }
+                }
+            }
+            Err(e) => { input.class_list().add_1("error").ok(); c.error(e) }
+        }
+    };
+    if is_range {
+        return view! {
+            <div class="operator range">
+                <span class="sign">{OPERATORS[op].sign}</span>
+                <input type="text" prop:value=fmt(low) on:keydown=range_key(false) title="the lowest value in the selection"/>
+                <span>"–"</span>
+                <input type="text" prop:value=fmt(high) on:keydown=range_key(true) title="the highest value in the selection"/>
+                <span class="unit">{unit}</span>
+                <button class="remove" title="Remove" on:click=move |_| c.update(|a| a.remove_operator(level, param, op))>"×"</button>
+            </div>
+        }.into_any();
+    }
     view! {
         <div class="operator">
             <span class="sign">{OPERATORS[op].sign}</span>
@@ -95,7 +126,7 @@ fn OperatorField(level: Level, param: usize, op: usize, low: Option<f64>, high: 
             <span class="unit">{unit}</span>
             <button class="remove" title="Remove" on:click=move |_| c.update(|a| a.remove_operator(level, param, op))>"×"</button>
         </div>
-    }
+    }.into_any()
 }
 
 #[component]
