@@ -1,0 +1,33 @@
+{
+  "weightGlyphs": ["a", "o", "n"],
+  "steps": [
+    ["selectMasters", ["master-regular"]],
+    ["set", "master", "Width", "add", 20],
+    ["set", "master", "Weight", "multiply", 1.5],
+    ["selectGlyphs", [["master-regular", "a"], ["master-regular", "o"]]],
+    ["set", "glyph", "Width", "multiply", 0.9],
+    ["set", "glyph", "Weight", "is", 30],
+    ["set", "master", "Width", "min", 450],
+    ["set", "glyph", "Width", "subtract", 5],
+    ["remove", "glyph", "Width", "multiply"],
+    ["selectMasters", ["master-regular"]],
+    ["duplicate"],
+    ["set", "master", "Weight", "multiply", 2.25],
+    ["set", "master", "Width", "divide", 1.25],
+    ["selectGlyphs", [["master-0-1", "n"]]],
+    ["set", "glyph", "Weight", "max", 40],
+    ["designSpace", "master-regular"],
+    ["designSpace", "master-0-1"],
+    ["axes", [25, 75]]
+  ],
+  "specimen": [
+    ["Metapolator", "", 0],
+    ["Hamburgefonstiv quick*nbrown <fox> fox*p jumps", "", 0],
+    ["Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog.", "aeo", 0],
+    ["Quick wafting zephyrs vex bold Jim. The quick brown fox jumps over the lazy dog.", "aeo", 1],
+    ["Quick wafting zephyrs vex bold Jim.", "abcd", 2],
+    ["x", "n", 2],
+    ["AaBbCc*n123 <a <bc> ", "x y", 1],
+    ["Grumpy wizards*pmake toxic brew", "<one>z", 0]
+  ]
+}
