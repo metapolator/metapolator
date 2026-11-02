@@ -4,3 +4,4 @@ npm-debug.log
 app/lib/bower_components
 
 /tools/js-reference/node_modules
+/target
