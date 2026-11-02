@@ -14,9 +14,8 @@
 
 var path = require('path')
   , fs = require('fs')
-  , ROOT = path.resolve(__dirname, '..', '..')
-  , BOWER = path.join(ROOT, 'app', 'lib', 'bower_components')
-  , requirejs = require(path.join(BOWER, 'r.js', 'dist', 'r.js'))
+  , amd = require('./amd.js')
+  , ROOT = amd.ROOT
   ;
 
 function usage() {
@@ -32,43 +31,7 @@ var projectDir = path.resolve(args[0])
   ;
 process.chdir(ROOT);
 
-// Node modules the engine pulls in via require.nodeRequire. npm is not used:
-// 'lie' (an ES6 Promise polyfill, obtainJS/lib/Promise.js) is the native one.
-// r.js ignores a configured nodeRequire, so hook Node's loader instead.
-var Module = require('module')
-  , NODE_SHIMS = { lie: Promise }
-  , origLoad = Module._load
-  ;
-Module._load = function(request) {
-    if(Object.prototype.hasOwnProperty.call(NODE_SHIMS, request))
-        return NODE_SHIMS[request];
-    return origLoad.apply(this, arguments);
-};
-
-// ufoJS/lib/xml/main.js has a Node branch that needs jsdom<=9 internals plus
-// libxmljs (a native addon that does not build on current Node). Expose a
-// current, pure-JS jsdom window instead, so ufoJS takes its W3C/browser branch.
-(function installDOM() {
-    var JSDOM = require('jsdom').JSDOM
-      , win = new JSDOM('<!doctype html><html></html>').window
-      ;
-    ['window', 'document', 'DOMParser', 'XMLSerializer', 'XPathEvaluator'
-    , 'XPathResult', 'Node'].forEach(function(k) {
-        global[k] = k === 'window' ? win : win[k];
-    });
-    global.XSLTProcessor = undefined; // referenced, never used by ufoJS here
-})();
-
-requirejs.config({ baseUrl: path.join(ROOT, 'app', 'lib') });
-
-requirejs(['bower_components/Atem-RequireJS-Config/nodeConfig'], function(configure) {
-    configure({
-        baseUrl: path.join(ROOT, 'app', 'lib')
-      , bowerPrefix: 'bower_components'
-      , paths: { metapolator: './' }
-    }, requirejs);
-
-    requirejs([
+amd.require([
         'Atem-IO/io/staticNodeJS'
       , 'Atem-IO/io/InMemory'
       , 'Atem-MOM/project/Project'
@@ -114,5 +77,4 @@ requirejs(['bower_components/Atem-RequireJS-Config/nodeConfig'], function(config
         mem.copyRecursive(false, 'out', diskIO, outDir);
         fs.writeFileSync(path.join(outDir, 'manifest.json'),
                          JSON.stringify(manifest, null, 2) + '\n');
-    }, function(err) { console.error(err && err.stack || err); process.exit(1); });
-}, function(err) { console.error(err && err.stack || err); process.exit(1); });
+});

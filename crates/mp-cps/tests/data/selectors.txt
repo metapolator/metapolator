@@ -1,0 +1,31 @@
+# one selector list per line, parsed with parseSelectorList.fromString
+master#master-regular
+glyph#a
+glyph#A_
+glyph#a.alt
+glyph#uni0041
+master
+*
+master *
+center > *
+center:i(0) > left
+center:i(-1)>right
+contour > p:i(0)
+glyph, center, contour > p, component
+.foo
+#bar
+a.b.c#d
+penstroke:i(2) center:i(1)
+a ~ b
+a + b
+:hover
+::first
+master#1
+glyph#f_i
+glyph#a-b
+glyph#_x
+center>left
+a>b>c d
+  spaced  ,  list  
+a,
+,a
