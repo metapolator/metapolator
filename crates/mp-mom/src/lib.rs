@@ -2,6 +2,7 @@
 
 pub mod export;
 pub mod generators;
+pub mod import;
 pub mod js;
 pub mod project;
 pub mod render;

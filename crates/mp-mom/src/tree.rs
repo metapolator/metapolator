@@ -406,6 +406,76 @@ impl Mom {
         Ok(())
     }
 
+    // ------------------------------------------------------------ dumping
+
+    fn dump_properties(&self, n: NodeId) -> Option<Json> {
+        let items: Vec<Json> = self.node(n).properties.items().iter().filter_map(|i| match i {
+            mp_cps::document::DictItem::Property(p) => Some(Json::Array(vec![
+                Json::String(p.name.clone()), Json::String(p.value.value_string.clone())])),
+            _ => None,
+        }).collect();
+        if items.is_empty() { None } else { Some(Json::Array(items)) }
+    }
+
+    /// `dumpData(simpleProperties=false, flags)`: 1 id, 2 classes, 4 properties, 8 attachments
+    pub fn dump_data(&self, n: NodeId, flags: u32) -> Option<Json> {
+        let node = self.node(n);
+        let mut m = JsonMap::new();
+        if flags & 1 != 0 { if let Some(id) = &node.id { m.insert("id".into(), Json::String(id.clone())); } }
+        if flags & 2 != 0 && !node.classes.is_empty() {
+            m.insert("classes".into(), Json::Array(node.classes.iter().map(|c| Json::String(c.clone())).collect()));
+        }
+        if flags & 4 != 0 { if let Some(p) = self.dump_properties(n) { m.insert("properties".into(), p); } }
+        if flags & 8 != 0 {
+            if let Some(a) = &node.attachment { if !a.is_empty() { m.insert("attachment".into(), Json::Object(a.clone())); } }
+        }
+        if m.is_empty() { None } else { Some(Json::Object(m)) }
+    }
+
+    fn dump_children(&self, n: NodeId, f: &dyn Fn(&Mom, NodeId) -> Option<Json>) -> Option<Json> {
+        let node = self.node(n);
+        if node.children.is_empty() { return None; }
+        let frozen = node.kind.frozen_children().is_some();
+        Some(Json::Array(node.children.iter().map(|c| {
+            let d = f(self, *c).unwrap_or(Json::Null);
+            if frozen { d } else { Json::Array(vec![Json::String(self.kind(*c).type_name().into()), d]) }
+        }).collect()))
+    }
+
+    /// `dumpTree()`
+    pub fn dump_tree(&self, n: NodeId) -> Option<Json> {
+        let mut data = self.dump_data(n, 15);
+        if let Some(children) = self.dump_children(n, &|m, c| m.dump_tree(c)) {
+            let mut obj = data.and_then(|d| d.as_object().cloned()).unwrap_or_default();
+            obj.insert("children".into(), children);
+            data = Some(Json::Object(obj));
+        }
+        data
+    }
+
+    /// `Multivers.dumpWithoutMasters()`
+    pub fn dump_without_masters(&self) -> Json {
+        let root = self.root();
+        let mut obj = self.dump_data(root, 15).and_then(|d| d.as_object().cloned()).unwrap_or_default();
+        if let Some(children) = self.dump_children(root, &|m, c| m.dump_data(c, 15)) {
+            obj.insert("children".into(), children);
+        }
+        Json::Object(obj)
+    }
+
+    /// `master.dumpDataToDict()` (properties + attachments by master index path)
+    pub fn dump_data_to_dict(&self, master: NodeId) -> JsonMap {
+        let mut dict = JsonMap::new();
+        let mut nodes = vec![];
+        self.walk(master, &mut |n| nodes.push(n));
+        for n in nodes {
+            if let Some(d) = self.dump_data(n, 4 | 8) {
+                dict.insert(self.master_index_path(n).unwrap_or_default(), d);
+            }
+        }
+        dict
+    }
+
     // ------------------------------------------------------------ validation
 
     fn validator(kind: Kind, key: &str) -> Option<Validator> {

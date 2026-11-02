@@ -17,3 +17,5 @@ mp-ufo = { path = "../mp-ufo" }
 
 [dev-dependencies]
 serde_json.workspace = true
+lzma-rs = "0.3"
+tar = "0.4"

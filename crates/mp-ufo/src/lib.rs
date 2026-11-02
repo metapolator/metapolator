@@ -4,6 +4,7 @@
 pub mod filenames;
 pub mod glif;
 pub mod plist;
+pub mod reader;
 pub mod round;
 pub mod writer;
 pub mod xml;

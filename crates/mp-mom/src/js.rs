@@ -69,3 +69,87 @@ pub fn js_key_order(m: &JsonMap) -> Vec<&String> {
     out.extend(m.keys().filter(|k| is_index(k).is_none()));
     out
 }
+
+/// Dump a JSON value as YAML in js-yaml's `safeDump` style (block style,
+/// two-space indentation). Strings that YAML could read as something else
+/// are single-quoted, so js-yaml and serde_yaml both read back the same data.
+pub fn to_yaml(v: &Json) -> String {
+    let mut out = String::new();
+    yaml_value(v, 0, &mut out, true);
+    if !out.ends_with('\n') { out.push('\n'); }
+    out
+}
+
+fn yaml_scalar(v: &Json) -> Option<String> {
+    Some(match v {
+        Json::Null => "null".into(),
+        Json::Bool(b) => b.to_string(),
+        Json::Number(n) => {
+            let x = n.as_f64().unwrap_or(f64::NAN);
+            if x.is_nan() { ".nan".into() } else if x == f64::INFINITY { ".inf".into() }
+            else if x == f64::NEG_INFINITY { "-.inf".into() } else { js_num(x) }
+        }
+        Json::String(s) => yaml_string(s),
+        Json::Array(a) if a.is_empty() => "[]".into(),
+        Json::Object(m) if m.is_empty() => "{}".into(),
+        _ => return None,
+    })
+}
+
+fn yaml_string(s: &str) -> String {
+    let plain_ok = !s.is_empty()
+        && !s.starts_with([' ', '-', '?', ':', ',', '[', ']', '{', '}', '#', '&', '*', '!', '|', '>', '\'', '"', '%', '@', '`'])
+        && !s.ends_with(' ')
+        && !s.contains(": ") && !s.contains(" #") && !s.ends_with(':')
+        && !s.chars().any(|c| c.is_control())
+        && serde_yaml::from_str::<serde_yaml::Value>(s).map(|v| matches!(v, serde_yaml::Value::String(ref t) if t == s)).unwrap_or(false)
+        && !matches!(s.to_ascii_lowercase().as_str(), "y" | "n" | "yes" | "no" | "on" | "off" | "true" | "false" | "null" | "~");
+    if plain_ok { return s.to_string(); }
+    if !s.chars().any(|c| c.is_control()) {
+        return format!("'{}'", s.replace('\'', "''"));
+    }
+    serde_json::to_string(s).unwrap()
+}
+
+fn yaml_value(v: &Json, indent: usize, out: &mut String, top: bool) {
+    let pad = " ".repeat(indent);
+    match v {
+        Json::Array(a) if !a.is_empty() => {
+            for item in a {
+                out.push_str(&pad);
+                out.push('-');
+                match yaml_scalar(item) {
+                    Some(s) => { out.push(' '); out.push_str(&s); out.push('\n'); }
+                    None => {
+                        // nested collection: compact form like js-yaml
+                        let mut inner = String::new();
+                        yaml_value(item, indent + 2, &mut inner, false);
+                        let trimmed = inner.trim_start_matches(' ');
+                        out.push(' ');
+                        out.push_str(trimmed);
+                    }
+                }
+            }
+        }
+        Json::Object(m) if !m.is_empty() => {
+            for (k, val) in m {
+                out.push_str(&pad);
+                out.push_str(&yaml_string(k));
+                out.push(':');
+                match yaml_scalar(val) {
+                    Some(s) => { out.push(' '); out.push_str(&s); out.push('\n'); }
+                    None => {
+                        out.push('\n');
+                        yaml_value(val, indent + 2, out, false);
+                    }
+                }
+            }
+        }
+        other => {
+            let _ = top;
+            out.push_str(&pad);
+            out.push_str(&yaml_scalar(other).unwrap_or_default());
+            out.push('\n');
+        }
+    }
+}
