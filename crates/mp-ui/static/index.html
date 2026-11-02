@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Metapolator – Free Font Editor for Designing Typeface Families</title>
+    <meta name="description" content="Metapolator is an open web tool for making many fonts. It supports working in a font design space, instead of one glyph, one face, at a time.">
+    <link rel="icon" href="assets/img/favicon.ico">
+    <link rel="icon" type="image/png" href="assets/img/favicon-32x32.png" sizes="32x32">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading">Loading Metapolator…</div>
+    <noscript>Metapolator needs JavaScript and WebAssembly.</noscript>
+    <script type="module">
+        import init from './pkg/mp_ui.js';
+        init().catch(function(e) {
+            document.getElementById('loading').textContent = 'Metapolator failed to start: ' + e;
+        });
+    </script>
+</body>
+</html>

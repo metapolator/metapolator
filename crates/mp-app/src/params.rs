@@ -372,3 +372,110 @@ pub fn write_factor(project: &mut Project, e: &Elem, p: usize, factor: f64) {
     if !factor.is_finite() { return; }
     let _ = project.set_property(n, PARAMETERS[p].cps_key, &mp_math::js_num(factor));
 }
+
+// ------------------------------------------------- the panel's value input
+
+/// `round(value, decimals)` of selection-parameter-controller:
+/// `Number(Math.round(value + 'e' + decimals) + 'e-' + decimals)`
+pub fn round_decimals(value: f64, decimals: usize) -> f64 {
+    let shifted: f64 = format!("{}e{}", mp_math::js_num(value), decimals).parse().unwrap_or(f64::NAN);
+    let r = (shifted + 0.5).floor(); // Math.round
+    format!("{}e-{}", mp_math::js_num(r), decimals).parse().unwrap_or(f64::NAN)
+}
+
+/// `evaluateEvent`: arrow up/down add or subtract `step` (×10 with shift,
+/// ×0.1 with ctrl or alt)
+pub fn step_value(value: f64, step: f64, up: bool, shift: bool, ctrl_or_alt: bool) -> f64 {
+    let mut s = step;
+    if shift { s *= 10.0; }
+    if ctrl_or_alt { s *= 0.1; }
+    if up { value + s } else { value - s }
+}
+
+/// The value typed into an operator field (`evaluateMathExpression`, which
+/// used Atem-Property-Language's simpleMathEngine): numbers, `+ - * /`,
+/// parentheses, unary minus; `,` is a decimal point. The result must be
+/// finite.
+pub fn eval_math(input: &str) -> Result<f64, String> {
+    let s: Vec<char> = input.replace(',', ".").chars().filter(|c| !c.is_whitespace()).collect();
+    fn expr(s: &[char], i: &mut usize) -> Result<f64, String> {
+        let mut v = term(s, i)?;
+        while *i < s.len() && (s[*i] == '+' || s[*i] == '-') {
+            let op = s[*i];
+            *i += 1;
+            let r = term(s, i)?;
+            if op == '+' { v += r } else { v -= r }
+        }
+        Ok(v)
+    }
+    fn term(s: &[char], i: &mut usize) -> Result<f64, String> {
+        let mut v = unary(s, i)?;
+        while *i < s.len() && (s[*i] == '*' || s[*i] == '/') {
+            let op = s[*i];
+            *i += 1;
+            let r = unary(s, i)?;
+            if op == '*' { v *= r } else { v /= r }
+        }
+        Ok(v)
+    }
+    fn unary(s: &[char], i: &mut usize) -> Result<f64, String> {
+        if *i < s.len() && (s[*i] == '-' || s[*i] == '+') {
+            let neg = s[*i] == '-';
+            *i += 1;
+            let v = unary(s, i)?;
+            return Ok(if neg { -v } else { v });
+        }
+        if *i < s.len() && s[*i] == '(' {
+            *i += 1;
+            let v = expr(s, i)?;
+            if *i >= s.len() || s[*i] != ')' { return Err("missing )".into()); }
+            *i += 1;
+            return Ok(v);
+        }
+        let start = *i;
+        while *i < s.len() && (s[*i].is_ascii_digit() || s[*i] == '.' ) { *i += 1; }
+        if *i < s.len() && (s[*i] == 'e' || s[*i] == 'E') {
+            let save = *i;
+            *i += 1;
+            if *i < s.len() && (s[*i] == '+' || s[*i] == '-') { *i += 1; }
+            let d = *i;
+            while *i < s.len() && s[*i].is_ascii_digit() { *i += 1; }
+            if d == *i { *i = save; }
+        }
+        let text: String = s[start..*i].iter().collect();
+        text.parse::<f64>().map_err(|_| if *i < s.len() { format!("unexpected \"{}\"", s[*i]) } else { "number expected".into() })
+    }
+    let mut i = 0;
+    let v = expr(&s, &mut i)?;
+    if i != s.len() { return Err(format!("unexpected \"{}\"", s[i])); }
+    if !v.is_finite() { return Err("Math result is not finite.".into()); }
+    Ok(v)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rounding_like_js() {
+        assert_eq!(round_decimals(1.005, 2), 1.01); // the 'e' trick avoids 1.00
+        assert_eq!(round_decimals(0.123456, 4), 0.1235);
+        assert_eq!(round_decimals(-2.5, 0), -2.0); // Math.round rounds half up
+    }
+
+    #[test]
+    fn math_input() {
+        assert_eq!(eval_math("1,5"), Ok(1.5));
+        assert_eq!(eval_math(" 2 * (3 + 4) / -2 "), Ok(-7.0));
+        assert_eq!(eval_math("1e3-1"), Ok(999.0));
+        assert!(eval_math("1/0").is_err());
+        assert!(eval_math("2 +").is_err());
+        assert!(eval_math("x").is_err());
+    }
+
+    #[test]
+    fn arrow_steps() {
+        assert_eq!(step_value(1.0, 0.1, true, true, false), 2.0);
+        assert!((step_value(1.0, 0.1, false, false, true) - 0.99).abs() < 1e-12);
+    }
+}

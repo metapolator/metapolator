@@ -1,0 +1,17 @@
+#!/bin/sh
+# Build the web UI, serve it with `metapolator serve` and run smoke.js in
+# headless Chromium. Screenshots and the export go to $TMPDIR/mp-ui-e2e.
+#   crates/mp-ui/tests/e2e/run.sh
+set -eu
+ROOT=$(cd "$(dirname "$0")/../../../.." && pwd)
+OUT="${TMPDIR:-/tmp}/mp-ui-e2e"
+cd "$ROOT"
+tools/build-ui.sh target/ui >/dev/null
+cargo build --release -q -p mp-cli
+rm -rf -- "${OUT:?}"
+mkdir -p "$OUT"
+target/release/metapolator serve target/ui --addr 127.0.0.1:8766 > "$OUT/serve.log" 2>&1 &
+SERVER=$!
+trap 'kill $SERVER' EXIT
+sleep 1
+node --experimental-websocket crates/mp-ui/tests/e2e/smoke.js http://127.0.0.1:8766/ "$OUT"

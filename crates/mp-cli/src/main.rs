@@ -30,8 +30,19 @@ Commands:
   get <[project/]master> <selector> <property> [<property> ...]
                                          print computed CPS values
   query <[project/]master> <selector>    list the nodes a selector matches
+  serve [dir] [--addr host:port]         serve the web UI (default dir:
+                                         target/ui, built by tools/build-ui.sh;
+                                         default address 127.0.0.1:8080)
   help                                   this text
 ";
+
+mod serve;
+
+fn cmd_serve(mut args: Vec<String>) -> R {
+    let addr = take_option(&mut args, &["--addr"])?.unwrap_or_else(|| "127.0.0.1:8080".into());
+    let dir = args.first().cloned().unwrap_or_else(|| "target/ui".into());
+    serve::serve(std::path::Path::new(&dir), &addr)
+}
 
 fn split_master(arg: &str) -> (String, String) {
     match arg.rfind('/') {
@@ -241,6 +252,7 @@ fn main() -> ExitCode {
         "list" => cmd_list(args),
         "get" => cmd_get(args),
         "query" => cmd_query(args),
+        "serve" => cmd_serve(args),
         "help" | "--help" | "-h" => { print!("{USAGE}"); Ok(()) }
         other => Err(format!("unknown command \"{other}\"\n\n{USAGE}")),
     };

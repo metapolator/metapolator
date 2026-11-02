@@ -1,0 +1,115 @@
+/* The look of the AngularJS app (app/lib/ui/metapolator/*.less):
+   Sean Sans Narrow, greys, the red accent. */
+@font-face { font-family: 'seanSansNarrow'; src: url('assets/fonts/SeanSans-NarrowBold.otf'); font-weight: 700; }
+@font-face { font-family: 'seanSansNarrow'; src: url('assets/fonts/SeanSans-NarrowThin.otf'); font-weight: 100; }
+
+:root {
+    --c1: #eee;
+    --c2: #515151;
+    --red: #f85c37;
+    --hover: #dcdcdc;
+    --shadow: 0 1px 4px rgba(0,0,0,0.3);
+    --space: 5px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+    font-family: 'seanSansNarrow', 'Arial Narrow', sans-serif;
+    font-weight: 700; font-size: 13px; line-height: 16px;
+    color: var(--c2); background: var(--c1);
+    display: flex; flex-direction: column;
+}
+#loading { margin: auto; font-size: 20px; }
+button, input, select {
+    font: inherit; color: inherit;
+    border: 1px solid #bbb; background: #fff; border-radius: 2px;
+    padding: 2px 6px;
+}
+button { cursor: pointer; }
+button:hover:not(:disabled) { background: var(--hover); }
+button:disabled { opacity: 0.3; cursor: default; }
+button.selected, .tab.selected { background: var(--c2); color: #fff; border-color: var(--c2); }
+button.primary { background: var(--red); color: #fff; border-color: var(--red); font-size: 15px; padding: 6px 14px; }
+input.error { border-color: var(--red); background: #fee; }
+h2 { font-size: 15px; font-weight: 700; margin: 0 0 var(--space); text-transform: lowercase; letter-spacing: 0.04em; }
+.hint { font-weight: 100; font-size: 14px; }
+
+.menubar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 6px 12px; background: var(--c2); color: #fff; box-shadow: var(--shadow); z-index: 1;
+}
+.menubar .logo { height: 22px; filter: invert(1); }
+.menubar nav { display: flex; gap: 4px; }
+.menubar nav button { background: transparent; color: #fff; border-color: #888; }
+.menubar nav button:hover { background: #666; }
+.menubar .status { flex: 1; font-weight: 100; cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.menubar .status.error { color: #ffb3a1; font-weight: 700; }
+.menubar .about { color: #ccc; }
+
+.landscape { flex: 1; display: flex; min-height: 0; overflow-x: auto; }
+.panel {
+    padding: 10px; border-right: 1px solid #ccc; overflow-y: auto;
+    display: flex; flex-direction: column; gap: var(--space);
+}
+.panel.parameters { flex: 0 0 230px; }
+.panel.specimen { flex: 3 1 420px; background: #fff; }
+.panel.masters { flex: 0 0 230px; }
+.panel.design { flex: 2 1 380px; }
+.panel.instances { flex: 0 0 250px; }
+
+.toolbar, .tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 6px; border-bottom: 1px solid #ddd; cursor: default;
+}
+.list li.selected { background: #fff; box-shadow: inset 3px 0 0 var(--red); }
+.list .name { flex: 1; cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
+.list .rename { flex: 1; min-width: 0; }
+.list .eye { cursor: pointer; opacity: 0.25; }
+.list .eye.on { opacity: 1; color: var(--red); }
+.list .swatch { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+.list .space { font-weight: 100; }
+.list label { font-weight: 100; display: flex; align-items: center; gap: 2px; }
+
+.selection-level { border-top: 2px solid var(--c2); padding-top: var(--space); }
+.selection-level .head { display: flex; justify-content: space-between; align-items: center; }
+.selection-level .title { font-size: 15px; }
+.selection-level small { font-weight: 100; }
+.chooser { background: #fff; box-shadow: var(--shadow); padding: var(--space); margin: var(--space) 0; display: flex; flex-direction: column; gap: 4px; }
+.chooser .row { display: flex; flex-wrap: wrap; gap: 3px; }
+.parameter { margin: 6px 0; }
+.parameter .name { display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; }
+.parameter .effective { font-weight: 100; }
+.operator { display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.operator .sign { width: 2.2em; text-align: center; }
+.operator input { flex: 1; min-width: 0; }
+.operator .unit { width: 1.5em; font-weight: 100; }
+.operator .remove, .axis .remove { padding: 0 5px; }
+
+.specimen-tools { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-weight: 100; }
+.specimen-tools .own-text { flex: 1 1 160px; }
+.specimen-tools .filter { width: 6em; }
+.specimen-tools .num { width: 4.5em; }
+.specimen-field { display: flex; flex-wrap: wrap; align-items: flex-end; align-content: flex-start; padding: 10px 0; }
+.glyph { display: inline-block; line-height: 0; border-bottom: 2px solid transparent; }
+.glyph.selectable { cursor: pointer; }
+.glyph.selectable:hover { background: #f4f4f4; }
+.glyph.selected { background: #fde3dc; border-bottom-color: var(--red); }
+.glyph.has-error { outline: 1px dashed var(--red); }
+.glyph svg { display: block; }
+.break { flex-basis: 100%; height: 0; }
+.break.paragraph { height: 1em; }
+.break.specimen-break { height: 0; border-top: 1px dashed #ccc; margin: 8px 0; }
+.instance-specimen { border-top: 2px solid var(--c2); margin-top: 10px; padding-top: 6px; }
+
+.axes { display: flex; flex-direction: column; gap: 6px; background: #fff; padding: 8px; box-shadow: var(--shadow); }
+.axis { display: grid; grid-template-columns: minmax(70px, 1fr) 3fr 7em auto auto; align-items: center; gap: 6px; }
+.axis.slack .master { color: var(--red); }
+.axis .value { font-weight: 100; text-align: right; }
+.axis input[type=range] { width: 100%; accent-color: var(--c2); }
+.axis.slack input[type=range] { accent-color: var(--red); }
+.export { margin-top: auto; padding-top: 10px; }
+.instances-list li { flex-wrap: wrap; }
+.instances-list li .name, .instances-list li .rename { flex: 1 1 60%; }
+.instances-list li .space { flex: 1 0 100%; padding-left: 18px; }
