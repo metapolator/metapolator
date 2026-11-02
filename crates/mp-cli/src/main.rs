@@ -30,6 +30,8 @@ Commands:
   get <[project/]master> <selector> <property> [<property> ...]
                                          print computed CPS values
   query <[project/]master> <selector>    list the nodes a selector matches
+  cps <file.cps>                         parse a CPS file and print it as
+                                         parsed (@imports are not followed)
   serve [project] [-p port] [--addr host:port] [--ui dir]
                                          serve the web UI, opening <project>
                                          (default: the demo project); --ui:
@@ -40,6 +42,19 @@ Commands:
 ";
 
 mod serve;
+
+/// replaces bin/metapolator-dev-playground-cps (already broken upstream)
+fn cmd_cps(args: Vec<String>) -> R {
+    struct Empty;
+    impl mp_cps::document::ImportResolver for Empty {
+        fn get_rule(&mut self, _: &str) -> mp_cps::Result<Rc<mp_cps::document::Collection>> { Ok(Rc::new(Default::default())) }
+    }
+    let file = args.first().ok_or("usage: metapolator cps <file.cps>")?;
+    let text = std::fs::read_to_string(file).map_err(|e| format!("{file}: {e}"))?;
+    let c = mp_cps::document::parse_cps(&text, &mut Empty).map_err(|e| format!("{file}: {e}"))?;
+    println!("{c}");
+    Ok(())
+}
 
 fn cmd_serve(mut args: Vec<String>) -> R {
     let port = take_option(&mut args, &["-p", "--port"])?;
@@ -259,6 +274,7 @@ fn main() -> ExitCode {
         "get" => cmd_get(args),
         "query" => cmd_query(args),
         "serve" => cmd_serve(args),
+        "cps" => cmd_cps(args),
         "help" | "--help" | "-h" => { print!("{USAGE}"); Ok(()) }
         other => Err(format!("unknown command \"{other}\"\n\n{USAGE}")),
     };
