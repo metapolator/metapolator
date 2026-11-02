@@ -86,6 +86,17 @@ async function main() {
         await js(`$$('.panel.specimen .glyph.selectable')[3].click(), true`);
         await until('glyph level', `$$('.selection-level').length === 2`);
         check('glyph level shows effective Width', await js(`$$('.selection-level')[1].textContent.includes('Width')`));
+
+        // rubberband over the first four glyphs (M e t a): 4 glyphs selected
+        await js(`(() => {
+            const g = $$('.panel.specimen .glyph.selectable'), f = document.querySelector('.panel.specimen .specimen-field');
+            const r0 = g[0].getBoundingClientRect(), r3 = g[3].getBoundingClientRect();
+            const ev = (type, x, y) => f.dispatchEvent(new MouseEvent(type, {bubbles: true, clientX: x, clientY: y, button: 0}));
+            ev('mousedown', r0.left + 2, r0.top + 2); ev('mousemove', r3.right - 2, r3.bottom - 2); ev('mouseup', r3.right - 2, r3.bottom - 2);
+            return true })()`);
+        await until('rubberband selection', `$$('.selection-level')[1]?.querySelector('.title small')?.textContent === '(4)'`, 5000).catch(() => {});
+        check('rubberband selects 4 glyphs: ' + await js(`$$('.selection-level')[1]?.querySelector('.title small')?.textContent`),
+              await js(`$$('.selection-level')[1]?.querySelector('.title small')?.textContent === '(4)'`));
         await shot('2-bold-copy');
 
         // both masters into the design space
@@ -100,6 +111,19 @@ async function main() {
         const vals = await js(`$$('.axis .value').map(e => e.textContent)`);
         check('axes ' + JSON.stringify(vals), JSON.stringify(vals) === JSON.stringify(['10.0 · 10%', '90.0 · 90%']));
         await shot('3-design-space');
+
+        // Glyph Range: every glyph of the master
+        await js(`(() => { const sel = $$('.panel.specimen select')[0]; sel.value = sel.options[sel.options.length - 1].value; sel.dispatchEvent(new Event('change', {bubbles: true})); return true })()`);
+        await until('glyph range', `$$('.panel.specimen .glyph').length > 100`);
+        check('Glyph Range shows ' + await js(`$$('.panel.specimen .glyph').length`) + ' glyphs', await js(`$$('.panel.specimen .glyph').length === 173`));
+        await shot('4-glyph-range');
+
+        // uncheck all / check all
+        await js(`press('.panel.instances', 'Uncheck all'), true`);
+        await until('unchecked', `!$$('.instances-list input[type=checkbox]')[1].checked`);
+        await js(`press('.panel.instances', 'Check all'), true`);
+        await until('checked', `$$('.instances-list input[type=checkbox]')[1].checked`);
+        check('uncheck all / check all', true);
 
         // export
         await js(`press('.panel.instances', 'Export fonts'), true`);

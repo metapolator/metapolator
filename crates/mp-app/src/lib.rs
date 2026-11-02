@@ -628,6 +628,20 @@ impl App {
         if add && self.selected_glyphs.contains(&key) { self.selected_glyphs.remove(&key); } else { self.selected_glyphs.insert(key); }
     }
 
+    /// the specimen rubberband: `selectSet` (replacing the selection) or,
+    /// with a modifier key, `toggleSet`
+    pub fn select_glyph_set(&mut self, set: &[(String, String)], toggle: bool) {
+        if !toggle { self.selected_glyphs.clear(); }
+        for k in set {
+            if toggle && self.selected_glyphs.contains(k) { self.selected_glyphs.remove(k); } else { self.selected_glyphs.insert(k.clone()); }
+        }
+    }
+
+    /// the font export panel's "Check All" / "Uncheck All"
+    pub fn set_all_export(&mut self, export: bool) {
+        for i in &mut self.instances { i.export = export; }
+    }
+
     /// `Selection.updateParameters` for `level`
     pub fn selection_parameters(&mut self, level: Level) -> Vec<SelectionParameter> {
         let elems = self.selection(level);

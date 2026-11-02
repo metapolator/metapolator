@@ -190,7 +190,13 @@ pub fn SpecimenPanel(instances: bool) -> impl IntoView {
     let font_by = RwSignal::new(FontBy::Specimen);
     let size = RwSignal::new(if instances { 64.0 } else { 96.0 });
     let line_height = RwSignal::new(1.0f64);
-    let text = move || if sample.get() == 0 { own_text.get() } else { SAMPLES[sample.get()].2.to_string() };
+    // the master specimen also offers "Glyph Range": every glyph of the
+    // master (upstream this sample had no text and broke `glyphsIn`)
+    let glyph_range = SAMPLES.len();
+    let text = move || if sample.get() == 0 { own_text.get() } else if sample.get() == glyph_range { String::new() } else { SAMPLES[sample.get()].2.to_string() };
+    // the rubberband: (start, current) in client coordinates
+    let band = RwSignal::new(None::<((f64, f64), (f64, f64))>);
+    let field = NodeRef::<leptos::html::Div>::new();
     // (name, fill colour, selectable)
     let shown = move || c.with(|a| -> Vec<(String, String, bool)> {
         if instances {
@@ -202,7 +208,11 @@ pub fn SpecimenPanel(instances: bool) -> impl IntoView {
     });
     let cells = move || {
         let masters = shown();
-        let out = specimen::glyphs_out(&text(), &filter.get(), strict.get());
+        let out = if !instances && sample.get() == glyph_range {
+            masters.first().map(|m| c.with(|a| a.glyph_names(&m.0))).unwrap_or_default()
+        } else {
+            specimen::glyphs_out(&text(), &filter.get(), strict.get())
+        };
         let cells = c.with(|a| specimen::filtered_glyphs(&out, masters.len(), font_by.get(),
             &|i, g| a.find_glyph(&masters[i].0, g).is_some()));
         (masters, cells)
@@ -212,6 +222,7 @@ pub fn SpecimenPanel(instances: bool) -> impl IntoView {
             <div class="specimen-tools">
                 <select on:change=move |ev| sample.set(event_target_value(&ev).parse().unwrap_or(0))>
                     {SAMPLES.iter().enumerate().map(|(i, s)| view! { <option value=i.to_string() selected=move || sample.get() == i>{s.1}</option> }).collect_view()}
+                    {(!instances).then(|| view! { <option value=glyph_range.to_string()>"Glyph Range"</option> })}
                 </select>
                 <Show when=move || sample.get() == 0>
                     <input class="own-text" type="text" prop:value=move || own_text.get()
@@ -232,7 +243,45 @@ pub fn SpecimenPanel(instances: bool) -> impl IntoView {
                 <label>"line "<input class="num" type="number" step="0.1" min="0.5" max="3" prop:value=move || line_height.get()
                     on:change=move |ev| line_height.set(event_target_value(&ev).parse().unwrap_or(1.0))/></label>
             </div>
-            <div class="specimen-field" style:line-height=move || format!("{}px", size.get() * line_height.get())>
+            <div class="specimen-field" node_ref=field style:line-height=move || format!("{}px", size.get() * line_height.get())
+                on:mousedown=move |ev: MouseEvent| if !instances && ev.button() == 0 {
+                    let p = (ev.client_x() as f64, ev.client_y() as f64);
+                    band.set(Some((p, p)));
+                    ev.prevent_default();
+                }
+                on:mousemove=move |ev: MouseEvent| if let Some((s, _)) = band.get_untracked() {
+                    band.set(Some((s, (ev.client_x() as f64, ev.client_y() as f64))));
+                }
+                on:mouseleave=move |_| band.set(None)
+                on:mouseup=move |ev: MouseEvent| {
+                    let Some((s, e)) = band.get_untracked() else { return };
+                    band.set(None);
+                    let toggle = ev.shift_key() || ev.meta_key() || ev.alt_key();
+                    let (x0, x1, y0, y1) = (s.0.min(e.0), s.0.max(e.0), s.1.min(e.1), s.1.max(e.1));
+                    if x1 - x0 < 4.0 && y1 - y0 < 4.0 {
+                        // a click: on a glyph its own handler selects, elsewhere deselect all
+                        let on_glyph = ev.target().and_then(|t| wasm_bindgen::JsCast::dyn_into::<web_sys::Element>(t).ok())
+                            .and_then(|t| t.closest(".glyph").ok().flatten()).is_some();
+                        if !on_glyph && !toggle { c.update(|a| a.select_glyph_set(&[], false)); }
+                        return;
+                    }
+                    let Some(f) = field.get_untracked() else { return };
+                    let Ok(nodes) = f.query_selector_all(".glyph.selectable") else { return };
+                    let mut set = vec![];
+                    for i in 0..nodes.length() {
+                        let Some(el) = nodes.item(i).and_then(|n| wasm_bindgen::JsCast::dyn_into::<web_sys::Element>(n).ok()) else { continue };
+                        let r = el.get_bounding_client_rect();
+                        if r.right() >= x0 && r.left() <= x1 && r.bottom() >= y0 && r.top() <= y1 {
+                            if let (Some(m), Some(g)) = (el.get_attribute("data-master"), el.get_attribute("data-glyph")) { set.push((m, g)); }
+                        }
+                    }
+                    set.dedup();
+                    c.update(|a| a.select_glyph_set(&set, toggle));
+                }>
+                {move || band.get().map(|(s, e)| view! {
+                    <div class="rubberband" style:left=format!("{}px", s.0.min(e.0)) style:top=format!("{}px", s.1.min(e.1))
+                        style:width=format!("{}px", (s.0 - e.0).abs()) style:height=format!("{}px", (s.1 - e.1).abs())></div>
+                })}
                 {move || {
                     let (masters, cells) = cells();
                     if masters.is_empty() {
@@ -252,6 +301,7 @@ pub fn SpecimenPanel(instances: bool) -> impl IntoView {
                             };
                             view! {
                                 <span class="glyph" class:selected=selected class:selectable=selectable class:has-error=error.is_some()
+                                    data-master=m.clone() data-glyph=g.clone()
                                     title=error.map(|e| format!("{g}: {e}")).unwrap_or_else(|| format!("{g} ({m})"))
                                     on:click=click inner_html=svg></span>
                             }.into_any()
@@ -488,6 +538,10 @@ pub fn InstancePanel() -> impl IntoView {
             }}
         </ul>
         <div class="export">
+            <div class="toolbar">
+                <button on:click=move |_| c.update(|a| a.set_all_export(true))>"Check all"</button>
+                <button on:click=move |_| c.update(|a| a.set_all_export(false))>"Uncheck all"</button>
+            </div>
             <button class="primary" on:click=export title="OTF and UFO of every instance marked for export, in one ZIP">"Export fonts"</button>
         </div>
     }

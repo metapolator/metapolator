@@ -113,3 +113,6 @@ h2 { font-size: 15px; font-weight: 700; margin: 0 0 var(--space); text-transform
 .instances-list li { flex-wrap: wrap; }
 .instances-list li .name, .instances-list li .rename { flex: 1 1 60%; }
 .instances-list li .space { flex: 1 0 100%; padding-left: 18px; }
+.rubberband { position: fixed; border: 1px dashed var(--red); background: rgba(248, 92, 55, 0.08); pointer-events: none; z-index: 5; }
+.panel.specimen .specimen-field { user-select: none; min-height: 200px; }
+.export .toolbar { margin-bottom: 6px; }
