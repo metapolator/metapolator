@@ -712,3 +712,81 @@ impl App {
         Ok((format!("{folder}.zip"), zipio::pack_files(&files)?, errors))
     }
 }
+
+// ------------------------------------------------------------ test support
+
+impl App {
+    /// The state that `tools/js-reference/ui-model-golden.js` records after
+    /// every step: effective Width of every glyph of every master,
+    /// effective Weight of every point of `weight_glyphs`, instance axes.
+    /// Numbers are JS `String(x)`; missing values are null.
+    pub fn ui_snapshot(&self, weight_glyphs: &[String]) -> serde_json::Value {
+        use serde_json::{json, Map, Value as Json};
+        let (w, wt) = (params::param_index("Width").unwrap(), params::param_index("Weight").unwrap());
+        let s = |v: Option<f64>| v.map(|x| Json::String(mp_math::js_num(x))).unwrap_or(Json::Null);
+        let (mut widths, mut weights) = (Map::new(), Map::new());
+        for m in &self.masters {
+            let mut gw = Map::new();
+            for g in self.glyph_names(&m.name) {
+                gw.insert(g.clone(), s(self.params.get(&Elem::Glyph(m.name.clone(), g), w).and_then(|p| p.effective)));
+            }
+            widths.insert(m.name.clone(), Json::Object(gw));
+            let mut pw = Map::new();
+            let mom = self.project.mom();
+            let master = self.project.master_by_name(&m.name);
+            for g in weight_glyphs {
+                let glyph = master.and_then(|mn| mom.node(mn).children.iter().copied().find(|c| mom.node(*c).id.as_deref() == Some(g)));
+                let Some(glyph) = glyph else { continue };
+                let arr: Vec<Json> = mom.node(glyph).children.iter().enumerate().map(|(i, c)| {
+                    Json::Array((0..mom.node(*c).children.len()).map(|j| {
+                        s(self.params.get(&Elem::Point(m.name.clone(), g.clone(), i, j), wt).and_then(|p| p.effective))
+                    }).collect())
+                }).collect();
+                pw.insert(g.clone(), Json::Array(arr));
+            }
+            weights.insert(m.name.clone(), Json::Object(pw));
+        }
+        let instances: Vec<Json> = self.instances.iter().map(|i| json!({
+            "name": i.name,
+            "axes": i.axes.iter().map(|a| json!([a.master, mp_math::js_num(a.axis_value), mp_math::js_num(a.metapolation_value)])).collect::<Vec<_>>(),
+        })).collect();
+        json!({ "widths": widths, "weights": weights, "instances": instances })
+    }
+
+    /// apply one step of `tools/js-reference/ui-model-steps.json`
+    pub fn apply_ui_step(&mut self, step: &serde_json::Value) -> Result<()> {
+        let a = step.as_array().ok_or("a step is an array")?;
+        let level = |v: &serde_json::Value| if v == "master" { Level::Master } else { Level::Glyph };
+        let pid = |v: &serde_json::Value| params::param_index(v.as_str().unwrap_or("")).ok_or("unknown parameter");
+        let oid = |v: &serde_json::Value| params::op_index(v.as_str().unwrap_or("")).ok_or("unknown operator");
+        match a[0].as_str().unwrap_or("") {
+            "selectMasters" => {
+                let names: Vec<&str> = a[1].as_array().ok_or("names")?.iter().filter_map(|x| x.as_str()).collect();
+                for m in self.masters.iter_mut() { m.edit = names.contains(&m.name.as_str()); }
+                self.selected_glyphs.clear();
+            }
+            "selectGlyphs" => {
+                self.selected_glyphs.clear();
+                for p in a[1].as_array().ok_or("pairs")? {
+                    self.select_glyph(p[0].as_str().unwrap_or(""), p[1].as_str().unwrap_or(""), true);
+                }
+            }
+            "set" => {
+                let (p, o) = (pid(&a[2])?, oid(&a[3])?);
+                self.add_operator(level(&a[1]), p, o);
+                self.set_operator_value(level(&a[1]), p, o, a[4].as_f64());
+            }
+            "remove" => { let (p, o) = (pid(&a[2])?, oid(&a[3])?); self.remove_operator(level(&a[1]), p, o); }
+            "duplicate" => { self.duplicate_selected_masters()?; }
+            "designSpace" => self.add_master_to_design_space(a[1].as_str().unwrap_or(""))?,
+            "axes" => {
+                // the drag of the last (non-slack) slider sets the others
+                let id = self.current_instance.ok_or("no current instance")?;
+                let vals = a[1].as_array().ok_or("values")?;
+                self.set_axis_value(id, vals.len() - 1, vals[vals.len() - 1].as_f64().unwrap_or(0.0))?;
+            }
+            other => return Err(format!("unknown step {other}")),
+        }
+        Ok(())
+    }
+}

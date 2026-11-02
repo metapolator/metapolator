@@ -1,0 +1,16 @@
+[package]
+name = "mp-wasm"
+version = "0.1.0"
+description = "Metapolator for JavaScript: a wasm-bindgen API over mp-app"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+mp-app = { path = "../mp-app" }
+serde_json.workspace = true
+wasm-bindgen = "0.2"

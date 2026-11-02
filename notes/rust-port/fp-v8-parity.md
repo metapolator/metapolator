@@ -76,3 +76,13 @@ Consequences: `crates/mp-math/tests/math_tools.rs` is now bit-exact for all
 (`crates/mp-mom/tests/import.rs`) compares all 220604 saved values exactly,
 and the UFO 2 unrounded goldens (`tests/golden/*/<master>.ufo2`) are
 byte-identical. `v8_math` pins 0 mismatches.
+
+## Update 2026-11-02: verified under WASM
+
+`crates/mp-wasm/tests/node/run.sh` builds `mp-wasm` for
+`wasm32-unknown-unknown` (wasm-pack 0.14.0, `--target nodejs`, wasm-opt)
+and replays the UI model golden (`tests/golden-ui-model/default-project`)
+under Node v20.19.2. Every effective parameter value of the 19 snapshots
+matches V8 exactly, and so do all 531 export files (unrounded UFO 2 and OTF
+of two masters and a metapolated instance), byte for byte. The pure-Rust V8
+ports give the same bits on wasm32 as natively and as V8.
