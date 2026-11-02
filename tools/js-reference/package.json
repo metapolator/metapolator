@@ -1,0 +1,9 @@
+{
+  "name": "metapolator-js-reference",
+  "private": true,
+  "description": "Node-side deps of the golden-output harness (the engine itself is in app/lib/bower_components, see fetch-deps.sh)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "jsdom": "24.1.3"
+  }
+}

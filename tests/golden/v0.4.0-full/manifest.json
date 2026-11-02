@@ -1,0 +1,7 @@
+{
+  "project": "tests/fixtures/v0.4.0-full",
+  "masters": [
+    "base-regular",
+    "master-regular"
+  ]
+}

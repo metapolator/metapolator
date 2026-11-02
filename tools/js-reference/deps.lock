@@ -1,0 +1,30 @@
+# name url commit -- JS reference deps, pinned to the code deployed as Metapolator v0.4.0
+# (engine repos: last commit <= 2016-05-10; checked by verify-pins.js). See README.md.
+Atem-CPS https://github.com/graphicore/Atem-CPS.git ffa583603fab7624808e84643d631f6bed752ca0
+Atem-CPS-Toolkit https://github.com/graphicore/Atem-CPS-Toolkit.git baadb6f844312f07ab931da09fcac51cc77c952d
+Atem-CPS-whitelisting https://github.com/graphicore/Atem-CPS-whitelisting.git 6aac3331176300dacf8d7296d7a1cdacc3b3446e
+Atem-Errors https://github.com/graphicore/Atem-Errors.git 1722f0f0512d2704a165d74fad9855d815b23c8f
+Atem-IO https://github.com/graphicore/Atem-IO.git 2817015aeaea5f34ea7d9cf0d0fb684008cb3836
+Atem-Logging https://github.com/graphicore/Atem-Logging.git 68f60afbf5b8808c08e082b902dcd98ccd16ee99
+Atem-Math-Tools https://github.com/graphicore/Atem-Math-Tools.git afc0545b73fa0952224138f809dcad4c2673d7e0
+Atem-MOM https://github.com/graphicore/Atem-MOM.git 8bbefbfa5ba95c52de958abb99aa9fb249f333c5
+Atem-MOM-Toolkit https://github.com/graphicore/Atem-MOM-Toolkit.git 387961d0ed8647fa77e671b7f1f74e71d5c5e243
+Atem-Pen-Case https://github.com/graphicore/Atem-Pen-Case.git 456b7b82941cdd362128a3081a30bddb054fe055
+Atem-Property-Language https://github.com/graphicore/Atem-Property-Language.git a28f3c9f58275df433d31ed99657ce11591b1399
+Atem-RequireJS-Config https://github.com/graphicore/Atem-RequireJS-Config.git df91858563fbb6c9cb05724d6a1a37261bd77f29
+bloomfilter.js https://github.com/graphicore/bloomfilter.js.git 5dba2abe4f1211d6c2f103d34356c7926309df94
+complex https://github.com/graphicore/complex.git db027db193069a2651727db73b6ab58a6eb65c45
+event-emitter.js https://github.com/jaridmargolin/event-emitter.js.git d3281cdca8d65fffb2332eeb5bb02b4f12b8b7aa
+gonzales https://github.com/graphicore/gonzales.git d5156c366b10f325aad0200959a299b53ef4cd46
+js-yaml https://github.com/nodeca/js-yaml.git 37caaad57dc37d350d9a4577a5da53f482bb2983
+jszip https://github.com/Stuk/jszip.git a4138a23cb9b8eb773c19af7d36d5ce2bcf4bfda
+metapolator-cpsLib https://github.com/metapolator/metapolator-cpsLib.git 158f6e1d06afb2d0d2e27ca9e7925a07886437d8
+mustache.js https://github.com/janl/mustache.js.git 49714ba8ae0035ee5461eac42ba5f53ff5c0f86a
+obtainJS https://github.com/graphicore/obtainJS.git cd75efdc6f1cd3aa39a42254f8f0bd0a363e01b2
+opentype.js https://github.com/opentypejs/opentype.js.git bce15392e3c42cf279914cafa1e61a8dc6d418ed
+requirejs https://github.com/requirejs/requirejs.git 042628d72a9be906f9e79c8e1965439c2beb946b
+requirejs-domReady https://github.com/requirejs/domReady.git c74caaa6dac64f2f47093f4952b991390406adfb
+requirejs-text https://github.com/requirejs/text.git 3f9d4c19b3a1a3c6f35650c5788cbea1db93197a
+r.js https://github.com/requirejs/r.js.git 13c11deea71755743c98c14ca66cd3b54df9b849
+ufoJS https://github.com/graphicore/ufoJS.git 8ccd2311bd45c6c9afa81b0de1e9b6596c802f25
+util-logging-amd https://github.com/graphicore/util-logging-amd.git 5dacdd09353d582dba61df8ba83af1dddc7e65f3

@@ -1,0 +1,10 @@
+{
+  "project": "tests/fixtures/v0.4.0-min",
+  "masters": [
+    "base-identity",
+    "base-regular",
+    "insance-0",
+    "master-identity",
+    "master-regular"
+  ]
+}

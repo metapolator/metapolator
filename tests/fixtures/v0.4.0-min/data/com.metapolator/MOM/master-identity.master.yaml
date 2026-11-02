@@ -1,0 +1,5 @@
+base: base-identity
+data:
+  .:
+    attachment:
+      cpsFile: master-identity.master.cps

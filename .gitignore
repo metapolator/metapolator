@@ -3,3 +3,4 @@ npm-debug.log
 .tern-port
 app/lib/bower_components
 
+/tools/js-reference/node_modules
