@@ -5,7 +5,10 @@
 // move a slider, export, and checks the page at every step.
 //
 //   crates/mp-ui/tests/e2e/run.sh   (builds the UI, serves it, runs this)
-//   node --experimental-websocket smoke.js URL OUTDIR
+//   node --experimental-websocket smoke.js URL OUTDIR [MASTER]
+//
+// With MASTER, it only checks that the page opens the project served by
+// `metapolator serve <project>` (MASTER must be listed).
 //
 // OUTDIR receives screenshots and the downloaded export bundle.
 "use strict";
@@ -13,7 +16,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const URL_ = process.argv[2], OUT = path.resolve(process.argv[3]);
+const URL_ = process.argv[2], OUT = path.resolve(process.argv[3]), EXPECT_MASTER = process.argv[4];
 fs.mkdirSync(OUT, { recursive: true });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -63,6 +66,17 @@ async function main() {
         await send('Page.enable');
         await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: OUT, eventsEnabled: true });
         await send('Page.navigate', { url: URL_ });
+        if (EXPECT_MASTER) {
+            // `metapolator serve <project>`: the UI opens the served project
+            await until('the served project', `Array.from(document.querySelectorAll('.masters-list .name')).some(e => e.textContent === ${JSON.stringify(EXPECT_MASTER)})`);
+            await until('its glyphs', `document.querySelectorAll('.panel.specimen .glyph svg').length > 0`);
+            await shot('served-project');
+            check('the served project opens: ' + await js(`document.querySelector('.status').textContent`), true);
+            check('no errors in the console' + (errors.length ? ': ' + errors.join(' | ') : ''), errors.length === 0);
+            process.exitCode = failed ? 1 : 0;
+            console.log(failed ? `${failed} check(s) failed` : 'OK: all checks passed');
+            return;
+        }
         await until('the app starts', `document.querySelectorAll('.specimen-field .glyph svg path').length > 5`);
         await js(helpers);
         check('demo master rendered: ' + await js(`$$('.panel.specimen .glyph').length`) + ' glyphs', await js(`$$('.panel.specimen .glyph').length === 11`));

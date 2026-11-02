@@ -48,7 +48,28 @@ fn percent_decode(s: &str) -> Option<String> {
     String::from_utf8(out).ok()
 }
 
-fn handle(root: &Path, mut stream: TcpStream) -> std::io::Result<()> {
+/// the project directory as a ZIP whose top level directory is
+/// `project/` (what `App::from_project_zip` reads); dot files and
+/// directories (`.git`) are left out
+pub fn project_zip(dir: &Path) -> Result<Vec<u8>, String> {
+    fn walk(base: &Path, p: &Path, out: &mut Vec<(String, Vec<u8>)>) -> Result<(), String> {
+        let mut entries: Vec<_> = std::fs::read_dir(p).map_err(|e| format!("{}: {e}", p.display()))?
+            .filter_map(|e| e.ok()).map(|e| e.path()).collect();
+        entries.sort();
+        for e in entries {
+            if e.file_name().and_then(|n| n.to_str()).map(|n| n.starts_with('.')).unwrap_or(true) { continue; }
+            if e.is_dir() { walk(base, &e, out)?; continue; }
+            let rel = e.strip_prefix(base).unwrap().to_string_lossy().replace('\\', "/");
+            out.push((format!("project/{rel}"), std::fs::read(&e).map_err(|x| format!("{}: {x}", e.display()))?));
+        }
+        Ok(())
+    }
+    let mut files = vec![];
+    walk(dir, dir, &mut files)?;
+    mp_app::zipio::pack_files(&files)
+}
+
+fn handle(root: &Path, project: Option<&Path>, mut stream: TcpStream) -> std::io::Result<()> {
     let mut reader = BufReader::new(stream.try_clone()?);
     let mut line = String::new();
     reader.read_line(&mut line)?;
@@ -65,6 +86,13 @@ fn handle(root: &Path, mut stream: TcpStream) -> std::io::Result<()> {
     if method != "GET" && method != "HEAD" {
         return reply(&mut stream, "405 Method Not Allowed", "text/plain", b"method not allowed\n", false);
     }
+    if url.split('?').next() == Some("/project.zip") {
+        return match project.map(project_zip) {
+            Some(Ok(zip)) => reply(&mut stream, "200 OK", "application/zip", &zip, method == "HEAD"),
+            Some(Err(e)) => reply(&mut stream, "500 Internal Server Error", "text/plain", e.as_bytes(), method == "HEAD"),
+            None => reply(&mut stream, "404 Not Found", "text/plain", b"no project\n", method == "HEAD"),
+        };
+    }
     match resolve(root, url) {
         Some(file) => {
             let body = std::fs::read(&file)?;
@@ -74,16 +102,24 @@ fn handle(root: &Path, mut stream: TcpStream) -> std::io::Result<()> {
     }
 }
 
-pub fn serve(root: &Path, addr: &str) -> Result<(), String> {
+pub fn serve(root: &Path, project: Option<&Path>, addr: &str) -> Result<(), String> {
     if !root.join("index.html").is_file() {
         return Err(format!("{} has no index.html; build the UI with tools/build-ui.sh", root.display()));
     }
     let listener = TcpListener::bind(addr).map_err(|e| format!("{addr}: {e}"))?;
-    println!("Metapolator: http://{}/  (serving {}; Ctrl-C stops)", listener.local_addr().map_err(|e| e.to_string())?, root.display());
+    if let Some(p) = project {
+        project_zip(p)?; // fail early on an unreadable project
+        if !p.join("data/com.metapolator/project.yaml").is_file() {
+            return Err(format!("{} is not a Metapolator project (no data/com.metapolator/project.yaml)", p.display()));
+        }
+    }
+    println!("Metapolator: http://{}/  (UI: {}; project: {}; Ctrl-C stops)", listener.local_addr().map_err(|e| e.to_string())?,
+             root.display(), project.map(|p| p.display().to_string()).unwrap_or_else(|| "the demo".into()));
     for stream in listener.incoming() {
         let Ok(stream) = stream else { continue };
         let root = root.to_path_buf();
-        std::thread::spawn(move || { let _ = handle(&root, stream); });
+        let project = project.map(Path::to_path_buf);
+        std::thread::spawn(move || { let _ = handle(&root, project.as_deref(), stream); });
     }
     Ok(())
 }

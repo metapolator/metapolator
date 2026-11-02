@@ -48,6 +48,20 @@ fn Metapolator() -> impl IntoView {
     let app = App::with_default_project().unwrap_or_else(|e| panic!("default project: {e}"));
     let ctx = Ctx { app: StoredValue::new_local(app), rev: RwSignal::new(0), status: RwSignal::new(None) };
     provide_context(ctx);
+    // `metapolator serve <project>` offers the project as project.zip
+    // (the AngularJS app loaded it from /project via REST)
+    leptos::task::spawn_local(async move {
+        let Some(w) = web_sys::window() else { return };
+        let Ok(resp) = wasm_bindgen_futures::JsFuture::from(w.fetch_with_str("project.zip")).await else { return };
+        let resp: web_sys::Response = wasm_bindgen::JsCast::unchecked_into(resp);
+        if !resp.ok() { return; }
+        let Ok(buf) = resp.array_buffer() else { return };
+        let Ok(buf) = wasm_bindgen_futures::JsFuture::from(buf).await else { return };
+        match App::from_project_zip(&js_sys::Uint8Array::new(&buf).to_vec()) {
+            Ok(app) => { ctx.replace(app); ctx.info("Opened the project served by `metapolator serve`.") }
+            Err(e) => ctx.error(format!("The served project could not be opened: {e}")),
+        }
+    });
     view! {
         <panels::Menubar/>
         <main class="landscape">

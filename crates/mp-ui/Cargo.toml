@@ -17,4 +17,4 @@ wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 console_error_panic_hook = "0.1"
-web-sys = { version = "0.3", features = ["Blob", "BlobPropertyBag", "Url", "HtmlAnchorElement", "HtmlInputElement", "File", "FileList", "Document", "Window", "Element", "KeyboardEvent", "MouseEvent", "Event", "EventTarget", "HtmlElement", "NodeList", "DomRect"] }
+web-sys = { version = "0.3", features = ["Blob", "BlobPropertyBag", "Url", "HtmlAnchorElement", "HtmlInputElement", "File", "FileList", "Document", "Window", "Element", "KeyboardEvent", "MouseEvent", "Event", "EventTarget", "HtmlElement", "NodeList", "DomRect", "Response"] }

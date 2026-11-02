@@ -9,6 +9,10 @@
 and the exit status is 0. The last check fails on any exception or
 `console.error` in the page.
 
-**Recorded (2026-11-02, Chromium headless, Node v20.19.2):** 12 checks ok.
+Then `run.sh` serves a project made with the CLI (`init`, `import-ui` of the
+Merriweather light subset) with `metapolator serve <project>` and checks that
+the UI opens it (`master-light` listed, glyphs drawn).
+
+**Recorded (2026-11-02, Chromium headless, Node v20.19.2):** 12 + 2 checks ok.
 The slider check expects the axes to read `10.0 · 10%` and `90.0 · 90%`
 after the second slider is set to 90, because the slack master follows it.

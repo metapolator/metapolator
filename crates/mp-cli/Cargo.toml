@@ -15,4 +15,5 @@ path = "src/main.rs"
 mp-cps = { path = "../mp-cps" }
 mp-io = { path = "../mp-io" }
 mp-mom = { path = "../mp-mom" }
+mp-app = { path = "../mp-app" }
 serde_json.workspace = true

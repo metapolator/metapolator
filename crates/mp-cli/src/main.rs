@@ -30,18 +30,24 @@ Commands:
   get <[project/]master> <selector> <property> [<property> ...]
                                          print computed CPS values
   query <[project/]master> <selector>    list the nodes a selector matches
-  serve [dir] [--addr host:port]         serve the web UI (default dir:
-                                         target/ui, built by tools/build-ui.sh;
-                                         default address 127.0.0.1:8080)
+  serve [project] [-p port] [--addr host:port] [--ui dir]
+                                         serve the web UI, opening <project>
+                                         (default: the demo project); --ui:
+                                         the built UI (default target/ui, see
+                                         tools/build-ui.sh); default address
+                                         127.0.0.1:8080
   help                                   this text
 ";
 
 mod serve;
 
 fn cmd_serve(mut args: Vec<String>) -> R {
-    let addr = take_option(&mut args, &["--addr"])?.unwrap_or_else(|| "127.0.0.1:8080".into());
-    let dir = args.first().cloned().unwrap_or_else(|| "target/ui".into());
-    serve::serve(std::path::Path::new(&dir), &addr)
+    let port = take_option(&mut args, &["-p", "--port"])?;
+    let addr = take_option(&mut args, &["--addr"])?
+        .unwrap_or_else(|| format!("127.0.0.1:{}", port.as_deref().unwrap_or("8080")));
+    let ui = take_option(&mut args, &["--ui"])?.unwrap_or_else(|| "target/ui".into());
+    let project = args.first().map(std::path::PathBuf::from);
+    serve::serve(std::path::Path::new(&ui), project.as_deref(), &addr)
 }
 
 fn split_master(arg: &str) -> (String, String) {

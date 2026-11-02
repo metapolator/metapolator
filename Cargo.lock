@@ -995,6 +995,7 @@ dependencies = [
 name = "mp-cli"
 version = "0.1.0"
 dependencies = [
+ "mp-app",
  "mp-cps",
  "mp-io",
  "mp-mom",

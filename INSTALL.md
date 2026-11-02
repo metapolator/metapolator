@@ -52,8 +52,12 @@ Build it into `target/ui` and serve it:
     $ target/release/metapolator serve
 
 Then open <http://127.0.0.1:8080/>. The UI starts with the demo project of
-Metapolator v0.4.0. Everything happens in the browser; use *Save* and
-*Open…* in the menubar to keep a project as a ZIP file. `target/ui` is a
+Metapolator v0.4.0. To open a project from disk instead, name it:
+
+    $ target/release/metapolator serve myfont -p 8080
+
+Everything happens in the browser and nothing is written back to disk; use
+*Save* and *Open…* in the menubar to keep a project as a ZIP file. `target/ui` is a
 static site: any web server can host it (the `.wasm` file must be served
 as `application/wasm`).
 
