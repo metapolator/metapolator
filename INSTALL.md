@@ -1,92 +1,91 @@
-
 Metapolator Developer Installation Notes
 ========================================
 
-These install instructions are for developers. 
-There are live demos at the Metapolator project site, [metapolator.com](http://metapolator.com)
+These instructions are for developers. Metapolator is written in Rust: the
+engine, a command line interface, and a web UI that runs as WebAssembly in
+the browser. (Until v0.4 it was JavaScript: Node, bower and AngularJS. The
+JS code that the port is tested against is kept reproducible in
+`tools/js-reference/`.)
 
 
 Prerequisites
 -------------
 
-Expect you to have the following software installed:
-
 - [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org) and it's build in Node Package Manager (npm)
-- [Node Version Manager](https://github.com/creationix/nvm) (nvm)
+- [Rust](https://rustup.rs/) 1.80 or newer, with the WebAssembly target:
+
+      $ rustup target add wasm32-unknown-unknown
+
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/), for the web UI:
+
+      $ cargo install wasm-pack
+
 
 Get the code
 ------------
 
-Clone the Metapolator repository with the `--recursive` flag. 
-This will also clone the needed submodules:
-
-    $ git clone --recursive  git@github.com:metapolator/metapolator.git
-
-If you have the code already but forgot about the submodules, then get the submodules with:
-
-    $ cd metapolator
-    $ git submodule update --init --recursive
-
-
-Install
--------
-
-Make metapolator your current directory:
-
+    $ git clone --recursive https://github.com/metapolator/metapolator.git
     $ cd metapolator
 
-To download, compile and install the latest v0.10.x release of node:
-
-    $ nvm install 0.10
-
-Next time you can just use the right node version:
-
-    $ nvm use 0.10
-
-Double check the node version:
-
-    $ node --version
-    v0.10.xx
-
-Install:
-
-    $ npm install
-
-Test:
-
-    $ npm test
+`--recursive` also clones the example submodules (`examples/Canola-*`). They
+are in the project format from before v0.4 and are not loaded by the
+current code.
 
 
-Start Metapolator
------------------
+Build and test
+--------------
 
-Metapolator is both a command line interface and a web-based graphical user interface. 
-`metapolator` lives in `bin`. For all possible commands:
+    $ cargo build --release
+    $ cargo test --release
 
-    $ bin/metapolator help
+The tests compare the Rust output with golden files made by the original
+JavaScript engine (`tests/golden*`). See `notes/rust-port/PLAN.md` for what
+is checked, and `tools/js-reference/README.md` for how the goldens are made.
 
-To initialise a new project, which creates an Unified Font Object (UFO):
 
-    $ bin/metapolator init myfont
+The web UI
+----------
 
-Then start serving the Metapolator GUI:
+Build it into `target/ui` and serve it:
 
-    $ bin/metapolator serve -p 8080 myfont
+    $ tools/build-ui.sh
+    $ target/release/metapolator serve
 
-Open `127.0.0.1:8080` in a browser. 
-Note: Firefox works out of the box. 
-If you are using Chromium (or Google Chrome), you should run it as:
+Then open <http://127.0.0.1:8080/>. The UI starts with the demo project of
+Metapolator v0.4.0. Everything happens in the browser; use *Save* and
+*Open…* in the menubar to keep a project as a ZIP file. `target/ui` is a
+static site: any web server can host it (the `.wasm` file must be served
+as `application/wasm`).
 
-    $ chromium --js-flags="--harmony_proxies"
+A headless browser test: `crates/mp-ui/tests/e2e/run.sh` (needs Chromium
+and Node 20 or newer).
 
-The graphical user interface will be visible. 
-The `myfont` doesn't contain glyphs, but we confirmed that the GUI works! 
-Stop the server by pressing `Ctrl + C` and try the example font named `Canola`:
 
-    $ bin/metapolator serve -p examples/Canola-min
+The command line
+----------------
 
-You might need to delete the `.git` in `Canola-min` directory. 
-See https://github.com/metapolator/metapolator/issues/634
+    $ target/release/metapolator help
 
-    $ rm -r examples/Canola-min/.git
+For example, create a project, import a UFO the way the UI does, and
+export the editable master as OTF and as UFO:
+
+    $ target/release/metapolator init myfont
+    $ target/release/metapolator import-ui data/fonts/subsets/Merriweather-Light-Subset-nop.ufo myfont --name light
+    $ target/release/metapolator export myfont/master-light light.otf myfont/master-light light.ufo
+
+
+Code layout
+-----------
+
+| crate     | what it is                                                                                   |
+|-----------|----------------------------------------------------------------------------------------------|
+| `mp-math` | vectors, transforms, Hobby splines; exact ports of V8's `Math` functions                     |
+| `mp-cps`  | CPS: the CSS-like parser, selectors, the property language, the cascade                      |
+| `mp-io`   | the virtual file system (memory, disk)                                                       |
+| `mp-ufo`  | UFO reading and writing (GLIF, plist)                                                        |
+| `mp-otf`  | the OpenType writer (port of opentype.js 0.6.3)                                              |
+| `mp-mom`  | the Metapolator Object Model, projects, the CPS library, rendering, import and export        |
+| `mp-app`  | the UI model: masters, design spaces, instances, parameters, specimen; zip import and export |
+| `mp-cli`  | the `metapolator` command                                                                    |
+| `mp-wasm` | a JavaScript API (wasm-bindgen) over `mp-app`                                                |
+| `mp-ui`   | the web UI (Leptos)                                                                          |

@@ -10,7 +10,7 @@
 "use strict";
 var path = require('path')
   , ROOT = path.resolve(__dirname, '..', '..', '..', '..')
-  , BOWER = path.join(ROOT, 'app', 'lib', 'bower_components')
+  , BOWER = path.join(ROOT, 'tools', 'js-reference', 'legacy', 'app', 'lib', 'bower_components')
   , requirejs = require(path.join(BOWER, 'r.js', 'dist', 'r.js'))
   ;
 requirejs.config({

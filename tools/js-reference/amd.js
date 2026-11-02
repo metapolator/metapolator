@@ -8,7 +8,9 @@
 "use strict";
 var path = require('path')
   , ROOT = path.resolve(__dirname, '..', '..')
-  , BOWER = path.join(ROOT, 'app', 'lib', 'bower_components')
+    // the pre-port JS app and its libraries (fetch-deps.sh)
+  , APP = path.join(__dirname, 'legacy', 'app')
+  , BOWER = path.join(APP, 'lib', 'bower_components')
   , requirejs = require(path.join(BOWER, 'r.js', 'dist', 'r.js'))
   , Module = require('module')
   , NODE_SHIMS = { lie: Promise }
@@ -35,7 +37,7 @@ Module._load = function(request) {
     global.XSLTProcessor = undefined;
 })();
 
-requirejs.config({ baseUrl: path.join(ROOT, 'app', 'lib') });
+requirejs.config({ baseUrl: path.join(APP, 'lib') });
 
 var configured = null;
 function configure() {
@@ -43,7 +45,7 @@ function configure() {
         configured = new Promise(function(resolve, reject) {
             requirejs(['bower_components/Atem-RequireJS-Config/nodeConfig'], function(configureFn) {
                 configureFn({
-                    baseUrl: path.join(ROOT, 'app', 'lib')
+                    baseUrl: path.join(APP, 'lib')
                   , bowerPrefix: 'bower_components'
                   , paths: { metapolator: './' }
                 }, requirejs);
@@ -57,6 +59,9 @@ function fail(err) { console.error(err && err.stack || err); process.exit(1); }
 
 exports.ROOT = ROOT;
 exports.BOWER = BOWER;
+// BOWER relative to ROOT, the working directory of the harness scripts
+// (Atem-IO Mounting strips a leading '/' from pathOffset)
+exports.BOWER_REL = path.relative(ROOT, BOWER);
 exports.requirejs = requirejs;
 exports.require = function(deps, callback) {
     configure().then(function() {

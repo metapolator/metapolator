@@ -1,5 +1,7 @@
 //! The Metapolator application model, independent of any GUI toolkit:
-//! a port of `app/lib/models/metapolator` (AppModel, master/instance
+//! a port of the JS app's `app/lib/models/metapolator` (removed from the
+//! tree; `tools/js-reference/fetch-deps.sh` restores it into
+//! `tools/js-reference/legacy/`) (AppModel, master/instance
 //! sequences, design spaces) and the UI tools that drive the engine
 //! (`ui-tools/instanceTools`, `selectionTools`, the master and instance
 //! panels' import/export code).

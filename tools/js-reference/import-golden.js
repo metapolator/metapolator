@@ -41,9 +41,9 @@ amd.require([
           , mem = new InMemory()
           , mounts = [
                 { io: diskIO, mountPoint: 'lib/MOM'
-                , pathOffset: 'app/lib/bower_components/Atem-MOM/lib/cpsLib' }
+                , pathOffset: amd.BOWER_REL + '/Atem-MOM/lib/cpsLib' }
               , { io: diskIO, mountPoint: 'lib/metapolator'
-                , pathOffset: 'app/lib/bower_components/metapolator-cpsLib/lib' }
+                , pathOffset: amd.BOWER_REL + '/metapolator-cpsLib/lib' }
             ]
           , project, master, target = path.join(outDir, name)
           ;

@@ -7,14 +7,19 @@ regenerate them.
 
 Most of the engine never lived in this repo. It came in through bower from
 graphicore's Atem-* libraries, ufoJS, obtainJS and metapolator-cpsLib. These
-are fetched into `app/lib/bower_components/` (git-ignored), pinned to the code
-that was **actually deployed as Metapolator v0.4.0**.
+are fetched into `legacy/app/lib/bower_components/` (git-ignored), pinned to
+the code that was **actually deployed as Metapolator v0.4.0**.
+
+The AngularJS app itself (`app/`) was deleted from the tree when the Rust UI
+replaced it. `fetch-deps.sh` restores it from git history (commit
+`f7aecce7`, upstream master, the base of the port) into `legacy/app/`, next
+to the libraries. All harness scripts load the JS from there.
 
 ## Scripts
 
 | script                     | question it answers / what it does                                                                                                                                                                                                                                                         | run                                                                                      |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| `fetch-deps.sh`            | Recreates `app/lib/bower_components/` from `deps.lock` at the pinned commits. Replaces `npm install && bower install`; the unpinned `>=` bower ranges no longer resolve to a working set.                                                                                                  | `tools/js-reference/fetch-deps.sh`                                                       |
+| `fetch-deps.sh`            | Recreates `legacy/app/` (the pre-port JS app, from git history) and `legacy/app/lib/bower_components/` from `deps.lock` at the pinned commits. Replaces `npm install && bower install`; the unpinned `>=` bower ranges no longer resolve to a working set.                                 | `tools/js-reference/fetch-deps.sh`                                                       |
 | `deps.lock`                | `name url commit` for every JS dependency. Engine repos are pinned to their last commit on or before 2016-05-10, the v0.4.0 release/deploy date.                                                                                                                                           | –                                                                                        |
 | `verify-pins.js`           | *Are the pinned checkouts the code that was deployed as v0.4.0?* Compares them with the minified r.js bundle on upstream `gh-pages` (`v0.4.0/min/main.js`), module by module, using string literals.                                                                                       | see below                                                                                |
 | `extract-fixtures.sh`      | Extracts the v0.4.0 demo projects (`min`, `full`) from upstream `gh-pages` into `tests/fixtures/`.                                                                                                                                                                                         | `tools/js-reference/extract-fixtures.sh min full`                                        |
@@ -64,7 +69,7 @@ work together. Every CPS lookup failed with
   addon that does not build on current Node. Instead we expose a current
   jsdom `window` (`DOMParser`, `XMLSerializer`, `XPathEvaluator`) as
   globals, so ufoJS takes its browser ("w3c") branch.
-- **In-memory project copy.** As in `app/lib/main.js`, the project is copied
+- **In-memory project copy.** As in the app's `lib/main.js`, the project is copied
   into an `InMemory` IO before loading. `Project` writes `log.yaml` into the
   project directory, and `UFOWriter` refuses to export into an existing
   directory.
@@ -113,3 +118,11 @@ reports as undefined right after the duplication (bug 17). All 531 export
 files (unrounded UFO 2 and OTF of `master-regular`, `master-0-1` and
 `instance-0`) are byte-identical, and so is `glyphsOut` for all 8 specimen
 cases. Two JS runs gave identical output (`diff -r`).
+
+## After the JS app left the tree (2026-11-02)
+
+With the harness loading from `legacy/`, `regen-golden.sh`,
+`regen-workflow-golden.sh` and `regen-ui-model-golden.sh` regenerate
+`tests/golden`, `tests/golden-workflow` and `tests/golden-ui-model` byte
+for byte (`git status` stays clean), and `verify-pins.js` still reports
+`154 match, 0 differ/missing`.

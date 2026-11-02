@@ -117,19 +117,16 @@ $ git rebase upstream/master
 #### Step 5: Test
 
 Bug fixes and features **should come with tests**. 
-Add your tests in the `app/tests/` directory. 
-Look at other tests to see how they should be structured (license boilerplate, common includes, etc)
+Add them next to the code: unit tests in the module, integration tests in
+the crate's `tests/` directory (see `crates/*/tests/README.md` for what the
+existing ones check, and the license boilerplate). Where behaviour must
+match the original JavaScript, extend a golden in `tools/js-reference/`.
 
-Run the tests as standard with npm:
+Run the tests with cargo (see [INSTALL.md](INSTALL.md)):
 
 ```text
-$ git clone --depth=50 https://github.com/metapolator/metapolator.git metapolator/metapolator
-$ cd metapolator/metapolator
-$ git submodule init
-$ git submodule update
-$ nvm install 0.10
-$ npm install 
-$ npm test
+$ cargo test --release
+$ tools/build-ui.sh && crates/mp-ui/tests/e2e/run.sh   # the web UI, in Chromium
 ```
 
 #### Step 6: Push and Pull Request

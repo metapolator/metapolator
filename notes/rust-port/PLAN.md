@@ -51,17 +51,18 @@ Interpolation and metapolation are *generated* CPS
 
 ## Crates (Cargo workspace at repo root, `crates/`)
 
-| crate        | depends on             | notes                                                                                                         |
-|--------------|------------------------|---------------------------------------------------------------------------------------------------------------|
-| `mp-math`    | –                      | f64 semantics must match V8. See "Floating point" below.                                                      |
-| `mp-pens`    | mp-math                | Port only the pens actually used by the renderer and exporters.                                               |
-| `mp-cps`     | mp-math                | Hand-written CPS tokenizer and parser, replacing gonzales. The OMA tree is generic over node kinds.           |
-| `mp-mom`     | mp-cps, mp-pens, norad | MOM node kinds, UFO importer, renderer, exporters (UFO via norad, OTF via `write-fonts`).                     |
-| `mp-io`      | –                      | `trait Io`, `InMemory`, std-fs and (wasm) fetch backends, mounting.                                           |
-| `mp-project` | mp-mom, mp-io          | persistence (yaml via `serde_yaml`), sessions, derived masters, CPS generators (templating replaces mustache) |
-| `mp-cli`     | mp-project             | replaces `bin/metapolator-*`: `export`, `import`, `init`, …                                                   |
-| `mp-wasm`    | mp-project             | `wasm-bindgen` API boundary                                                                                   |
-| `mp-ui`      | mp-wasm (or direct)    | Rust web UI (Leptos, CSR, `trunk`). Re-implements the panels of `app/lib/ui/metapolator`.                     |
+| crate     | depends on             | notes                                                                                                                                                    |
+|-----------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `mp-math` | –                      | f64 semantics must match V8. See "Floating point" below.                                                                                                 |
+| `mp-cps`  | mp-math                | Hand-written CPS tokenizer and parser, replacing gonzales. The OMA tree is generic over node kinds.                                                      |
+| `mp-mom`  | mp-cps, mp-ufo, mp-otf | MOM node kinds, projects (persistence, sessions, derived masters, CPS generators), UFO importer, renderer, exporters. The pens live where they are used. |
+| `mp-ufo`  | mp-math                | UFO/GLIF/plist reading and writing, serialized exactly like ufoJS (norad's output differs).                                                              |
+| `mp-otf`  | –                      | port of the opentype.js 0.6.3 writer (`write-fonts` output differs byte-wise).                                                                           |
+| `mp-io`   | –                      | `trait Io`, `InMemory`, std-fs and (wasm) fetch backends, mounting.                                                                                      |
+| `mp-app`  | mp-mom                 | the UI model (`app/lib/models` + ui-tools): masters, design spaces, instances, parameters, specimen, zips.                                               |
+| `mp-cli`  | mp-mom                 | replaces `bin/metapolator-*`: `export`, `import`, `init`, …, `serve`                                                                                     |
+| `mp-wasm` | mp-app                 | `wasm-bindgen` API boundary                                                                                                                              |
+| `mp-ui`   | mp-app                 | Rust web UI (Leptos, CSR, built with wasm-pack by `tools/build-ui.sh`). Re-implements the panels of the AngularJS UI.                                    |
 
 ## Parity strategy
 
@@ -93,21 +94,21 @@ everywhere, so only the transcendental functions matter.
 
 ## Phases
 
-| #   | phase                                                                                   | done when                                                                                                          |
-|-----|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
-| 0   | JS reference harness, fixtures, goldens                                                 | **done** (`782866aa`)                                                                                              |
-| 1   | workspace + `mp-math` (+ fp facade measurement)                                         | **done** (`9358e547`, `afc1914d`): see `crates/mp-math/tests/README.md`                                            |
-| 2   | `mp-cps`: parser, selectors, cascade, property language                                 | **done** (`f8c8d89a`): gonzales + Atem-CPS parsing are differentially equal on 166 sources (crates/mp-cps/tests)   |
-| 3   | `mp-mom` model + project loading (`mp-io`, `mp-project`)                                | **done** (`53b72264`): crates mp-mom (project loading is in it) and mp-io                                          |
-| 4   | renderer + UFO export                                                                   | **done** (`53b72264`): 429/429 golden files **byte-identical** (crates/mp-mom/tests)                               |
-| 5   | UFO import (skeleton inference), derived masters, generators, OTF export                | import → export round trip matches JS on `data/fonts/subsets/*.ufo`                                                |
-| 6   | `mp-cli`                                                                                | feature parity with the useful parts of `bin/`                                                                     |
-| 7   | `mp-wasm` + `mp-ui`                                                                     | the v0.4.0 demo workflow works in the browser: masters, design space, instances, specimen, parameter edits, export |
-| 8   | delete JS (`app/`, `bower.json`, `package.json`, `bin/` scripts), update README/INSTALL | `tools/js-reference` is the only JS left                                                                           |
+| #   | phase                                                                                   | done when                                                                                                                                                                                                                                                  |
+|-----|-----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0   | JS reference harness, fixtures, goldens                                                 | **done** (`782866aa`)                                                                                                                                                                                                                                      |
+| 1   | workspace + `mp-math` (+ fp facade measurement)                                         | **done** (`9358e547`, `afc1914d`): see `crates/mp-math/tests/README.md`                                                                                                                                                                                    |
+| 2   | `mp-cps`: parser, selectors, cascade, property language                                 | **done** (`f8c8d89a`): gonzales + Atem-CPS parsing are differentially equal on 166 sources (crates/mp-cps/tests)                                                                                                                                           |
+| 3   | `mp-mom` model + project loading (`mp-io`, `mp-project`)                                | **done** (`53b72264`): crates mp-mom (project loading is in it) and mp-io                                                                                                                                                                                  |
+| 4   | renderer + UFO export                                                                   | **done** (`53b72264`): 429/429 golden files **byte-identical** (crates/mp-mom/tests)                                                                                                                                                                       |
+| 5   | UFO import (skeleton inference), derived masters, generators, OTF export                | **done** (`3842869d`, `052b8f23`, `75c50caf`): import of every `data/fonts` UFO saves 220604 values identical to JS; all exports, OTF included, byte-identical (crates/mp-mom/tests)                                                                       |
+| 6   | `mp-cli`                                                                                | **done** (`7c6ab40c`): `metapolator` init/import/import-ui/export/interpolate/delete/list/get/query/serve; the UI workflow golden matches (crates/mp-mom/tests/workflow.rs)                                                                                |
+| 7   | `mp-wasm` + `mp-ui`                                                                     | **done** (`4747423d`, `8446c285`, `38a0532b`, `fd878670`): `mp-app` matches the JS UI model golden (19 snapshots, 531 export files), so does the wasm32 build under Node; the Leptos UI passes the headless Chromium session test (crates/mp-ui/tests/e2e) |
+| 8   | delete JS (`app/`, `bower.json`, `package.json`, `bin/` scripts), update README/INSTALL | **done** (the commit adding this line): the JS app is restored from git history only for `tools/js-reference`, which regenerates the goldens byte for byte                                                                                                 |
 
 ## Open questions
 
-- UI framework: Leptos is the default assumption. Revisit before phase 7.
+- UI framework: resolved, Leptos 0.8 (client side rendering).
 - Whether to keep CPS source compatibility *exactly*, including the
   property-language quirks, or allow fixes. Default: exact, because the
   goldens and existing projects depend on it. Fixes come after parity, behind

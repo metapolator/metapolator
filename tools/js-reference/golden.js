@@ -46,9 +46,9 @@ amd.require([
                 // Atem-IO Mounting strips a leading '/' from pathOffset, so
                 // these are relative to ROOT (the cwd, see process.chdir).
                 { io: diskIO, mountPoint: 'lib/MOM'
-                , pathOffset: 'app/lib/bower_components/Atem-MOM/lib/cpsLib' }
+                , pathOffset: amd.BOWER_REL + '/Atem-MOM/lib/cpsLib' }
               , { io: diskIO, mountPoint: 'lib/metapolator'
-                , pathOffset: 'app/lib/bower_components/metapolator-cpsLib/lib' }
+                , pathOffset: amd.BOWER_REL + '/metapolator-cpsLib/lib' }
             ]
           , project, masters
           , manifest = { project: path.relative(ROOT, projectDir), masters: [] }

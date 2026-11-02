@@ -1,7 +1,7 @@
 /node_modules
 npm-debug.log
 .tern-port
-app/lib/bower_components
+/tools/js-reference/legacy
 
 /tools/js-reference/node_modules
 /target

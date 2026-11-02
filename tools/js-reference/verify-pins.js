@@ -19,7 +19,7 @@ var fs = require('fs')
   , path = require('path')
   , acorn = require(fs.existsSync('/usr/share/nodejs/acorn') ? '/usr/share/nodejs/acorn' : 'acorn')
   , ROOT = path.resolve(__dirname, '..', '..')
-  , BOWER = path.join(ROOT, 'app', 'lib', 'bower_components')
+  , BOWER = path.join(__dirname, 'legacy', 'app', 'lib', 'bower_components')
   , PREFIX = {
         'Atem-CPS-whitelisting': 'Atem-CPS-whitelisting/lib'
       , 'Atem-CPS-Toolkit': 'Atem-CPS-Toolkit/lib'

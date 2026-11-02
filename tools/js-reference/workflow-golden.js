@@ -41,8 +41,8 @@ amd.require([
     if(fs.existsSync(outDir)) throw new Error('OUTDIR exists: ' + outDir);
     var mem = new InMemory()
       , mounts = [
-            { io: diskIO, mountPoint: 'lib/MOM', pathOffset: 'app/lib/bower_components/Atem-MOM/lib/cpsLib' }
-          , { io: diskIO, mountPoint: 'lib/metapolator', pathOffset: 'app/lib/bower_components/metapolator-cpsLib/lib' }
+            { io: diskIO, mountPoint: 'lib/MOM', pathOffset: amd.BOWER_REL + '/Atem-MOM/lib/cpsLib' }
+          , { io: diskIO, mountPoint: 'lib/metapolator', pathOffset: amd.BOWER_REL + '/metapolator-cpsLib/lib' }
         ]
       , uiMasterCPS = fs.readFileSync(path.join(amd.BOWER, 'metapolator-cpsLib', 'lib', 'ui-master.cps'), 'utf8')
       , project = new Project(mem, 'project', undefined, mounts)

@@ -1,4 +1,5 @@
 //! The Metapolator web UI: a port of the AngularJS app in `app/lib/ui`
+//! (removed from the tree; `tools/js-reference/fetch-deps.sh` restores it)
 //! to Leptos (client side rendering), on top of [`mp_app::App`].
 //!
 //! Panels, left to right as in the original: parameters, master
