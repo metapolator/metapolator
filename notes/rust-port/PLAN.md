@@ -17,20 +17,20 @@ dependencies, pinned in `tools/js-reference/deps.lock` to the code deployed as
 v0.4.0. Line counts exclude the generated regenerator `*.js` twins of
 `*.es6.js`, vendored dojo/r.js, and tests:
 
-| JS source                                            | lines  | role                                                                                                                                                                           | Rust target                 |
-|------------------------------------------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| complex, Atem-Math-Tools                             | ~1 000 | `Vector` (complex numbers), affine `Transform`, Hobby splines (`tension2control`, …)                                                                                           | `mp-math`                   |
-| Atem-Pen-Case                                        | ~1 900 | fontTools-style pens (point/segment, bounds, transform, SVG, OpenType), bezier tools                                                                                          | `mp-pens`                   |
-| Atem-Errors, Atem-Logging, obtainJS                  | ~2 100 | errors, logging, sync/async "obtain" plumbing                                                                                                                                  | dropped: `Result`, `log`/`tracing`, plain sync code (async only at the IO edge) |
-| Atem-IO                                              | ~2 400 | virtual FS: InMemory, Node fs, browser REST, Mounting, zip                                                                                                                    | `mp-io`                     |
-| ufoJS (lib only)                                     | ~8 000 | UFO 2/3 reader/writer, glif, plist, validators                                                                                                                                 | `norad` crate + thin glue   |
-| Atem-CPS (+ whitelisting, gonzales CSS parser)       | ~6 500 | **CPS**: CSS-like stylesheets over the object tree. Parser, selector engine, cascade (`StyleDict`), `RuleController`, `@import`/`@namespace`/`@dictionary`; OMA tree base (`OMA/_Node`) | `mp-cps`                    |
-| Atem-Property-Language                               | ~2 400 | the expression language of CPS property values (stack/postfix parser, operators, selectors as values)                                                                          | `mp-cps::lang`              |
-| Atem-MOM (es6 sources)                               | ~4 800 | **MOM** object model (Multivers › Univers › Master › Glyph › PenStroke/Contour › points); UFO importer (outline → skeleton strokes); renderer (`rendering/basics`); UFO/OTF exporters; Project persistence; CPS generators (interpolation/metapolation templates) | `mp-mom`, `mp-project`      |
-| Atem-MOM/lib/cpsLib, metapolator-cpsLib              | 411    | `.cps` *data*: the default rules (`primary.cps`, `metamaster.cps`, weight/scale/…)                                                                                             | shipped as-is, `include_str!` |
-| Atem-MOM-Toolkit, Atem-CPS-Toolkit                   | ~1 700 | UI-side caches (draw points, bbox, SVG providers), glyph UI service, drag & drop                                                                                              | `mp-ui` (re-designed)       |
-| app/lib (this repo)                                  | ~9 000 | Angular UI: panels, design space, specimen, parameter editing; `models/metapolator` app model                                                                                  | `mp-ui`                     |
-| bin/metapolator-*                                    | –      | CLI (stale since the v0.4 restructure; references removed modules)                                                                                                           | `mp-cli`                    |
+| JS source                                      | lines  | role                                                                                                                                                                                                                                                              | Rust target                                                                     |
+|------------------------------------------------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| complex, Atem-Math-Tools                       | ~1 000 | `Vector` (complex numbers), affine `Transform`, Hobby splines (`tension2control`, …)                                                                                                                                                                              | `mp-math`                                                                       |
+| Atem-Pen-Case                                  | ~1 900 | fontTools-style pens (point/segment, bounds, transform, SVG, OpenType), bezier tools                                                                                                                                                                              | `mp-pens`                                                                       |
+| Atem-Errors, Atem-Logging, obtainJS            | ~2 100 | errors, logging, sync/async "obtain" plumbing                                                                                                                                                                                                                     | dropped: `Result`, `log`/`tracing`, plain sync code (async only at the IO edge) |
+| Atem-IO                                        | ~2 400 | virtual FS: InMemory, Node fs, browser REST, Mounting, zip                                                                                                                                                                                                        | `mp-io`                                                                         |
+| ufoJS (lib only)                               | ~8 000 | UFO 2/3 reader/writer, glif, plist, validators                                                                                                                                                                                                                    | `norad` crate + thin glue                                                       |
+| Atem-CPS (+ whitelisting, gonzales CSS parser) | ~6 500 | **CPS**: CSS-like stylesheets over the object tree. Parser, selector engine, cascade (`StyleDict`), `RuleController`, `@import`/`@namespace`/`@dictionary`; OMA tree base (`OMA/_Node`)                                                                           | `mp-cps`                                                                        |
+| Atem-Property-Language                         | ~2 400 | the expression language of CPS property values (stack/postfix parser, operators, selectors as values)                                                                                                                                                             | `mp-cps::lang`                                                                  |
+| Atem-MOM (es6 sources)                         | ~4 800 | **MOM** object model (Multivers › Univers › Master › Glyph › PenStroke/Contour › points); UFO importer (outline → skeleton strokes); renderer (`rendering/basics`); UFO/OTF exporters; Project persistence; CPS generators (interpolation/metapolation templates) | `mp-mom`, `mp-project`                                                          |
+| Atem-MOM/lib/cpsLib, metapolator-cpsLib        | 411    | `.cps` *data*: the default rules (`primary.cps`, `metamaster.cps`, weight/scale/…)                                                                                                                                                                                | shipped as-is, `include_str!`                                                   |
+| Atem-MOM-Toolkit, Atem-CPS-Toolkit             | ~1 700 | UI-side caches (draw points, bbox, SVG providers), glyph UI service, drag & drop                                                                                                                                                                                  | `mp-ui` (re-designed)                                                           |
+| app/lib (this repo)                            | ~9 000 | Angular UI: panels, design space, specimen, parameter editing; `models/metapolator` app model                                                                                                                                                                     | `mp-ui`                                                                         |
+| bin/metapolator-*                              | –      | CLI (stale since the v0.4 restructure; references removed modules)                                                                                                                                                                                                | `mp-cli`                                                                        |
 
 The engine core (math → CPS → MOM → export) is roughly **15k lines of JS**.
 
@@ -51,17 +51,17 @@ Interpolation and metapolation are *generated* CPS
 
 ## Crates (Cargo workspace at repo root, `crates/`)
 
-| crate        | depends on                | notes                                                                                                        |
-|--------------|---------------------------|--------------------------------------------------------------------------------------------------------------|
-| `mp-math`    | –                         | f64 semantics must match V8. See "Floating point" below.                                                      |
-| `mp-pens`    | mp-math                   | Port only the pens actually used by the renderer and exporters.                                               |
-| `mp-cps`     | mp-math                   | Hand-written CPS tokenizer and parser, replacing gonzales. The OMA tree is generic over node kinds.           |
-| `mp-mom`     | mp-cps, mp-pens, norad    | MOM node kinds, UFO importer, renderer, exporters (UFO via norad, OTF via `write-fonts`).                     |
-| `mp-io`      | –                         | `trait Io`, `InMemory`, std-fs and (wasm) fetch backends, mounting.                                           |
-| `mp-project` | mp-mom, mp-io             | persistence (yaml via `serde_yaml`), sessions, derived masters, CPS generators (templating replaces mustache) |
-| `mp-cli`     | mp-project                | replaces `bin/metapolator-*`: `export`, `import`, `init`, …                                                   |
-| `mp-wasm`    | mp-project                | `wasm-bindgen` API boundary                                                                                   |
-| `mp-ui`      | mp-wasm (or direct)       | Rust web UI (Leptos, CSR, `trunk`). Re-implements the panels of `app/lib/ui/metapolator`.                    |
+| crate        | depends on             | notes                                                                                                         |
+|--------------|------------------------|---------------------------------------------------------------------------------------------------------------|
+| `mp-math`    | –                      | f64 semantics must match V8. See "Floating point" below.                                                      |
+| `mp-pens`    | mp-math                | Port only the pens actually used by the renderer and exporters.                                               |
+| `mp-cps`     | mp-math                | Hand-written CPS tokenizer and parser, replacing gonzales. The OMA tree is generic over node kinds.           |
+| `mp-mom`     | mp-cps, mp-pens, norad | MOM node kinds, UFO importer, renderer, exporters (UFO via norad, OTF via `write-fonts`).                     |
+| `mp-io`      | –                      | `trait Io`, `InMemory`, std-fs and (wasm) fetch backends, mounting.                                           |
+| `mp-project` | mp-mom, mp-io          | persistence (yaml via `serde_yaml`), sessions, derived masters, CPS generators (templating replaces mustache) |
+| `mp-cli`     | mp-project             | replaces `bin/metapolator-*`: `export`, `import`, `init`, …                                                   |
+| `mp-wasm`    | mp-project             | `wasm-bindgen` API boundary                                                                                   |
+| `mp-ui`      | mp-wasm (or direct)    | Rust web UI (Leptos, CSR, `trunk`). Re-implements the panels of `app/lib/ui/metapolator`.                     |
 
 ## Parity strategy
 
@@ -93,17 +93,17 @@ everywhere, so only the transcendental functions matter.
 
 ## Phases
 
-| # | phase                                                                                                 | done when                                                                                                     |
-|---|-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| 0 | JS reference harness, fixtures, goldens                                                               | **done** (`782866aa`)                                                                                         |
-| 1 | workspace + `mp-math` (+ fp facade measurement)                                                       | **done** (`9358e547`, `afc1914d`): see `crates/mp-math/tests/README.md`                                        |
-| 2 | `mp-cps`: parser, selectors, cascade, property language                                               | **done** (`f8c8d89a`): gonzales + Atem-CPS parsing are differentially equal on 166 sources (crates/mp-cps/tests) |
-| 3 | `mp-mom` model + project loading (`mp-io`, `mp-project`)                                              | **done** (`53b72264`): crates mp-mom (project loading is in it) and mp-io                                    |
-| 4 | renderer + UFO export                                                                                 | **done** (`53b72264`): 429/429 golden files **byte-identical** (crates/mp-mom/tests)                          |
-| 5 | UFO import (skeleton inference), derived masters, generators, OTF export                              | import → export round trip matches JS on `data/fonts/subsets/*.ufo`                                           |
-| 6 | `mp-cli`                                                                                              | feature parity with the useful parts of `bin/`                                                                |
-| 7 | `mp-wasm` + `mp-ui`                                                                                   | the v0.4.0 demo workflow works in the browser: masters, design space, instances, specimen, parameter edits, export |
-| 8 | delete JS (`app/`, `bower.json`, `package.json`, `bin/` scripts), update README/INSTALL               | `tools/js-reference` is the only JS left                                                                      |
+| #   | phase                                                                                   | done when                                                                                                          |
+|-----|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| 0   | JS reference harness, fixtures, goldens                                                 | **done** (`782866aa`)                                                                                              |
+| 1   | workspace + `mp-math` (+ fp facade measurement)                                         | **done** (`9358e547`, `afc1914d`): see `crates/mp-math/tests/README.md`                                            |
+| 2   | `mp-cps`: parser, selectors, cascade, property language                                 | **done** (`f8c8d89a`): gonzales + Atem-CPS parsing are differentially equal on 166 sources (crates/mp-cps/tests)   |
+| 3   | `mp-mom` model + project loading (`mp-io`, `mp-project`)                                | **done** (`53b72264`): crates mp-mom (project loading is in it) and mp-io                                          |
+| 4   | renderer + UFO export                                                                   | **done** (`53b72264`): 429/429 golden files **byte-identical** (crates/mp-mom/tests)                               |
+| 5   | UFO import (skeleton inference), derived masters, generators, OTF export                | import → export round trip matches JS on `data/fonts/subsets/*.ufo`                                                |
+| 6   | `mp-cli`                                                                                | feature parity with the useful parts of `bin/`                                                                     |
+| 7   | `mp-wasm` + `mp-ui`                                                                     | the v0.4.0 demo workflow works in the browser: masters, design space, instances, specimen, parameter edits, export |
+| 8   | delete JS (`app/`, `bower.json`, `package.json`, `bin/` scripts), update README/INSTALL | `tools/js-reference` is the only JS left                                                                           |
 
 ## Open questions
 

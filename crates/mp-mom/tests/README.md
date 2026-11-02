@@ -1,7 +1,7 @@
 # mp-mom parity tests
 
-| test (`cargo test -p mp-mom --test …`) | question it answers                                                                                                                                                                                                    | reference data                                                                     |
-|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| test (`cargo test -p mp-mom --test …`) | question it answers                                                                                                                                                                               | reference data                                                                      |
+|----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
 | `golden`                               | Does the Rust engine (MOM, CPS cascade, Property Language, renderer, UFO writer) export **byte-identical** UFOs for every master of the v0.4.0 demo projects, including the metapolated instance? | `tests/golden/` (`tools/js-reference/regen-golden.sh`), inputs in `tests/fixtures/` |
 
 **Signal.** Every file of every exported master is compared byte for byte

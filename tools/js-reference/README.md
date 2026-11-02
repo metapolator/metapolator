@@ -12,15 +12,15 @@ that was **actually deployed as Metapolator v0.4.0**.
 
 ## Scripts
 
-| script                 | question it answers / what it does                                                                                                                                                                            | run                                                                               |
-|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| `fetch-deps.sh`        | Recreates `app/lib/bower_components/` from `deps.lock` at the pinned commits. Replaces `npm install && bower install`; the unpinned `>=` bower ranges no longer resolve to a working set.                     | `tools/js-reference/fetch-deps.sh`                                                |
-| `deps.lock`            | `name url commit` for every JS dependency. Engine repos are pinned to their last commit on or before 2016-05-10, the v0.4.0 release/deploy date.                                                              | –                                                                                 |
-| `verify-pins.js`       | *Are the pinned checkouts the code that was deployed as v0.4.0?* Compares them with the minified r.js bundle on upstream `gh-pages` (`v0.4.0/min/main.js`), module by module, using string literals.          | see below                                                                         |
-| `extract-fixtures.sh`  | Extracts the v0.4.0 demo projects (`min`, `full`) from upstream `gh-pages` into `tests/fixtures/`.                                                                                                             | `tools/js-reference/extract-fixtures.sh min full`                                 |
-| `golden.js`            | Loads a project with the JS engine and exports every master as UFO. This is the full CPS → MOM → outline pipeline.                                                                                             | `node tools/js-reference/golden.js PROJECTDIR OUTDIR [master ...]`                |
-| `regen-golden.sh`      | Runs `golden.js` on every `tests/fixtures/*` into `tests/golden/*`, then rewrites `tests/golden/SHA256SUMS`.                                                                                                     | `tools/js-reference/regen-golden.sh`                                              |
-| `package.json`         | The only npm dependency is jsdom, for the XML DOM that ufoJS needs.                                                                                                                                            | `corepack npm@10.9.2 install` (here)                                              |
+| script                | question it answers / what it does                                                                                                                                                                   | run                                                                |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| `fetch-deps.sh`       | Recreates `app/lib/bower_components/` from `deps.lock` at the pinned commits. Replaces `npm install && bower install`; the unpinned `>=` bower ranges no longer resolve to a working set.            | `tools/js-reference/fetch-deps.sh`                                 |
+| `deps.lock`           | `name url commit` for every JS dependency. Engine repos are pinned to their last commit on or before 2016-05-10, the v0.4.0 release/deploy date.                                                     | –                                                                  |
+| `verify-pins.js`      | *Are the pinned checkouts the code that was deployed as v0.4.0?* Compares them with the minified r.js bundle on upstream `gh-pages` (`v0.4.0/min/main.js`), module by module, using string literals. | see below                                                          |
+| `extract-fixtures.sh` | Extracts the v0.4.0 demo projects (`min`, `full`) from upstream `gh-pages` into `tests/fixtures/`.                                                                                                   | `tools/js-reference/extract-fixtures.sh min full`                  |
+| `golden.js`           | Loads a project with the JS engine and exports every master as UFO. This is the full CPS → MOM → outline pipeline.                                                                                   | `node tools/js-reference/golden.js PROJECTDIR OUTDIR [master ...]` |
+| `regen-golden.sh`     | Runs `golden.js` on every `tests/fixtures/*` into `tests/golden/*`, then rewrites `tests/golden/SHA256SUMS`.                                                                                         | `tools/js-reference/regen-golden.sh`                               |
+| `package.json`        | The only npm dependency is jsdom, for the XML DOM that ufoJS needs.                                                                                                                                  | `corepack npm@10.9.2 install` (here)                               |
 
 ### Pin verification
 
@@ -72,10 +72,10 @@ work together. Every CPS lookup failed with
 
 ## Recorded results (2026-11-02, Node v20.19.2)
 
-| fixture        | masters | glyph files / master | export time | errors |
-|----------------|---------|----------------------|-------------|--------|
-| `v0.4.0-min`   | 5       | 11                   | ~8 s        | 0      |
-| `v0.4.0-full`  | 2       | 173                  | ~24 s       | 0      |
+| fixture       | masters | glyph files / master | export time | errors |
+|---------------|---------|----------------------|-------------|--------|
+| `v0.4.0-min`  | 5       | 11                   | ~8 s        | 0      |
+| `v0.4.0-full` | 2       | 173                  | ~24 s       | 0      |
 
 Two runs into different directories gave byte-identical output (`diff -r`).
 `tests/golden/SHA256SUMS` holds the baseline hashes.
