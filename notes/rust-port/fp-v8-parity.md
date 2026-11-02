@@ -46,3 +46,33 @@ Exact bit matches out of 1000 per function:
   output only when a value sits right at a rounding boundary.
   Getting to 100% would mean porting V8's own `ieee754::sin/cos/pow`. That is
   deferred until a golden mismatch is traced back to one of these functions.
+
+## Update 2026-11-02: exact V8 ports
+
+Exporting UFO 2 without rounding, as the UI does, showed the 1-ulp
+differences in the output (for example `412.40700000000004` instead of
+`412.407`). The facade therefore now uses `mp_math::v8`: line-by-line
+ports of V8's `src/base/ieee754.cc` (V8 11.3, as in Node v20.19.2;
+fdlibm-derived). Node's build does not define
+`V8_USE_LIBM_TRIG_FUNCTIONS`, so `Math.sin/cos` are fdlibm. The port covers
+sin, cos, tan (with `__ieee754_rem_pio2`, `__kernel_rem_pio2` and the
+kernels), atan, atan2, exp, log and pow.
+
+| fn    | Rust std (glibc) | `libm` crate | `mp_math::fp` (= V8 port) |
+|-------|------------------|--------------|---------------------------|
+| sin   | 965              | 989          | **1000**                  |
+| cos   | 963              | 988          | **1000**                  |
+| tan   | 960              | 1000         | **1000**                  |
+| atan2 | 834              | 1000         | **1000**                  |
+| exp   | 888              | 1000         | **1000**                  |
+| log   | 994              | 999          | **1000**                  |
+| pow   | 943              | 976          | **1000**                  |
+
+The source of the differences was musl (and so the `libm` crate): it
+reworked fdlibm's `__cos` kernel, its `__rem_pio2` reduction and `log`.
+
+Consequences: `crates/mp-math/tests/math_tools.rs` is now bit-exact for all
+24600 values, with the tolerance switched off. The import test
+(`crates/mp-mom/tests/import.rs`) compares all 220604 saved values exactly,
+and the UFO 2 unrounded goldens (`tests/golden/*/<master>.ufo2`) are
+byte-identical. `v8_math` pins 0 mismatches.

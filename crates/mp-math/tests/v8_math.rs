@@ -55,4 +55,4 @@ fn transcendental_functions_match_v8() {
 }
 
 /// Recorded by running this test; see notes/rust-port/fp-v8-parity.md.
-const FACADE_EXPECTED_MISMATCHES: usize = 48;
+const FACADE_EXPECTED_MISMATCHES: usize = 0;

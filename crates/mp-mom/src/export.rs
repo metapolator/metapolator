@@ -45,7 +45,14 @@ pub fn glif_data(engine: &Engine<Mom>, glyph: NodeId) -> GlyphData {
 /// `UFOExporter.doExport()` into `dir` (which should not exist yet).
 /// `precision`: decimal places, `None` for no rounding.
 pub fn export_ufo(engine: &Engine<Mom>, master: NodeId, io: &dyn Io, dir: &str, precision: Option<i64>) -> Result<(), String> {
-    let mut w = UfoWriter::new(io, dir, precision)?;
+    export_ufo_format(engine, master, io, dir, precision, 3)
+}
+
+/// like [`export_ufo`] with a UFO format version (the UI wrote UFO 2 with
+/// precision -1, i.e. `None`)
+pub fn export_ufo_format(engine: &Engine<Mom>, master: NodeId, io: &dyn Io, dir: &str, precision: Option<i64>,
+                         format_version: u8) -> Result<(), String> {
+    let mut w = UfoWriter::with_format(io, dir, precision, format_version)?;
     for glyph in engine.model.node(master).children.clone() {
         let name = engine.model.node(glyph).id.clone().ok_or("The glyph name is not properly formatted.")?;
         let data = glif_data(engine, glyph);

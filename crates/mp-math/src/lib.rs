@@ -6,6 +6,7 @@
 pub mod fp;
 pub mod hobby;
 pub mod transform;
+pub mod v8;
 pub mod vector;
 
 pub use transform::{Transform, IDENTITY};

@@ -117,8 +117,14 @@ fn int_value(v: &Json) -> Option<i64> {
 /// `writeGlyphToString(glyphName, glyphObject, drawPointsFunc, formatVersion=2, {precision})`
 pub fn write_glyph(name: &str, data: &GlyphData, draw: &mut dyn FnMut(&mut dyn PointPen) -> Result<(), String>,
                    precision: Option<i64>) -> Result<String, Box<dyn std::error::Error>> {
+    write_glyph_format(name, data, draw, precision, 2)
+}
+
+/// `writeGlyphToString` with an explicit GLIF format version (1 or 2)
+pub fn write_glyph_format(name: &str, data: &GlyphData, draw: &mut dyn FnMut(&mut dyn PointPen) -> Result<(), String>,
+                   precision: Option<i64>, format: u8) -> Result<String, Box<dyn std::error::Error>> {
     if name.is_empty() { return Err(Box::new(GlifError("The glyph name is empty.".into()))); }
-    let mut glyph = Element::new("glyph").attr("name", name).attr("format", "2");
+    let mut glyph = Element::new("glyph").attr("name", name).attr("format", format.to_string());
     // advance
     let mut adv = Element::new("advance");
     for (k, v) in [("width", data.width), ("height", data.height)] {
@@ -153,7 +159,7 @@ pub fn write_glyph(name: &str, data: &GlyphData, draw: &mut dyn FnMut(&mut dyn P
         glyph.push(Element::new("note").with_text(s.join("\n")));
     }
     // image
-    if let Some(Json::Object(img)) = &data.image {
+    if let (true, Some(Json::Object(img))) = (format >= 2, &data.image) {
         let mut e = Element::new("image");
         e.set_attr("fileName", img.get("fileName").and_then(|v| v.as_str()).unwrap_or(""));
         for (attr, default) in TRANSFORMATION_INFO {
@@ -166,7 +172,7 @@ pub fn write_glyph(name: &str, data: &GlyphData, draw: &mut dyn FnMut(&mut dyn P
         glyph.push(e);
     }
     // guidelines
-    if let Some(Json::Array(gs)) = &data.guidelines {
+    if let (true, Some(Json::Array(gs))) = (format >= 2, &data.guidelines) {
         for g in gs {
             let mut e = Element::new("guideline");
             if let Json::Object(m) = g {

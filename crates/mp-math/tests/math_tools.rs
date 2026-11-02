@@ -47,7 +47,7 @@ impl Tally {
         let rel = (got - want).abs() / want.abs().max(1.0);
         if u == 0 {
             self.exact += 1;
-        } else if !exact_only && rel <= 1e-12 {
+        } else if !exact_only && rel <= 1e-12 && ALLOW_NEAR {
             self.close += 1;
             self.worst = self.worst.max(rel);
         } else {
@@ -73,6 +73,10 @@ impl Tally {
         (self.exact, self.close)
     }
 }
+
+/// With the V8 ports in `mp_math::v8` everything is bit-exact; set this to
+/// true only to diagnose a regression.
+const ALLOW_NEAR: bool = false;
 
 fn data() -> Value {
     serde_json::from_str(include_str!("data/math-tools.json")).unwrap()

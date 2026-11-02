@@ -306,3 +306,175 @@ impl Project {
         Ok(m)
     }
 }
+
+/// The CPS of a new UI master (`master-<name>`, derived from `base-<name>`):
+/// metapolator-cpsLib `ui-master.cps`.
+pub const UI_MASTER_CPS: &str = include_str!("../cpslib/metapolator/ui-master.cps");
+
+impl Project {
+    fn cps_file_name(&self, master: NodeId) -> Option<String> {
+        use mp_cps::Model;
+        self.mom().cps_file(master)
+    }
+
+    /// `_masterHasDependants`
+    pub fn master_has_dependants(&self, master: NodeId) -> bool {
+        let id = self.mom().node(master).id.clone();
+        self.open_masters().into_iter().any(|o| {
+            self.mom().node(o).base_node == Some(master)
+                || self.mom().attachment(o, "requiredMasters", false).and_then(|r| r.as_array())
+                    .map(|a| a.iter().any(|v| v.as_str() == id.as_deref())).unwrap_or(false)
+        })
+    }
+
+    /// `deleteMaster(masterName, deleteBaseChain, force)`; false if refused
+    pub fn delete_master(&mut self, name: &str, delete_base_chain: bool, force: bool) -> Result<bool> {
+        let own_cps = format!("{name}.master.cps");
+        if let Some(m) = self.master_by_name(name) {
+            if !force && self.master_has_dependants(m) { return Ok(false); }
+            let univers = self.univers();
+            let base = self.mom().node(m).base_node;
+            self.engine.model_mut().remove(univers, m)?;
+            if delete_base_chain {
+                if let Some(b) = base {
+                    let bname = self.mom().node(b).id.clone().unwrap_or_default();
+                    self.delete_master(&bname, true, force)?;
+                }
+            }
+        }
+        self.persisted_masters.retain(|n| n != name);
+        if let Some(Json::Array(ms)) = self.project.pointer_mut("/session/masters") {
+            ms.retain(|v| v.as_str() != Some(name));
+        }
+        let _ = self.io.remove_file(&join(&self.mom_dir(), &format!("{name}.master.yaml")));
+        let _ = self.io.remove_file(&join(&self.cps_dir(), &own_cps));
+        self.engine.rules.invalidate(&own_cps);
+        self.engine.invalidate();
+        Ok(true)
+    }
+
+    /// `cloneMaster(source, name)`: a full copy (properties, attachments,
+    /// same base nodes) with a copy of the source's CPS
+    pub fn clone_master(&mut self, source: &str, name: &str) -> Result<NodeId> {
+        let src = self.open_master(source)?;
+        let cps_name = self.cps_file_name(src).ok_or_else(|| CpsError::cps("source master has no CPS file"))?;
+        let cps = self.engine.rules.get_rule(&cps_name)?.to_string();
+        let name = self.unique_master_name(name);
+        let cps_file = format!("{name}.master.cps");
+        self.io.write(&join(&self.cps_dir(), &cps_file), cps.as_bytes()).map_err(io_err)?;
+        let univers = self.univers();
+        let mom = self.engine.model_mut();
+        let m = mom.clone_node(src, 1 | 2 | 4 | 8 | 0x20);
+        mom.node_mut(m).id = Some(name);
+        mom.set_attachment(m, "cpsFile", Json::String(cps_file));
+        mom.add(univers, m)?;
+        Ok(m)
+    }
+
+    /// `addMasterToSession`
+    pub fn add_master_to_session(&mut self, name: &str) {
+        let ms = self.project.pointer_mut("/session/masters");
+        if let Some(Json::Array(ms)) = ms {
+            if !ms.iter().any(|v| v.as_str() == Some(name)) { ms.push(Json::String(name.into())); }
+        } else {
+            self.project = serde_json::json!({"session": {"masters": [name]}});
+        }
+    }
+
+    /// The master names of the session (`project.yaml`)
+    pub fn session_masters(&self) -> Vec<String> {
+        self.project.pointer("/session/masters").and_then(|v| v.as_array())
+            .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect()).unwrap_or_default()
+    }
+
+    /// `openSession`: open every session master that exists on disk
+    pub fn open_session(&mut self) -> Result<Vec<NodeId>> {
+        let mut opened = vec![];
+        let mut loaded = vec![];
+        for name in self.session_masters() {
+            match self.open_master(&name) {
+                Ok(m) => { opened.push(m); loaded.push(Json::String(name)); }
+                Err(e) if e.message.contains("ENOENT") || e.message.contains("no such file") => continue,
+                Err(e) => return Err(e),
+            }
+        }
+        if let Some(Json::Array(ms)) = self.project.pointer_mut("/session/masters") { *ms = loaded; }
+        Ok(opened)
+    }
+
+    /// Import a UFO the way the Metapolator UI does: `base-<name>` (the
+    /// imported data) and the editable `master-<name>` derived from it.
+    pub fn import_ui_master(&mut self, name: &str, ufo_io: &dyn Io, ufo_path: &str) -> Result<(NodeId, NodeId)> {
+        let base = self.import_ufo(&format!("base-{name}"), ufo_io, ufo_path, None)?;
+        let base_id = self.mom().node(base).id.clone().unwrap_or_default();
+        let ui_name = format!("master-{}", base_id.strip_prefix("base-").unwrap_or(&base_id));
+        let ui = self.create_derived_master(&base_id, &ui_name, UI_MASTER_CPS)?;
+        let ui_id = self.mom().node(ui).id.clone().unwrap_or_default();
+        self.add_master_to_session(&ui_id);
+        Ok((base, ui))
+    }
+
+    /// `instanceTools.registerInstance`: a master metapolating `axes`
+    /// (master name, proportion), derived from the first axis' master.
+    pub fn create_instance(&mut self, name: &str, axes: &[(String, f64)]) -> Result<NodeId> {
+        if axes.is_empty() { return Err(CpsError::cps("an instance needs at least one axis")); }
+        let cps = format!("@import \"generated://metapolation/0/{}\";", axes.len());
+        for (m, _) in axes { self.open_master(m)?; }
+        let inst = self.create_derived_master(&axes[0].0, name, &cps)?;
+        let id = self.mom().node(inst).id.clone().unwrap_or_default();
+        self.add_master_to_session(&id);
+        self.set_metapolation_properties(inst, axes)?;
+        Ok(inst)
+    }
+
+    /// `instanceTools.update`: new axes (and CPS if the axis count changed)
+    pub fn update_instance(&mut self, instance: NodeId, axes: &[(String, f64)]) -> Result<()> {
+        let cps_file = self.cps_file_name(instance).ok_or_else(|| CpsError::cps("instance has no CPS file"))?;
+        let cps = format!("@import \"generated://metapolation/0/{}\";", axes.len());
+        let current = self.io.read_string(&join(&self.cps_dir(), &cps_file)).unwrap_or_default();
+        if current != cps {
+            self.io.write(&join(&self.cps_dir(), &cps_file), cps.as_bytes()).map_err(io_err)?;
+            self.engine.rules.invalidate(&cps_file);
+        }
+        self.set_metapolation_properties(instance, axes)
+    }
+
+    /// `_setXPolationMasterProperties`
+    fn set_metapolation_properties(&mut self, master: NodeId, axes: &[(String, f64)]) -> Result<()> {
+        use mp_cps::document::DictItem;
+        let mut items: Vec<DictItem> = vec![];
+        let mut required = vec![];
+        for (i, (m, p)) in axes.iter().enumerate() {
+            required.push(Json::String(m.clone()));
+            let sel = mp_cps::selector::SimpleSelector::escape(m);
+            items.push(DictItem::Property(std::rc::Rc::new(mp_cps::Property::make(&format!("baseMaster{i}"), &format!("S\"master#{sel}\""))?)));
+            items.push(DictItem::Property(std::rc::Rc::new(mp_cps::Property::make(&format!("proportion{i}"), &mp_math::js_num(*p))?)));
+        }
+        let is_generated = |k: &str, prefix: &str| k.strip_prefix(prefix).map(|r| !r.is_empty() && r.bytes().all(|b| b.is_ascii_digit())).unwrap_or(false);
+        let mom = self.engine.model_mut();
+        for item in mom.node(master).properties.items().to_vec() {
+            if let DictItem::Property(p) = &item {
+                if is_generated(&p.name, "baseMaster") || is_generated(&p.name, "proportion") { continue; }
+            }
+            items.push(item);
+        }
+        mom.node_mut(master).properties.set_items(items);
+        mom.set_attachment(master, "requiredMasters", Json::Array(required));
+        Ok(())
+    }
+
+    /// set (or replace) one property of a node (`cpsTools.setProperty`)
+    pub fn set_property(&mut self, node: NodeId, name: &str, value: &str) -> Result<()> {
+        let p = mp_cps::Property::make(name, value)?;
+        self.engine.model_mut().node_mut(node).properties.set_property(p);
+        Ok(())
+    }
+
+    /// The project's own font info (`fontinfo.plist` of the project UFO), `{}` if none
+    pub fn project_fontinfo(&self) -> Json {
+        match mp_ufo::reader::UfoReader::new(&*self.io, &self.base_dir).and_then(|r| r.read_info()) {
+            Ok(m) => Json::Object(m),
+            Err(_) => Json::Object(JsonMap::new()),
+        }
+    }
+}

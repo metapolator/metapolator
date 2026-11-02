@@ -50,6 +50,30 @@ fn check_fixture(name: &str) -> (usize, Vec<String>) {
             }
             Err(e) => if otf_status == "ok" { failures.push(format!("{name}/{m}.otf: Rust failed: {e}")); },
         }
+        // the UI's export: UFO 2, no rounding (full f64 coordinates)
+        {
+            let mem2 = MemIo::new();
+            match mp_mom::export::export_ufo_format(&project.engine, master, &mem2, "out2", None, 2) {
+                Err(e) => failures.push(format!("{name}/{m}.ufo2: export failed: {e}")),
+                Ok(()) => {
+                    let dir2 = golden.join(format!("{m}.ufo2"));
+                    for p in walk(&dir2) {
+                        let rel = p.strip_prefix(&dir2).unwrap().to_string_lossy().to_string();
+                        let want = std::fs::read(&p).unwrap();
+                        compared += 1;
+                        match mem2.read(&format!("out2/{rel}")) {
+                            Ok(have) if have == want => {}
+                            Ok(have) => failures.push(format!("{name}/{m}.ufo2/{rel} differs:\n  JS:   {}\n  Rust: {}",
+                                first_diff(&want, &have).0, first_diff(&want, &have).1)),
+                            Err(_) => failures.push(format!("{name}/{m}.ufo2/{rel}: missing")),
+                        }
+                    }
+                    if mem2.files().len() != walk(&dir2).len() {
+                        failures.push(format!("{name}/{m}.ufo2: file count differs"));
+                    }
+                }
+            }
+        }
         let want_dir = golden.join(format!("{m}.ufo"));
         let mut want_files = vec![];
         for e in walk(&want_dir) {

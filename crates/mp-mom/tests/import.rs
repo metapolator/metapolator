@@ -60,7 +60,9 @@ fn json_eq(a: &serde_json::Value, b: &serde_json::Value, exact: &mut usize, near
             match (x.parse::<f64>(), y.parse::<f64>()) {
                 (Ok(p), Ok(q)) => {
                     let rel = (p - q).abs() / p.abs().max(1.0);
-                    if rel <= 1e-12 { *near += 1; *worst = worst.max(rel); true } else { false }
+                    // with the V8 math ports in mp-math this no longer happens;
+                    // counted (and reported) but treated as a failure
+                    *near += 1; *worst = worst.max(rel); let _ = rel; false
                 }
                 _ => false,
             }

@@ -7,6 +7,7 @@
 //
 // For every master (default: all persisted masters of the project) writes
 //   OUTDIR/<master>.ufo/   UFO export (ufoJS UFOWriter via Atem-MOM UFOExporter)
+//   OUTDIR/<master>.ufo2/  UFO 2 export without rounding, as the UI exported
 //   OUTDIR/<master>.otf    OTF export (opentype.js via Atem-MOM OTFExporter)
 // and OUTDIR/manifest.json listing what was exported (OTF errors included).
 //
@@ -71,6 +72,14 @@ amd.require([
             console.warn('exporting', name);
             project.exportUFOInstance(false, name, 'out/' + name + '.ufo', 3, undefined);
             manifest.masters.push(name);
+            // what the UI's font export did: UFO 2, precision -1 (no rounding)
+            (function() {
+                var genIo = project.getUFOExportGenerator(false, name, name + '.ufo2', 2, -1)
+                  , gen = genIo[0];
+                while(!gen.next().done);
+                mem.mkDir(false, 'out/' + name + '.ufo2');
+                genIo[1].copyRecursive(false, name + '.ufo2', mem, 'out/' + name + '.ufo2');
+            })();
             // OTF via opentype.js; errors are part of the reference behaviour.
             // Project.getOTFInstance is broken upstream (calls `do_export`),
             // the UI used getOTFExportGenerator, so do the same.
