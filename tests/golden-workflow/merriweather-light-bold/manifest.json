@@ -1,0 +1,29 @@
+{
+  "ufos": [
+    [
+      "light",
+      "data/fonts/subsets/Merriweather-Light-Subset-nop.ufo"
+    ],
+    [
+      "bold",
+      "data/fonts/subsets/Merriweather-Bold-Subset-nop.ufo"
+    ]
+  ],
+  "instance": [
+    [
+      "light",
+      "0.5"
+    ],
+    [
+      "bold",
+      "0.5"
+    ]
+  ],
+  "masters": [
+    "base-light",
+    "master-light",
+    "base-bold",
+    "master-bold",
+    "instance-0"
+  ]
+}

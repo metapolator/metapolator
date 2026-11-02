@@ -25,8 +25,15 @@ impl<'a> UfoWriter<'a> {
 
     pub fn with_format(io: &'a dyn Io, dir: &str, precision: Option<i64>, format_version: u8) -> Result<Self, String> {
         let w = UfoWriter { io, dir: dir.to_string(), contents: Map::new(), precision, format_version };
-        // metainfo.plist is written when the writer is created
+        // metainfo.plist is written when the writer is created; getGlyphSet
+        // writes layercontents.plist (UFO 3) and an empty contents.plist,
+        // so a failed export leaves the same files behind as ufoJS
         w.write_plist("metainfo.plist", &json!({"creator": "org.ufojs.lib", "formatVersion": format_version}))?;
+        if format_version >= 3 {
+            w.write_plist("layercontents.plist", &json!([["public.default", "glyphs"]]))?;
+        }
+        w.io.write(&join(&join(&w.dir, "glyphs"), "contents.plist"), plist::to_string(&json!({})).as_bytes())
+            .map_err(|e| e.to_string())?;
         Ok(w)
     }
 

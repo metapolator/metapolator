@@ -1,0 +1,18 @@
+[package]
+name = "mp-cli"
+version = "0.1.0"
+description = "Metapolator command line interface (replaces bin/metapolator-*)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "metapolator"
+path = "src/main.rs"
+
+[dependencies]
+mp-cps = { path = "../mp-cps" }
+mp-io = { path = "../mp-io" }
+mp-mom = { path = "../mp-mom" }
+serde_json.workspace = true

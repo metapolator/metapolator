@@ -124,6 +124,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
+name = "mp-cli"
+version = "0.1.0"
+dependencies = [
+ "mp-cps",
+ "mp-io",
+ "mp-mom",
+ "serde_json",
+]
+
+[[package]]
 name = "mp-cps"
 version = "0.1.0"
 dependencies = [
