@@ -1,0 +1,5021 @@
+id: base-regular
+attachment:
+  fontinfo:
+    familyName: Sean Sans
+    styleName: Regular
+    styleMapStyleName: regular
+    versionMajor: 1
+    versionMinor: 13
+    copyright: Copyright (c) 2013 by Simon Egli
+    unitsPerEm: 1200
+    descender: -300
+    xHeight: 533
+    capHeight: 722
+    ascender: 800
+    italicAngle: 0
+    note: ''
+    openTypeHeadCreated: '2015/04/28 14:55:26'
+    openTypeHheaAscender: 965
+    openTypeHheaDescender: -300
+    openTypeHheaLineGap: 0
+    openTypeNameVersion: Version 1.13
+    openTypeNamePreferredSubfamilyName: Regular
+    openTypeOS2WidthClass: 5
+    openTypeOS2WeightClass: 400
+    openTypeOS2VendorID: ''
+    openTypeOS2FamilyClass:
+      - 0
+      - 0
+    openTypeOS2TypoAscender: 960
+    openTypeOS2TypoDescender: 240
+    openTypeOS2TypoLineGap: 0
+    openTypeOS2WinAscent: 965
+    openTypeOS2WinDescent: 300
+    postscriptFontName: Sean Sans-Regular
+    postscriptFullName: Sean Sans Regular
+    postscriptUnderlineThickness: 0
+    postscriptUnderlinePosition: 0
+    postscriptBlueValues:
+      - 0
+      - 0
+      - 950
+      - 975
+      - 1187
+      - 1212
+      - 1384
+      - 1419
+    postscriptOtherBlues:
+      - -500
+      - -475
+      - -35
+      - -25
+    postscriptStemSnapH:
+      - 116
+      - 134
+      - 140
+    postscriptStemSnapV:
+      - 151
+      - 174
+      - 179
+      - 192
+      - 203
+    postscriptWeightName: Regular
+  cpsFile: lib/MOM/primary.cps
+children:
+  - - glyph
+    - id: M
+      properties:
+        - - width
+          - '909'
+      attachment:
+        name: M
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 77
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 795 10
+                    - - in
+                      - Vector 795 10
+                    - - out
+                      - Vector 829.33299 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - brr
+                  properties:
+                    - - 'on'
+                      - Vector 898 10
+                    - - in
+                      - Vector 863.66701 10
+                    - - out
+                      - Vector 898 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 795 10
+                    - - in
+                      - Vector 795 10
+                    - - out
+                      - Vector 760.66701 10
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - brl
+                  properties:
+                    - - 'on'
+                      - Vector 692 10
+                    - - in
+                      - Vector 726.33299 10
+                    - - out
+                      - Vector 692 10
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 106 10
+                    - - in
+                      - Vector 106 10
+                    - - out
+                      - Vector 71.66701 10
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - bll
+                  properties:
+                    - - 'on'
+                      - Vector 3 10
+                    - - in
+                      - Vector 37.33299 10
+                    - - out
+                      - Vector 3 10
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 165 712
+                    - - in
+                      - Vector 165 712
+                    - - out
+                      - Vector 130.66701 712
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - tll
+                  properties:
+                    - - 'on'
+                      - Vector 62 712
+                    - - in
+                      - Vector 96.33299 712
+                    - - out
+                      - Vector 62 712
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 734 712
+                    - - in
+                      - Vector 734 712
+                    - - out
+                      - Vector 768.33299 712
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - trr
+                  properties:
+                    - - 'on'
+                      - Vector 837 712
+                    - - in
+                      - Vector 802.66701 712
+                    - - out
+                      - Vector 837 712
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 106 10
+                    - - in
+                      - Vector 106 10
+                    - - out
+                      - Vector 140.33299 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - blr
+                  properties:
+                    - - 'on'
+                      - Vector 209 10
+                    - - in
+                      - Vector 174.66701 10
+                    - - out
+                      - Vector 209 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem4
+                  properties:
+                    - - 'on'
+                      - Vector 794 0
+                    - - in
+                      - Vector 794 0
+                    - - out
+                      - Vector 773.66687 240.66426
+                    - - inDir
+                      - '-1.4865089636031572'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '-0.0013753839356869246'
+                        - - inTension
+                          - '1.0000100001000067'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '241.49384679818988'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.0013750643632364223'
+                        - - inTension
+                          - '1.0000100001000067'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '241.54997124876502'
+              - - center
+                - classes:
+                    - stem4
+                  properties:
+                    - - 'on'
+                      - Vector 733 722
+                    - - in
+                      - Vector 753.33313 481.33574
+                    - - out
+                      - Vector 733 722
+                    - - outDir
+                      - '-1.4865089636031572'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0013753839356869246'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '241.49384679818988'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0.0013750643632364223'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '241.54997124876502'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 105 0
+                    - - in
+                      - Vector 105 0
+                    - - out
+                      - Vector 124.33314 240.66426
+                    - - inDir
+                      - '-1.6509565998451181'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '-0.0013760077916440405'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '241.46646989511507'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.001376312061077689'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '241.413087510565'
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 163 722
+                    - - in
+                      - Vector 143.66685999999999 481.33574
+                    - - out
+                      - Vector 163 722
+                    - - outDir
+                      - '-1.6509565998451181'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0013760077916438185'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '241.46646989511507'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666599999999988'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0.0013763120610779112'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '241.413087510565'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666599999999988'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem2
+                  properties:
+                    - - 'on'
+                      - Vector 446 0
+                    - - in
+                      - Vector 446 0
+                    - - out
+                      - Vector 352.33427 240.66426
+                    - - inDir
+                      - '-1.1996377119176271'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '-0.0012034049567481997'
+                        - - inTension
+                          - '1.000010000099999'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '258.1283071092894'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.0012022787558283454'
+                        - - inTension
+                          - '1.000010000099999'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '258.370101447964'
+              - - center
+                - classes:
+                    - stem2
+                  properties:
+                    - - 'on'
+                      - Vector 165 722
+                    - - in
+                      - Vector 258.66573 481.33574
+                    - - out
+                      - Vector 165 722
+                    - - outDir
+                      - '-1.1996377119176271'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0012034049567481997'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '258.1283071092894'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666599999999988'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0.0012022787558283454'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '258.370101447964'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666599999999988'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem3
+                  properties:
+                    - - 'on'
+                      - Vector 454.5 0
+                    - - in
+                      - Vector 454.5 0
+                    - - out
+                      - Vector 546.665745 240.66426
+                    - - inDir
+                      - '-1.9365307782204348'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '-0.0018105776243335647'
+                        - - inTension
+                          - '1.0000100001000054'
+                        - - inLength
+                          - '7.666589999999985'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '257.88800943645134'
+                    - properties:
+                        - - onLength
+                          - '11.5'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.0018130919668613021'
+                        - - inTension
+                          - '1.0000100001000054'
+                        - - inLength
+                          - '7.666589999999985'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '257.53037833313977'
+              - - center
+                - classes:
+                    - stem3
+                  properties:
+                    - - 'on'
+                      - Vector 731 722
+                    - - in
+                      - Vector 638.834255 481.33574
+                    - - out
+                      - Vector 731 722
+                    - - outDir
+                      - '-1.9365307782204348'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0018105776243335647'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '257.88800943645134'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0.0018130919668613021'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '257.53037833313977'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+  - - glyph
+    - id: e
+      properties:
+        - - width
+          - '581'
+      attachment:
+        name: e
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 101
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 103 284
+                    - - in
+                      - Vector 103 284
+                    - - out
+                      - Vector 233.33203 284
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '130.33203'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '130.33203'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 494 284
+                    - - in
+                      - Vector 363.66796999999997 284
+                    - - out
+                      - Vector 492.833345 282.50001499999996
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '-0.12435499454677723'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '130.33203000000003'
+                        - - outTension
+                          - '1.0000100000999945'
+                        - - outLength
+                          - '4.242598260712441'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '2.2318394956455676'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '130.33203000000003'
+                        - - outTension
+                          - '1.000010000100061'
+                        - - outLength
+                          - '0.6666599999999789'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 490.5 279.5
+                    - - in
+                      - Vector 491.666655 280.99998500000004
+                    - - out
+                      - Vector 488.83335 278.333345
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.12435499454677723'
+                        - - outDirIntrinsic
+                          - '0.12208913739730454'
+                        - - inTension
+                          - '1.0000100000999945'
+                        - - inLength
+                          - '4.242598260712441'
+                        - - outTension
+                          - '1.0000100000999936'
+                        - - outLength
+                          - '4.484496503611099'
+                    - properties:
+                        - - onLength
+                          - '7.7781745930520225'
+                        - - onDir
+                          - '-0.7853981633974483'
+                        - - inDirIntrinsic
+                          - '2.2318394956455676'
+                        - - outDirIntrinsic
+                          - '4.101663015995486'
+                        - - inTension
+                          - '1.000010000100061'
+                        - - inLength
+                          - '0.6666599999999789'
+                        - - outTension
+                          - '1.000010000100061'
+                        - - outLength
+                          - '0.6666599999999789'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 485.5 276
+                    - - in
+                      - Vector 487.16665 277.166655
+                    - - out
+                      - Vector 485.5 285.33324
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.12208913739730454'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999936'
+                        - - inLength
+                          - '4.484496503611099'
+                        - - outTension
+                          - '1.0000100001000052'
+                        - - outLength
+                          - '9.666569999999979'
+                    - properties:
+                        - - onLength
+                          - '10.5'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '4.101663015995486'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100061'
+                        - - inLength
+                          - '0.6666599999999789'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '8.99991'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 485.5 304
+                    - - in
+                      - Vector 485.5 294.66676
+                    - - out
+                      - Vector 485.5 438
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000052'
+                        - - inLength
+                          - '9.666569999999979'
+                        - - outTension
+                          - '0.8633969921201771'
+                        - - outLength
+                          - '127'
+                    - properties:
+                        - - onLength
+                          - '10.547511554864494'
+                        - - onDir
+                          - '-0.09495170634275632'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '8.99991'
+                        - - outTension
+                          - '0.861341780199244'
+                        - - outLength
+                          - '141'
+              - - center
+                - classes:
+                    - bow
+                  properties:
+                    - - 'on'
+                      - Vector 298.5 523
+                    - - in
+                      - Vector 424 523
+                    - - out
+                      - Vector 163.5 523
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8731652204516474'
+                        - - inLength
+                          - '119'
+                        - - outTension
+                          - '0.8738823069440409'
+                        - - outLength
+                          - '128'
+                    - properties:
+                        - - onLength
+                          - '10.012492197250394'
+                        - - onDir
+                          - '1.5208379310729538'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8736746095922049'
+                        - - inLength
+                          - '132'
+                        - - outTension
+                          - '0.8715605712858745'
+                        - - outLength
+                          - '142'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 102 281
+                    - - in
+                      - Vector 102 427
+                    - - out
+                      - Vector 102 118
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8662994698921754'
+                        - - inLength
+                          - '139'
+                        - - outTension
+                          - '0.8711257302081262'
+                        - - outLength
+                          - '156'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '3.141592653589793'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8617951083465213'
+                        - - inLength
+                          - '153'
+                        - - outTension
+                          - '0.8658262234543413'
+                        - - outLength
+                          - '170'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 324 10
+                    - - in
+                      - Vector 173 10
+                    - - out
+                      - Vector 393 10
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8802254845365015'
+                        - - inLength
+                          - '144'
+                        - - outTension
+                          - '0.8952389152965667'
+                        - - outLength
+                          - '66'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8756394492524519'
+                        - - inLength
+                          - '158'
+                        - - outTension
+                          - '0.8929503395788159'
+                        - - outLength
+                          - '72'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 487 81.5
+                    - - in
+                      - Vector 438 32
+                    - - out
+                      - Vector 487 81.5
+                    - - outDir
+                      - '-2.3511183916590466'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.00507609853329849'
+                        - - outDir
+                          - '-0.8198672643969537'
+                        - - inTension
+                          - '0.8898792997006831'
+                        - - inLength
+                          - '66.46803743153546'
+                        - - outTension
+                          - '1.0000100000999992'
+                        - - outLength
+                          - '6.839359781945983'
+                    - properties:
+                        - - onLength
+                          - '10.259142264341596'
+                        - - onDir
+                          - '-0.8198672643969563'
+                        - - inDirIntrinsic
+                          - '0.004632334300810448'
+                        - - outDir
+                          - '2.3217253891928396'
+                        - - inTension
+                          - '0.8832702276175098'
+                        - - inLength
+                          - '72.83543093852057'
+                        - - outTension
+                          - '1.0000100000999992'
+                        - - outLength
+                          - '6.839359781945983'
+  - - glyph
+    - id: t
+      properties:
+        - - width
+          - '464'
+      attachment:
+        name: t
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 116
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 43 487
+                    - - in
+                      - Vector 43 487
+                    - - out
+                      - Vector 43 487
+                    - - inDir
+                      - '3.141592653589793'
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - Infinity
+                        - - outLength
+                          - '0'
+                        - - out
+                          - 'on'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - Infinity
+                        - - outLength
+                          - '0'
+                        - - out
+                          - 'on'
+              - - center
+                - classes:
+                    - bar
+                  properties:
+                    - - 'on'
+                      - Vector 434 487
+                    - - in
+                      - Vector 434 487
+                    - - out
+                      - Vector 434 487
+                    - - inDir
+                      - '0'
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '1.5707963267948966'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - Infinity
+                        - - inLength
+                          - '0'
+                        - - in
+                          - 'on'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '-1.5707963267948966'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - Infinity
+                        - - inLength
+                          - '0'
+                        - - in
+                          - 'on'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 414.5 36.5
+                    - - in
+                      - Vector 414.5 36.5
+                    - - out
+                      - Vector 379 18
+                    - - inDir
+                      - '0.4804058165830436'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.0838970949836249'
+                        - - outDirIntrinsic
+                          - '-0.01675820758223745'
+                        - - inTension
+                          - '1.0000100000999985'
+                        - - inLength
+                          - '6.411730569276917'
+                        - - outTension
+                          - '0.8947983089113591'
+                        - - outLength
+                          - '42.485291572496'
+                    - properties:
+                        - - onLength
+                          - '9.617692030835672'
+                        - - onDir
+                          - '2.0576955586061656'
+                        - - inDir
+                          - '2.0576955586061683'
+                        - - outDirIntrinsic
+                          - '0.018940905097086347'
+                        - - inTension
+                          - '1.0000100000999985'
+                        - - inLength
+                          - '6.411730569276917'
+                        - - outTension
+                          - '0.9109815034602861'
+                        - - outLength
+                          - '37.589892258425'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 311 10
+                    - - in
+                      - Vector 351 10
+                    - - out
+                      - Vector 233 10
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.905583287048311'
+                        - - inLength
+                          - '42'
+                        - - outTension
+                          - '0.8700480130774474'
+                        - - outLength
+                          - '83'
+                    - properties:
+                        - - onLength
+                          - '10.04987562112089'
+                        - - onDir
+                          - '1.4711276743037347'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.90115189734538'
+                        - - inLength
+                          - '38'
+                        - - outTension
+                          - '0.8416419362402192'
+                        - - outLength
+                          - '73'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 197 143.5
+                    - - in
+                      - Vector 197 59
+                    - - out
+                      - Vector 197 143.5
+                    - - outDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8416554319862691'
+                        - - inLength
+                          - '90'
+                        - - outTension
+                          - Infinity
+                        - - outLength
+                          - '0'
+                        - - out
+                          - 'on'
+                    - properties:
+                        - - onLength
+                          - '11.01135777277262'
+                        - - onDir
+                          - '0.04542327942157701'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8244757643198798'
+                        - - inLength
+                          - '79'
+                        - - outTension
+                          - Infinity
+                        - - outLength
+                          - '0'
+                        - - out
+                          - 'on'
+              - - center
+                - classes:
+                    - bow
+                  properties:
+                    - - 'on'
+                      - Vector 197 644.5
+                    - - in
+                      - Vector 197 644.5
+                    - - out
+                      - Vector 197 644.5
+                    - - inDir
+                      - '1.5707963267948966'
+                    - - outDir
+                      - '-1.288075178548212'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-4.1786807887454245'
+                        - - outDir
+                          - '0.5337081916392652'
+                        - - inTension
+                          - Infinity
+                        - - inLength
+                          - '0'
+                        - - in
+                          - 'on'
+                        - - outTension
+                          - '1.0000100000999996'
+                        - - outLength
+                          - '8.517869713238177'
+                    - properties:
+                        - - onLength
+                          - '12.776932339180638'
+                        - - onDir
+                          - '0.5337081916392615'
+                        - - inDirIntrinsic
+                          - '-1.0370881351556314'
+                        - - outDir
+                          - '-2.607884461950528'
+                        - - inTension
+                          - Infinity
+                        - - inLength
+                          - '0'
+                        - - in
+                          - 'on'
+                        - - outTension
+                          - '1.0000100000999996'
+                        - - outLength
+                          - '8.517869713238177'
+  - - glyph
+    - id: a
+      properties:
+        - - width
+          - '514'
+      attachment:
+        name: a
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 97
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 74 464
+                    - - in
+                      - Vector 74 464
+                    - - out
+                      - Vector 74 436.33361
+                    - - inDir
+                      - '1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.6666000000000025'
+                        - - outTension
+                          - '1.0000100001000025'
+                        - - outLength
+                          - '27.66638999999998'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '3.141592653589793'
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.6666000000000025'
+                        - - outTension
+                          - '1.0000100001000025'
+                        - - outLength
+                          - '27.66638999999998'
+              - - center
+                - classes:
+                    - tlb
+                  properties:
+                    - - 'on'
+                      - Vector 74 381
+                    - - in
+                      - Vector 74 408.66639
+                    - - out
+                      - Vector 74 381
+                    - - outDir
+                      - '1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000025'
+                        - - inLength
+                          - '27.66638999999998'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.6666000000000025'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '3.141592653589793'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000025'
+                        - - inLength
+                          - '27.66638999999998'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.6666000000000025'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 410 0
+                    - - in
+                      - Vector 410 0
+                    - - out
+                      - Vector 410 128.99871000000002
+                    - - inDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000099999'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '127.99872'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000099999'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '129.9987'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 410 387
+                    - - in
+                      - Vector 410 258.00129000000004
+                    - - out
+                      - Vector 410 488
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '127.99871999999999'
+                        - - outTension
+                          - '0.7787017417264513'
+                        - - outLength
+                          - '96'
+                    - properties:
+                        - - onLength
+                          - '11.40175425099138'
+                        - - onDir
+                          - '0.2662520491509254'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000012'
+                        - - inLength
+                          - '129.99869999999999'
+                        - - outTension
+                          - '0.7878268359632336'
+                        - - outLength
+                          - '106'
+              - - center
+                - classes:
+                    - right-over_top
+                  properties:
+                    - - 'on'
+                      - Vector 253.5 523
+                    - - in
+                      - Vector 353 523
+                    - - out
+                      - Vector 172.5 523
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8309778533610229'
+                        - - inLength
+                          - '94'
+                        - - outTension
+                          - '0.8265868006310294'
+                        - - outLength
+                          - '78'
+                    - properties:
+                        - - onLength
+                          - '10.111874208078342'
+                        - - onDir
+                          - '1.4219063791853994'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.836030068181964'
+                        - - inLength
+                          - '105'
+                        - - outTension
+                          - '0.8288800083755903'
+                        - - outLength
+                          - '84'
+              - - center
+                - classes:
+                    - bow
+                  properties:
+                    - - 'on'
+                      - Vector 69.5 456
+                    - - in
+                      - Vector 116 491.5
+                    - - out
+                      - Vector 69.5 456
+                    - - outDir
+                      - '0.6520479092258958'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.01929907422371313'
+                        - - outDir
+                          - '2.1730836729298604'
+                        - - inTension
+                          - '1.1553072050028779'
+                        - - inLength
+                          - '55.80322571321482'
+                        - - outTension
+                          - '1.0000100000999976'
+                        - - outLength
+                          - '6.472097891356404'
+                    - properties:
+                        - - onLength
+                          - '9.7082439194738'
+                        - - onDir
+                          - '2.173083672929861'
+                        - - inDirIntrinsic
+                          - '0.01759103645074145'
+                        - - outDir
+                          - '-0.9685089806599328'
+                        - - inTension
+                          - '1.1374012790112595'
+                        - - inLength
+                          - '61.220911460055866'
+                        - - outTension
+                          - '1.0000100000999976'
+                        - - outLength
+                          - '6.472097891356404'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 412 10
+                    - - in
+                      - Vector 412 10
+                    - - out
+                      - Vector 442.99969 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '30.999689999999987'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '30.999689999999987'
+              - - center
+                - classes:
+                    - brr
+                  properties:
+                    - - 'on'
+                      - Vector 505 10
+                    - - in
+                      - Vector 474.00031 10
+                    - - out
+                      - Vector 505 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '30.999689999999987'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '30.999689999999987'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 409.5 310.5
+                    - - in
+                      - Vector 409.5 310.5
+                    - - out
+                      - Vector 329 299.5
+                    - - inDir
+                      - '0.13580487584093137'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5120405040791758'
+                        - - outDirIntrinsic
+                          - '-0.0008281259870077662'
+                        - - inTension
+                          - '1.0000100001000058'
+                        - - inLength
+                          - '5.676405357354238'
+                        - - outTension
+                          - '0.8639168110559687'
+                        - - outLength
+                          - '81.74350127074322'
+                    - properties:
+                        - - onLength
+                          - '8.514693182963201'
+                        - - onDir
+                          - '1.6295521495106193'
+                        - - inDir
+                          - '1.6295521495106176'
+                        - - outDirIntrinsic
+                          - '0.0008382866501559505'
+                        - - inTension
+                          - '1.0000100001000058'
+                        - - inLength
+                          - '5.676405357354238'
+                        - - outTension
+                          - '0.8658040947342515'
+                        - - outLength
+                          - '80.75270893288967'
+              - - center
+                - classes:
+                    - bowlow
+                  properties:
+                    - - 'on'
+                      - Vector 200.5 283
+                    - - in
+                      - Vector 281 294
+                    - - out
+                      - Vector 114.5 271
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0008281259870077662'
+                        - - outDirIntrinsic
+                          - '-0.0002887669570328377'
+                        - - inTension
+                          - '0.8639168110559687'
+                        - - inLength
+                          - '81.74350127074322'
+                        - - outTension
+                          - '0.8680459265356408'
+                        - - outLength
+                          - '79.76214641043707'
+                    - properties:
+                        - - onLength
+                          - '9.013878188659973'
+                        - - onDir
+                          - '1.5152978215491797'
+                        - - inDirIntrinsic
+                          - '0.0008382866501559505'
+                        - - outDirIntrinsic
+                          - '0.00024527838605470365'
+                        - - inTension
+                          - '0.8658040947342515'
+                        - - inLength
+                          - '80.75270893288967'
+                        - - outTension
+                          - '0.8652363673322236'
+                        - - outLength
+                          - '93.90420650854784'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 59 153
+                    - - in
+                      - Vector 59 235.5
+                    - - out
+                      - Vector 59 62.5
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8623297057512891'
+                        - - inLength
+                          - '76'
+                        - - outTension
+                          - '0.8622355269818573'
+                        - - outLength
+                          - '85'
+                    - properties:
+                        - - onLength
+                          - '11.045361017187261'
+                        - - onDir
+                          - '-3.050932766389048'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8623722386052208'
+                        - - inLength
+                          - '89'
+                        - - outTension
+                          - '0.8669775695054853'
+                        - - outLength
+                          - '96'
+              - - center
+                - classes:
+                    - right-over_bottom
+                  properties:
+                    - - 'on'
+                      - Vector 198 10
+                    - - in
+                      - Vector 108.5 10
+                    - - out
+                      - Vector 303 10
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8635202831833262'
+                        - - inLength
+                          - '84'
+                        - - outTension
+                          - '0.8693081628700321'
+                        - - outLength
+                          - '101'
+                    - properties:
+                        - - onLength
+                          - '10.198039027185569'
+                        - - onDir
+                          - '-1.7681918866447774'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8681623367872813'
+                        - - inLength
+                          - '95'
+                        - - outTension
+                          - '0.8632479801296838'
+                        - - outLength
+                          - '109'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 409.5 158.5
+                    - - in
+                      - Vector 346.5 72
+                    - - out
+                      - Vector 409.5 158.5
+                    - - outDir
+                      - '-2.200279662226238'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.017908804308587656'
+                        - - outDir
+                          - '-0.7853981633974483'
+                        - - inTension
+                          - '0.8641087230614006'
+                        - - inLength
+                          - '102.80077820717118'
+                        - - outTension
+                          - '1.000010000100003'
+                        - - outLength
+                          - '5.1853978742040585'
+                    - properties:
+                        - - onLength
+                          - '7.7781745930520225'
+                        - - onDir
+                          - '-0.7853981633974483'
+                        - - inDirIntrinsic
+                          - '0.01654824356072304'
+                        - - outDir
+                          - '2.356194490192345'
+                        - - inTension
+                          - '0.8572951735230954'
+                        - - inLength
+                          - '111.25196627475849'
+                        - - outTension
+                          - '1.000010000100003'
+                        - - outLength
+                          - '5.1853978742040585'
+  - - glyph
+    - id: p
+      properties:
+        - - width
+          - '627'
+      attachment:
+        name: p
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 112
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 127 -290
+                    - - in
+                      - Vector 127 -290
+                    - - out
+                      - Vector 92.66701 -290
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - bll
+                  properties:
+                    - - 'on'
+                      - Vector 24 -290
+                    - - in
+                      - Vector 58.33299 -290
+                    - - out
+                      - Vector 24 -290
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 127 -290
+                    - - in
+                      - Vector 127 -290
+                    - - out
+                      - Vector 157.99969 -290
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '30.999689999999987'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '30.999689999999987'
+              - - center
+                - classes:
+                    - brr
+                  properties:
+                    - - 'on'
+                      - Vector 220 -290
+                    - - in
+                      - Vector 189.00031 -290
+                    - - out
+                      - Vector 220 -290
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '30.999689999999987'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '30.999689999999987'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 128 523
+                    - - in
+                      - Vector 128 523
+                    - - out
+                      - Vector 93.66701 523
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - tll
+                  properties:
+                    - - 'on'
+                      - Vector 25 523
+                    - - in
+                      - Vector 59.33299 523
+                    - - out
+                      - Vector 25 523
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - bow
+                  properties:
+                    - - 'on'
+                      - Vector 126.5 417
+                    - - in
+                      - Vector 126.5 417
+                    - - out
+                      - Vector 167 468
+                    - - inDir
+                      - '-2.241940162230905'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '2.2367655641740036'
+                        - - outDirIntrinsic
+                          - '0.00102179800951252'
+                        - - inTension
+                          - '1.0000100000999996'
+                        - - inLength
+                          - '5.934771923275586'
+                        - - outTension
+                          - '1.2743497244301656'
+                        - - outLength
+                          - '67.62396025078685'
+                    - properties:
+                        - - onLength
+                          - '8.902246907382429'
+                        - - onDir
+                          - '-0.9048270894157867'
+                        - - inDir
+                          - '-0.9048270894157895'
+                        - - outDirIntrinsic
+                          - '-0.001103346370954994'
+                        - - inTension
+                          - '1.0000100000999996'
+                        - - inLength
+                          - '5.934771923275586'
+                        - - outTension
+                          - '1.3005957524261496'
+                        - - outLength
+                          - '62.625873247404705'
+              - - center
+                - classes:
+                    - left-over_top
+                  properties:
+                    - - 'on'
+                      - Vector 340.5 523
+                    - - in
+                      - Vector 246 523
+                    - - out
+                      - Vector 476 523
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8875878869735129'
+                        - - inLength
+                          - '97'
+                        - - outTension
+                          - '0.9254489525251475'
+                        - - outLength
+                          - '141'
+                    - properties:
+                        - - onLength
+                          - '10.012492197250394'
+                        - - onDir
+                          - '-1.6207547225168393'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8844462420352633'
+                        - - inLength
+                          - '92'
+                        - - outTension
+                          - '0.9191185216677416'
+                        - - outLength
+                          - '130'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 547 263.5
+                    - - in
+                      - Vector 547 410
+                    - - out
+                      - Vector 548.5 119
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '-0.01038024999874021'
+                        - - inTension
+                          - '0.9209940896807631'
+                        - - inLength
+                          - '152'
+                        - - outTension
+                          - '0.922002456024795'
+                        - - outLength
+                          - '150'
+                    - properties:
+                        - - onLength
+                          - '11.01135777277262'
+                        - - onDir
+                          - '-3.096169374168216'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.011199133567789898'
+                        - - inTension
+                          - '0.9167698958658641'
+                        - - inLength
+                          - '141'
+                        - - outTension
+                          - '0.9155665733216133'
+                        - - outLength
+                          - '139.0323703315167'
+              - - center
+                - classes:
+                    - left-over_bottom
+                  properties:
+                    - - 'on'
+                      - Vector 339 10
+                    - - in
+                      - Vector 474 9.5
+                    - - out
+                      - Vector 251.5 10
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.003703686768754988'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9220742011567967'
+                        - - inLength
+                          - '141'
+                        - - outTension
+                          - '0.9182286863177685'
+                        - - outLength
+                          - '91'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '-0.0040480959434519015'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9219669441436954'
+                        - - inLength
+                          - '129.00387591076478'
+                        - - outTension
+                          - '0.9226468557825624'
+                        - - outLength
+                          - '84'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 127 102.5
+                    - - in
+                      - Vector 186 38
+                    - - out
+                      - Vector 127 102.5
+                    - - outDir
+                      - '-0.829903169431583'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.017913803961822516'
+                        - - outDir
+                          - '0.6659692373791102'
+                        - - inTension
+                          - '0.9209481646320221'
+                        - - inLength
+                          - '90.68627239003708'
+                        - - outTension
+                          - '1.000010000100003'
+                        - - outLength
+                          - '5.934771923275564'
+                    - properties:
+                        - - onLength
+                          - '8.902246907382429'
+                        - - onDir
+                          - '0.6659692373791098'
+                        - - inDirIntrinsic
+                          - '0.01930026070719304'
+                        - - outDir
+                          - '-2.475623416210683'
+                        - - inTension
+                          - '0.9207657743912728'
+                        - - inLength
+                          - '84.17244204607586'
+                        - - outTension
+                          - '1.0000100001000012'
+                        - - outLength
+                          - '5.934771923275564'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 127 -300
+                    - - in
+                      - Vector 127 -300
+                    - - out
+                      - Vector 127 -22.336109999999962
+                    - - inDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '277.66389000000004'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100003'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '277.66389000000004'
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 127 533
+                    - - in
+                      - Vector 127 255.33610999999996
+                    - - out
+                      - Vector 127 533
+                    - - outDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '277.66389000000004'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.333259999999996'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '277.66389000000004'
+                        - - outTension
+                          - '1.000010000100003'
+                        - - outLength
+                          - '7.333259999999996'
+  - - glyph
+    - id: o
+      properties:
+        - - width
+          - '644'
+      attachment:
+        name: o
+        lib:
+          com.typemytype.robofont.guides: []
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 111
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 99 268
+                    - - in
+                      - Vector 99 268
+                    - - out
+                      - Vector 99 115.5
+                    - - inDir
+                      - '1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '0.8865528555478993'
+                        - - outLength
+                          - '159'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '0.8890932856802106'
+                        - - outLength
+                          - '146'
+              - - center
+                - classes:
+                    - left-over_bottom
+                  properties:
+                    - - 'on'
+                      - Vector 314.5 10
+                    - - in
+                      - Vector 170.5 10
+                    - - out
+                      - Vector 457.5 10
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8879661906493694'
+                        - - inLength
+                          - '150'
+                        - - outTension
+                          - '0.887307069530054'
+                        - - outLength
+                          - '150'
+                    - properties:
+                        - - onLength
+                          - '10.012492197250394'
+                        - - onDir
+                          - '1.5208379310729538'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8833000739476896'
+                        - - inLength
+                          - '138'
+                        - - outTension
+                          - '0.890629994821536'
+                        - - outLength
+                          - '136'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 530 266
+                    - - in
+                      - Vector 530 113.906
+                    - - out
+                      - Vector 530 418.407
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8848136234481888'
+                        - - inLength
+                          - '158.596'
+                        - - outTension
+                          - '0.8903338609063445'
+                        - - outLength
+                          - '158.40699999999998'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '3.141592653589793'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8850787594941177'
+                        - - inLength
+                          - '145.59199999999998'
+                        - - outTension
+                          - '0.8870570168244659'
+                        - - outLength
+                          - '146.40699999999998'
+              - - center
+                - classes:
+                    - left-over_top
+                  properties:
+                    - - 'on'
+                      - Vector 311.5 523
+                    - - in
+                      - Vector 456 523
+                    - - out
+                      - Vector 170.5 523
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8872916203283332'
+                        - - inLength
+                          - '151'
+                        - - outTension
+                          - '0.8910797245397817'
+                        - - outLength
+                          - '148'
+                    - properties:
+                        - - onLength
+                          - '10.012492197250394'
+                        - - onDir
+                          - '-1.6207547225168393'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.8888519018431499'
+                        - - inLength
+                          - '138'
+                        - - outTension
+                          - '0.8949760287420729'
+                        - - outLength
+                          - '134'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 99 268
+                    - - in
+                      - Vector 99 419
+                    - - out
+                      - Vector 99 268
+                    - - outDir
+                      - '1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '0.8940132694940974'
+                        - - inLength
+                          - '156'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.333259999999996'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '0.8767573106086747'
+                        - - inLength
+                          - '146'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.333259999999996'
+  - - glyph
+    - id: l
+      properties:
+        - - width
+          - '222'
+      attachment:
+        name: l
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 108
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 107 10
+                    - - in
+                      - Vector 107 10
+                    - - out
+                      - Vector 72.66701 10
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - bll
+                  properties:
+                    - - 'on'
+                      - Vector 4 10
+                    - - in
+                      - Vector 38.33299 10
+                    - - out
+                      - Vector 4 10
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 109 790
+                    - - in
+                      - Vector 109 790
+                    - - out
+                      - Vector 74.66701 790
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - tll
+                  properties:
+                    - - 'on'
+                      - Vector 6 790
+                    - - in
+                      - Vector 40.33299 790
+                    - - out
+                      - Vector 6 790
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 107 10
+                    - - in
+                      - Vector 107 10
+                    - - out
+                      - Vector 141.33299 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - brr
+                  properties:
+                    - - 'on'
+                      - Vector 210 10
+                    - - in
+                      - Vector 175.66701 10
+                    - - out
+                      - Vector 210 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 106 0
+                    - - in
+                      - Vector 106 0
+                    - - out
+                      - Vector 106 266.664
+                    - - inDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '266.664'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '266.664'
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 106 800
+                    - - in
+                      - Vector 106 533.336
+                    - - out
+                      - Vector 106 800
+                    - - outDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '266.664'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.333259999999996'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '266.664'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.333259999999996'
+  - - glyph
+    - id: r
+      properties:
+        - - width
+          - '405'
+      attachment:
+        name: r
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 114
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 129 10
+                    - - in
+                      - Vector 129 10
+                    - - out
+                      - Vector 159.99969 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '30.999689999999987'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '30.999689999999987'
+              - - center
+                - classes:
+                    - brr
+                  properties:
+                    - - 'on'
+                      - Vector 222 10
+                    - - in
+                      - Vector 191.00031 10
+                    - - out
+                      - Vector 222 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '30.999689999999987'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000014'
+                        - - inLength
+                          - '30.999689999999987'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 129 10
+                    - - in
+                      - Vector 129 10
+                    - - out
+                      - Vector 94.66701 10
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - bll
+                  properties:
+                    - - 'on'
+                      - Vector 26 10
+                    - - in
+                      - Vector 60.33299 10
+                    - - out
+                      - Vector 26 10
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 128 523
+                    - - in
+                      - Vector 128 523
+                    - - out
+                      - Vector 93.66701 523
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100000999927'
+                        - - inLength
+                          - '6.666600000000017'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - tll
+                  properties:
+                    - - 'on'
+                      - Vector 25 523
+                    - - in
+                      - Vector 59.33299 523
+                    - - out
+                      - Vector 25 523
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 129 0
+                    - - in
+                      - Vector 129 0
+                    - - out
+                      - Vector 129 177.66489
+                    - - inDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '177.66489'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100003'
+                        - - inLength
+                          - '7.333259999999996'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '177.66489'
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 129 533
+                    - - in
+                      - Vector 129 355.33511
+                    - - out
+                      - Vector 129 533
+                    - - outDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '177.66489'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.333259999999996'
+                    - properties:
+                        - - onLength
+                          - '11'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '177.66489'
+                        - - outTension
+                          - '1.000010000100003'
+                        - - outLength
+                          - '7.333259999999996'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - bow
+                  properties:
+                    - - 'on'
+                      - Vector 129.5 409
+                    - - in
+                      - Vector 129.5 409
+                    - - out
+                      - Vector 179 501.5
+                    - - inDir
+                      - '-2.0621553902858607'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '2.2142974355881835'
+                        - - outDirIntrinsic
+                          - '0.027711454490157994'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '4.999949999999993'
+                        - - outTension
+                          - '0.9285577876798623'
+                        - - outLength
+                          - '107.33126291998991'
+                    - properties:
+                        - - onLength
+                          - '7.5'
+                        - - onDir
+                          - '-0.9272952180016122'
+                        - - inDir
+                          - '-0.9272952180016122'
+                        - - outDirIntrinsic
+                          - '-0.02899624000902956'
+                        - - inTension
+                          - '1.000010000100004'
+                        - - inLength
+                          - '4.999949999999984'
+                        - - outTension
+                          - '0.9266973691325644'
+                        - - outLength
+                          - '102.57680049601859'
+              - - center
+                - classes:
+                    - bow
+                  properties:
+                    - - 'on'
+                      - Vector 378 523
+                    - - in
+                      - Vector 271 523
+                    - - out
+                      - Vector 378 523
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '0.9280239019246587'
+                        - - inLength
+                          - '110'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '0.9299807390275604'
+                        - - inLength
+                          - '104'
+                        - - outTension
+                          - '1.0000100000999927'
+                        - - outLength
+                          - '6.666600000000017'
+  - - glyph
+    - id: A
+      properties:
+        - - width
+          - '781'
+      attachment:
+        name: A
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 65
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 114 10
+                    - - in
+                      - Vector 114 10
+                    - - out
+                      - Vector 79.66701 10
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - bll
+                  properties:
+                    - - 'on'
+                      - Vector 11 10
+                    - - in
+                      - Vector 45.33299 10
+                    - - out
+                      - Vector 11 10
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '34.33299'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 114 10
+                    - - in
+                      - Vector 114 10
+                    - - out
+                      - Vector 148.33299 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000005'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - blr
+                  properties:
+                    - - 'on'
+                      - Vector 217 10
+                    - - in
+                      - Vector 182.66701 10
+                    - - out
+                      - Vector 217 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 661 10
+                    - - in
+                      - Vector 661 10
+                    - - out
+                      - Vector 695.33299 10
+                    - - inDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - brr
+                  properties:
+                    - - 'on'
+                      - Vector 764 10
+                    - - in
+                      - Vector 729.66701 10
+                    - - out
+                      - Vector 764 10
+                    - - outDir
+                      - '3.141592653589793'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 661 10
+                    - - in
+                      - Vector 661 10
+                    - - out
+                      - Vector 626.66701 10
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDir
+                          - '1.5707963267948966'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '6.666600000000001'
+                        - - outTension
+                          - '1.0000100001000023'
+                        - - outLength
+                          - '34.332989999999995'
+              - - center
+                - classes:
+                    - brl
+                  properties:
+                    - - 'on'
+                      - Vector 558 10
+                    - - in
+                      - Vector 592.33299 10
+                    - - out
+                      - Vector 558 10
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.5707963267948966'
+                        - - inTension
+                          - '1.0000100001000023'
+                        - - inLength
+                          - '34.332989999999995'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '6.666600000000001'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - bar
+                  properties:
+                    - - 'on'
+                      - Vector 574.5 265.5
+                    - - in
+                      - Vector 574.5 265.5
+                    - - out
+                      - Vector 454.83453 265.5
+                    - - inDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-1.2490457723982569'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000025'
+                        - - inLength
+                          - '7.378574087247482'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '122.33211'
+                    - properties:
+                        - - onLength
+                          - '11.067971810589327'
+                        - - onDir
+                          - '1.892546881191539'
+                        - - inDir
+                          - '1.8925468811915365'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000025'
+                        - - inLength
+                          - '7.378574087247482'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '116.99883'
+              - - center
+                - classes:
+                    - bar
+                  properties:
+                    - - 'on'
+                      - Vector 215.5 265.5
+                    - - in
+                      - Vector 335.16547 265.5
+                    - - out
+                      - Vector 215.5 265.5
+                    - - outDir
+                      - '0'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '1.1659045405098147'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '122.33211'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '7.615696948132852'
+                    - properties:
+                        - - onLength
+                          - '11.423659658795863'
+                        - - onDir
+                          - '1.1659045405098132'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-1.9756881130799786'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '116.99883'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '7.615696948132852'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem2
+                  properties:
+                    - - 'on'
+                      - Vector 672.5 0
+                    - - in
+                      - Vector 672.5 0
+                    - - out
+                      - Vector 583.000895 240.66426
+                    - - inDir
+                      - '-1.2147605885490693'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '-0.0018263865009422453'
+                        - - inTension
+                          - '1.0000100000999905'
+                        - - inLength
+                          - '7.666590000000042'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '256.59331172526635'
+                    - properties:
+                        - - onLength
+                          - '11.5'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.0018239088938500903'
+                        - - inTension
+                          - '1.0000100000999905'
+                        - - inLength
+                          - '7.666590000000042'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '256.941868994054'
+              - - center
+                - classes:
+                    - stem2
+                  properties:
+                    - - 'on'
+                      - Vector 404 722
+                    - - in
+                      - Vector 493.499105 481.33574
+                    - - out
+                      - Vector 404 722
+                    - - outDir
+                      - '-1.2147605885490693'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0018263865009422453'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '256.59331172526635'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0.0018239088938500903'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '256.941868994054'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+        - - penstroke
+          - children:
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 102 0
+                    - - in
+                      - Vector 102 0
+                    - - out
+                      - Vector 201.999 240.66426
+                    - - inDir
+                      - '-1.9646035821918866'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '3.141592653589793'
+                        - - outDirIntrinsic
+                          - '-0.0023599200491377648'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '7.999920000000003'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '260.86943313578'
+                    - properties:
+                        - - onLength
+                          - '12'
+                        - - onDir
+                          - '0'
+                        - - inDir
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.0023645572977204488'
+                        - - inTension
+                          - '1.0000100001000005'
+                        - - inLength
+                          - '7.999920000000003'
+                        - - outTension
+                          - '1.0000100001000007'
+                        - - outLength
+                          - '260.3578303243888'
+              - - center
+                - classes:
+                    - stem
+                  properties:
+                    - - 'on'
+                      - Vector 402 722
+                    - - in
+                      - Vector 302.001 481.33574
+                    - - out
+                      - Vector 402 722
+                    - - outDir
+                      - '-1.9646035821918866'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0023599200491375427'
+                        - - outDir
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '260.86943313578'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '0'
+                        - - inDirIntrinsic
+                          - '0.002364557297720671'
+                        - - outDir
+                          - '3.141592653589793'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '260.3578303243888'
+                        - - outTension
+                          - '1.0000100001000014'
+                        - - outLength
+                          - '6.666600000000017'
+  - - glyph
+    - id: g
+      properties:
+        - - width
+          - '568'
+      attachment:
+        name: g
+        lib:
+          com.typemytype.robofont.image:
+            path: /Users/simonegli/Desktop/Screen Shot 2014-10-16 at 11.58.21.png
+            transform:
+              - 1
+              - 0
+              - 0
+              - 3.08319
+              - -383.055
+              - -303.724
+          com.typemytype.robofont.guides: []
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 103
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 416 469
+                    - - in
+                      - Vector 416 469
+                    - - out
+                      - Vector 460.83288500000003 492.833095
+                    - - inDir
+                      - '-2.652986938793362'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '2.2142974355881795'
+                        - - outDirIntrinsic
+                          - '0.007100877355857904'
+                        - - inTension
+                          - '1.0000100000999996'
+                        - - inLength
+                          - '6.6665999999999945'
+                        - - outTension
+                          - '1.0000100001000012'
+                        - - outLength
+                          - '51.15719665062386'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-0.9272952180016122'
+                        - - inDir
+                          - '-0.927295218001614'
+                        - - outDirIntrinsic
+                          - '-0.007208490739127549'
+                        - - inTension
+                          - '1.0000100000999996'
+                        - - inLength
+                          - '6.6665999999999945'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '50.39349923053965'
+              - - center
+                - classes:
+                    - arm
+                  properties:
+                    - - 'on'
+                      - Vector 550.5 540.5
+                    - - in
+                      - Vector 505.66711499999997 516.666905
+                    - - out
+                      - Vector 550.5 540.5
+                    - - outDir
+                      - '-2.652986938793363'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.007100877355857904'
+                        - - outDir
+                          - '-1.0460005551447809'
+                        - - inTension
+                          - '1.0000100001000007'
+                        - - inLength
+                          - '51.15719665062383'
+                        - - outTension
+                          - '1.0000100000999967'
+                        - - outLength
+                          - '7.318092951705385'
+                    - properties:
+                        - - onLength
+                          - '10.977249200050075'
+                        - - onDir
+                          - '-1.0460005551447893'
+                        - - inDirIntrinsic
+                          - '-0.00720849073912655'
+                        - - outDir
+                          - '2.0955920984450125'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '50.39349923053965'
+                        - - outTension
+                          - '1.0000100000999967'
+                        - - outLength
+                          - '7.318092951705385'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 104 357.5
+                    - - in
+                      - Vector 104 357.5
+                    - - out
+                      - Vector 104 457
+                    - - inDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-3.0961693741682175'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.34083177279659'
+                        - - outTension
+                          - '0.9277242329405823'
+                        - - outLength
+                          - '107'
+                    - properties:
+                        - - onLength
+                          - '11.01135777277262'
+                        - - onDir
+                          - '0.04542327942157701'
+                        - - inDir
+                          - '0.04542327942157561'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '1.000010000100001'
+                        - - inLength
+                          - '7.34083177279659'
+                        - - outTension
+                          - '0.950899529621821'
+                        - - outLength
+                          - '92'
+              - - center
+                - classes:
+                    - left-over_top
+                  properties:
+                    - - 'on'
+                      - Vector 280 523
+                    - - in
+                      - Vector 177 523
+                    - - out
+                      - Vector 381 523
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9212444567459422'
+                        - - inLength
+                          - '110'
+                        - - outTension
+                          - '0.9212810366998957'
+                        - - outLength
+                          - '107'
+                    - properties:
+                        - - onLength
+                          - '10'
+                        - - onDir
+                          - '-1.5707963267948966'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9308815697693072'
+                        - - inLength
+                          - '96'
+                        - - outTension
+                          - '0.915242101305966'
+                        - - outLength
+                          - '95'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 451 361.5
+                    - - in
+                      - Vector 451 459.5
+                    - - out
+                      - Vector 451 263.5
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.927951708792825'
+                        - - inLength
+                          - '104'
+                        - - outTension
+                          - '0.9245340171689757'
+                        - - outLength
+                          - '106'
+                    - properties:
+                        - - onLength
+                          - '11.01135777277262'
+                        - - onDir
+                          - '-3.096169374168216'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9287082893297239'
+                        - - inLength
+                          - '92'
+                        - - outTension
+                          - '0.9536345767388222'
+                        - - outLength
+                          - '90'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 277 199
+                    - - in
+                      - Vector 379.5 199
+                    - - out
+                      - Vector 177 199
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9215115848578784'
+                        - - inLength
+                          - '109'
+                        - - outTension
+                          - '0.9288045881480148'
+                        - - outLength
+                          - '106'
+                    - properties:
+                        - - onLength
+                          - '10.04987562112089'
+                        - - onDir
+                          - '1.4711276743037347'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9136332133513575'
+                        - - inLength
+                          - '96'
+                        - - outTension
+                          - '0.9317743729851917'
+                        - - outLength
+                          - '94'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 104 357.5
+                    - - in
+                      - Vector 104 260.5
+                    - - out
+                      - Vector 104 357.5
+                    - - outDir
+                      - '-1.5707963267948966'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '0.04542327942157561'
+                        - - inTension
+                          - '0.9285160078556162'
+                        - - inLength
+                          - '103'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.34083177279659'
+                    - properties:
+                        - - onLength
+                          - '11.01135777277262'
+                        - - onDir
+                          - '0.04542327942157701'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDir
+                          - '-3.0961693741682175'
+                        - - inTension
+                          - '0.9336238137458913'
+                        - - inLength
+                          - '91'
+                        - - outTension
+                          - '1.000010000100001'
+                        - - outLength
+                          - '7.34083177279659'
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 179 220
+                    - - in
+                      - Vector 179 220
+                    - - out
+                      - Vector 134.5 195
+                    - - inDir
+                      - '0.5118558424318241'
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-0.8760580505981906'
+                        - - outDirIntrinsic
+                          - '0.017733756350252428'
+                        - - inTension
+                          - '1.0000100001000032'
+                        - - inLength
+                          - '5.206781048939925'
+                        - - outTension
+                          - '0.9189918425035979'
+                        - - outLength
+                          - '47.50789408087881'
+                    - properties:
+                        - - onLength
+                          - '7.810249675906654'
+                        - - onDir
+                          - '2.2655346029916'
+                        - - inDir
+                          - '2.2655346029916026'
+                        - - outDirIntrinsic
+                          - '-0.01543308902694207'
+                        - - inTension
+                          - '1.0000100001000032'
+                        - - inLength
+                          - '5.206781048939925'
+                        - - outTension
+                          - '0.9245991662673549'
+                        - - outLength
+                          - '54.589376255824725'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 108 110
+                    - - in
+                      - Vector 108 160.5
+                    - - out
+                      - Vector 108 30
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9219710781709893'
+                        - - inLength
+                          - '47'
+                        - - outTension
+                          - '0.9273595813533033'
+                        - - outLength
+                          - '75'
+                    - properties:
+                        - - onLength
+                          - '11.045361017187261'
+                        - - onDir
+                          - '-3.050932766389048'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9263418155104872'
+                        - - inLength
+                          - '54'
+                        - - outTension
+                          - '0.9236601914011414'
+                        - - outLength
+                          - '85'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 275 -3.5
+                    - - in
+                      - Vector 186 3.5
+                    - - out
+                      - Vector 396 -13.5
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.007182637852041623'
+                        - - outDirIntrinsic
+                          - '0.003258166497614526'
+                        - - inTension
+                          - '0.9265090160692727'
+                        - - inLength
+                          - '84.2140130857092'
+                        - - outTension
+                          - '0.9234375554275285'
+                        - - outLength
+                          - '126.39620247459969'
+                    - properties:
+                        - - onLength
+                          - '9.7082439194738'
+                        - - onDir
+                          - '-1.7782925532300993'
+                        - - inDirIntrinsic
+                          - '-0.006411690812390014'
+                        - - outDirIntrinsic
+                          - '-0.0035370537271747077'
+                        - - inTension
+                          - '0.9271057674876858'
+                        - - inLength
+                          - '94.33981132056604'
+                        - - outTension
+                          - '0.9247947975590038'
+                        - - outLength
+                          - '116.43023662262307'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 507 -144
+                    - - in
+                      - Vector 507 -36.5
+                    - - out
+                      - Vector 508 -253
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0.008065616649419738'
+                        - - inTension
+                          - '0.9238137332224999'
+                        - - inLength
+                          - '112'
+                        - - outTension
+                          - '0.9204099371210042'
+                        - - outLength
+                          - '116.01724009818541'
+                    - properties:
+                        - - onLength
+                          - '10.04987562112089'
+                        - - onDir
+                          - '-3.0419240010986313'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '-0.00917405454511'
+                        - - inTension
+                          - '0.9255666406098694'
+                        - - inLength
+                          - '103'
+                        - - outTension
+                          - '0.93727183213097'
+                        - - outLength
+                          - '102'
+              - - center
+                - classes:
+                    - left-over_bottom
+                  properties:
+                    - - 'on'
+                      - Vector 274.5 -290
+                    - - in
+                      - Vector 399.228 -290
+                    - - out
+                      - Vector 156.773 -290
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9314237217302308'
+                        - - inLength
+                          - '130.92200000000003'
+                        - - outTension
+                          - '0.9239202547356155'
+                        - - outLength
+                          - '124'
+                    - properties:
+                        - - onLength
+                          - '10.012492197250394'
+                        - - onDir
+                          - '1.5208379310729538'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9231852243551405'
+                        - - inLength
+                          - '118.53399999999999'
+                        - - outTension
+                          - '0.9273844060250235'
+                        - - outLength
+                          - '111.45400000000001'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 60 -135.5
+                    - - in
+                      - Vector 60 -241.5
+                    - - out
+                      - Vector 60 -60.5
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9270314817227457'
+                        - - inLength
+                          - '112'
+                        - - outTension
+                          - '0.9195919735854524'
+                        - - outLength
+                          - '79'
+                    - properties:
+                        - - onLength
+                          - '11.01135777277262'
+                        - - onDir
+                          - '0.04542327942157701'
+                        - - inDirIntrinsic
+                          - '0'
+                        - - outDirIntrinsic
+                          - '0'
+                        - - inTension
+                          - '0.9309267437154142'
+                        - - inLength
+                          - '100'
+                        - - outTension
+                          - '0.9352526055361651'
+                        - - outLength
+                          - '71'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 177.5 17
+                    - - in
+                      - Vector 107 -12
+                    - - out
+                      - Vector 177.5 17
+                    - - outDir
+                      - '-2.751342370490599'
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.0050927767357202836'
+                        - - outDir
+                          - '-0.8288490587889796'
+                        - - inTension
+                          - '0.9267867763622135'
+                        - - inLength
+                          - '79.84985911070852'
+                        - - outTension
+                          - '1.0000100001000003'
+                        - - outLength
+                          - '5.426219269297915'
+                    - properties:
+                        - - onLength
+                          - '8.139410298049853'
+                        - - onDir
+                          - '-0.8288490587889792'
+                        - - inDirIntrinsic
+                          - '0.005600158238221575'
+                        - - outDir
+                          - '2.3127435948008137'
+                        - - inTension
+                          - '0.9312863480556371'
+                        - - inLength
+                          - '72.61542535852834'
+                        - - outTension
+                          - '1.0000100001'
+                        - - outLength
+                          - '5.426219269297913'
+  - - glyph
+    - id: space
+      properties:
+        - - width
+          - '290'
+      attachment:
+        name: space
+        lib:
+          com.typemytype.robofont.layerData: {}
+          com.typemytype.robofont.mark:
+            - 1
+            - 1
+            - 0
+            - 1
+        unicodes:
+          - 32

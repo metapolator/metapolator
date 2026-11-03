@@ -1,0 +1,5 @@
+base: base-bold
+data:
+  .:
+    attachment:
+      cpsFile: master-bold.master.cps

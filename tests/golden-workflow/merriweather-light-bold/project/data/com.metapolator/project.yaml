@@ -1,0 +1,5 @@
+session:
+  masters:
+    - master-light
+    - master-bold
+    - instance-0

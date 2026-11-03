@@ -1,0 +1,11 @@
+[package]
+name = "mp-otf"
+version = "0.1.0"
+description = "OpenType/CFF writing compatible with opentype.js 0.6.3 (byte-identical)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+mp-math = { path = "../mp-math" }

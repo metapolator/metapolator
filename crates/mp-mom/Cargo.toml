@@ -1,0 +1,22 @@
+[package]
+name = "mp-mom"
+version = "0.1.0"
+description = "Metapolator Object Model, projects, CPS libraries and rendering (port of Atem-MOM)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+mp-math = { path = "../mp-math" }
+mp-cps = { path = "../mp-cps" }
+serde_json.workspace = true
+serde_yaml.workspace = true
+mp-io = { path = "../mp-io" }
+mp-ufo = { path = "../mp-ufo" }
+mp-otf = { path = "../mp-otf" }
+
+[dev-dependencies]
+serde_json.workspace = true
+lzma-rs = "0.3"
+tar = "0.4"

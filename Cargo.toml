@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+edition = "2021"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/metapolator/metapolator"
+rust-version = "1.80"
+
+[workspace.dependencies]
+libm = "0.2"
+serde_json = { version = "1", features = ["preserve_order"] }
+serde_yaml = "0.9"

@@ -1,0 +1,17 @@
+{
+  "project": "tests/fixtures/v0.4.0-min",
+  "masters": [
+    "base-identity",
+    "base-regular",
+    "insance-0",
+    "master-identity",
+    "master-regular"
+  ],
+  "otf": {
+    "base-identity": "ok",
+    "base-regular": "ok",
+    "insance-0": "ok",
+    "master-identity": "ok",
+    "master-regular": "ok"
+  }
+}

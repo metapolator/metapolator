@@ -1,0 +1,10 @@
+base: base-regular
+data:
+  .:
+    attachment:
+      cpsFile: insance-0.master.cps
+    properties:
+      - [baseMaster0, S"master#master-regular"]
+      - [proportion0, 0.5]
+      - [baseMaster1, S"master#master-identity"]
+      - [proportion1, 0.5]

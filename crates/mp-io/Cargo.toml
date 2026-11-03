@@ -1,0 +1,8 @@
+[package]
+name = "mp-io"
+version = "0.1.0"
+description = "Virtual file system for Metapolator projects (port of the parts of Atem-IO in use)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true

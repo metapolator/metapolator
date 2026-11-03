@@ -1,4 +1,4 @@
-# Metapolator [![Build Status](https://travis-ci.org/metapolator/metapolator.png?branch=master)](https://travis-ci.org/metapolator/metapolator)
+# Metapolator
 
 Metapolator will be a web-based parametric font editor, providing a GUI for designing with UFO fonts and Metafont technologies.
 Metapolator is intended for type designers to design large font families faster, and for typographically sensitive graphic designers to adjust their libre fonts for their exact needs.
@@ -19,6 +19,8 @@ But if you'd like that, check out [metaflop.com](http://www.metaflop.com)
 ### Install
 
 Metapolator is not yet released, but if you'd like to try it out and are comfortable using development tools, please see our developer installation instructions in [INSTALL.md](INSTALL.md).
+
+Metapolator is written in Rust and runs in the browser as WebAssembly. It was ported from JavaScript (v0.4.0); the port is tested against the output of the original code (see [notes/rust-port/PLAN.md](notes/rust-port/PLAN.md)).
 
 Our user community is actively involved in development through discussions [Google+](https://plus.google.com/communities/110027004108709154749)
 

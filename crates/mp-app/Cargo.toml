@@ -1,0 +1,18 @@
+[package]
+name = "mp-app"
+version = "0.1.0"
+description = "The Metapolator application model: masters, design spaces, instances, parameters, specimen, zip import/export (port of app/lib/models and ui-tools)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+mp-cps = { path = "../mp-cps" }
+mp-io = { path = "../mp-io" }
+mp-math = { path = "../mp-math" }
+mp-mom = { path = "../mp-mom" }
+mp-ufo = { path = "../mp-ufo" }
+serde_json.workspace = true
+zip = { version = "9", default-features = false, features = ["deflate-flate2"] }
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }

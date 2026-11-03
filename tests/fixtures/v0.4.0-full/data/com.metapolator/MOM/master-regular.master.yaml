@@ -1,0 +1,5 @@
+base: base-regular
+data:
+  .:
+    attachment:
+      cpsFile: master-regular.master.cps

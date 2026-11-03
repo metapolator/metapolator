@@ -1,0 +1,430 @@
+id: base-components-circular
+attachment:
+  fontinfo:
+    familyName: Untitled1
+    styleName: Regular
+    versionMajor: 1
+    versionMinor: 0
+    copyright: 'Copyright (c) 2014, Ben Martin'
+    unitsPerEm: 1000
+    descender: -200
+    ascender: 800
+    italicAngle: 0
+    note: '2014-11-14: Created with FontForge (http://fontforge.org)'
+    openTypeHeadCreated: '2014/11/14 10:55:33'
+    openTypeHheaAscender: 761
+    openTypeHheaDescender: 45
+    openTypeHheaLineGap: 0
+    openTypeNameVersion: Version 001.000
+    postscriptFontName: Untitled1
+    postscriptFullName: Untitled1
+    postscriptUnderlineThickness: 50
+    postscriptUnderlinePosition: -100
+    postscriptWeightName: Regular
+  cpsFile: lib/MOM/primary.cps
+children:
+  - - glyph
+    - id: c
+      properties:
+        - - width
+          - '1000'
+      attachment:
+        name: c
+        unicodes:
+          - 99
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 523 170
+                    - - in
+                      - Vector 523.5 186
+                    - - out
+                      - Vector 520 167
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-0.08777389232722037'
+                        - - outDirIntrinsic
+                          - '2.2675386083249074'
+                        - - inTension
+                          - '0.8566118240271334'
+                        - - inLength
+                          - '250.9661331733826'
+                        - - outTension
+                          - '0.9517869122238126'
+                        - - outLength
+                          - '45.17742799230607'
+                    - properties:
+                        - - onLength
+                          - '322.1552420805845'
+                        - - onDir
+                          - '3.11054673134577'
+                        - - inDir
+                          - '-3.1017730754548185'
+                        - - outDirIntrinsic
+                          - '-0.7462025614703935'
+                        - - inTension
+                          - '0.8559046125408293'
+                        - - inLength
+                          - '251.19912420229494'
+                        - - outTension
+                          - '1.0148382452567115'
+                        - - outLength
+                          - '51.03920062069938'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 515 122
+                    - - in
+                      - Vector 513 168
+                    - - out
+                      - Vector 516 82
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.25672027543858134'
+                        - - outDirIntrinsic
+                          - '0.2533048653861911'
+                        - - inTension
+                          - '0.9352089378774557'
+                        - - inLength
+                          - '43.965895873961216'
+                        - - outTension
+                          - '0.9558929514306581'
+                        - - outLength
+                          - '36.40054944640259'
+                    - properties:
+                        - - onLength
+                          - '434.07372645669307'
+                        - - onDir
+                          - '3.1231615611956944'
+                        - - inDirIntrinsic
+                          - '-0.22154383362272845'
+                        - - outDirIntrinsic
+                          - '-0.20093441907144816'
+                        - - inTension
+                          - '0.9394131314670672'
+                        - - inLength
+                          - '50.80354318352215'
+                        - - outTension
+                          - '0.9443437893240345'
+                        - - outLength
+                          - '45.70557952810576'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 529 62
+                    - - in
+                      - Vector 524.5 65
+                    - - out
+                      - Vector 528.5 41
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-2.498091544796509'
+                        - - outDir
+                          - '-3.0826205211218745'
+                        - - inTension
+                          - '1.1897826083189469'
+                        - - inLength
+                          - '36.05551275463989'
+                        - - outTension
+                          - '0.856147662607437'
+                        - - outLength
+                          - '271.4719138327205'
+                    - properties:
+                        - - onLength
+                          - '348.09194187742986'
+                        - - onDir
+                          - '3.118608196148341'
+                        - - inDirIntrinsic
+                          - '0.49934672168013006'
+                        - - outDir
+                          - '-0.09600029036948525'
+                        - - inTension
+                          - '1.1509548717251852'
+                        - - inLength
+                          - '45.17742799230607'
+                        - - outTension
+                          - '0.8567856642158147'
+                        - - outLength
+                          - '271.2489631316588'
+        - - component
+          - properties:
+              - - baseGlyphName
+                - '"a"'
+              - - transformation
+                - Transformation 1 0 0 1 0 0
+  - - glyph
+    - id: b
+      properties:
+        - - width
+          - '1000'
+      attachment:
+        name: b
+        unicodes:
+          - 98
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 515 434
+                    - - in
+                      - Vector 516 468
+                    - - out
+                      - Vector 510.5 425
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-0.17130034280816903'
+                        - - outDirIntrinsic
+                          - '1.8719548265784993'
+                        - - inTension
+                          - '0.8590232877176827'
+                        - - inLength
+                          - '240.52026941611388'
+                        - - outTension
+                          - '0.9569124108824508'
+                        - - outLength
+                          - '61.814237842102365'
+                    - properties:
+                        - - onLength
+                          - '308.41530441921975'
+                        - - onDir
+                          - '3.0896912551316205'
+                        - - inDir
+                          - '-3.0290988871896345'
+                        - - outDirIntrinsic
+                          - '-0.9933567106503824'
+                        - - inTension
+                          - '0.8595404613339122'
+                        - - inLength
+                          - '240.52026941611388'
+                        - - outTension
+                          - '0.9711834135594115'
+                        - - outLength
+                          - '70.45565981523414'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 509 328
+                    - - in
+                      - Vector 507.5 393.5
+                    - - out
+                      - Vector 510 280
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.17134423496001983'
+                        - - outDirIntrinsic
+                          - '0.18093202428406996'
+                        - - inTension
+                          - '0.9194427850322652'
+                        - - inLength
+                          - '62.16912416947821'
+                        - - outTension
+                          - '0.9483174574639782'
+                        - - outLength
+                          - '44.91102314577124'
+                    - properties:
+                        - - onLength
+                          - '440.0409071893203'
+                        - - onDir
+                          - '3.1279571350882907'
+                        - - inDirIntrinsic
+                          - '-0.15076667978138403'
+                        - - outDirIntrinsic
+                          - '-0.1546412975108078'
+                        - - inTension
+                          - '0.9386138622125372'
+                        - - inLength
+                          - '70.57619995437555'
+                        - - outTension
+                          - '0.946602095218614'
+                        - - outLength
+                          - '52.46903848937962'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 520 257
+                    - - in
+                      - Vector 516.5 261.5
+                    - - out
+                      - Vector 519.5 233
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-2.143183613778146'
+                        - - outDir
+                          - '-3.0616109688495934'
+                        - - inTension
+                          - '1.131983436654127'
+                        - - inLength
+                          - '45.17742799230607'
+                        - - outTension
+                          - '0.856682220831645'
+                        - - outLength
+                          - '262.8402556687236'
+                    - properties:
+                        - - onLength
+                          - '337.0370899470858'
+                        - - onDir
+                          - '3.1267569468708194'
+                        - - inDirIntrinsic
+                          - '0.8138940108341965'
+                        - - outDir
+                          - '-0.10308160852270024'
+                        - - inTension
+                          - '1.1233128238101129'
+                        - - inLength
+                          - '52.23983154643591'
+                        - - outTension
+                          - '0.858087373766314'
+                        - - outLength
+                          - '262.39283526803854'
+        - - component
+          - properties:
+              - - baseGlyphName
+                - '"c"'
+              - - transformation
+                - Transformation 1 0 0 1 0 0
+  - - glyph
+    - id: a
+      properties:
+        - - width
+          - '1000'
+      attachment:
+        name: a
+        unicodes:
+          - 97
+      children:
+        - - penstroke
+          - children:
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 479 739
+                    - - in
+                      - Vector 479 768.5
+                    - - out
+                      - Vector 497 731.5
+                  children:
+                    - properties:
+                        - - inDir
+                          - '-0.10590152853563542'
+                        - - outDirIntrinsic
+                          - '0.2880554470506259'
+                        - - inTension
+                          - '0.859098616640128'
+                        - - inLength
+                          - '255.43100829773977'
+                        - - outTension
+                          - '0.9536735397954398'
+                        - - outLength
+                          - '84.48076704197234'
+                    - properties:
+                        - - onLength
+                          - '328.03810754240124'
+                        - - onDir
+                          - '-3.1263499317613768'
+                        - - inDir
+                          - '-3.0162686670982466'
+                        - - outDirIntrinsic
+                          - '-2.6224465393432705'
+                        - - inTension
+                          - '0.8570515032341401'
+                        - - inLength
+                          - '256.00781238079435'
+                        - - outTension
+                          - '0.9756610129451707'
+                        - - outLength
+                          - '48.373546489791295'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 529.5 647
+                    - - in
+                      - Vector 518 711.5
+                    - - out
+                      - Vector 537 594.5
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '0.16023427562578707'
+                        - - outDirIntrinsic
+                          - '0.1955590146236177'
+                        - - inTension
+                          - '0.917865988974826'
+                        - - inLength
+                          - '84.75848040166836'
+                        - - outTension
+                          - '0.9387878691407885'
+                        - - outLength
+                          - '60.40695324215582'
+                    - properties:
+                        - - onLength
+                          - '470.5095641960958'
+                        - - onDir
+                          - '3.1352165444609468'
+                        - - inDirIntrinsic
+                          - '-0.27812939552401716'
+                        - - outDirIntrinsic
+                          - '-0.2456893950612069'
+                        - - inTension
+                          - '0.9351342480240673'
+                        - - inLength
+                          - '49.25444142409901'
+                        - - outTension
+                          - '1.0048387386767295'
+                        - - outLength
+                          - '48.25971404805462'
+              - - center
+                - properties:
+                    - - 'on'
+                      - Vector 503 555
+                    - - in
+                      - Vector 509 560.5
+                    - - out
+                      - Vector 503 524
+                  children:
+                    - properties:
+                        - - inDirIntrinsic
+                          - '-0.6406007647402499'
+                        - - outDir
+                          - '-3.0374412725047777'
+                        - - inTension
+                          - '1.2304742587785686'
+                        - - inLength
+                          - '59.30430001273095'
+                        - - outTension
+                          - '0.8572330148492032'
+                        - - outLength
+                          - '288.5636844788339'
+                    - properties:
+                        - - onLength
+                          - '370.01216196227927'
+                        - - onDir
+                          - '-3.1334847231541825'
+                        - - inDirIntrinsic
+                          - '2.2936610275942755'
+                        - - outDir
+                          - '-0.11103963033307515'
+                        - - inTension
+                          - '1.0027579486659006'
+                        - - inLength
+                          - '47.265209192385896'
+                        - - outTension
+                          - '0.8568170576582873'
+                        - - outLength
+                          - '288.7784618007375'
+        - - component
+          - properties:
+              - - baseGlyphName
+                - '"b"'
+              - - transformation
+                - Transformation 1 0 0 1 0 0

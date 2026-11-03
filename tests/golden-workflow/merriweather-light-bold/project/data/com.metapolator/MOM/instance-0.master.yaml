@@ -1,0 +1,17 @@
+base: master-light
+data:
+  .:
+    properties:
+      - - baseMaster0
+        - S"master#master-light"
+      - - proportion0
+        - '0.5'
+      - - baseMaster1
+        - S"master#master-bold"
+      - - proportion1
+        - '0.5'
+    attachment:
+      cpsFile: instance-0.master.cps
+      requiredMasters:
+        - master-light
+        - master-bold
